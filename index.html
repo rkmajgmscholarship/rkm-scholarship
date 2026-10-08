@@ -70,7 +70,7 @@
       color: #fde047;
       border: 1px solid #fde047;
     }
-    /* Main Content */
+    /* Main Layout */
     main {
       max-width: 900px;
       margin: 16px auto;
@@ -112,5 +112,479 @@
       margin-bottom: 6px;
     }
     p {
-      font-size: 
+      font-size: 14px;
+      color: #57534e;
+      line-height: 1.5;
+    }
+    .btn-group {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: #ea580c;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: #292524;
+      color: #fde047;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    /* Holy Trio Grid */
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .pillar-card {
+      background: #ffffff;
+      padding: 18px 14px;
+      border-radius: 10px;
+      border: 1px solid #e7e5e4;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .pillar-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 12px;
+      display: block;
+      border: 3px solid #ea580c;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
+      background-color: #f5f5f4;
+    }
+    /* Forms */
+    .form-group {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      color: #44403c;
+      margin-bottom: 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #d6d3d1;
+      font-size: 14px;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #e7e5e4;
+      text-align: left;
+    }
+    th {
+      background: #f5f5f4;
+      color: #44403c;
+    }
+    .status-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      background: #ffedd5;
+      color: #9a3412;
+    }
+    .link-action {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #9a3412;
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    /* Footer */
+    footer {
+      background: #1c1917;
+      color: #a8a29e;
+      padding: 18px 16px;
+      text-align: center;
+      font-size: 12px;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="header-inner">
+      <div class="brand" onclick="navigateTo('home')">
+        <div class="om-badge">ॐ</div>
+        <div>
+          <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION</div>
+          <div style="font-size:11px; color:#fed7aa;">Ashrama, Jhargram - 721507</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:6px;">
+        <button class="nav-btn" onclick="navigateTo('home')">Home</button>
+        <button class="nav-btn" onclick="navigateTo('candidateLogin')">Candidate</button>
+        <button class="nav-btn nav-btn-admin" onclick="navigateTo('adminLogin')">Admin</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. HOME / LANDING SECTION -->
+    <section id="sec-home" class="page-section active">
+      <div class="card hero-card">
+        <span class="badge">Academic Session 2026-2027</span>
+        <h2>Scholarship Management Portal</h2>
+        <p>Ramakrishna Mission Ashrama, Jhargram provides institutional scholarships to deserving and meritorious students to support higher education and holistic value-based learning.</p>
+        <div class="btn-group">
+          <button class="btn-primary" onclick="navigateTo('candidateLogin')">Candidate Portal</button>
+          <button class="btn-secondary" onclick="navigateTo('adminLogin')">Admin Login</button>
+        </div>
+      </div>
+
+      <!-- Holy Trio Cards with Authentic Quotes -->
+      <div class="pillar-grid">
+        <!-- Sri Ramakrishna -->
+        <div class="pillar-card">
+          <img 
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ramakrishna.jpg/480px-Ramakrishna.jpg" 
+            alt="Sri Ramakrishna Paramahamsa" 
+            class="pillar-img"
+          >
+          <strong style="font-size:14px; color:#1c1917; display:block;">Sri Ramakrishna</strong>
+          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#78350f;">
+            "As many faiths, so many paths to truth."
+          </p>
+        </div>
+
+        <!-- Sri Sarada Devi -->
+        <div class="pillar-card">
+          <img 
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Holy_Mother_Sarada_Devi.jpg/480px-Holy_Mother_Sarada_Devi.jpg" 
+            alt="Sri Sarada Devi" 
+            class="pillar-img"
+            style="border-color:#b91c1c;"
+          >
+          <strong style="font-size:14px; color:#1c1917; display:block;">Sri Sarada Devi</strong>
+          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#991b1b;">
+            "If you want peace of mind, do not find fault with others. Rather learn to see your own faults."
+          </p>
+        </div>
+
+        <!-- Swami Vivekananda -->
+        <div class="pillar-card">
+          <img 
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Swami_Vivekananda_1893_Scanned_image.jpg/480px-Swami_Vivekananda_1893_Scanned_image.jpg" 
+            alt="Swami Vivekananda" 
+            class="pillar-img"
+            style="border-color:#d97706;"
+          >
+          <strong style="font-size:14px; color:#1c1917; display:block;">Swami Vivekananda</strong>
+          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#92400e;">
+            "Education is the manifestation of the perfection already in man."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ADMIN LOGIN SECTION -->
+    <section id="sec-adminLogin" class="page-section">
+      <div class="card" style="max-width:400px; margin:0 auto;">
+        <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only</p>
+
+        <div class="form-group">
+          <label>Select Administrator Profile</label>
+          <select id="adminDropdown" onchange="applyAdminPreset(this.value)">
+            <option value="">-- Choose Profile --</option>
+            <option value="Secretary@RKMAJGM">Secretary Maharaj (Secretary@RKMAJGM)</option>
+            <option value="SBMAHARAJ@RKMAJGM">Swami Brahmeshwarananda (SBMAHARAJ@RKMAJGM)</option>
+            <option value="DEOSCH@RKMAJGM">Data Entry Operator (DEOSCH@RKMAJGM)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Admin ID</label>
+          <input type="text" id="adminIdField" placeholder="Enter Admin ID" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <!-- Password field is strictly empty by default -->
+          <input type="password" id="adminPassField" placeholder="Enter Secret Password" autocomplete="new-password">
+        </div>
+
+        <button class="submit-btn" style="background:#1c1917; color:#fde047;" onclick="executeAdminAuth()">
+          Login to Console
+        </button>
+
+        <div style="text-align:center;">
+          <span class="link-action" onclick="navigateTo('changePassword')">Need to Change Password? Click Here</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. CHANGE PASSWORD SECTION -->
+    <section id="sec-changePassword" class="page-section">
+      <div class="card" style="max-width:400px; margin:0 auto;">
+        <h2 style="text-align:center; font-size:18px;">Change Admin Password</h2>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Update your personal administrator access key</p>
+
+        <div class="form-group">
+          <label>Admin ID</label>
+          <input type="text" id="cpAdminId" placeholder="e.g. Secretary@RKMAJGM">
+        </div>
+
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" id="cpOldPass" placeholder="Enter current password">
+        </div>
+
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="cpNewPass" placeholder="Enter new strong password">
+        </div>
+
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="cpConfirmPass" placeholder="Re-enter new password">
+        </div>
+
+        <button class="submit-btn" style="background:#9a3412; color:#ffffff;" onclick="executePasswordChange()">
+          Save New Password
+        </button>
+
+        <div style="text-align:center; margin-top:10px;">
+          <span class="link-action" onclick="navigateTo('adminLogin')">Back to Login</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. CANDIDATE LOGIN SECTION -->
+    <section id="sec-candidateLogin" class="page-section">
+      <div class="card" style="max-width:400px; margin:0 auto;">
+        <h2 style="text-align:center; font-size:18px;">Candidate Portal</h2>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Use credentials provided by RKMA Jhargram</p>
+
+        <div class="form-group">
+          <label>Candidate ID</label>
+          <input type="text" id="candIdField" placeholder="e.g. RKM-2026-001">
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="candPassField" placeholder="Enter Password">
+        </div>
+
+        <button class="submit-btn" style="background:#ea580c; color:#ffffff;" onclick="executeCandidateAuth()">
+          Login to Portal
+        </button>
+      </div>
+    </section>
+
+    <!-- 5. ADMIN DASHBOARD -->
+    <section id="sec-adminDashboard" class="page-section">
+      <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL CONSOLE</span>
+          <h2 id="activeAdminTitle" style="font-size:16px; margin-top:4px;">Administrator</h2>
+          <p id="activeAdminIdText" style="font-size:11px; color:#78716c;"></p>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button onclick="navigateTo('changePassword')" class="nav-btn" style="background:#44403c; border:none;">Change Password</button>
+          <button onclick="navigateTo('home')" class="nav-btn" style="background:#ef4444; border:none;">Logout</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Scholarship Applications (2026-2027)</h3>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>App No</th>
+                <th>Candidate Name</th>
+                <th>Course</th>
+                <th>Marks %</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>RKM-2026-01</strong></td>
+                <td>Sourav Mahato<br><span style="color:#78716c; font-size:10px;">ID: RKM-2026-001</span></td>
+                <td>B.Sc Mathematics</td>
+                <td>89.4%</td>
+                <td><span class="status-tag">Under Verification</span></td>
+                <td><button style="padding:4px 8px; font-size:11px; border-radius:4px; background:#292524; color:#fff; cursor:pointer;" onclick="alert('Applicant: Sourav Mahato\nStatus: Under Verification\nRemarks: Verification in progress by RKMA Jhargram Office')">Review</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. CANDIDATE DASHBOARD -->
+    <section id="sec-candidateDashboard" class="page-section">
+      <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2>Welcome, Sourav Mahato</h2>
+          <p>Candidate ID: RKM-2026-001</p>
+        </div>
+        <button onclick="navigateTo('home')" class="nav-btn" style="background:#78716c; border:none;">Logout</button>
+      </div>
+
+      <div class="card">
+        <h3>Application Status (App No: RKM-2026-01)</h3>
+        <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+          <div style="padding:10px; background:#dcfce7; border-left:4px solid #16a34a; border-radius:4px; font-size:13px;">
+            <strong>Stage 1: Submitted</strong> - Completed on 02 Oct 2026
+          </div>
+          <div style="padding:10px; background:#ffedd5; border-left:4px solid #ea580c; border-radius:4px; font-size:13px; font-weight:bold;">
+            Stage 2: Under Verification - Currently under scrutiny by RKMA Office
+          </div>
+          <div style="padding:10px; background:#f5f5f4; border-left:4px solid #d6d3d1; border-radius:4px; font-size:13px; color:#a8a29e;">
+            Stage 3: Approved
+          </div>
+          <div style="padding:10px; background:#f5f5f4; border-left:4px solid #d6d3d1; border-radius:4px; font-size:13px; color:#a8a29e;">
+            Stage 4: Amount Disbursed
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Institutional Footer -->
+  <footer>
+    <strong>Ramakrishna Mission Ashrama, Jhargram</strong><br>
+    P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India<br>
+    © 2026 Ramakrishna Mission Ashrama, Jhargram. All Rights Reserved.
+  </footer>
+
+  <script>
+    // Initial Master Passwords (Default Fallback)
+    const DEFAULT_PASSWORDS = {
+      'Secretary@RKMAJGM': 'RKMAJGM@Scholarship',
+      'SBMAHARAJ@RKMAJGM': 'RKMAJGM@Scholarship',
+      'DEOSCH@RKMAJGM': 'RKMAJGM@Scholarship'
+    };
+
+    // Retrieve active password (from local storage or default)
+    function getStoredPassword(adminId) {
+      const savedPass = localStorage.getItem('pwd_' + adminId);
+      return savedPass ? savedPass : DEFAULT_PASSWORDS[adminId];
+    }
+
+    // Save newly updated password
+    function setStoredPassword(adminId, newPass) {
+      localStorage.setItem('pwd_' + adminId, newPass);
+    }
+
+    // Tab Navigation Switcher
+    function navigateTo(sectionId) {
+      const sections = document.querySelectorAll('.page-section');
+      sections.forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById('sec-' + sectionId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo(0, 0);
+      }
+    }
+
+    // Auto-fill selected ID while strictly keeping the password field blank
+    function applyAdminPreset(id) {
+      if (!id) return;
+      document.getElementById('adminIdField').value = id;
+      document.getElementById('adminPassField').value = ''; // Strictly blank
+      document.getElementById('adminPassField').focus();
+    }
+
+    // Execute Admin Login
+    function executeAdminAuth() {
+      const id = document.getElementById('adminIdField').value.trim();
+      const pass = document.getElementById('adminPassField').value.trim();
+
+      const adminProfiles = {
+        'Secretary@RKMAJGM': 'SECRETARY, RKMA JHARGRAM',
+        'SBMAHARAJ@RKMAJGM': 'SWAMI BRAHMESHWARANANDA, RKMA JHARGRAM',
+        'DEOSCH@RKMAJGM': 'Data Entry Operator, RKMA JHARGRAM'
+      };
+
+      if (!id || !pass) {
+        alert('Both Admin ID and Password are required!');
+        return;
+      }
+
+      if (adminProfiles[id] && pass === getStoredPassword(id)) {
+        document.getElementById('activeAdminTitle').innerText = adminProfiles[id];
+        document.getElementById('activeAdminIdText').innerText = 'Logged ID: ' + id;
+        document.getElementById('adminPassField').value = ''; // Clear for security
+        navigateTo('adminDashboard');
+      } else {
+        alert('Invalid Admin ID or Password! Please verify and enter the correct credentials.');
+      }
+    }
+
+    // Execute Password Change
+    function executePasswordChange() {
+      const id = document.getElementById('cpAdminId').value.trim();
+      const oldPass = document.getElementById('cpOldPass').value.trim();
+      const newPass = document.getElementById('cpNewPass').value.trim();
+      const confirmPass = document.getElementById('cpConfirmPass').value.trim();
+
+      if (!id || !oldPass || !newPass || !confirmPass) {
+        alert('All fields are mandatory!');
+        return;
+      }
+
+      if (oldPass !== getStoredPassword(id)) {
+        alert('Current password entered is incorrect!');
+        return;
+      }
+
+      if (newPass.length < 6) {
+        alert('New password must be at least 6 characters long!');
+        return;
+      }
+
+      if (newPass !== confirmPass) {
+        alert('New Password and Confirm Password do not match!');
+        return;
+      }
+
+      // Save to device storage
+      setStoredPassword(id, newPass);
       
