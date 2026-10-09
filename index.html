@@ -179,7 +179,8 @@
       font-size: 14px;
       cursor: pointer;
     }
-    /* Holy Trio Frames */
+
+    /* Holy Trio Rectangular Frames */
     .pillar-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -210,12 +211,46 @@
       object-position: center top;
       display: block;
     }
-    /* Multi-step Form */
+
+    /* Downloads Grid */
+    .downloads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .download-item {
+      border: 1px solid #e7e5e4;
+      border-radius: 8px;
+      padding: 14px;
+      background: #fafaf9;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .download-item h4 {
+      font-size: 13px;
+      color: #1c1917;
+      margin-bottom: 8px;
+    }
+    .download-link {
+      display: inline-block;
+      text-align: center;
+      background: #9a3412;
+      color: #fff;
+      text-decoration: none;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+    /* Stepper */
     .stepper {
       display: flex;
       justify-content: space-between;
       margin-bottom: 24px;
-      position: relative;
       border-bottom: 2px solid #e7e5e4;
       padding-bottom: 12px;
     }
@@ -226,26 +261,17 @@
       color: #a8a29e;
       flex: 1;
     }
-    .step-item.active {
-      color: #ea580c;
-    }
-    .step-item.completed {
-      color: #16a34a;
-    }
-    .form-step {
-      display: none;
-    }
-    .form-step.active {
-      display: block;
-    }
+    .step-item.active { color: #ea580c; }
+    .step-item.completed { color: #16a34a; }
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 14px;
     }
-    .form-group {
-      margin-bottom: 12px;
-    }
+    .form-group { margin-bottom: 12px; }
     label {
       display: block;
       font-size: 12px;
@@ -266,7 +292,6 @@
       margin-top: 24px;
       gap: 10px;
     }
-    /* Captcha box */
     .captcha-box {
       background: #f5f5f4;
       border: 1px dashed #78716c;
@@ -279,6 +304,7 @@
       user-select: none;
       display: inline-block;
     }
+
     /* Table */
     table {
       width: 100%;
@@ -301,7 +327,7 @@
       flex-wrap: wrap;
     }
     .action-btn {
-      padding: 4px 8px;
+      padding: 5px 8px;
       font-size: 11px;
       border-radius: 4px;
       border: none;
@@ -309,6 +335,7 @@
       font-weight: 600;
     }
     .btn-pdf { background: #0284c7; color: #fff; }
+    .btn-word { background: #2563eb; color: #fff; }
     .btn-delete { background: #dc2626; color: #fff; }
     .btn-excel {
       background: #15803d;
@@ -320,6 +347,7 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     footer {
       background: #1c1917;
       color: #a8a29e;
@@ -328,6 +356,7 @@
       font-size: 12px;
       margin-top: auto;
     }
+
     @media print {
       body * { visibility: hidden; }
       #printableApplication, #printableApplication * { visibility: visible; }
@@ -371,6 +400,7 @@
         </div>
       </div>
 
+      <!-- Holy Trio Frames -->
       <div class="pillar-grid">
         <div class="pillar-card">
           <div class="pillar-img-frame" style="border-color: #ea580c;">
@@ -396,32 +426,87 @@
           <p style="font-size:12px; margin-top:6px; font-style:italic; color:#92400e;">"Education is the manifestation of the perfection already in man."</p>
         </div>
       </div>
+
+      <!-- Downloads Window / Section -->
+      <div class="card" style="margin-top:20px; border-left: 5px solid #0284c7;">
+        <h3 style="color:#0369a1; font-size:16px;">Institutional Downloads & Formats</h3>
+        <p style="font-size:13px; color:#57534e; margin-top:4px;">Download official prescribed formats and prayer forms required for scholarship documentation:</p>
+        
+        <div class="downloads-grid">
+          <div class="download-item">
+            <div>
+              <h4>1. Belur Math Application Prayer</h4>
+              <p style="font-size:11px; color:#78716c;">Prescribed prayer format of Belur Math Headquarters.</p>
+            </div>
+            <a href="https://drive.google.com/file/d/1OAOoBDEUNUjGMIzM_eJfZwqKKl3ir8c2/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="download-link">📥 Download Document</a>
+          </div>
+
+          <div class="download-item">
+            <div>
+              <h4>2. RKMA JGM Application Prayer</h4>
+              <p style="font-size:11px; color:#78716c;">Official scholarship prayer format of RKMA Jhargram.</p>
+            </div>
+            <a href="https://drive.google.com/file/d/1Xkx7_5_eBTK0WDMprzcSBTV6gvKUUnkq/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="download-link">📥 Download Document</a>
+          </div>
+
+          <div class="download-item">
+            <div>
+              <h4>3. Income Certificate Format</h4>
+              <p style="font-size:11px; color:#78716c;">Prescribed family annual income certificate declaration format.</p>
+            </div>
+            <a href="https://drive.google.com/file/d/1xfcT9sT9MvJ9XqR964lbM5UwdBP8wi1J/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="download-link">📥 Download Document</a>
+          </div>
+
+          <div class="download-item">
+            <div>
+              <h4>4. Bonafide Certificate Format</h4>
+              <p style="font-size:11px; color:#78716c;">Institution bonafide student endorsement certificate format.</p>
+            </div>
+            <a href="https://drive.google.com/file/d/12iYWXTnUAfcY1KE-i8yX3H6Aq7jJr0sF/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="download-link">📥 Download Document</a>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- 2. ADMIN LOGIN -->
+    <!-- 2. ADMIN LOGIN WITH OTP -->
     <section id="sec-adminLogin" class="page-section">
-      <div class="card" style="max-width:400px; margin:0 auto;">
+      <div class="card" style="max-width:420px; margin:0 auto;">
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only</p>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only (Mobile OTP Secured)</p>
 
-        <div class="form-group">
-          <label>Select Administrator Name</label>
-          <select id="adminDropdown">
-            <option value="">-- Select Authority Name --</option>
-            <option value="Secretary Maharaj">Secretary Maharaj, RKMA Jhargram</option>
-            <option value="Swami Brahmeshwarananda">Swami Brahmeshwarananda, RKMA Jhargram</option>
-            <option value="Data Entry Operator">Data Entry Operator, RKMA Jhargram</option>
-          </select>
+        <!-- Credentials Step -->
+        <div id="adminCredBox">
+          <div class="form-group">
+            <label>Select Authorized Officer</label>
+            <select id="adminDropdown">
+              <option value="">-- Choose Profile --</option>
+              <option value="Secretary@RKMAJGM">Secretary Maharaj, RKMA Jhargram</option>
+              <option value="SBMaharaj@RKMAJGM">Swami Brahmeshwarananda, RKMA Jhargram</option>
+              <option value="DEO@RKMAJGM">Data Entry Operator, RKMA Jhargram</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="adminPassField" placeholder="Enter Password" autocomplete="new-password">
+          </div>
+
+          <button class="submit-btn" style="background:#1c1917; color:#fde047;" onclick="requestAdminLoginOTP()">
+            Send OTP to Mobile
+          </button>
         </div>
 
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="adminPassField" placeholder="Enter Password" autocomplete="new-password">
+        <!-- OTP Step -->
+        <div id="adminOtpBox" style="display:none; margin-top:14px; border-top:1px dashed #d6d3d1; padding-top:14px;">
+          <p id="adminOtpNotice" style="font-size:12px; color:#15803d; font-weight:bold; margin-bottom:8px;"></p>
+          <div class="form-group">
+            <label>Enter 6-Digit OTP</label>
+            <input type="text" id="adminOtpInput" placeholder="Enter OTP">
+          </div>
+          <button class="submit-btn" style="background:#15803d; color:#ffffff;" onclick="verifyAdminLoginOTP()">
+            Verify OTP & Login
+          </button>
         </div>
-
-        <button class="submit-btn" style="background:#1c1917; color:#fde047;" onclick="executeAdminAuth()">
-          Login to Console
-        </button>
       </div>
     </section>
 
@@ -429,7 +514,7 @@
     <section id="sec-candidateLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:0 auto;">
         <h2 style="text-align:center; font-size:18px;">Candidate Portal</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Step 1: Verify Credentials | Step 2: Mobile OTP</p>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Step 1: ID & Password | Step 2: Mobile OTP</p>
 
         <div id="candCredBox">
           <div class="form-group">
@@ -489,7 +574,6 @@
           <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Dashboard</button>
         </div>
 
-        <!-- Stepper Indicator -->
         <div class="stepper">
           <div class="step-item active" id="stepIndicator1">1. Personal</div>
           <div class="step-item" id="stepIndicator2">2. Parents</div>
@@ -709,7 +793,7 @@
             </div>
           </div>
 
-          <!-- STEP 6: Document Upload (Back / Submit Application) -->
+          <!-- STEP 6: Document Upload (Back / Submit) -->
           <div class="form-step" id="formStep6">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Documents Upload</h4>
             <div class="form-grid">
@@ -739,7 +823,6 @@
               </div>
             </div>
 
-            <!-- Preview Modal Trigger & Verification Section -->
             <div style="background:#fffbeb; border:1px solid #fef3c7; padding:14px; border-radius:8px; margin-top:16px;">
               <h5 style="color:#b45309; margin-bottom:8px;">Final Verification & Security Check</h5>
               
@@ -792,25 +875,61 @@
         <div>
           <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL CONSOLE</span>
           <h2 id="activeAdminTitle" style="font-size:16px; margin-top:4px;">Administrator</h2>
+          <p id="activeAdminContact" style="font-size:12px; color:#78716c;"></p>
         </div>
         <button onclick="navigateTo('home')" class="nav-btn" style="background:#ef4444; border:none;">Logout</button>
       </div>
 
-      <!-- Admin creates Candidate ID & Password -->
-      <div class="card" style="border-left: 5px solid #ea580c;">
-        <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Generate Candidate Credentials (Name & Phone Only)</h3>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
-          <div class="form-group">
-            <label>Candidate Full Name</label>
-            <input type="text" id="genCandName" placeholder="Enter Full Name">
+      <!-- Update Admin Mobile & Email (OTP Secured) -->
+      <div class="card" style="border-left: 5px solid #0284c7;">
+        <h3 style="font-size:15px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
+        <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Security Protocol: An OTP will be sent to your current mobile number before updating.</p>
+        
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+          <div>
+            <label>New Mobile Number</label>
+            <input type="tel" id="updNewMobile" placeholder="10-digit Mobile">
           </div>
-          <div class="form-group">
+          <div>
+            <label>New Email Address</label>
+            <input type="email" id="updNewEmail" placeholder="Official Email">
+          </div>
+          <div>
+            <label>Current Mobile OTP</label>
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="adminProfileOtpInput" placeholder="Enter OTP">
+              <button type="button" class="btn-primary" style="padding:6px 12px; font-size:12px;" onclick="sendAdminProfileUpdateOTP()">Send OTP</button>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+          <button class="btn-primary" style="background:#0284c7;" onclick="executeAdminProfileUpdate()">Verify & Save Changes</button>
+        </div>
+      </div>
+
+      <!-- Admin creates Candidate Credentials (Custom ID & Password) -->
+      <div class="card" style="border-left: 5px solid #ea580c;">
+        <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Create Candidate Credentials (ID & Password by Admin)</h3>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+          <div>
+            <label>Candidate Full Name</label>
+            <input type="text" id="genCandName" placeholder="Full Name">
+          </div>
+          <div>
             <label>Candidate Mobile Number</label>
             <input type="tel" id="genCandMobile" placeholder="10-digit Mobile">
           </div>
+          <div>
+            <label>Assign Candidate ID</label>
+            <input type="text" id="genCandId" placeholder="e.g. RKM-2026-002">
+          </div>
+          <div>
+            <label>Assign Password</label>
+            <input type="text" id="genCandPass" placeholder="e.g. Student@2026">
+          </div>
         </div>
-        <div style="margin-top:8px; display:flex; justify-content:flex-end;">
-          <button class="btn-primary" onclick="adminGenerateCredentials()">Generate & Save Credentials</button>
+        <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+          <button class="btn-primary" onclick="adminCreateCustomCandidate()">Create Candidate Account</button>
         </div>
       </div>
 
@@ -839,7 +958,7 @@
       </div>
     </section>
 
-    <!-- Application Preview Modal -->
+    <!-- Preview Modal -->
     <div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:200; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Preview Scholarship Application</h3>
@@ -850,7 +969,7 @@
       </div>
     </div>
 
-    <!-- Official Printable Format for PDF -->
+    <!-- Printable Template (PDF) -->
     <div id="printableApplication" style="display:none; padding:30px; font-family:serif; background:#fff;">
       <div style="text-align:center; border-bottom:2px solid #7f1d1d; padding-bottom:12px; margin-bottom:20px;">
         <h2 style="color:#7f1d1d; margin-bottom:4px;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
@@ -879,20 +998,47 @@
   </footer>
 
   <script>
-    // Storage Initializer
+    // Storage & State Initialization
     let applications = JSON.parse(localStorage.getItem('rkm_apps') || '[]');
     let candidates = JSON.parse(localStorage.getItem('rkm_cand_db') || 'null') || {
       'RKM-2026-001': { name: 'Sourav Mahato', mobile: '9876543210', pass: 'RKMA@2026' }
     };
 
+    // 3 Designated Admins with Contact Details
+    let admins = JSON.parse(localStorage.getItem('rkm_admins_db') || 'null') || {
+      'Secretary@RKMAJGM': {
+        name: 'Secretary Maharaj, RKMA Jhargram',
+        mobile: '9007085285',
+        pass: 'RKMA@jgm2026',
+        email: 'jhargram@rkmm.org'
+      },
+      'SBMaharaj@RKMAJGM': {
+        name: 'Swami Brahmeshwarananda, RKMA Jhargram',
+        mobile: '8509317275',
+        pass: 'RKMA@jgm2026',
+        email: 'brahmeshwarananda@gmail.com'
+      },
+      'DEO@RKMAJGM': {
+        name: 'Data Entry Operator',
+        mobile: '9339423401',
+        pass: 'RKMA@jgm2026',
+        email: 'rkma.jgm.scholarship@gmail.com'
+      }
+    };
+
+    let activeAdminId = null;
+    let pendingAdminLoginOtp = null;
+    let pendingAdminProfileOtp = null;
+
     let activeCandidateId = null;
-    let pendingLoginOtp = null;
+    let pendingCandidateLoginOtp = null;
     let pendingSubmitOtp = null;
     let currentGeneratedCaptcha = '';
 
     function saveState() {
       localStorage.setItem('rkm_apps', JSON.stringify(applications));
       localStorage.setItem('rkm_cand_db', JSON.stringify(candidates));
+      localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
     }
 
     function navigateTo(sectionId) {
@@ -904,46 +1050,122 @@
       }
     }
 
-    // Admin Auth
-    function executeAdminAuth() {
-      const selectedName = document.getElementById('adminDropdown').value;
+    // Admin Auth Step 1: Password Check & Request OTP
+    function requestAdminLoginOTP() {
+      const selectedId = document.getElementById('adminDropdown').value;
       const pass = document.getElementById('adminPassField').value.trim();
 
-      if (!selectedName || !pass) {
-        alert('অনুগ্রহ করে অ্যাডমিন নির্বাচন করুন এবং পাসওয়ার্ড দিন!');
+      if (!selectedId || !pass) {
+        alert('Please select an Administrator profile and enter the password!');
         return;
       }
-      if (pass === 'RKMAJGM@Scholarship') {
-        document.getElementById('activeAdminTitle').innerText = selectedName;
-        document.getElementById('adminPassField').value = '';
-        renderAdminTable();
-        navigateTo('adminDashboard');
+
+      const admin = admins[selectedId];
+      if (admin && admin.pass === pass) {
+        activeAdminId = selectedId;
+        pendingAdminLoginOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        const masked = admin.mobile.slice(0, 2) + 'XXXXXX' + admin.mobile.slice(-2);
+
+        document.getElementById('adminCredBox').style.display = 'none';
+        document.getElementById('adminOtpBox').style.display = 'block';
+        document.getElementById('adminOtpNotice').innerText = `OTP has been sent to ${masked}. (Demo OTP: ${pendingAdminLoginOtp})`;
       } else {
-        alert('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড প্রদান করুন।');
+        alert('Invalid Password! Please enter the correct password.');
       }
     }
 
-    // Admin: Generate ID & Password using Name and Phone only
-    function adminGenerateCredentials() {
-      const name = document.getElementById('genCandName').value.trim();
-      const mobile = document.getElementById('genCandMobile').value.trim();
+    // Admin Auth Step 2: Verify OTP
+    function verifyAdminLoginOTP() {
+      const otpInput = document.getElementById('adminOtpInput').value.trim();
 
-      if (!name || mobile.length !== 10) {
-        alert('সঠিক পুরো নাম এবং ১০ সংখ্যার মোবাইল নম্বর দিন!');
+      if (otpInput === pendingAdminLoginOtp) {
+        const admin = admins[activeAdminId];
+        document.getElementById('activeAdminTitle').innerText = admin.name;
+        document.getElementById('activeAdminContact').innerText = `Mobile: ${admin.mobile} | Email: ${admin.email}`;
+
+        // Reset
+        document.getElementById('adminCredBox').style.display = 'block';
+        document.getElementById('adminOtpBox').style.display = 'none';
+        document.getElementById('adminPassField').value = '';
+        document.getElementById('adminOtpInput').value = '';
+
+        renderAdminTable();
+        navigateTo('adminDashboard');
+      } else {
+        alert('Invalid OTP! Please enter the correct OTP.');
+      }
+    }
+
+    // Admin: Send Profile Update OTP
+    function sendAdminProfileUpdateOTP() {
+      if (!activeAdminId) return;
+      const admin = admins[activeAdminId];
+      pendingAdminProfileOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      alert(`Profile update OTP sent to registered mobile ${admin.mobile}.\n\n(Demo OTP: ${pendingAdminProfileOtp})`);
+    }
+
+    // Admin: Execute Profile Update (Mobile / Email)
+    function executeAdminProfileUpdate() {
+      const newMobile = document.getElementById('updNewMobile').value.trim();
+      const newEmail = document.getElementById('updNewEmail').value.trim();
+      const otp = document.getElementById('adminProfileOtpInput').value.trim();
+
+      if (!newMobile && !newEmail) {
+        alert('Please provide a new Mobile Number or Email Address!');
+        return;
+      }
+      if (!pendingAdminProfileOtp || otp !== pendingAdminProfileOtp) {
+        alert('Invalid OTP! Click "Send OTP" and enter the verification code.');
         return;
       }
 
-      const count = Object.keys(candidates).length + 1;
-      const newId = 'RKM-2026-' + String(count).padStart(3, '0');
-      const newPass = 'RKMA@' + Math.floor(1000 + Math.random() * 9000);
+      if (newMobile) {
+        if (newMobile.length !== 10) {
+          alert('Mobile Number must be exactly 10 digits!');
+          return;
+        }
+        admins[activeAdminId].mobile = newMobile;
+      }
+      if (newEmail) {
+        admins[activeAdminId].email = newEmail;
+      }
 
-      candidates[newId] = { name: name, mobile: mobile, pass: newPass };
+      saveState();
+      alert('Administrator profile updated successfully!');
+      document.getElementById('activeAdminContact').innerText = `Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
+
+      document.getElementById('updNewMobile').value = '';
+      document.getElementById('updNewEmail').value = '';
+      document.getElementById('adminProfileOtpInput').value = '';
+      pendingAdminProfileOtp = null;
+    }
+
+    // Admin: Create Candidate Account (Custom ID & Password by Admin)
+    function adminCreateCustomCandidate() {
+      const name = document.getElementById('genCandName').value.trim();
+      const mobile = document.getElementById('genCandMobile').value.trim();
+      const id = document.getElementById('genCandId').value.trim();
+      const pass = document.getElementById('genCandPass').value.trim();
+
+      if (!name || mobile.length !== 10 || !id || !pass) {
+        alert('All fields are mandatory (including a valid 10-digit mobile number)!');
+        return;
+      }
+
+      if (candidates[id]) {
+        alert('This Candidate ID is already assigned! Please provide a unique ID.');
+        return;
+      }
+
+      candidates[id] = { name: name, mobile: mobile, pass: pass };
       saveState();
 
-      alert(`ক্যান্ডিডেট একাউন্ট তৈরি সম্পন্ন!\n\nCandidate Name: ${name}\nMobile: ${mobile}\nCandidate ID: ${newId}\nPassword: ${newPass}`);
+      alert(`Candidate Account Created Successfully!\n\nCandidate Name: ${name}\nMobile: ${mobile}\nCandidate ID: ${id}\nPassword: ${pass}`);
 
       document.getElementById('genCandName').value = '';
       document.getElementById('genCandMobile').value = '';
+      document.getElementById('genCandId').value = '';
+      document.getElementById('genCandPass').value = '';
     }
 
     // Candidate Auth Step 1: Request OTP
@@ -952,17 +1174,17 @@
       const pass = document.getElementById('candPassField').value.trim();
 
       if (!candidates[id] || candidates[id].pass !== pass) {
-        alert('ভুল Candidate ID অথবা Password!');
+        alert('Invalid Candidate ID or Password!');
         return;
       }
 
-      pendingLoginOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      pendingCandidateLoginOtp = Math.floor(100000 + Math.random() * 900000).toString();
       const cand = candidates[id];
       const maskedPhone = cand.mobile.slice(0, 2) + 'XXXXXX' + cand.mobile.slice(-2);
 
       document.getElementById('candCredBox').style.display = 'none';
       document.getElementById('candOtpBox').style.display = 'block';
-      document.getElementById('candOtpNotice').innerText = `OTP পাঠানো হয়েছে ${maskedPhone} নম্বরে। (ডেমো OTP: ${pendingLoginOtp})`;
+      document.getElementById('candOtpNotice').innerText = `OTP has been sent to ${maskedPhone}. (Demo OTP: ${pendingCandidateLoginOtp})`;
       activeCandidateId = id;
     }
 
@@ -970,7 +1192,7 @@
     function verifyCandidateLoginOTP() {
       const otpInput = document.getElementById('candLoginOtpInput').value.trim();
 
-      if (otpInput === pendingLoginOtp) {
+      if (otpInput === pendingCandidateLoginOtp) {
         const cand = candidates[activeCandidateId];
         document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
         document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + activeCandidateId + ' | Mobile: ' + cand.mobile;
@@ -984,7 +1206,7 @@
 
         navigateTo('candidateDashboard');
       } else {
-        alert('ভুল OTP! সঠিক OTP প্রদান করুন।');
+        alert('Invalid OTP! Please enter the correct code.');
       }
     }
 
@@ -1003,7 +1225,7 @@
       const box = document.getElementById('trackTimelineBox');
 
       if (!existing) {
-        box.innerHTML = `<div style="padding:14px; background:#fff7ed; border-radius:6px; font-size:13px; color:#c2410c;">আপনি এখনো কোনো আবেদনপত্র সাবমিট করেননি। Continue Application অপশনে গিয়ে ফর্ম পূরণ করুন।</div>`;
+        box.innerHTML = `<div style="padding:14px; background:#fff7ed; border-radius:6px; font-size:13px; color:#c2410c;">You have not submitted an application yet. Click "Continue Application" to proceed.</div>`;
       } else {
         box.innerHTML = `
           <div style="padding:10px; background:#dcfce7; border-left:4px solid #16a34a; border-radius:4px; font-size:13px;">
@@ -1037,7 +1259,6 @@
       window.scrollTo(0, 100);
     }
 
-    // Auto-calculate Percentage
     function calculatePercentage() {
       const full = parseFloat(document.getElementById('f_fullmarks').value);
       const obt = parseFloat(document.getElementById('f_marksobtained').value);
@@ -1047,7 +1268,6 @@
       }
     }
 
-    // Captcha Generator
     function refreshCaptcha() {
       const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
       let result = '';
@@ -1058,14 +1278,12 @@
       document.getElementById('captchaDisplay').innerText = result;
     }
 
-    // Final OTP
     function sendFinalSubmitOTP() {
       const cand = candidates[activeCandidateId];
       pendingSubmitOtp = Math.floor(1000 + Math.random() * 9000).toString();
-      alert(`মোবাইল OTP পাঠানো হয়েছে ${cand.mobile} নম্বরে।\n\n(ডেমো OTP: ${pendingSubmitOtp})`);
+      alert(`Mobile OTP sent to ${cand.mobile}.\n\n(Demo OTP: ${pendingSubmitOtp})`);
     }
 
-    // Preview Application Modal
     function openPreviewModal() {
       const body = document.getElementById('previewDetailsArea');
       body.innerHTML = `
@@ -1082,18 +1300,18 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
-    // Final Application Submission with Captcha & OTP Verification
+    // Final Application Submit
     function executeFinalApplicationSubmit() {
       const captchaInput = document.getElementById('f_captchaInput').value.trim();
       const otpInput = document.getElementById('f_submitOtpInput').value.trim();
 
       if (captchaInput.toUpperCase() !== currentGeneratedCaptcha) {
-        alert('ভুল ক্যাপচা কোড! পুনরায় সঠিক ক্যাপচা দিন।');
+        alert('Invalid Captcha code! Please enter the correct captcha.');
         return;
       }
 
       if (!pendingSubmitOtp || otpInput !== pendingSubmitOtp) {
-        alert('ভুল মোবাইল OTP! অনুগ্রহ করে Send OTP বাটনে ক্লিক করে সঠিক OTP দিন।');
+        alert('Invalid Mobile OTP! Please click "Send OTP" and enter the verification code.');
         return;
       }
 
@@ -1138,7 +1356,7 @@
       applications.push(record);
       saveState();
 
-      alert(`অভিনন্দন! আপনার আবেদন সফলভাবে জমা হয়েছে।\n\nApplication No: ${newAppNo}\nStatus: Submitted`);
+      alert(`Application Submitted Successfully!\n\nApplication No: ${newAppNo}\nStatus: Submitted`);
       navigateTo('candidateDashboard');
     }
 
@@ -1159,6 +1377,7 @@
           <td>
             <div class="action-btn-group">
               <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
+              <button class="action-btn btn-word" onclick="downloadApplicationWord(${index})">Word</button>
               <button class="action-btn btn-delete" onclick="deleteApplication(${index})">Delete</button>
             </div>
           </td>
@@ -1167,18 +1386,17 @@
       });
     }
 
-    // Delete Application
     function deleteApplication(index) {
       const item = applications[index];
-      if (confirm(`আপনি কি নিশ্চিত যে অ্যাপ্লিকেশন "${item.appNo}" (${item.name}) ডিলিট করতে চান?`)) {
+      if (confirm(`Are you sure you want to delete application "${item.appNo}" for ${item.name}? This action cannot be undone.`)) {
         applications.splice(index, 1);
         saveState();
         renderAdminTable();
-        alert('অ্যাপ্লিকেশন সফলভাবে মুছে ফেলা হয়েছে।');
+        alert('Application deleted successfully.');
       }
     }
 
-    // Comprehensive PDF Download for Admin (All Details in One)
+    // PDF Download
     function downloadApplicationPDF(index) {
       const app = applications[index];
       const body = document.getElementById('pdfContentBody');
@@ -1190,7 +1408,7 @@
           <tr><td style="padding:5px; border:1px solid #444;">Candidate ID</td><td style="padding:5px; border:1px solid #444;">${app.candidateId}</td></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Full Name</td><td style="padding:5px; border:1px solid #444;">${app.name}</td></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Date of Birth / Gender / Caste</td><td style="padding:5px; border:1px solid #444;">${app.dob} | ${app.gender} | ${app.caste}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Aadhaar Card</td><td style="padding:5px; border:1px solid #444;">[Aadhaar Redacted] (Submitted for Verification)</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Aadhaar Verification</td><td style="padding:5px; border:1px solid #444;">[Aadhaar Redacted] (Submitted)</td></tr>
 
           <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">2. Parents & Guardian Details</th></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Father's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${app.father} (${app.fatherOcc})</td></tr>
@@ -1222,10 +1440,88 @@
       window.print();
     }
 
-    // Export All to CSV / Excel
+    // Word (.doc) Download
+    function downloadApplicationWord(index) {
+      const app = applications[index];
+      const htmlContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><title>Scholarship Application - ${app.appNo}</title>
+        <style>
+          body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; }
+          table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+          th, td { border: 1px solid #333; padding: 6px 8px; text-align: left; }
+          th { background-color: #f2f2f2; }
+          .header-box { text-align: center; border-bottom: 2px solid #800000; padding-bottom: 10px; margin-bottom: 15px; }
+        </style>
+        </head>
+        <body>
+          <div class="header-box">
+            <h2 style="color: #800000; margin:0;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
+            <p style="margin:4px 0;">P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India</p>
+            <h3 style="text-decoration: underline; margin:8px 0 0 0;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
+          </div>
+
+          <table>
+            <tr style="background:#eaeaea;"><th colspan="2">1. Application & Personal Details</th></tr>
+            <tr><td width="35%"><b>Application Number</b></td><td>${app.appNo}</td></tr>
+            <tr><td><b>Candidate ID</b></td><td>${app.candidateId}</td></tr>
+            <tr><td><b>Full Name</b></td><td>${app.name}</td></tr>
+            <tr><td><b>Date of Birth / Gender / Caste</b></td><td>${app.dob} | ${app.gender} | ${app.caste}</td></tr>
+            <tr><td><b>Aadhaar Card Verification</b></td><td>[Aadhaar Redacted] (Submitted)</td></tr>
+
+            <tr style="background:#eaeaea;"><th colspan="2">2. Parents & Guardian Details</th></tr>
+            <tr><td><b>Father's Name & Occupation</b></td><td>${app.father} (${app.fatherOcc})</td></tr>
+            <tr><td><b>Mother's Name & Occupation</b></td><td>${app.mother} (${app.motherOcc})</td></tr>
+            <tr><td><b>Guardian's Name & Relation</b></td><td>${app.guardian} (${app.guardianRel})</td></tr>
+
+            <tr style="background:#eaeaea;"><th colspan="2">3. Contact & Address Details</th></tr>
+            <tr><td><b>Contact Details</b></td><td>Mobile: ${app.mobile} | Alt: ${app.altMobile} | WA: ${app.whatsapp}</td></tr>
+            <tr><td><b>Email Address</b></td><td>${app.email}</td></tr>
+            <tr><td><b>Full Address</b></td><td>Vill: ${app.vill}, P.O: ${app.po}, P.S: ${app.ps}, Dist: ${app.dist}, PIN: ${app.pin}</td></tr>
+
+            <tr style="background:#eaeaea;"><th colspan="2">4. Educational & Income Details</th></tr>
+            <tr><td><b>Current Course & Institution</b></td><td>${app.currClass} (${app.stream}) at ${app.institution}</td></tr>
+            <tr><td><b>Admission Date</b></td><td>${app.admDate}</td></tr>
+            <tr><td><b>Last Qualifying Exam & Marks %</b></td><td>${app.lastExam} (${app.marksPct})</td></tr>
+            <tr><td><b>Monthly Income</b></td><td>Rs. ${app.income}</td></tr>
+
+            <tr style="background:#eaeaea;"><th colspan="2">5. Bank DBT Details</th></tr>
+            <tr><td><b>A/C Holder Name</b></td><td>${app.acHolder}</td></tr>
+            <tr><td><b>Bank Name & A/C No</b></td><td>${app.bankName} (A/C: ${app.bankAcc})</td></tr>
+            <tr><td><b>IFSC Code</b></td><td>${app.ifsc}</td></tr>
+
+            <tr style="background:#eaeaea;"><th colspan="2">6. Verification & Status</th></tr>
+            <tr><td><b>Uploaded Documents</b></td><td>Aadhaar, Admission Receipt, Marksheet, Passbook, Income Proof, Prayer</td></tr>
+            <tr><td><b>Submission Date & Status</b></td><td>${app.submissionDate} | Status: <b>${app.status}</b></td></tr>
+          </table>
+
+          <br><br><br>
+          <table style="border:none;">
+            <tr style="border:none;">
+              <td style="border:none; text-align:left;">___________________________<br>Candidate Signature</td>
+              <td style="border:none; text-align:right;">___________________________<br>Secretary / Competent Authority<br>RKMA Jhargram</td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff' + htmlContent], {
+        type: 'application/msword'
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Application_${app.appNo}_${app.name.replace(/\s+/g, '_')}.doc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Export All to CSV
     function exportApplicationsToCSV() {
       if (applications.length === 0) {
-        alert('এক্সপোর্ট করার মতো কোনো আবেদনপত্র জমা নেই!');
+        alert('No applications found to export!');
         return;
       }
 
