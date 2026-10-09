@@ -254,11 +254,11 @@
       display: block;
     }
 
-    /* Image Carousel */
+    /* 21-Image Dynamic Carousel */
     .slider-container {
       position: relative;
       max-width: 100%;
-      height: 380px;
+      height: 420px;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -287,7 +287,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.75));
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
       color: #ffffff;
       padding: 20px 16px 12px;
       text-align: center;
@@ -298,40 +298,35 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       color: #ffffff;
       border: none;
-      padding: 10px 14px;
+      padding: 12px 16px;
       border-radius: 50%;
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
       z-index: 10;
+      transition: background 0.2s;
+    }
+    .slider-btn:hover {
+      background: rgba(234, 88, 12, 0.9);
     }
     .slider-btn.prev { left: 12px; }
     .slider-btn.next { right: 12px; }
-    .slider-dots {
+    .slider-counter {
       position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 6px;
+      top: 14px;
+      right: 14px;
+      background: rgba(0,0,0,0.7);
+      color: #fde047;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
       z-index: 10;
     }
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.5);
-      cursor: pointer;
-    }
-    .dot.active {
-      background: #ea580c;
-      width: 22px;
-      border-radius: 10px;
-    }
 
-    /* Contact Us Section */
+    /* Contact Us */
     .contact-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -464,7 +459,7 @@
       display: inline-block;
     }
 
-    /* Photo & Signature Preview Boxes */
+    /* Photo & Signature Preview */
     .upload-preview-box {
       width: 120px;
       height: 140px;
@@ -689,39 +684,21 @@
         </div>
       </div>
 
-      <!-- IMAGE SLIDER -->
+      <!-- 21-IMAGE SLIDING CAROUSEL -->
       <div class="section-title-box">
-        <h3>GLIMPSES OF ASHRAMA ACTIVITIES</h3>
+        <h3>GLIMPSES OF ASHRAMA ACTIVITIES (21 PHOTOS)</h3>
       </div>
 
       <div class="card" style="padding: 12px;">
         <div class="slider-container">
+          <div class="slider-counter" id="slideCounter">1 / 21</div>
+          
           <div class="slide-wrapper" id="carouselWrapper">
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS" alt="Activity 1">
-              <div class="slide-caption">Assembly cum Prayer Hall & Campus Glimpses</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE" alt="Activity 2">
-              <div class="slide-caption">Educational Coaching & Welfare Programs</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn" alt="Activity 3">
-              <div class="slide-caption">Annual Youth Conventions & Value Education</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ" alt="Activity 4">
-              <div class="slide-caption">Relief & Humanitarian Services</div>
-            </div>
+            <!-- Dynamically populated via JavaScript for 21 photos -->
           </div>
+
           <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
           <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
-          <div class="slider-dots" id="sliderDots">
-            <span class="dot active" onclick="currentSlide(0)"></span>
-            <span class="dot" onclick="currentSlide(1)"></span>
-            <span class="dot" onclick="currentSlide(2)"></span>
-            <span class="dot" onclick="currentSlide(3)"></span>
-          </div>
         </div>
       </div>
 
@@ -896,21 +873,18 @@
       </div>
 
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
-        <!-- Option 1: Continue Application -->
         <div class="card" style="border-top:4px solid #ea580c; text-align:center;">
           <h3 style="margin-bottom:8px; color:#ea580c;">1. Apply / Continue Application</h3>
           <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Fill, review, verify with OTP and submit your scholarship application.</p>
           <button class="btn-primary" onclick="openApplicationForm()">Open Application Form</button>
         </div>
 
-        <!-- Option 2: View & Download Application (Enabled upon Submission) -->
         <div class="card" style="border-top:4px solid #15803d; text-align:center;">
           <h3 style="margin-bottom:8px; color:#15803d;">2. View & Download Application</h3>
           <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Inspect your submitted application details with photo & signature and download official PDF.</p>
           <button class="btn-view" style="background:#15803d;" onclick="viewCandidateSubmittedApp()">View / Download PDF</button>
         </div>
 
-        <!-- Option 3: Track Status -->
         <div class="card" style="border-top:4px solid #0284c7; text-align:center;">
           <h3 style="margin-bottom:8px; color:#0284c7;">3. Track Status</h3>
           <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Check the current scrutiny, approval, and disbursement stage of your application.</p>
@@ -937,7 +911,7 @@
         </div>
 
         <form id="scholarshipMultiForm" onsubmit="return false;">
-          <!-- STEP 1: Personal Details (Includes Photo & Signature Upload) -->
+          <!-- STEP 1: Personal Details -->
           <div class="form-step active" id="formStep1">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 1: Personal Details</h4>
             <div class="form-grid">
@@ -971,7 +945,6 @@
                 <input type="text" id="f_aadhaar" placeholder="Enter Aadhaar Number" required>
               </div>
 
-              <!-- Candidate Photo Upload -->
               <div class="form-group">
                 <label>Candidate Passport Photo (JPG/PNG)</label>
                 <input type="file" id="f_cand_photo" accept="image/*" onchange="previewImageFile(this, 'candPhotoPreview')">
@@ -980,7 +953,6 @@
                 </div>
               </div>
 
-              <!-- Candidate Signature Upload -->
               <div class="form-group">
                 <label>Candidate Signature (JPG/PNG)</label>
                 <input type="file" id="f_cand_sign" accept="image/*" onchange="previewImageFile(this, 'candSignPreview')">
@@ -1341,7 +1313,7 @@
       </div>
     </div>
 
-    <!-- Official Printable Format for PDF (Candidate & Admin) -->
+    <!-- Official Printable Format for PDF -->
     <div id="printableApplication" style="display:none; padding:30px; font-family:serif; background:#fff;">
       <div style="text-align:center; border-bottom:2px solid #7f1d1d; padding-bottom:12px; margin-bottom:20px;">
         <h2 style="color:#7f1d1d; margin-bottom:4px;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
@@ -1349,7 +1321,6 @@
         <h3 style="margin-top:10px; text-decoration:underline;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
       </div>
 
-      <!-- Applicant Header Photo Banner -->
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
         <div id="pdfHeaderMeta" style="font-size:14px; line-height:1.6;"></div>
         <div id="pdfPhotoBox" style="width:110px; height:130px; border:1px solid #333; text-align:center; padding:2px;">
@@ -1359,7 +1330,6 @@
 
       <div id="pdfContentBody"></div>
 
-      <!-- Footer with Signatures -->
       <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
         <div style="text-align:center; width:220px;">
           <div id="pdfSignBox" style="height:50px; margin-bottom:4px; display:flex; align-items:center; justify-content:center;"></div>
@@ -1382,7 +1352,6 @@
   </footer>
 
   <script>
-    // Storage & State Initialization
     let applications = JSON.parse(localStorage.getItem('rkm_apps') || '[]');
     let candidates = JSON.parse(localStorage.getItem('rkm_cand_db') || 'null') || {
       'RKM-2026-001': { name: 'Sourav Mahato', mobile: '9876543210', pass: 'RKMA@2026' }
@@ -1418,45 +1387,56 @@
     let pendingSubmitOtp = null;
     let currentGeneratedCaptcha = '';
 
-    // In-memory base64 holder for photos and signatures
     let currentUploadedPhotoBase64 = '';
     let currentUploadedSignBase64 = '';
 
-    function saveState() {
-      localStorage.setItem('rkm_apps', JSON.stringify(applications));
-      localStorage.setItem('rkm_cand_db', JSON.stringify(candidates));
-      localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
+    // ==========================================
+    // 21 GALLERY IMAGES LIST
+    // You can replace the URLs with direct Google Drive view links
+    // ==========================================
+    const GALLERY_IMAGES = [
+      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Campus & Prayer Hall 1' },
+      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'Educational Activities 2' },
+      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Youth Convention 3' },
+      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'Humanitarian Relief 4' },
+      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Free Coaching Centre 5' },
+      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'School Assembly 6' },
+      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Medical Camp 7' },
+      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'Tree Plantation 8' },
+      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Blood Donation Camp 9' },
+      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'Winter Blanket Distribution 10' },
+      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Cultural Program 11' },
+      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'National Youth Day 12' },
+      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Football Tournament 13' },
+      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'Yogasana Competition 14' },
+      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Spiritual Retreat 15' },
+      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'Ramnam Sankirtan 16' },
+      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Study Circle Session 17' },
+      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'Correctional Home Program 18' },
+      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Scholarship Distribution 19' },
+      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'Widow Pension Program 20' },
+      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Annual Day Celebrations 21' }
+    ];
+
+    function render21Slides() {
+      const wrapper = document.getElementById('carouselWrapper');
+      if (!wrapper) return;
+      wrapper.innerHTML = '';
+
+      GALLERY_IMAGES.forEach((item, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'slide-item';
+        slide.innerHTML = `
+          <img src="${item.url}" alt="Activity ${index + 1}">
+          <div class="slide-caption">${item.title}</div>
+        `;
+        wrapper.appendChild(slide);
+      });
+      updateCarousel();
     }
 
-    function navigateTo(sectionId) {
-      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-      const target = document.getElementById('sec-' + sectionId);
-      if (target) {
-        target.classList.add('active');
-        window.scrollTo(0, 0);
-      }
-    }
-
-    // Image file to base64 preview generator
-    function previewImageFile(input, targetPreviewId) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const container = document.getElementById(targetPreviewId);
-          container.innerHTML = `<img src="${e.target.result}" alt="Uploaded Preview">`;
-          if (targetPreviewId === 'candPhotoPreview') {
-            currentUploadedPhotoBase64 = e.target.result;
-          } else if (targetPreviewId === 'candSignPreview') {
-            currentUploadedSignBase64 = e.target.result;
-          }
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    // Carousel Functionality
     let currentSlideIndex = 0;
-    const totalSlides = 4;
+    const totalSlides = GALLERY_IMAGES.length;
     let autoSlideInterval = null;
 
     function updateCarousel() {
@@ -1464,21 +1444,14 @@
       if (wrapper) {
         wrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
       }
-      const dots = document.querySelectorAll('.dot');
-      dots.forEach((dot, idx) => {
-        if (idx === currentSlideIndex) dot.classList.add('active');
-        else dot.classList.remove('active');
-      });
+      const counter = document.getElementById('slideCounter');
+      if (counter) {
+        counter.textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
+      }
     }
 
     function moveSlide(step) {
       currentSlideIndex = (currentSlideIndex + step + totalSlides) % totalSlides;
-      updateCarousel();
-      resetAutoSlide();
-    }
-
-    function currentSlide(index) {
-      currentSlideIndex = index;
       updateCarousel();
       resetAutoSlide();
     }
@@ -1496,8 +1469,40 @@
     }
 
     window.addEventListener('load', () => {
+      render21Slides();
       startAutoSlide();
     });
+
+    function saveState() {
+      localStorage.setItem('rkm_apps', JSON.stringify(applications));
+      localStorage.setItem('rkm_cand_db', JSON.stringify(candidates));
+      localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
+    }
+
+    function navigateTo(sectionId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById('sec-' + sectionId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo(0, 0);
+      }
+    }
+
+    function previewImageFile(input, targetPreviewId) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const container = document.getElementById(targetPreviewId);
+          container.innerHTML = `<img src="${e.target.result}" alt="Uploaded Preview">`;
+          if (targetPreviewId === 'candPhotoPreview') {
+            currentUploadedPhotoBase64 = e.target.result;
+          } else if (targetPreviewId === 'candSignPreview') {
+            currentUploadedSignBase64 = e.target.result;
+          }
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
 
     function submitContactForm() {
       const name = document.getElementById('contactName').value.trim();
@@ -1516,7 +1521,6 @@
       document.getElementById('contactMessage').value = '';
     }
 
-    // Admin Authentication
     function requestAdminLoginOTP() {
       const selectedId = document.getElementById('adminDropdown').value;
       const pass = document.getElementById('adminPassField').value.trim();
@@ -1629,7 +1633,6 @@
       document.getElementById('genCandPass').value = '';
     }
 
-    // Candidate Auth
     function requestCandidateLoginOTP() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -1703,7 +1706,6 @@
       navigateTo('trackStatus');
     }
 
-    // View & Download submitted application by Candidate
     function viewCandidateSubmittedApp() {
       const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
       if (existingIndex === -1) {
@@ -1778,7 +1780,6 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
-    // Final Application Submit with Photo and Signature
     function executeFinalApplicationSubmit() {
       const captchaInput = document.getElementById('f_captchaInput').value.trim();
       const otpInput = document.getElementById('f_submitOtpInput').value.trim();
@@ -1840,7 +1841,6 @@
       navigateTo('candidateDashboard');
     }
 
-    // Render Admin Table
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -1879,7 +1879,6 @@
       }
     }
 
-    // Comprehensive PDF Generator (with Photo and Signature)
     function downloadApplicationPDF(index) {
       const app = applications[index];
       const headerMeta = document.getElementById('pdfHeaderMeta');
@@ -1935,14 +1934,13 @@
 
           <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">6. Documents & Official Verification</th></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Uploaded Documents</td><td style="padding:5px; border:1px solid #444;">Aadhaar, Admission Receipt, Marksheet, Passbook, Income Proof, Prayer</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Verification Status</td><td style="padding:5px; border:1px solid #444;"><strong>${app.status}</strong></td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Submission Date & Status</td><td style="padding:5px; border:1px solid #444;">${app.submissionDate} | Status: <strong>${app.status}</strong></td></tr>
         </table>
       `;
 
       window.print();
     }
 
-    // Word (.doc) Download
     function downloadApplicationWord(index) {
       const app = applications[index];
       const htmlContent = `
@@ -2018,7 +2016,6 @@
       document.body.removeChild(a);
     }
 
-    // Export All to CSV
     function exportApplicationsToCSV() {
       if (applications.length === 0) {
         alert('No applications found to export!');
