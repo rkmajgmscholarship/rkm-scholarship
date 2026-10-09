@@ -254,7 +254,7 @@
       display: block;
     }
 
-    /* 21-Image Dynamic Carousel */
+    /* 15 Image Carousel / Slider */
     .slider-container {
       position: relative;
       max-width: 100%;
@@ -275,11 +275,12 @@
       min-width: 100%;
       height: 100%;
       position: relative;
+      background: #1c1917;
     }
     .slide-item img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
     }
     .slide-caption {
@@ -287,9 +288,9 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
       color: #ffffff;
-      padding: 20px 16px 12px;
+      padding: 24px 16px 14px;
       text-align: center;
       font-size: 14px;
       font-weight: 600;
@@ -309,24 +310,37 @@
       transition: background 0.2s;
     }
     .slider-btn:hover {
-      background: rgba(234, 88, 12, 0.9);
+      background: rgba(234, 88, 12, 0.95);
     }
     .slider-btn.prev { left: 12px; }
     .slider-btn.next { right: 12px; }
-    .slider-counter {
+    .slider-dots {
       position: absolute;
-      top: 14px;
-      right: 14px;
-      background: rgba(0,0,0,0.7);
-      color: #fde047;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
       z-index: 10;
+      flex-wrap: wrap;
+      max-width: 90%;
+      justify-content: center;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .dot.active {
+      background: #ea580c;
+      width: 18px;
+      border-radius: 10px;
     }
 
-    /* Contact Us */
+    /* Contact Us Section */
     .contact-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -459,7 +473,7 @@
       display: inline-block;
     }
 
-    /* Photo & Signature Preview */
+    /* Photo & Signature Preview Boxes */
     .upload-preview-box {
       width: 120px;
       height: 140px;
@@ -684,21 +698,83 @@
         </div>
       </div>
 
-      <!-- 21-IMAGE SLIDING CAROUSEL -->
+      <!-- 15 IMAGES SLIDER / CAROUSEL -->
       <div class="section-title-box">
-        <h3>GLIMPSES OF ASHRAMA ACTIVITIES (21 PHOTOS)</h3>
+        <h3>GLIMPSES OF ASHRAMA ACTIVITIES</h3>
       </div>
 
       <div class="card" style="padding: 12px;">
         <div class="slider-container">
-          <div class="slider-counter" id="slideCounter">1 / 21</div>
-          
           <div class="slide-wrapper" id="carouselWrapper">
-            <!-- Dynamically populated via JavaScript for 21 photos -->
+            <!-- 15 Attached Drive Images -->
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1vqBJNgB72mfDmscTdjOuf9LN-dZ2aM8I" alt="Ashrama Activity 1">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 1</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1OAmfCuUgSxExpW-ydCqNiMml91ge_2XE" alt="Ashrama Activity 2">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 2</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1mfncSNTU7OOIvYjDNmC-kGMfvMInUF0w" alt="Ashrama Activity 3">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 3</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1_4yGHmo_Zse35nuLvUpxrtMK8cfq-eVc" alt="Ashrama Activity 4">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 4</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/143J157Z0hgyw3dqjP1qG9kbQL78Wada-" alt="Ashrama Activity 5">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 5</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1m7-psF83cr7CHYYtg7a_bqh4VB1sbK5W" alt="Ashrama Activity 6">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 6</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1nOrr-Bsu7yP4nAUuByxiI9uy5feZU2Am" alt="Ashrama Activity 7">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 7</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1JuZ1xnlCAdAllJRaOqoJbKsThQiIlK75" alt="Ashrama Activity 8">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 8</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1TEiBReJ5Bjb18KemNhK9uWebXcUxHt7-" alt="Ashrama Activity 9">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 9</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/13RonHGvyYR8-WrECoA6MluL53W1V2o5S" alt="Ashrama Activity 10">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 10</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1T9Y-Zdg2B68RERJyfSKzqe_NuD97n0J-" alt="Ashrama Activity 11">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 11</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1kdyWabrOUIsY0Fc5W1bJUIjUthDORb8R" alt="Ashrama Activity 12">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 12</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1nZ1qrNQ1KGs6J7chYzGNSCqyIZrvFC64" alt="Ashrama Activity 13">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 13</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1GxfqbxroMc0cXcEpwB79spPqAkSE2MjC" alt="Ashrama Activity 14">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 14</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1WdQhIl69O0q3BO1d7mJqbnr8FV56QrEt" alt="Ashrama Activity 15">
+              <div class="slide-caption">Glimpses of Ashrama Activities - 15</div>
+            </div>
           </div>
 
+          <!-- Controls -->
           <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
           <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
+
+          <!-- 15 Dots -->
+          <div class="slider-dots" id="sliderDots"></div>
         </div>
       </div>
 
@@ -815,7 +891,7 @@
             <input type="password" id="adminPassField" placeholder="Enter Password" autocomplete="new-password">
           </div>
 
-          <button class="submit-btn" style="background:#1c1917; color:#fde047;" onclick="requestAdminLoginOTP()">
+          <button class="submit-btn" style="background:#1c1917; color:#fde047; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="requestAdminLoginOTP()">
             Send OTP to Mobile
           </button>
         </div>
@@ -826,7 +902,7 @@
             <label>Enter 6-Digit OTP</label>
             <input type="text" id="adminOtpInput" placeholder="Enter OTP">
           </div>
-          <button class="submit-btn" style="background:#15803d; color:#ffffff;" onclick="verifyAdminLoginOTP()">
+          <button class="submit-btn" style="background:#15803d; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="verifyAdminLoginOTP()">
             Verify OTP & Login
           </button>
         </div>
@@ -848,7 +924,7 @@
             <label>Password</label>
             <input type="password" id="candPassField" placeholder="Enter Password">
           </div>
-          <button class="submit-btn" style="background:#ea580c; color:#ffffff;" onclick="requestCandidateLoginOTP()">Send OTP to Mobile</button>
+          <button class="submit-btn" style="background:#ea580c; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="requestCandidateLoginOTP()">Send OTP to Mobile</button>
         </div>
 
         <div id="candOtpBox" style="display:none; margin-top:14px; border-top:1px dashed #d6d3d1; padding-top:14px;">
@@ -857,7 +933,7 @@
             <label>Enter 6-Digit OTP</label>
             <input type="text" id="candLoginOtpInput" placeholder="Enter OTP">
           </div>
-          <button class="submit-btn" style="background:#15803d; color:#ffffff;" onclick="verifyCandidateLoginOTP()">Verify OTP & Login</button>
+          <button class="submit-btn" style="background:#15803d; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="verifyCandidateLoginOTP()">Verify OTP & Login</button>
         </div>
       </div>
     </section>
@@ -873,18 +949,21 @@
       </div>
 
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+        <!-- Option 1: Continue Application -->
         <div class="card" style="border-top:4px solid #ea580c; text-align:center;">
           <h3 style="margin-bottom:8px; color:#ea580c;">1. Apply / Continue Application</h3>
           <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Fill, review, verify with OTP and submit your scholarship application.</p>
           <button class="btn-primary" onclick="openApplicationForm()">Open Application Form</button>
         </div>
 
+        <!-- Option 2: View & Download Application -->
         <div class="card" style="border-top:4px solid #15803d; text-align:center;">
           <h3 style="margin-bottom:8px; color:#15803d;">2. View & Download Application</h3>
           <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Inspect your submitted application details with photo & signature and download official PDF.</p>
           <button class="btn-view" style="background:#15803d;" onclick="viewCandidateSubmittedApp()">View / Download PDF</button>
         </div>
 
+        <!-- Option 3: Track Status -->
         <div class="card" style="border-top:4px solid #0284c7; text-align:center;">
           <h3 style="margin-bottom:8px; color:#0284c7;">3. Track Status</h3>
           <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Check the current scrutiny, approval, and disbursement stage of your application.</p>
@@ -911,7 +990,7 @@
         </div>
 
         <form id="scholarshipMultiForm" onsubmit="return false;">
-          <!-- STEP 1: Personal Details -->
+          <!-- STEP 1: Personal Details (Photo & Signature) -->
           <div class="form-step active" id="formStep1">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 1: Personal Details</h4>
             <div class="form-grid">
@@ -945,6 +1024,7 @@
                 <input type="text" id="f_aadhaar" placeholder="Enter Aadhaar Number" required>
               </div>
 
+              <!-- Candidate Photo Upload -->
               <div class="form-group">
                 <label>Candidate Passport Photo (JPG/PNG)</label>
                 <input type="file" id="f_cand_photo" accept="image/*" onchange="previewImageFile(this, 'candPhotoPreview')">
@@ -953,6 +1033,7 @@
                 </div>
               </div>
 
+              <!-- Candidate Signature Upload -->
               <div class="form-group">
                 <label>Candidate Signature (JPG/PNG)</label>
                 <input type="file" id="f_cand_sign" accept="image/*" onchange="previewImageFile(this, 'candSignPreview')">
@@ -1313,7 +1394,7 @@
       </div>
     </div>
 
-    <!-- Official Printable Format for PDF -->
+    <!-- Official Printable Format for PDF (Candidate & Admin) -->
     <div id="printableApplication" style="display:none; padding:30px; font-family:serif; background:#fff;">
       <div style="text-align:center; border-bottom:2px solid #7f1d1d; padding-bottom:12px; margin-bottom:20px;">
         <h2 style="color:#7f1d1d; margin-bottom:4px;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
@@ -1321,6 +1402,7 @@
         <h3 style="margin-top:10px; text-decoration:underline;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
       </div>
 
+      <!-- Applicant Header Photo Banner -->
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
         <div id="pdfHeaderMeta" style="font-size:14px; line-height:1.6;"></div>
         <div id="pdfPhotoBox" style="width:110px; height:130px; border:1px solid #333; text-align:center; padding:2px;">
@@ -1330,6 +1412,7 @@
 
       <div id="pdfContentBody"></div>
 
+      <!-- Footer with Signatures -->
       <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
         <div style="text-align:center; width:220px;">
           <div id="pdfSignBox" style="height:50px; margin-bottom:4px; display:flex; align-items:center; justify-content:center;"></div>
@@ -1352,6 +1435,7 @@
   </footer>
 
   <script>
+    // Storage & State Initialization
     let applications = JSON.parse(localStorage.getItem('rkm_apps') || '[]');
     let candidates = JSON.parse(localStorage.getItem('rkm_cand_db') || 'null') || {
       'RKM-2026-001': { name: 'Sourav Mahato', mobile: '9876543210', pass: 'RKMA@2026' }
@@ -1387,71 +1471,80 @@
     let pendingSubmitOtp = null;
     let currentGeneratedCaptcha = '';
 
+    // In-memory base64 holder for photos and signatures
     let currentUploadedPhotoBase64 = '';
     let currentUploadedSignBase64 = '';
 
-    // ==========================================
-    // 21 GALLERY IMAGES LIST
-    // You can replace the URLs with direct Google Drive view links
-    // ==========================================
-    const GALLERY_IMAGES = [
-      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Campus & Prayer Hall 1' },
-      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'Educational Activities 2' },
-      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Youth Convention 3' },
-      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'Humanitarian Relief 4' },
-      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Free Coaching Centre 5' },
-      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'School Assembly 6' },
-      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Medical Camp 7' },
-      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'Tree Plantation 8' },
-      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Blood Donation Camp 9' },
-      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'Winter Blanket Distribution 10' },
-      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Cultural Program 11' },
-      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'National Youth Day 12' },
-      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Football Tournament 13' },
-      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'Yogasana Competition 14' },
-      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Spiritual Retreat 15' },
-      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'Ramnam Sankirtan 16' },
-      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Study Circle Session 17' },
-      { url: 'https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE', title: 'Correctional Home Program 18' },
-      { url: 'https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn', title: 'Scholarship Distribution 19' },
-      { url: 'https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ', title: 'Widow Pension Program 20' },
-      { url: 'https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS', title: 'Annual Day Celebrations 21' }
-    ];
-
-    function render21Slides() {
-      const wrapper = document.getElementById('carouselWrapper');
-      if (!wrapper) return;
-      wrapper.innerHTML = '';
-
-      GALLERY_IMAGES.forEach((item, index) => {
-        const slide = document.createElement('div');
-        slide.className = 'slide-item';
-        slide.innerHTML = `
-          <img src="${item.url}" alt="Activity ${index + 1}">
-          <div class="slide-caption">${item.title}</div>
-        `;
-        wrapper.appendChild(slide);
-      });
-      updateCarousel();
+    function saveState() {
+      localStorage.setItem('rkm_apps', JSON.stringify(applications));
+      localStorage.setItem('rkm_cand_db', JSON.stringify(candidates));
+      localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
     }
 
+    function navigateTo(sectionId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById('sec-' + sectionId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo(0, 0);
+      }
+    }
+
+    // Image file to base64 preview generator
+    function previewImageFile(input, targetPreviewId) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const container = document.getElementById(targetPreviewId);
+          container.innerHTML = `<img src="${e.target.result}" alt="Uploaded Preview">`;
+          if (targetPreviewId === 'candPhotoPreview') {
+            currentUploadedPhotoBase64 = e.target.result;
+          } else if (targetPreviewId === 'candSignPreview') {
+            currentUploadedSignBase64 = e.target.result;
+          }
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // 15 Images Carousel Functionality
     let currentSlideIndex = 0;
-    const totalSlides = GALLERY_IMAGES.length;
+    const totalSlides = 15;
     let autoSlideInterval = null;
+
+    function buildSliderDots() {
+      const dotsContainer = document.getElementById('sliderDots');
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < totalSlides; i++) {
+          const dot = document.createElement('span');
+          dot.className = 'dot' + (i === 0 ? ' active' : '');
+          dot.onclick = () => currentSlide(i);
+          dotsContainer.appendChild(dot);
+        }
+      }
+    }
 
     function updateCarousel() {
       const wrapper = document.getElementById('carouselWrapper');
       if (wrapper) {
         wrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
       }
-      const counter = document.getElementById('slideCounter');
-      if (counter) {
-        counter.textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
-      }
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlideIndex) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
     }
 
     function moveSlide(step) {
       currentSlideIndex = (currentSlideIndex + step + totalSlides) % totalSlides;
+      updateCarousel();
+      resetAutoSlide();
+    }
+
+    function currentSlide(index) {
+      currentSlideIndex = index;
       updateCarousel();
       resetAutoSlide();
     }
@@ -1469,40 +1562,9 @@
     }
 
     window.addEventListener('load', () => {
-      render21Slides();
+      buildSliderDots();
       startAutoSlide();
     });
-
-    function saveState() {
-      localStorage.setItem('rkm_apps', JSON.stringify(applications));
-      localStorage.setItem('rkm_cand_db', JSON.stringify(candidates));
-      localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
-    }
-
-    function navigateTo(sectionId) {
-      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-      const target = document.getElementById('sec-' + sectionId);
-      if (target) {
-        target.classList.add('active');
-        window.scrollTo(0, 0);
-      }
-    }
-
-    function previewImageFile(input, targetPreviewId) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const container = document.getElementById(targetPreviewId);
-          container.innerHTML = `<img src="${e.target.result}" alt="Uploaded Preview">`;
-          if (targetPreviewId === 'candPhotoPreview') {
-            currentUploadedPhotoBase64 = e.target.result;
-          } else if (targetPreviewId === 'candSignPreview') {
-            currentUploadedSignBase64 = e.target.result;
-          }
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
 
     function submitContactForm() {
       const name = document.getElementById('contactName').value.trim();
@@ -1521,6 +1583,7 @@
       document.getElementById('contactMessage').value = '';
     }
 
+    // Admin Authentication
     function requestAdminLoginOTP() {
       const selectedId = document.getElementById('adminDropdown').value;
       const pass = document.getElementById('adminPassField').value.trim();
@@ -1582,7 +1645,6 @@
       }
       if (!pendingAdminProfileOtp || otp !== pendingAdminProfileOtp) {
         alert('Invalid OTP! Click "Send OTP" and enter the verification code.');
-        return;
       }
 
       if (newMobile) {
@@ -1633,6 +1695,7 @@
       document.getElementById('genCandPass').value = '';
     }
 
+    // Candidate Auth
     function requestCandidateLoginOTP() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -1706,6 +1769,7 @@
       navigateTo('trackStatus');
     }
 
+    // View & Download submitted application by Candidate
     function viewCandidateSubmittedApp() {
       const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
       if (existingIndex === -1) {
@@ -1780,6 +1844,7 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
+    // Final Application Submit with Photo and Signature
     function executeFinalApplicationSubmit() {
       const captchaInput = document.getElementById('f_captchaInput').value.trim();
       const otpInput = document.getElementById('f_submitOtpInput').value.trim();
@@ -1841,6 +1906,7 @@
       navigateTo('candidateDashboard');
     }
 
+    // Render Admin Table
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -1879,6 +1945,7 @@
       }
     }
 
+    // Comprehensive PDF Generator (with Photo and Signature)
     function downloadApplicationPDF(index) {
       const app = applications[index];
       const headerMeta = document.getElementById('pdfHeaderMeta');
@@ -1941,6 +2008,7 @@
       window.print();
     }
 
+    // Word (.doc) Download
     function downloadApplicationWord(index) {
       const app = applications[index];
       const htmlContent = `
@@ -2016,6 +2084,7 @@
       document.body.removeChild(a);
     }
 
+    // Export All to CSV
     function exportApplicationsToCSV() {
       if (applications.length === 0) {
         alert('No applications found to export!');
