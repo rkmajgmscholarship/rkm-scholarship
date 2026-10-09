@@ -11,23 +11,19 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-    
-    /* Background with Joint Photo of Sri Ramakrishna, Holy Mother & Swamiji */
     body {
       background-color: #faf8f5;
       background-image: 
-        linear-gradient(rgba(250, 248, 245, 0.92), rgba(250, 248, 245, 0.94)),
+        linear-gradient(rgba(250, 248, 245, 0.93), rgba(250, 248, 245, 0.95)),
         url('https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ');
       background-attachment: fixed;
       background-position: center;
       background-size: cover;
-      background-repeat: no-repeat;
       color: #2b2523;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
-
     header {
       background: linear-gradient(135deg, #7f1d1d, #9a3412);
       color: #ffffff;
@@ -63,7 +59,6 @@
       justify-content: center;
       font-weight: bold;
       font-size: 19px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     .nav-btn {
       background: rgba(255,255,255,0.15);
@@ -94,15 +89,14 @@
       display: block;
     }
     .card {
-      background: rgba(255, 255, 255, 0.96);
+      background: rgba(255, 255, 255, 0.98);
       border-radius: 12px;
       padding: 22px;
       border: 1px solid #e7e5e4;
       box-shadow: 0 4px 10px rgba(0,0,0,0.06);
       margin-bottom: 20px;
     }
-
-    /* Hero Banner with Joint Photo Background */
+    /* Hero Card */
     .hero-card {
       position: relative;
       text-align: center;
@@ -110,7 +104,7 @@
       overflow: hidden;
       color: #ffffff;
       background: #7f1d1d;
-      padding: 44px 20px;
+      padding: 40px 20px;
     }
     .hero-bg {
       position: absolute;
@@ -121,7 +115,7 @@
       background-image: url('https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ');
       background-size: cover;
       background-position: center 30%;
-      opacity: 0.30;
+      opacity: 0.3;
       z-index: 1;
     }
     .hero-content {
@@ -130,14 +124,13 @@
     }
     .hero-content h2 {
       color: #ffffff;
-      font-size: 26px;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+      font-size: 24px;
     }
     .hero-content p {
       color: #fed7aa;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
       max-width: 700px;
       margin: 8px auto 0;
+      font-size: 14px;
     }
     .badge {
       display: inline-block;
@@ -149,7 +142,6 @@
       font-weight: 700;
       margin-bottom: 10px;
     }
-
     .btn-group {
       margin-top: 20px;
       display: flex;
@@ -177,8 +169,17 @@
       font-size: 14px;
       cursor: pointer;
     }
-
-    /* Holy Trio Rectangular Large Frames */
+    .btn-neutral {
+      background: #78716c;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    /* Holy Trio Frames */
     .pillar-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -191,16 +192,15 @@
       border-radius: 12px;
       border: 1px solid #e7e5e4;
       text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.07);
     }
     .pillar-img-frame {
       width: 180px;
       height: 220px;
       margin: 0 auto 14px;
-      border-radius: 8px; /* Square/Rectangular */
+      border-radius: 8px;
       overflow: hidden;
       border: 4px solid #ea580c;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
       background-color: #f5f5f4;
     }
     .pillar-img {
@@ -210,17 +210,48 @@
       object-position: center top;
       display: block;
     }
-
-    /* Form Controls */
+    /* Multi-step Form */
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      position: relative;
+      border-bottom: 2px solid #e7e5e4;
+      padding-bottom: 12px;
+    }
+    .step-item {
+      text-align: center;
+      font-size: 11px;
+      font-weight: bold;
+      color: #a8a29e;
+      flex: 1;
+    }
+    .step-item.active {
+      color: #ea580c;
+    }
+    .step-item.completed {
+      color: #16a34a;
+    }
+    .form-step {
+      display: none;
+    }
+    .form-step.active {
+      display: block;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     label {
       display: block;
       font-size: 12px;
       font-weight: bold;
       color: #44403c;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
     input, select {
       width: 100%;
@@ -229,18 +260,26 @@
       border: 1px solid #d6d3d1;
       font-size: 14px;
     }
-    .submit-btn {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      font-weight: bold;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 8px;
+    .step-btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+      gap: 10px;
     }
-
-    /* Admin Table & Buttons */
+    /* Captcha box */
+    .captcha-box {
+      background: #f5f5f4;
+      border: 1px dashed #78716c;
+      padding: 8px 14px;
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      color: #9a3412;
+      user-select: none;
+      display: inline-block;
+    }
+    /* Table */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -255,15 +294,6 @@
     th {
       background: #f5f5f4;
       color: #44403c;
-    }
-    .status-tag {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-      background: #ffedd5;
-      color: #9a3412;
     }
     .action-btn-group {
       display: flex;
@@ -289,11 +319,7 @@
       font-size: 12px;
       font-weight: bold;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
     }
-
     footer {
       background: #1c1917;
       color: #a8a29e;
@@ -302,8 +328,6 @@
       font-size: 12px;
       margin-top: auto;
     }
-
-    /* Printable Template */
     @media print {
       body * { visibility: hidden; }
       #printableApplication, #printableApplication * { visibility: visible; }
@@ -313,7 +337,7 @@
 </head>
 <body>
 
-  <!-- Top Header -->
+  <!-- Header -->
   <header>
     <div class="header-inner">
       <div class="brand" onclick="navigateTo('home')">
@@ -334,7 +358,6 @@
   <main>
     <!-- 1. LANDING PAGE -->
     <section id="sec-home" class="page-section active">
-      <!-- Hero with Joint Photo Background -->
       <div class="card hero-card">
         <div class="hero-bg"></div>
         <div class="hero-content">
@@ -348,51 +371,29 @@
         </div>
       </div>
 
-      <!-- Rectangular Photo Cards -->
       <div class="pillar-grid">
-        <!-- Sri Ramakrishna -->
         <div class="pillar-card">
           <div class="pillar-img-frame" style="border-color: #ea580c;">
-            <img 
-              src="https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS" 
-              alt="Sri Ramakrishna Paramahamsa" 
-              class="pillar-img"
-            >
+            <img src="https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS" alt="Sri Ramakrishna" class="pillar-img">
           </div>
           <strong style="font-size:15px; color:#1c1917; display:block;">Sri Ramakrishna</strong>
-          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#78350f;">
-            "As many faiths, so many paths to truth."
-          </p>
+          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#78350f;">"As many faiths, so many paths to truth."</p>
         </div>
 
-        <!-- Sri Sarada Devi -->
         <div class="pillar-card">
           <div class="pillar-img-frame" style="border-color: #b91c1c;">
-            <img 
-              src="https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE" 
-              alt="Sri Sarada Devi" 
-              class="pillar-img"
-            >
+            <img src="https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE" alt="Sri Sarada Devi" class="pillar-img">
           </div>
           <strong style="font-size:15px; color:#1c1917; display:block;">Sri Sarada Devi</strong>
-          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#991b1b;">
-            "If you want peace of mind, do not find fault with others. Learn to see your own faults."
-          </p>
+          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#991b1b;">"If you want peace of mind, do not find fault with others. Learn to see your own faults."</p>
         </div>
 
-        <!-- Swami Vivekananda -->
         <div class="pillar-card">
           <div class="pillar-img-frame" style="border-color: #d97706;">
-            <img 
-              src="https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn" 
-              alt="Swami Vivekananda" 
-              class="pillar-img"
-            >
+            <img src="https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn" alt="Swami Vivekananda" class="pillar-img">
           </div>
           <strong style="font-size:15px; color:#1c1917; display:block;">Swami Vivekananda</strong>
-          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#92400e;">
-            "Education is the manifestation of the perfection already in man."
-          </p>
+          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#92400e;">"Education is the manifestation of the perfection already in man."</p>
         </div>
       </div>
     </section>
@@ -404,129 +405,421 @@
         <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only</p>
 
         <div class="form-group">
-          <label>Select Administrator Profile</label>
-          <select id="adminDropdown" onchange="applyAdminPreset(this.value)">
-            <option value="">-- Choose Profile --</option>
-            <option value="Secretary@RKMAJGM">Secretary Maharaj (Secretary@RKMAJGM)</option>
-            <option value="SBMAHARAJ@RKMAJGM">Swami Brahmeshwarananda (SBMAHARAJ@RKMAJGM)</option>
-            <option value="DEOSCH@RKMAJGM">Data Entry Operator (DEOSCH@RKMAJGM)</option>
+          <label>Select Administrator Name</label>
+          <select id="adminDropdown">
+            <option value="">-- Select Authority Name --</option>
+            <option value="Secretary Maharaj">Secretary Maharaj, RKMA Jhargram</option>
+            <option value="Swami Brahmeshwarananda">Swami Brahmeshwarananda, RKMA Jhargram</option>
+            <option value="Data Entry Operator">Data Entry Operator, RKMA Jhargram</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label>Admin ID</label>
-          <input type="text" id="adminIdField" placeholder="Enter Admin ID" autocomplete="off">
-        </div>
-
-        <div class="form-group">
           <label>Password</label>
-          <input type="password" id="adminPassField" placeholder="Enter Secret Password" autocomplete="new-password">
+          <input type="password" id="adminPassField" placeholder="Enter Password" autocomplete="new-password">
         </div>
 
         <button class="submit-btn" style="background:#1c1917; color:#fde047;" onclick="executeAdminAuth()">
           Login to Console
         </button>
-
-        <div style="text-align:center; margin-top:12px;">
-          <span style="font-size:12px; color:#9a3412; text-decoration:underline; cursor:pointer;" onclick="navigateTo('changePassword')">Need to Change Password? Click Here</span>
-        </div>
       </div>
     </section>
 
-    <!-- 3. CHANGE PASSWORD -->
-    <section id="sec-changePassword" class="page-section">
-      <div class="card" style="max-width:400px; margin:0 auto;">
-        <h2 style="text-align:center; font-size:18px;">Change Admin Password</h2>
-        <div class="form-group">
-          <label>Admin ID</label>
-          <input type="text" id="cpAdminId" placeholder="e.g. Secretary@RKMAJGM">
-        </div>
-        <div class="form-group">
-          <label>Current Password</label>
-          <input type="password" id="cpOldPass">
-        </div>
-        <div class="form-group">
-          <label>New Password</label>
-          <input type="password" id="cpNewPass">
-        </div>
-        <div class="form-group">
-          <label>Confirm New Password</label>
-          <input type="password" id="cpConfirmPass">
-        </div>
-        <button class="submit-btn" style="background:#9a3412; color:#ffffff;" onclick="executePasswordChange()">Save New Password</button>
-        <div style="text-align:center; margin-top:10px;">
-          <span style="font-size:12px; color:#9a3412; text-decoration:underline; cursor:pointer;" onclick="navigateTo('adminLogin')">Back to Login</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. CANDIDATE LOGIN -->
+    <!-- 3. CANDIDATE LOGIN WITH OTP -->
     <section id="sec-candidateLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:0 auto;">
         <h2 style="text-align:center; font-size:18px;">Candidate Portal</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Use credentials provided by RKMA Jhargram</p>
-        <div class="form-group">
-          <label>Candidate ID</label>
-          <input type="text" id="candIdField" placeholder="e.g. RKM-2026-001">
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Step 1: Verify Credentials | Step 2: Mobile OTP</p>
+
+        <div id="candCredBox">
+          <div class="form-group">
+            <label>Candidate ID</label>
+            <input type="text" id="candIdField" placeholder="e.g. RKM-2026-001">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="candPassField" placeholder="Enter Password">
+          </div>
+          <button class="submit-btn" style="background:#ea580c; color:#ffffff;" onclick="requestCandidateLoginOTP()">Send OTP to Mobile</button>
         </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="candPassField" placeholder="Enter Password">
+
+        <div id="candOtpBox" style="display:none; margin-top:14px; border-top:1px dashed #d6d3d1; padding-top:14px;">
+          <p id="candOtpNotice" style="font-size:12px; color:#15803d; font-weight:bold; margin-bottom:8px;"></p>
+          <div class="form-group">
+            <label>Enter 6-Digit OTP</label>
+            <input type="text" id="candLoginOtpInput" placeholder="Enter OTP">
+          </div>
+          <button class="submit-btn" style="background:#15803d; color:#ffffff;" onclick="verifyCandidateLoginOTP()">Verify OTP & Login</button>
         </div>
-        <button class="submit-btn" style="background:#ea580c; color:#ffffff;" onclick="executeCandidateAuth()">Login to Portal</button>
       </div>
     </section>
 
-    <!-- 5. ADMIN DASHBOARD -->
+    <!-- 4. CANDIDATE DASHBOARD -->
+    <section id="sec-candidateDashboard" class="page-section">
+      <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 id="candWelcomeName">Welcome</h2>
+          <p id="candWelcomeId" style="font-size:12px; color:#78716c;"></p>
+        </div>
+        <button onclick="navigateTo('home')" class="nav-btn" style="background:#78716c; border:none;">Logout</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+        <!-- Option 1: Continue Application -->
+        <div class="card" style="border-top:4px solid #ea580c; text-align:center;">
+          <h3 style="margin-bottom:8px; color:#ea580c;">1. Continue Application</h3>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Fill, review, verify with OTP and submit your scholarship application.</p>
+          <button class="btn-primary" onclick="openApplicationForm()">Open Application Form</button>
+        </div>
+
+        <!-- Option 2: Track Status -->
+        <div class="card" style="border-top:4px solid #0284c7; text-align:center;">
+          <h3 style="margin-bottom:8px; color:#0284c7;">2. Track Status</h3>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Check the current scrutiny, approval, and disbursement stage of your application.</p>
+          <button class="btn-primary" style="background:#0284c7;" onclick="openTrackStatus()">Track Application Status</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 6-STEP SCHOLARSHIP APPLICATION FORM -->
+    <section id="sec-applicationForm" class="page-section">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3>Scholarship Application Form (Session 2026-27)</h3>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Dashboard</button>
+        </div>
+
+        <!-- Stepper Indicator -->
+        <div class="stepper">
+          <div class="step-item active" id="stepIndicator1">1. Personal</div>
+          <div class="step-item" id="stepIndicator2">2. Parents</div>
+          <div class="step-item" id="stepIndicator3">3. Contact</div>
+          <div class="step-item" id="stepIndicator4">4. Education</div>
+          <div class="step-item" id="stepIndicator5">5. Bank</div>
+          <div class="step-item" id="stepIndicator6">6. Documents</div>
+        </div>
+
+        <form id="scholarshipMultiForm" onsubmit="return false;">
+          <!-- STEP 1: Personal Details (Only Next) -->
+          <div class="form-step active" id="formStep1">
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 1: Personal Details</h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="f_name" required>
+              </div>
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="f_dob" required>
+              </div>
+              <div class="form-group">
+                <label>Caste</label>
+                <select id="f_caste" required>
+                  <option value="General">General</option>
+                  <option value="SC">SC</option>
+                  <option value="ST">ST</option>
+                  <option value="OBC">OBC</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <select id="f_gender" required>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Aadhaar No.</label>
+                <input type="text" id="f_aadhaar" placeholder="Enter Aadhaar Number" required>
+              </div>
+            </div>
+            <div class="step-btn-container" style="justify-content: flex-end;">
+              <button type="button" class="btn-primary" onclick="goToStep(2)">Next Step &rarr;</button>
+            </div>
+          </div>
+
+          <!-- STEP 2: Parents and Guardian Details (Back / Next) -->
+          <div class="form-step" id="formStep2">
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 2: Parents & Guardian Details</h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Father's Name</label>
+                <input type="text" id="f_fname" required>
+              </div>
+              <div class="form-group">
+                <label>Father's Occupation</label>
+                <input type="text" id="f_focc" required>
+              </div>
+              <div class="form-group">
+                <label>Mother's Name</label>
+                <input type="text" id="f_mname" required>
+              </div>
+              <div class="form-group">
+                <label>Mother's Occupation</label>
+                <input type="text" id="f_mocc" required>
+              </div>
+              <div class="form-group">
+                <label>Guardian's Name</label>
+                <input type="text" id="f_gname">
+              </div>
+              <div class="form-group">
+                <label>Guardian's Occupation</label>
+                <input type="text" id="f_gocc">
+              </div>
+              <div class="form-group">
+                <label>Relation with Guardian</label>
+                <input type="text" id="f_grel">
+              </div>
+            </div>
+            <div class="step-btn-container">
+              <button type="button" class="btn-neutral" onclick="goToStep(1)">&larr; Back</button>
+              <button type="button" class="btn-primary" onclick="goToStep(3)">Next Step &rarr;</button>
+            </div>
+          </div>
+
+          <!-- STEP 3: Contact and Address Details (Back / Next) -->
+          <div class="form-step" id="formStep3">
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 3: Contact & Address Details</h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Mobile No.</label>
+                <input type="tel" id="f_mobile" required>
+              </div>
+              <div class="form-group">
+                <label>Alternative Mobile No.</label>
+                <input type="tel" id="f_altmobile">
+              </div>
+              <div class="form-group">
+                <label>WhatsApp No.</label>
+                <input type="tel" id="f_whatsapp" required>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="f_email" required>
+              </div>
+              <div class="form-group">
+                <label>Village</label>
+                <input type="text" id="f_vill" required>
+              </div>
+              <div class="form-group">
+                <label>P.O.</label>
+                <input type="text" id="f_po" required>
+              </div>
+              <div class="form-group">
+                <label>P.S.</label>
+                <input type="text" id="f_ps" required>
+              </div>
+              <div class="form-group">
+                <label>District</label>
+                <input type="text" id="f_dist" required>
+              </div>
+              <div class="form-group">
+                <label>PIN</label>
+                <input type="text" id="f_pin" required>
+              </div>
+            </div>
+            <div class="step-btn-container">
+              <button type="button" class="btn-neutral" onclick="goToStep(2)">&larr; Back</button>
+              <button type="button" class="btn-primary" onclick="goToStep(4)">Next Step &rarr;</button>
+            </div>
+          </div>
+
+          <!-- STEP 4: Educational & Income Details (Back / Next) -->
+          <div class="form-step" id="formStep4">
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 4: Educational & Income Details</h4>
+            <h5 style="font-size:13px; color:#44403c; margin-bottom:8px;">A. Present Course Details</h5>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Present Class of Study</label>
+                <input type="text" id="f_currclass" placeholder="e.g. B.A. 1st Year / Class XI" required>
+              </div>
+              <div class="form-group">
+                <label>Admission Date</label>
+                <input type="date" id="f_admdate" required>
+              </div>
+              <div class="form-group">
+                <label>Department / Stream Name</label>
+                <input type="text" id="f_stream" placeholder="e.g. Arts / Science / Law" required>
+              </div>
+              <div class="form-group">
+                <label>Institution Name</label>
+                <input type="text" id="f_instname" placeholder="e.g. Jhargram Raj College" required>
+              </div>
+            </div>
+
+            <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">B. Qualifying Course Details</h5>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Last Qualifying Examination</label>
+                <input type="text" id="f_lastexam" placeholder="e.g. Madhyamik / H.S." required>
+              </div>
+              <div class="form-group">
+                <label>Full Marks</label>
+                <input type="number" id="f_fullmarks" oninput="calculatePercentage()" required>
+              </div>
+              <div class="form-group">
+                <label>Marks Obtained</label>
+                <input type="number" id="f_marksobtained" oninput="calculatePercentage()" required>
+              </div>
+              <div class="form-group">
+                <label>Percentage (%)</label>
+                <input type="text" id="f_percentage" readonly style="background:#f5f5f4; font-weight:bold; color:#15803d;">
+              </div>
+            </div>
+
+            <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">C. Income Details</h5>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Monthly Income (₹)</label>
+                <input type="number" id="f_income" placeholder="Family monthly income" required>
+              </div>
+            </div>
+
+            <div class="step-btn-container">
+              <button type="button" class="btn-neutral" onclick="goToStep(3)">&larr; Back</button>
+              <button type="button" class="btn-primary" onclick="goToStep(5)">Next Step &rarr;</button>
+            </div>
+          </div>
+
+          <!-- STEP 5: Bank Details (Back / Next) -->
+          <div class="form-step" id="formStep5">
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 5: Bank Details</h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>A/C Holder Name (as per Bank Passbook)</label>
+                <input type="text" id="f_acholder" required>
+              </div>
+              <div class="form-group">
+                <label>IFSC Code</label>
+                <input type="text" id="f_ifsc" required>
+              </div>
+              <div class="form-group">
+                <label>A/C No.</label>
+                <input type="text" id="f_acno" required>
+              </div>
+              <div class="form-group">
+                <label>Bank Name</label>
+                <input type="text" id="f_bankname" required>
+              </div>
+            </div>
+            <div class="step-btn-container">
+              <button type="button" class="btn-neutral" onclick="goToStep(4)">&larr; Back</button>
+              <button type="button" class="btn-primary" onclick="goToStep(6)">Next Step &rarr;</button>
+            </div>
+          </div>
+
+          <!-- STEP 6: Document Upload (Back / Submit Application) -->
+          <div class="form-step" id="formStep6">
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Documents Upload</h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>a. Aadhaar Card (PDF/Image)</label>
+                <input type="file" id="f_doc_aadhaar">
+              </div>
+              <div class="form-group">
+                <label>b. Admission Receipt</label>
+                <input type="file" id="f_doc_adm">
+              </div>
+              <div class="form-group">
+                <label>c. Qualifying Examination Marksheet</label>
+                <input type="file" id="f_doc_mark">
+              </div>
+              <div class="form-group">
+                <label>d. Bank Passbook</label>
+                <input type="file" id="f_doc_passbook">
+              </div>
+              <div class="form-group">
+                <label>e. Income Proof</label>
+                <input type="file" id="f_doc_income">
+              </div>
+              <div class="form-group">
+                <label>f. Application Prayer</label>
+                <input type="file" id="f_doc_prayer">
+              </div>
+            </div>
+
+            <!-- Preview Modal Trigger & Verification Section -->
+            <div style="background:#fffbeb; border:1px solid #fef3c7; padding:14px; border-radius:8px; margin-top:16px;">
+              <h5 style="color:#b45309; margin-bottom:8px;">Final Verification & Security Check</h5>
+              
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <div class="captcha-box" id="captchaDisplay">4A9X</div>
+                <button type="button" style="padding:4px 8px; font-size:11px;" onclick="refreshCaptcha()">Refresh Captcha</button>
+              </div>
+              
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Enter Captcha</label>
+                  <input type="text" id="f_captchaInput" placeholder="Enter text shown above">
+                </div>
+                <div class="form-group">
+                  <label>Mobile OTP (Sent to candidate mobile)</label>
+                  <div style="display:flex; gap:6px;">
+                    <input type="text" id="f_submitOtpInput" placeholder="Enter OTP">
+                    <button type="button" class="btn-primary" style="padding:6px 12px; font-size:12px; white-space:nowrap;" onclick="sendFinalSubmitOTP()">Send OTP</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-btn-container">
+              <button type="button" class="btn-neutral" onclick="goToStep(5)">&larr; Back</button>
+              <div style="display:flex; gap:8px;">
+                <button type="button" class="btn-secondary" onclick="openPreviewModal()">Preview Application</button>
+                <button type="button" class="btn-primary" onclick="executeFinalApplicationSubmit()">Submit Application</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 6. TRACK STATUS -->
+    <section id="sec-trackStatus" class="page-section">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 id="trackHeading">Track Application Status</h3>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Dashboard</button>
+        </div>
+        <div id="trackTimelineBox" style="margin-top:14px; display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+    </section>
+
+    <!-- 7. ADMIN DASHBOARD -->
     <section id="sec-adminDashboard" class="page-section">
-      <!-- Admin Top bar -->
       <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
           <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL CONSOLE</span>
           <h2 id="activeAdminTitle" style="font-size:16px; margin-top:4px;">Administrator</h2>
-          <p id="activeAdminIdText" style="font-size:11px; color:#78716c;"></p>
         </div>
-        <div style="display:flex; gap:6px;">
-          <button onclick="navigateTo('home')" class="nav-btn" style="background:#ef4444; border:none;">Logout</button>
-        </div>
+        <button onclick="navigateTo('home')" class="nav-btn" style="background:#ef4444; border:none;">Logout</button>
       </div>
 
-      <!-- Action Panel 1: Create Candidate Credentials -->
+      <!-- Admin creates Candidate ID & Password -->
       <div class="card" style="border-left: 5px solid #ea580c;">
-        <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Create New Candidate Credentials</h3>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
-          <div>
-            <label>Candidate Name</label>
-            <input type="text" id="newCandName" placeholder="Full Name">
+        <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Generate Candidate Credentials (Name & Phone Only)</h3>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
+          <div class="form-group">
+            <label>Candidate Full Name</label>
+            <input type="text" id="genCandName" placeholder="Enter Full Name">
           </div>
-          <div>
-            <label>Mobile Number</label>
-            <input type="text" id="newCandMobile" placeholder="10-digit Mobile">
-          </div>
-          <div>
-            <label>Assign Candidate ID</label>
-            <input type="text" id="newCandId" placeholder="e.g. RKM-2026-002">
-          </div>
-          <div>
-            <label>Assign Password</label>
-            <input type="text" id="newCandPass" placeholder="e.g. Student@2026">
+          <div class="form-group">
+            <label>Candidate Mobile Number</label>
+            <input type="tel" id="genCandMobile" placeholder="10-digit Mobile">
           </div>
         </div>
-        <div style="margin-top:12px; display:flex; justify-content:flex-end;">
-          <button class="btn-primary" style="padding:8px 16px; font-size:13px;" onclick="registerNewCandidate()">Create Candidate Account</button>
+        <div style="margin-top:8px; display:flex; justify-content:flex-end;">
+          <button class="btn-primary" onclick="adminGenerateCredentials()">Generate & Save Credentials</button>
         </div>
       </div>
 
-      <!-- Action Panel 2: Applications Table & Excel Export -->
+      <!-- Application Records Table -->
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-          <h3>Scholarship Applications (Session 2026-27)</h3>
-          <!-- Export All to Excel -->
-          <button class="btn-excel" onclick="exportApplicationsToCSV()">
-            📥 Export All to Excel (CSV)
-          </button>
+          <h3>Scholarship Applications (2026-27)</h3>
+          <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export All to Excel (CSV)</button>
         </div>
-
         <div style="overflow-x:auto;">
           <table>
             <thead>
@@ -540,51 +833,31 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="adminAppTableBody">
-              <!-- Dynamically populated via JS -->
-            </tbody>
+            <tbody id="adminAppTableBody"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 6. CANDIDATE DASHBOARD -->
-    <section id="sec-candidateDashboard" class="page-section">
-      <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <h2 id="candWelcomeName">Welcome, Candidate</h2>
-          <p id="candWelcomeId">Candidate ID: </p>
-        </div>
-        <button onclick="navigateTo('home')" class="nav-btn" style="background:#78716c; border:none;">Logout</button>
-      </div>
-
-      <div class="card">
-        <h3>Application Status (App No: RKM-SCH-2026-001)</h3>
-        <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
-          <div style="padding:10px; background:#dcfce7; border-left:4px solid #16a34a; border-radius:4px; font-size:13px;">
-            <strong>Stage 1: Submitted</strong> - Done on 02 Oct 2026
-          </div>
-          <div style="padding:10px; background:#ffedd5; border-left:4px solid #ea580c; border-radius:4px; font-size:13px; font-weight:bold;">
-            Stage 2: Under Verification - Scrutiny under progress at RKMA Jhargram
-          </div>
-          <div style="padding:10px; background:#f5f5f4; border-left:4px solid #d6d3d1; border-radius:4px; font-size:13px; color:#a8a29e;">
-            Stage 3: Approved
-          </div>
-          <div style="padding:10px; background:#f5f5f4; border-left:4px solid #d6d3d1; border-radius:4px; font-size:13px; color:#a8a29e;">
-            Stage 4: Amount Disbursed
-          </div>
+    <!-- Application Preview Modal -->
+    <div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:200; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:10px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+        <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Preview Scholarship Application</h3>
+        <div id="previewDetailsArea" style="font-size:13px; line-height:1.6;"></div>
+        <div style="margin-top:16px; text-align:right;">
+          <button type="button" class="btn-neutral" onclick="closePreviewModal()">Close Preview</button>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- Hidden Template for PDF Printing -->
+    <!-- Official Printable Format for PDF -->
     <div id="printableApplication" style="display:none; padding:30px; font-family:serif; background:#fff;">
       <div style="text-align:center; border-bottom:2px solid #7f1d1d; padding-bottom:12px; margin-bottom:20px;">
         <h2 style="color:#7f1d1d; margin-bottom:4px;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
-        <p style="font-size:14px;">P.O. & Dist. - Jhargram, PIN - 721507, West Bengal</p>
+        <p style="font-size:14px;">P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India</p>
         <h3 style="margin-top:10px; text-decoration:underline;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
       </div>
-      <div id="pdfContentBody" style="line-height:1.8; font-size:14px;"></div>
+      <div id="pdfContentBody"></div>
       <div style="margin-top:60px; display:flex; justify-content:space-between;">
         <div style="text-align:center;">
           <br>___________________________<br>
@@ -606,60 +879,20 @@
   </footer>
 
   <script>
-    // In-memory data store with LocalStorage persistence
-    let applications = JSON.parse(localStorage.getItem('rkm_apps') || 'null') || [
-      {
-        appNo: 'RKM-2026-01',
-        candidateId: 'RKM-2026-001',
-        name: 'Sourav Mahato',
-        father: 'Gouranga Mahato',
-        mobile: '9876543210',
-        course: 'B.Sc Mathematics',
-        institution: 'Jhargram Raj College',
-        marksPct: '89.4%',
-        income: '6000',
-        bankAcc: 'XXXXXX4812',
-        ifsc: 'SBIN0000103',
-        status: 'Under Verification',
-        date: '2026-10-02'
-      },
-      {
-        appNo: 'RKM-2026-02',
-        candidateId: 'RKM-2026-002',
-        name: 'Anirban Mandi',
-        father: 'Sunil Mandi',
-        mobile: '9876501234',
-        course: 'D.El.Ed (2nd Year)',
-        institution: 'DIET Jhargram',
-        marksPct: '82.5%',
-        income: '4500',
-        bankAcc: 'XXXXXX9823',
-        ifsc: 'PUNB0123400',
-        status: 'Approved',
-        date: '2026-10-03'
-      }
-    ];
-
-    let candidateUsers = JSON.parse(localStorage.getItem('rkm_cand_users') || 'null') || {
-      'RKM-2026-001': { pass: 'RKM@Student2026', name: 'Sourav Mahato' }
+    // Storage Initializer
+    let applications = JSON.parse(localStorage.getItem('rkm_apps') || '[]');
+    let candidates = JSON.parse(localStorage.getItem('rkm_cand_db') || 'null') || {
+      'RKM-2026-001': { name: 'Sourav Mahato', mobile: '9876543210', pass: 'RKMA@2026' }
     };
+
+    let activeCandidateId = null;
+    let pendingLoginOtp = null;
+    let pendingSubmitOtp = null;
+    let currentGeneratedCaptcha = '';
 
     function saveState() {
       localStorage.setItem('rkm_apps', JSON.stringify(applications));
-      localStorage.setItem('rkm_cand_users', JSON.stringify(candidateUsers));
-    }
-
-    const DEFAULT_PASSWORDS = {
-      'Secretary@RKMAJGM': 'RKMAJGM@Scholarship',
-      'SBMAHARAJ@RKMAJGM': 'RKMAJGM@Scholarship',
-      'DEOSCH@RKMAJGM': 'RKMAJGM@Scholarship'
-    };
-
-    function getStoredPassword(adminId) {
-      return localStorage.getItem('pwd_' + adminId) || DEFAULT_PASSWORDS[adminId];
-    }
-    function setStoredPassword(adminId, newPass) {
-      localStorage.setItem('pwd_' + adminId, newPass);
+      localStorage.setItem('rkm_cand_db', JSON.stringify(candidates));
     }
 
     function navigateTo(sectionId) {
@@ -671,84 +904,242 @@
       }
     }
 
-    function applyAdminPreset(id) {
-      if (!id) return;
-      document.getElementById('adminIdField').value = id;
-      document.getElementById('adminPassField').value = '';
-      document.getElementById('adminPassField').focus();
-    }
-
+    // Admin Auth
     function executeAdminAuth() {
-      const id = document.getElementById('adminIdField').value.trim();
+      const selectedName = document.getElementById('adminDropdown').value;
       const pass = document.getElementById('adminPassField').value.trim();
-      const adminProfiles = {
-        'Secretary@RKMAJGM': 'SECRETARY, RKMA JHARGRAM',
-        'SBMAHARAJ@RKMAJGM': 'SWAMI BRAHMESHWARANANDA, RKMA JHARGRAM',
-        'DEOSCH@RKMAJGM': 'Data Entry Operator, RKMA JHARGRAM'
-      };
 
-      if (!id || !pass) {
-        alert('Both Admin ID and Password are required!');
+      if (!selectedName || !pass) {
+        alert('অনুগ্রহ করে অ্যাডমিন নির্বাচন করুন এবং পাসওয়ার্ড দিন!');
         return;
       }
-      if (adminProfiles[id] && pass === getStoredPassword(id)) {
-        document.getElementById('activeAdminTitle').innerText = adminProfiles[id];
-        document.getElementById('activeAdminIdText').innerText = 'Logged ID: ' + id;
+      if (pass === 'RKMAJGM@Scholarship') {
+        document.getElementById('activeAdminTitle').innerText = selectedName;
         document.getElementById('adminPassField').value = '';
         renderAdminTable();
         navigateTo('adminDashboard');
       } else {
-        alert('Invalid Admin ID or Password!');
+        alert('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড প্রদান করুন।');
       }
     }
 
-    function executePasswordChange() {
-      const id = document.getElementById('cpAdminId').value.trim();
-      const oldPass = document.getElementById('cpOldPass').value.trim();
-      const newPass = document.getElementById('cpNewPass').value.trim();
-      const confirmPass = document.getElementById('cpConfirmPass').value.trim();
+    // Admin: Generate ID & Password using Name and Phone only
+    function adminGenerateCredentials() {
+      const name = document.getElementById('genCandName').value.trim();
+      const mobile = document.getElementById('genCandMobile').value.trim();
 
-      if (!id || !oldPass || !newPass || !confirmPass) {
-        alert('All fields are mandatory!');
-        return;
-      }
-      if (oldPass !== getStoredPassword(id)) {
-        alert('Current password is incorrect!');
-        return;
-      }
-      if (newPass.length < 6) {
-        alert('Password must be at least 6 characters!');
-        return;
-      }
-      if (newPass !== confirmPass) {
-        alert('New passwords do not match!');
-        return;
-      }
-      setStoredPassword(id, newPass);
-      alert('Password updated successfully!');
-      navigateTo('adminLogin');
-    }
-
-    // Register Candidate from Admin Panel
-    function registerNewCandidate() {
-      const name = document.getElementById('newCandName').value.trim();
-      const mobile = document.getElementById('newCandMobile').value.trim();
-      const id = document.getElementById('newCandId').value.trim();
-      const pass = document.getElementById('newCandPass').value.trim();
-
-      if (!name || !mobile || !id || !pass) {
-        alert('Please fill all Candidate fields!');
+      if (!name || mobile.length !== 10) {
+        alert('সঠিক পুরো নাম এবং ১০ সংখ্যার মোবাইল নম্বর দিন!');
         return;
       }
 
-      candidateUsers[id] = { pass: pass, name: name, mobile: mobile };
+      const count = Object.keys(candidates).length + 1;
+      const newId = 'RKM-2026-' + String(count).padStart(3, '0');
+      const newPass = 'RKMA@' + Math.floor(1000 + Math.random() * 9000);
+
+      candidates[newId] = { name: name, mobile: mobile, pass: newPass };
       saveState();
-      alert(`Candidate Account Created Successfully!\nCandidate ID: ${id}\nPassword: ${pass}`);
 
-      document.getElementById('newCandName').value = '';
-      document.getElementById('newCandMobile').value = '';
-      document.getElementById('newCandId').value = '';
-      document.getElementById('newCandPass').value = '';
+      alert(`ক্যান্ডিডেট একাউন্ট তৈরি সম্পন্ন!\n\nCandidate Name: ${name}\nMobile: ${mobile}\nCandidate ID: ${newId}\nPassword: ${newPass}`);
+
+      document.getElementById('genCandName').value = '';
+      document.getElementById('genCandMobile').value = '';
+    }
+
+    // Candidate Auth Step 1: Request OTP
+    function requestCandidateLoginOTP() {
+      const id = document.getElementById('candIdField').value.trim();
+      const pass = document.getElementById('candPassField').value.trim();
+
+      if (!candidates[id] || candidates[id].pass !== pass) {
+        alert('ভুল Candidate ID অথবা Password!');
+        return;
+      }
+
+      pendingLoginOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      const cand = candidates[id];
+      const maskedPhone = cand.mobile.slice(0, 2) + 'XXXXXX' + cand.mobile.slice(-2);
+
+      document.getElementById('candCredBox').style.display = 'none';
+      document.getElementById('candOtpBox').style.display = 'block';
+      document.getElementById('candOtpNotice').innerText = `OTP পাঠানো হয়েছে ${maskedPhone} নম্বরে। (ডেমো OTP: ${pendingLoginOtp})`;
+      activeCandidateId = id;
+    }
+
+    // Candidate Auth Step 2: Verify OTP
+    function verifyCandidateLoginOTP() {
+      const otpInput = document.getElementById('candLoginOtpInput').value.trim();
+
+      if (otpInput === pendingLoginOtp) {
+        const cand = candidates[activeCandidateId];
+        document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
+        document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + activeCandidateId + ' | Mobile: ' + cand.mobile;
+
+        // Reset
+        document.getElementById('candCredBox').style.display = 'block';
+        document.getElementById('candOtpBox').style.display = 'none';
+        document.getElementById('candIdField').value = '';
+        document.getElementById('candPassField').value = '';
+        document.getElementById('candLoginOtpInput').value = '';
+
+        navigateTo('candidateDashboard');
+      } else {
+        alert('ভুল OTP! সঠিক OTP প্রদান করুন।');
+      }
+    }
+
+    // Candidate Dashboard Buttons
+    function openApplicationForm() {
+      const cand = candidates[activeCandidateId];
+      document.getElementById('f_name').value = cand.name;
+      document.getElementById('f_mobile').value = cand.mobile;
+      refreshCaptcha();
+      goToStep(1);
+      navigateTo('applicationForm');
+    }
+
+    function openTrackStatus() {
+      const existing = applications.find(a => a.candidateId === activeCandidateId);
+      const box = document.getElementById('trackTimelineBox');
+
+      if (!existing) {
+        box.innerHTML = `<div style="padding:14px; background:#fff7ed; border-radius:6px; font-size:13px; color:#c2410c;">আপনি এখনো কোনো আবেদনপত্র সাবমিট করেননি। Continue Application অপশনে গিয়ে ফর্ম পূরণ করুন।</div>`;
+      } else {
+        box.innerHTML = `
+          <div style="padding:10px; background:#dcfce7; border-left:4px solid #16a34a; border-radius:4px; font-size:13px;">
+            <strong>Stage 1: Submitted</strong> - Completed on ${existing.submissionDate} (App No: ${existing.appNo})
+          </div>
+          <div style="padding:10px; background:#ffedd5; border-left:4px solid #ea580c; border-radius:4px; font-size:13px; font-weight:bold;">
+            Stage 2: Under Verification - Scrutiny currently in progress at RKMA Jhargram
+          </div>
+          <div style="padding:10px; background:#f5f5f4; border-left:4px solid #d6d3d1; border-radius:4px; font-size:13px; color:#a8a29e;">
+            Stage 3: Approved
+          </div>
+          <div style="padding:10px; background:#f5f5f4; border-left:4px solid #d6d3d1; border-radius:4px; font-size:13px; color:#a8a29e;">
+            Stage 4: Amount Disbursed
+          </div>
+        `;
+      }
+      navigateTo('trackStatus');
+    }
+
+    // Stepper Navigation
+    function goToStep(stepNumber) {
+      document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+      document.querySelectorAll('.step-item').forEach((ind, idx) => {
+        ind.classList.remove('active');
+        if (idx + 1 < stepNumber) ind.classList.add('completed');
+        else ind.classList.remove('completed');
+      });
+
+      document.getElementById('formStep' + stepNumber).classList.add('active');
+      document.getElementById('stepIndicator' + stepNumber).classList.add('active');
+      window.scrollTo(0, 100);
+    }
+
+    // Auto-calculate Percentage
+    function calculatePercentage() {
+      const full = parseFloat(document.getElementById('f_fullmarks').value);
+      const obt = parseFloat(document.getElementById('f_marksobtained').value);
+      if (full > 0 && obt >= 0) {
+        const pct = ((obt / full) * 100).toFixed(2);
+        document.getElementById('f_percentage').value = pct + '%';
+      }
+    }
+
+    // Captcha Generator
+    function refreshCaptcha() {
+      const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+      let result = '';
+      for (let i = 0; i < 4; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      currentGeneratedCaptcha = result;
+      document.getElementById('captchaDisplay').innerText = result;
+    }
+
+    // Final OTP
+    function sendFinalSubmitOTP() {
+      const cand = candidates[activeCandidateId];
+      pendingSubmitOtp = Math.floor(1000 + Math.random() * 9000).toString();
+      alert(`মোবাইল OTP পাঠানো হয়েছে ${cand.mobile} নম্বরে।\n\n(ডেমো OTP: ${pendingSubmitOtp})`);
+    }
+
+    // Preview Application Modal
+    function openPreviewModal() {
+      const body = document.getElementById('previewDetailsArea');
+      body.innerHTML = `
+        <p><strong>1. Personal:</strong> Name: ${document.getElementById('f_name').value}, DOB: ${document.getElementById('f_dob').value}, Caste: ${document.getElementById('f_caste').value}, Gender: ${document.getElementById('f_gender').value}, Aadhaar: [Aadhaar Redacted]</p>
+        <p><strong>2. Parents & Guardian:</strong> Father: ${document.getElementById('f_fname').value} (${document.getElementById('f_focc').value}), Mother: ${document.getElementById('f_mname').value} (${document.getElementById('f_mocc').value}), Guardian: ${document.getElementById('f_gname').value} (${document.getElementById('f_grel').value})</p>
+        <p><strong>3. Contact & Address:</strong> Mobile: ${document.getElementById('f_mobile').value}, WhatsApp: ${document.getElementById('f_whatsapp').value}, Email: ${document.getElementById('f_email').value}, Address: Vill: ${document.getElementById('f_vill').value}, P.O: ${document.getElementById('f_po').value}, P.S: ${document.getElementById('f_ps').value}, Dist: ${document.getElementById('f_dist').value}, PIN: ${document.getElementById('f_pin').value}</p>
+        <p><strong>4. Education & Income:</strong> Class: ${document.getElementById('f_currclass').value}, Stream: ${document.getElementById('f_stream').value}, Institution: ${document.getElementById('f_instname').value}, Last Exam: ${document.getElementById('f_lastexam').value}, Marks: ${document.getElementById('f_marksobtained').value}/${document.getElementById('f_fullmarks').value} (${document.getElementById('f_percentage').value}), Monthly Income: ₹${document.getElementById('f_income').value}</p>
+        <p><strong>5. Bank Details:</strong> A/C Holder: ${document.getElementById('f_acholder').value}, Bank: ${document.getElementById('f_bankname').value}, A/C No: ${document.getElementById('f_acno').value}, IFSC: ${document.getElementById('f_ifsc').value}</p>
+      `;
+      document.getElementById('previewModal').style.display = 'flex';
+    }
+
+    function closePreviewModal() {
+      document.getElementById('previewModal').style.display = 'none';
+    }
+
+    // Final Application Submission with Captcha & OTP Verification
+    function executeFinalApplicationSubmit() {
+      const captchaInput = document.getElementById('f_captchaInput').value.trim();
+      const otpInput = document.getElementById('f_submitOtpInput').value.trim();
+
+      if (captchaInput.toUpperCase() !== currentGeneratedCaptcha) {
+        alert('ভুল ক্যাপচা কোড! পুনরায় সঠিক ক্যাপচা দিন।');
+        return;
+      }
+
+      if (!pendingSubmitOtp || otpInput !== pendingSubmitOtp) {
+        alert('ভুল মোবাইল OTP! অনুগ্রহ করে Send OTP বাটনে ক্লিক করে সঠিক OTP দিন।');
+        return;
+      }
+
+      const newAppNo = 'RKM-SCH-2026-' + String(applications.length + 1).padStart(3, '0');
+      const record = {
+        appNo: newAppNo,
+        candidateId: activeCandidateId,
+        name: document.getElementById('f_name').value,
+        dob: document.getElementById('f_dob').value,
+        caste: document.getElementById('f_caste').value,
+        gender: document.getElementById('f_gender').value,
+        father: document.getElementById('f_fname').value,
+        fatherOcc: document.getElementById('f_focc').value,
+        mother: document.getElementById('f_mname').value,
+        motherOcc: document.getElementById('f_mocc').value,
+        guardian: document.getElementById('f_gname').value,
+        guardianRel: document.getElementById('f_grel').value,
+        mobile: document.getElementById('f_mobile').value,
+        altMobile: document.getElementById('f_altmobile').value,
+        whatsapp: document.getElementById('f_whatsapp').value,
+        email: document.getElementById('f_email').value,
+        vill: document.getElementById('f_vill').value,
+        po: document.getElementById('f_po').value,
+        ps: document.getElementById('f_ps').value,
+        dist: document.getElementById('f_dist').value,
+        pin: document.getElementById('f_pin').value,
+        currClass: document.getElementById('f_currclass').value,
+        admDate: document.getElementById('f_admdate').value,
+        stream: document.getElementById('f_stream').value,
+        institution: document.getElementById('f_instname').value,
+        lastExam: document.getElementById('f_lastexam').value,
+        marksPct: document.getElementById('f_percentage').value,
+        income: document.getElementById('f_income').value,
+        acHolder: document.getElementById('f_acholder').value,
+        bankAcc: document.getElementById('f_acno').value,
+        ifsc: document.getElementById('f_ifsc').value,
+        bankName: document.getElementById('f_bankname').value,
+        status: 'Submitted',
+        submissionDate: new Date().toISOString().slice(0, 10)
+      };
+
+      applications.push(record);
+      saveState();
+
+      alert(`অভিনন্দন! আপনার আবেদন সফলভাবে জমা হয়েছে।\n\nApplication No: ${newAppNo}\nStatus: Submitted`);
+      navigateTo('candidateDashboard');
     }
 
     // Render Admin Table
@@ -761,10 +1152,10 @@
         tr.innerHTML = `
           <td><strong>${app.appNo}</strong></td>
           <td>${app.name}<br><span style="color:#78716c; font-size:10px;">ID: ${app.candidateId}</span></td>
-          <td>${app.course}<br><span style="color:#78716c; font-size:10px;">${app.institution}</span></td>
+          <td>${app.currClass} (${app.stream})<br><span style="color:#78716c; font-size:10px;">${app.institution}</span></td>
           <td style="color:#15803d; font-weight:bold;">${app.marksPct}</td>
           <td>₹${app.income}</td>
-          <td><span class="status-tag">${app.status}</span></td>
+          <td><span style="display:inline-block; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:bold; background:#ffedd5; color:#9a3412;">${app.status}</span></td>
           <td>
             <div class="action-btn-group">
               <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
@@ -779,77 +1170,79 @@
     // Delete Application
     function deleteApplication(index) {
       const item = applications[index];
-      if (confirm(`Are you sure you want to delete application "${item.appNo}" for ${item.name}? This action cannot be undone.`)) {
+      if (confirm(`আপনি কি নিশ্চিত যে অ্যাপ্লিকেশন "${item.appNo}" (${item.name}) ডিলিট করতে চান?`)) {
         applications.splice(index, 1);
         saveState();
         renderAdminTable();
-        alert('Application deleted successfully.');
+        alert('অ্যাপ্লিকেশন সফলভাবে মুছে ফেলা হয়েছে।');
       }
     }
 
-    // Download Application as PDF
+    // Comprehensive PDF Download for Admin (All Details in One)
     function downloadApplicationPDF(index) {
       const app = applications[index];
-      const printable = document.getElementById('printableApplication');
       const body = document.getElementById('pdfContentBody');
 
       body.innerHTML = `
-        <table style="width:100%; border:1px solid #777; border-collapse:collapse; margin-top:10px;">
-          <tr><td style="padding:6px; border:1px solid #777; width:30%;"><strong>Application No:</strong></td><td style="padding:6px; border:1px solid #777;">${app.appNo}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Candidate ID:</strong></td><td style="padding:6px; border:1px solid #777;">${app.candidateId}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Candidate Full Name:</strong></td><td style="padding:6px; border:1px solid #777;">${app.name}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Father's Name:</strong></td><td style="padding:6px; border:1px solid #777;">${app.father}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Contact Mobile:</strong></td><td style="padding:6px; border:1px solid #777;">${app.mobile}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Course & Year:</strong></td><td style="padding:6px; border:1px solid #777;">${app.course}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Institution Name:</strong></td><td style="padding:6px; border:1px solid #777;">${app.institution}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Marks Obtained (%):</strong></td><td style="padding:6px; border:1px solid #777;">${app.marksPct}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Family Monthly Income:</strong></td><td style="padding:6px; border:1px solid #777;">₹${app.income}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Bank A/C No:</strong></td><td style="padding:6px; border:1px solid #777;">${app.bankAcc}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Bank IFSC Code:</strong></td><td style="padding:6px; border:1px solid #777;">${app.ifsc}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Current Verification Status:</strong></td><td style="padding:6px; border:1px solid #777;">${app.status}</td></tr>
-          <tr><td style="padding:6px; border:1px solid #777;"><strong>Submission Date:</strong></td><td style="padding:6px; border:1px solid #777;">${app.date}</td></tr>
+        <table style="width:100%; border:1px solid #444; border-collapse:collapse; font-size:13px; margin-bottom:12px;">
+          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">1. Application & Personal Details</th></tr>
+          <tr><td style="padding:5px; border:1px solid #444; width:35%;">Application Number</td><td style="padding:5px; border:1px solid #444;"><strong>${app.appNo}</strong></td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Candidate ID</td><td style="padding:5px; border:1px solid #444;">${app.candidateId}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Full Name</td><td style="padding:5px; border:1px solid #444;">${app.name}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Date of Birth / Gender / Caste</td><td style="padding:5px; border:1px solid #444;">${app.dob} | ${app.gender} | ${app.caste}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Aadhaar Card</td><td style="padding:5px; border:1px solid #444;">[Aadhaar Redacted] (Submitted for Verification)</td></tr>
+
+          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">2. Parents & Guardian Details</th></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Father's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${app.father} (${app.fatherOcc})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Mother's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${app.mother} (${app.motherOcc})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Guardian's Name & Relation</td><td style="padding:5px; border:1px solid #444;">${app.guardian} (${app.guardianRel})</td></tr>
+
+          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">3. Contact & Address Details</th></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Contact Numbers</td><td style="padding:5px; border:1px solid #444;">Mobile: ${app.mobile} | Alt: ${app.altMobile} | WA: ${app.whatsapp}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Email Address</td><td style="padding:5px; border:1px solid #444;">${app.email}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Full Address</td><td style="padding:5px; border:1px solid #444;">Vill: ${app.vill}, P.O: ${app.po}, P.S: ${app.ps}, Dist: ${app.dist}, PIN: ${app.pin}</td></tr>
+
+          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">4. Educational & Income Details</th></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Current Course & Institution</td><td style="padding:5px; border:1px solid #444;">${app.currClass} (${app.stream}) at ${app.institution}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Admission Date</td><td style="padding:5px; border:1px solid #444;">${app.admDate}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Last Qualifying Exam & Marks %</td><td style="padding:5px; border:1px solid #444;">${app.lastExam} (${app.marksPct})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Family Monthly Income</td><td style="padding:5px; border:1px solid #444;">₹${app.income}</td></tr>
+
+          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">5. Bank DBT Details</th></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">A/C Holder Name</td><td style="padding:5px; border:1px solid #444;">${app.acHolder}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Bank Name & A/C No</td><td style="padding:5px; border:1px solid #444;">${app.bankName} (A/C: ${app.bankAcc})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">IFSC Code</td><td style="padding:5px; border:1px solid #444;">${app.ifsc}</td></tr>
+
+          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">6. Documents & Official Verification</th></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Uploaded Documents</td><td style="padding:5px; border:1px solid #444;">Aadhaar, Admission Receipt, Marksheet, Passbook, Income Proof, Prayer</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Submission Date & Status</td><td style="padding:5px; border:1px solid #444;">${app.submissionDate} | Status: <strong>${app.status}</strong></td></tr>
         </table>
       `;
 
       window.print();
     }
 
-    // Export All Applications to Excel (CSV)
+    // Export All to CSV / Excel
     function exportApplicationsToCSV() {
       if (applications.length === 0) {
-        alert('No applications found to export!');
+        alert('এক্সপোর্ট করার মতো কোনো আবেদনপত্র জমা নেই!');
         return;
       }
 
-      let csv = 'Application No,Candidate ID,Full Name,Father Name,Mobile,Course,Institution,Marks Percentage,Monthly Income,Bank Account,IFSC,Status,Submission Date\n';
+      let csv = 'Application No,Candidate ID,Full Name,DOB,Caste,Gender,Father Name,Father Occ,Mother Name,Mobile,Email,Address,Class,Stream,Institution,Last Exam,Marks %,Income,Bank Name,Account No,IFSC,Status,Date\n';
 
       applications.forEach(app => {
-        csv += `"${app.appNo}","${app.candidateId}","${app.name}","${app.father}","${app.mobile}","${app.course}","${app.institution}","${app.marksPct}","${app.income}","${app.bankAcc}","${app.ifsc}","${app.status}","${app.date}"\n`;
+        csv += `"${app.appNo}","${app.candidateId}","${app.name}","${app.dob}","${app.caste}","${app.gender}","${app.father}","${app.fatherOcc}","${app.mother}","${app.mobile}","${app.email}","${app.vill}, ${app.dist}","${app.currClass}","${app.stream}","${app.institution}","${app.lastExam}","${app.marksPct}","${app.income}","${app.bankName}","${app.bankAcc}","${app.ifsc}","${app.status}","${app.submissionDate}"\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', `RKMA_Scholarship_Applications_${new Date().toISOString().slice(0,10)}.csv`);
+      link.setAttribute('download', `RKMA_Scholarship_All_Data_${new Date().toISOString().slice(0,10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    }
-
-    // Candidate Auth
-    function executeCandidateAuth() {
-      const cid = document.getElementById('candIdField').value.trim();
-      const cpass = document.getElementById('candPassField').value.trim();
-
-      if (candidateUsers[cid] && candidateUsers[cid].pass === cpass) {
-        document.getElementById('candWelcomeName').innerText = 'Welcome, ' + candidateUsers[cid].name;
-        document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + cid;
-        document.getElementById('candPassField').value = '';
-        navigateTo('candidateDashboard');
-      } else {
-        alert('Invalid Candidate ID or Password! If not created, please contact the RKMA Office.');
-      }
     }
   </script>
 </body>
