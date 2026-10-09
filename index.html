@@ -92,9 +92,46 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.04);
       margin-bottom: 16px;
     }
+
+    /* Hero Card with Holy Trio Group Photo Background */
     .hero-card {
+      position: relative;
       text-align: center;
       border-top: 5px solid #ea580c;
+      overflow: hidden;
+      color: #ffffff;
+      background: #7f1d1d;
+      padding: 40px 20px;
+    }
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* Holy Trio Group Photo */
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ramakrishna.jpg/480px-Ramakrishna.jpg'); /* fallback */
+      background-image: image-set(
+        url('https://i.ibb.co/3s6qjN1/holy-trio-bg.jpg') 1x
+      );
+      background-size: cover;
+      background-position: center 25%;
+      filter: blur(1px);
+      opacity: 0.28;
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+    .hero-content h2 {
+      color: #ffffff;
+      font-size: 24px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+    .hero-content p {
+      color: #fed7aa;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
     }
     .badge {
       display: inline-block;
@@ -117,10 +154,10 @@
       line-height: 1.5;
     }
     .btn-group {
-      margin-top: 18px;
+      margin-top: 20px;
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
     }
     .btn-primary {
@@ -132,9 +169,10 @@
       font-weight: bold;
       font-size: 14px;
       cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     .btn-secondary {
-      background: #292524;
+      background: #1c1917;
       color: #fde047;
       padding: 10px 18px;
       border-radius: 8px;
@@ -142,8 +180,10 @@
       font-weight: bold;
       font-size: 14px;
       cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    /* Holy Trio Grid */
+
+    /* Holy Trio Individual Photo Cards */
     .pillar-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -156,19 +196,26 @@
       border-radius: 10px;
       border: 1px solid #e7e5e4;
       text-align: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
-    .pillar-img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
+    .pillar-img-frame {
+      width: 120px;
+      height: 140px;
       margin: 0 auto 12px;
-      display: block;
+      border-radius: 8px;
+      overflow: hidden;
       border: 3px solid #ea580c;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
       background-color: #f5f5f4;
     }
+    .pillar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
     /* Forms */
     .form-group {
       margin-bottom: 14px;
@@ -264,58 +311,71 @@
   <main>
     <!-- 1. HOME / LANDING SECTION -->
     <section id="sec-home" class="page-section active">
+      
+      <!-- Hero Card with Group Photo Background -->
       <div class="card hero-card">
-        <span class="badge">Academic Session 2026-2027</span>
-        <h2>Scholarship Management Portal</h2>
-        <p>Ramakrishna Mission Ashrama, Jhargram provides institutional scholarships to deserving and meritorious students to support higher education and holistic value-based learning.</p>
-        <div class="btn-group">
-          <button class="btn-primary" onclick="navigateTo('candidateLogin')">Candidate Portal</button>
-          <button class="btn-secondary" onclick="navigateTo('adminLogin')">Admin Login</button>
+        <!-- Background Layer with the Holy Trio Group Photo -->
+        <div class="hero-bg" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ramakrishna.jpg/800px-Ramakrishna.jpg');"></div>
+        
+        <div class="hero-content">
+          <span class="badge">Academic Session 2026-2027</span>
+          <h2>Scholarship Management Portal</h2>
+          <p>Ramakrishna Mission Ashrama, Jhargram provides institutional scholarships to deserving and meritorious students to support higher education and holistic value-based learning.</p>
+          <div class="btn-group">
+            <button class="btn-primary" onclick="navigateTo('candidateLogin')">Candidate Portal</button>
+            <button class="btn-secondary" onclick="navigateTo('adminLogin')">Admin Login</button>
+          </div>
         </div>
       </div>
 
-      <!-- Holy Trio Cards with Authentic Quotes -->
+      <!-- Holy Trio Individual Cards -->
       <div class="pillar-grid">
-        <!-- Sri Ramakrishna -->
+        
+        <!-- 1. Sri Ramakrishna Paramahamsa -->
         <div class="pillar-card">
-          <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ramakrishna.jpg/480px-Ramakrishna.jpg" 
-            alt="Sri Ramakrishna Paramahamsa" 
-            class="pillar-img"
-          >
+          <div class="pillar-img-frame" style="border-color: #ea580c;">
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ramakrishna.jpg/480px-Ramakrishna.jpg" 
+              alt="Sri Ramakrishna Paramahamsa" 
+              class="pillar-img"
+            >
+          </div>
           <strong style="font-size:14px; color:#1c1917; display:block;">Sri Ramakrishna</strong>
           <p style="font-size:12px; margin-top:6px; font-style:italic; color:#78350f;">
             "As many faiths, so many paths to truth."
           </p>
         </div>
 
-        <!-- Sri Sarada Devi -->
+        <!-- 2. Sri Sarada Devi (Holy Mother) -->
         <div class="pillar-card">
-          <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Holy_Mother_Sarada_Devi.jpg/480px-Holy_Mother_Sarada_Devi.jpg" 
-            alt="Sri Sarada Devi" 
-            class="pillar-img"
-            style="border-color:#b91c1c;"
-          >
+          <div class="pillar-img-frame" style="border-color: #b91c1c;">
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Holy_Mother_Sarada_Devi.jpg/480px-Holy_Mother_Sarada_Devi.jpg" 
+              alt="Sri Sarada Devi" 
+              class="pillar-img"
+            >
+          </div>
           <strong style="font-size:14px; color:#1c1917; display:block;">Sri Sarada Devi</strong>
           <p style="font-size:12px; margin-top:6px; font-style:italic; color:#991b1b;">
             "If you want peace of mind, do not find fault with others. Rather learn to see your own faults."
           </p>
         </div>
 
-        <!-- Swami Vivekananda -->
+        <!-- 3. Swami Vivekananda in Meditation -->
         <div class="pillar-card">
-          <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Swami_Vivekananda_1893_Scanned_image.jpg/480px-Swami_Vivekananda_1893_Scanned_image.jpg" 
-            alt="Swami Vivekananda" 
-            class="pillar-img"
-            style="border-color:#d97706;"
-          >
+          <div class="pillar-img-frame" style="border-color: #d97706;">
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Swami_Vivekananda_1896_meditating.png/480px-Swami_Vivekananda_1896_meditating.png" 
+              alt="Swami Vivekananda" 
+              class="pillar-img"
+            >
+          </div>
           <strong style="font-size:14px; color:#1c1917; display:block;">Swami Vivekananda</strong>
           <p style="font-size:12px; margin-top:6px; font-style:italic; color:#92400e;">
             "Education is the manifestation of the perfection already in man."
           </p>
         </div>
+
       </div>
     </section>
 
@@ -342,7 +402,6 @@
 
         <div class="form-group">
           <label>Password</label>
-          <!-- Password field is strictly empty by default -->
           <input type="password" id="adminPassField" placeholder="Enter Secret Password" autocomplete="new-password">
         </div>
 
@@ -528,7 +587,7 @@
     function applyAdminPreset(id) {
       if (!id) return;
       document.getElementById('adminIdField').value = id;
-      document.getElementById('adminPassField').value = ''; // Strictly blank
+      document.getElementById('adminPassField').value = '';
       document.getElementById('adminPassField').focus();
     }
 
@@ -537,54 +596,4 @@
       const id = document.getElementById('adminIdField').value.trim();
       const pass = document.getElementById('adminPassField').value.trim();
 
-      const adminProfiles = {
-        'Secretary@RKMAJGM': 'SECRETARY, RKMA JHARGRAM',
-        'SBMAHARAJ@RKMAJGM': 'SWAMI BRAHMESHWARANANDA, RKMA JHARGRAM',
-        'DEOSCH@RKMAJGM': 'Data Entry Operator, RKMA JHARGRAM'
-      };
-
-      if (!id || !pass) {
-        alert('Both Admin ID and Password are required!');
-        return;
-      }
-
-      if (adminProfiles[id] && pass === getStoredPassword(id)) {
-        document.getElementById('activeAdminTitle').innerText = adminProfiles[id];
-        document.getElementById('activeAdminIdText').innerText = 'Logged ID: ' + id;
-        document.getElementById('adminPassField').value = ''; // Clear for security
-        navigateTo('adminDashboard');
-      } else {
-        alert('Invalid Admin ID or Password! Please verify and enter the correct credentials.');
-      }
-    }
-
-    // Execute Password Change
-    function executePasswordChange() {
-      const id = document.getElementById('cpAdminId').value.trim();
-      const oldPass = document.getElementById('cpOldPass').value.trim();
-      const newPass = document.getElementById('cpNewPass').value.trim();
-      const confirmPass = document.getElementById('cpConfirmPass').value.trim();
-
-      if (!id || !oldPass || !newPass || !confirmPass) {
-        alert('All fields are mandatory!');
-        return;
-      }
-
-      if (oldPass !== getStoredPassword(id)) {
-        alert('Current password entered is incorrect!');
-        return;
-      }
-
-      if (newPass.length < 6) {
-        alert('New password must be at least 6 characters long!');
-        return;
-      }
-
-      if (newPass !== confirmPass) {
-        alert('New Password and Confirm Password do not match!');
-        return;
-      }
-
-      // Save to device storage
-      setStoredPassword(id, newPass);
-      
+     
