@@ -11,12 +11,9 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
+    /* Clean, Elegant Normal Background without Joint Photo */
     body {
-            background-color: #faf8f5;
-      
-      background-attachment: fixed;
-      background-position: center;
-      background-size: cover;
+      background-color: #faf8f5;
       color: #2b2523;
       display: flex;
       flex-direction: column;
@@ -87,61 +84,49 @@
       display: block;
     }
     .card {
-      background: rgba(255, 255, 255, 0.98);
+      background: #ffffff;
       border-radius: 12px;
       padding: 22px;
       border: 1px solid #e7e5e4;
       box-shadow: 0 4px 10px rgba(0,0,0,0.06);
       margin-bottom: 20px;
     }
-    /* Hero Card */
+    
+    /* Solid Elegant Hero Card without Background Photo */
     .hero-card {
-      position: relative;
       text-align: center;
       border-top: 5px solid #ea580c;
-      overflow: hidden;
       color: #ffffff;
-      background: #7f1d1d;
-      padding: 40px 20px;
+      background: linear-gradient(135deg, #7f1d1d, #991b1b, #831843);
+      padding: 44px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(127, 29, 29, 0.2);
     }
-    .hero-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ');
-      background-size: cover;
-      background-position: center 30%;
-      opacity: 0.3;
-      z-index: 1;
-    }
-    .hero-content {
-      position: relative;
-      z-index: 2;
-    }
-    .hero-content h2 {
+    .hero-card h2 {
       color: #ffffff;
-      font-size: 24px;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
-    .hero-content p {
+    .hero-card p {
       color: #fed7aa;
       max-width: 700px;
-      margin: 8px auto 0;
+      margin: 10px auto 0;
       font-size: 14px;
+      line-height: 1.6;
     }
     .badge {
       display: inline-block;
-      padding: 4px 12px;
+      padding: 4px 14px;
       background: #ffedd5;
       color: #9a3412;
       border-radius: 20px;
       font-size: 12px;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .btn-group {
-      margin-top: 20px;
+      margin-top: 22px;
       display: flex;
       justify-content: center;
       gap: 12px;
@@ -178,7 +163,7 @@
       cursor: pointer;
     }
 
-    /* Holy Trio Frames */
+    /* Holy Trio Individual Photo Cards */
     .pillar-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -186,7 +171,7 @@
       margin-top: 20px;
     }
     .pillar-card {
-      background: rgba(255, 255, 255, 0.98);
+      background: #ffffff;
       padding: 20px 16px;
       border-radius: 12px;
       border: 1px solid #e7e5e4;
@@ -199,7 +184,7 @@
       border-radius: 8px;
       overflow: hidden;
       border: 4px solid #ea580c;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
       background-color: #f5f5f4;
     }
     .pillar-img {
@@ -370,8 +355,8 @@
       <div class="brand" onclick="navigateTo('home')">
         <div class="om-badge">ॐ</div>
         <div>
-          <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION ASHRAMA</div>
-          <div style="font-size:11px; color:#fed7aa;">Satyabanpally, Jhargram, 721507</div>
+          <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION</div>
+          <div style="font-size:11px; color:#fed7aa;">Ashrama, Jhargram - 721507</div>
         </div>
       </div>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
@@ -385,18 +370,18 @@
 
   <main>
     <!-- 1. LANDING PAGE -->
-    <section id="sec-home" class="page-section active"
-          <span class="badge">Academic Session 2026-2027</span>
-          <h2>Scholarship Management Portal</h2>
-          <p>Ramakrishna Mission Ashrama, Jhargram provides institutional scholarships to deserving and meritorious students to support higher education and holistic value-based learning.</p>
-          <div class="btn-group">
-            <button class="btn-primary" onclick="navigateTo('candidateLogin')">Candidate Portal</button>
-            <button class="btn-secondary" onclick="navigateTo('adminLogin')">Admin Login</button>
-          </div>
+    <section id="sec-home" class="page-section active">
+      <div class="card hero-card">
+        <span class="badge">Academic Session 2026-2027</span>
+        <h2>Scholarship Management Portal</h2>
+        <p>Ramakrishna Mission Ashrama, Jhargram provides institutional scholarships to deserving and meritorious students to support higher education and holistic value-based learning.</p>
+        <div class="btn-group">
+          <button class="btn-primary" onclick="navigateTo('candidateLogin')">Candidate Portal</button>
+          <button class="btn-secondary" onclick="navigateTo('adminLogin')">Admin Login</button>
         </div>
       </div>
 
-      <!-- Holy Trio Frames -->
+      <!-- Holy Trio Individual Frames -->
       <div class="pillar-grid">
         <div class="pillar-card">
           <div class="pillar-img-frame" style="border-color: #ea580c;">
@@ -1095,7 +1080,7 @@
         renderAdminTable();
         navigateTo('adminDashboard');
       } else {
-        alert('Invalid OTP! Please enter the correct OTP.');
+        alert('Invalid OTP! Please enter the correct code.');
       }
     }
 
