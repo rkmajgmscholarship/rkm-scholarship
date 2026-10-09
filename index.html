@@ -584,4 +584,273 @@
         <p style="font-size:14px;">P.O. & Dist. - Jhargram, PIN - 721507, West Bengal</p>
         <h3 style="margin-top:10px; text-decoration:underline;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
       </div>
-      <div id="pdfContentBody" style="line-height:
+      <div id="pdfContentBody" style="line-height:1.8; font-size:14px;"></div>
+      <div style="margin-top:60px; display:flex; justify-content:space-between;">
+        <div style="text-align:center;">
+          <br>___________________________<br>
+          Candidate's Signature
+        </div>
+        <div style="text-align:center;">
+          <br>___________________________<br>
+          Secretary / Competent Authority<br>
+          RKMA Jhargram
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <strong>Ramakrishna Mission Ashrama, Jhargram</strong><br>
+    P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India<br>
+    © 2026 Ramakrishna Mission Ashrama, Jhargram. All Rights Reserved.
+  </footer>
+
+  <script>
+    // In-memory data store with LocalStorage persistence
+    let applications = JSON.parse(localStorage.getItem('rkm_apps') || 'null') || [
+      {
+        appNo: 'RKM-2026-01',
+        candidateId: 'RKM-2026-001',
+        name: 'Sourav Mahato',
+        father: 'Gouranga Mahato',
+        mobile: '9876543210',
+        course: 'B.Sc Mathematics',
+        institution: 'Jhargram Raj College',
+        marksPct: '89.4%',
+        income: '6000',
+        bankAcc: 'XXXXXX4812',
+        ifsc: 'SBIN0000103',
+        status: 'Under Verification',
+        date: '2026-10-02'
+      },
+      {
+        appNo: 'RKM-2026-02',
+        candidateId: 'RKM-2026-002',
+        name: 'Anirban Mandi',
+        father: 'Sunil Mandi',
+        mobile: '9876501234',
+        course: 'D.El.Ed (2nd Year)',
+        institution: 'DIET Jhargram',
+        marksPct: '82.5%',
+        income: '4500',
+        bankAcc: 'XXXXXX9823',
+        ifsc: 'PUNB0123400',
+        status: 'Approved',
+        date: '2026-10-03'
+      }
+    ];
+
+    let candidateUsers = JSON.parse(localStorage.getItem('rkm_cand_users') || 'null') || {
+      'RKM-2026-001': { pass: 'RKM@Student2026', name: 'Sourav Mahato' }
+    };
+
+    function saveState() {
+      localStorage.setItem('rkm_apps', JSON.stringify(applications));
+      localStorage.setItem('rkm_cand_users', JSON.stringify(candidateUsers));
+    }
+
+    const DEFAULT_PASSWORDS = {
+      'Secretary@RKMAJGM': 'RKMAJGM@Scholarship',
+      'SBMAHARAJ@RKMAJGM': 'RKMAJGM@Scholarship',
+      'DEOSCH@RKMAJGM': 'RKMAJGM@Scholarship'
+    };
+
+    function getStoredPassword(adminId) {
+      return localStorage.getItem('pwd_' + adminId) || DEFAULT_PASSWORDS[adminId];
+    }
+    function setStoredPassword(adminId, newPass) {
+      localStorage.setItem('pwd_' + adminId, newPass);
+    }
+
+    function navigateTo(sectionId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById('sec-' + sectionId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo(0, 0);
+      }
+    }
+
+    function applyAdminPreset(id) {
+      if (!id) return;
+      document.getElementById('adminIdField').value = id;
+      document.getElementById('adminPassField').value = '';
+      document.getElementById('adminPassField').focus();
+    }
+
+    function executeAdminAuth() {
+      const id = document.getElementById('adminIdField').value.trim();
+      const pass = document.getElementById('adminPassField').value.trim();
+      const adminProfiles = {
+        'Secretary@RKMAJGM': 'SECRETARY, RKMA JHARGRAM',
+        'SBMAHARAJ@RKMAJGM': 'SWAMI BRAHMESHWARANANDA, RKMA JHARGRAM',
+        'DEOSCH@RKMAJGM': 'Data Entry Operator, RKMA JHARGRAM'
+      };
+
+      if (!id || !pass) {
+        alert('Both Admin ID and Password are required!');
+        return;
+      }
+      if (adminProfiles[id] && pass === getStoredPassword(id)) {
+        document.getElementById('activeAdminTitle').innerText = adminProfiles[id];
+        document.getElementById('activeAdminIdText').innerText = 'Logged ID: ' + id;
+        document.getElementById('adminPassField').value = '';
+        renderAdminTable();
+        navigateTo('adminDashboard');
+      } else {
+        alert('Invalid Admin ID or Password!');
+      }
+    }
+
+    function executePasswordChange() {
+      const id = document.getElementById('cpAdminId').value.trim();
+      const oldPass = document.getElementById('cpOldPass').value.trim();
+      const newPass = document.getElementById('cpNewPass').value.trim();
+      const confirmPass = document.getElementById('cpConfirmPass').value.trim();
+
+      if (!id || !oldPass || !newPass || !confirmPass) {
+        alert('All fields are mandatory!');
+        return;
+      }
+      if (oldPass !== getStoredPassword(id)) {
+        alert('Current password is incorrect!');
+        return;
+      }
+      if (newPass.length < 6) {
+        alert('Password must be at least 6 characters!');
+        return;
+      }
+      if (newPass !== confirmPass) {
+        alert('New passwords do not match!');
+        return;
+      }
+      setStoredPassword(id, newPass);
+      alert('Password updated successfully!');
+      navigateTo('adminLogin');
+    }
+
+    // Register Candidate from Admin Panel
+    function registerNewCandidate() {
+      const name = document.getElementById('newCandName').value.trim();
+      const mobile = document.getElementById('newCandMobile').value.trim();
+      const id = document.getElementById('newCandId').value.trim();
+      const pass = document.getElementById('newCandPass').value.trim();
+
+      if (!name || !mobile || !id || !pass) {
+        alert('Please fill all Candidate fields!');
+        return;
+      }
+
+      candidateUsers[id] = { pass: pass, name: name, mobile: mobile };
+      saveState();
+      alert(`Candidate Account Created Successfully!\nCandidate ID: ${id}\nPassword: ${pass}`);
+
+      document.getElementById('newCandName').value = '';
+      document.getElementById('newCandMobile').value = '';
+      document.getElementById('newCandId').value = '';
+      document.getElementById('newCandPass').value = '';
+    }
+
+    // Render Admin Table
+    function renderAdminTable() {
+      const tbody = document.getElementById('adminAppTableBody');
+      tbody.innerHTML = '';
+
+      applications.forEach((app, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${app.appNo}</strong></td>
+          <td>${app.name}<br><span style="color:#78716c; font-size:10px;">ID: ${app.candidateId}</span></td>
+          <td>${app.course}<br><span style="color:#78716c; font-size:10px;">${app.institution}</span></td>
+          <td style="color:#15803d; font-weight:bold;">${app.marksPct}</td>
+          <td>₹${app.income}</td>
+          <td><span class="status-tag">${app.status}</span></td>
+          <td>
+            <div class="action-btn-group">
+              <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
+              <button class="action-btn btn-delete" onclick="deleteApplication(${index})">Delete</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Delete Application
+    function deleteApplication(index) {
+      const item = applications[index];
+      if (confirm(`Are you sure you want to delete application "${item.appNo}" for ${item.name}? This action cannot be undone.`)) {
+        applications.splice(index, 1);
+        saveState();
+        renderAdminTable();
+        alert('Application deleted successfully.');
+      }
+    }
+
+    // Download Application as PDF
+    function downloadApplicationPDF(index) {
+      const app = applications[index];
+      const printable = document.getElementById('printableApplication');
+      const body = document.getElementById('pdfContentBody');
+
+      body.innerHTML = `
+        <table style="width:100%; border:1px solid #777; border-collapse:collapse; margin-top:10px;">
+          <tr><td style="padding:6px; border:1px solid #777; width:30%;"><strong>Application No:</strong></td><td style="padding:6px; border:1px solid #777;">${app.appNo}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Candidate ID:</strong></td><td style="padding:6px; border:1px solid #777;">${app.candidateId}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Candidate Full Name:</strong></td><td style="padding:6px; border:1px solid #777;">${app.name}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Father's Name:</strong></td><td style="padding:6px; border:1px solid #777;">${app.father}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Contact Mobile:</strong></td><td style="padding:6px; border:1px solid #777;">${app.mobile}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Course & Year:</strong></td><td style="padding:6px; border:1px solid #777;">${app.course}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Institution Name:</strong></td><td style="padding:6px; border:1px solid #777;">${app.institution}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Marks Obtained (%):</strong></td><td style="padding:6px; border:1px solid #777;">${app.marksPct}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Family Monthly Income:</strong></td><td style="padding:6px; border:1px solid #777;">₹${app.income}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Bank A/C No:</strong></td><td style="padding:6px; border:1px solid #777;">${app.bankAcc}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Bank IFSC Code:</strong></td><td style="padding:6px; border:1px solid #777;">${app.ifsc}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Current Verification Status:</strong></td><td style="padding:6px; border:1px solid #777;">${app.status}</td></tr>
+          <tr><td style="padding:6px; border:1px solid #777;"><strong>Submission Date:</strong></td><td style="padding:6px; border:1px solid #777;">${app.date}</td></tr>
+        </table>
+      `;
+
+      window.print();
+    }
+
+    // Export All Applications to Excel (CSV)
+    function exportApplicationsToCSV() {
+      if (applications.length === 0) {
+        alert('No applications found to export!');
+        return;
+      }
+
+      let csv = 'Application No,Candidate ID,Full Name,Father Name,Mobile,Course,Institution,Marks Percentage,Monthly Income,Bank Account,IFSC,Status,Submission Date\n';
+
+      applications.forEach(app => {
+        csv += `"${app.appNo}","${app.candidateId}","${app.name}","${app.father}","${app.mobile}","${app.course}","${app.institution}","${app.marksPct}","${app.income}","${app.bankAcc}","${app.ifsc}","${app.status}","${app.date}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `RKMA_Scholarship_Applications_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Candidate Auth
+    function executeCandidateAuth() {
+      const cid = document.getElementById('candIdField').value.trim();
+      const cpass = document.getElementById('candPassField').value.trim();
+
+      if (candidateUsers[cid] && candidateUsers[cid].pass === cpass) {
+        document.getElementById('candWelcomeName').innerText = 'Welcome, ' + candidateUsers[cid].name;
+        document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + cid;
+        document.getElementById('candPassField').value = '';
+        navigateTo('candidateDashboard');
+      } else {
+        alert('Invalid Candidate ID or Password! If not created, please contact the RKMA Office.');
+      }
+    }
+  </script>
+</body>
+</html>
