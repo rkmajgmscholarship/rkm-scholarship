@@ -180,7 +180,7 @@
       cursor: pointer;
     }
 
-    /* Holy Trio Rectangular Frames */
+    /* Holy Trio Frames */
     .pillar-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -239,7 +239,7 @@
       background: #9a3412;
       color: #fff;
       text-decoration: none;
-      padding: 7px 12px;
+      padding: 8px 12px;
       font-size: 12px;
       font-weight: bold;
       border-radius: 6px;
@@ -366,7 +366,7 @@
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Header with Downloads Navigation Item -->
   <header>
     <div class="header-inner">
       <div class="brand" onclick="navigateTo('home')">
@@ -376,10 +376,11 @@
           <div style="font-size:11px; color:#fed7aa;">Ashrama, Jhargram - 721507</div>
         </div>
       </div>
-      <div style="display:flex; gap:6px;">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
         <button class="nav-btn" onclick="navigateTo('home')">Home</button>
-        <button class="nav-btn" onclick="navigateTo('candidateLogin')">Candidate</button>
-        <button class="nav-btn nav-btn-admin" onclick="navigateTo('adminLogin')">Admin</button>
+        <button class="nav-btn" onclick="navigateTo('downloads')">Downloads</button>
+        <button class="nav-btn" onclick="navigateTo('candidateLogin')">Candidate Login</button>
+        <button class="nav-btn nav-btn-admin" onclick="navigateTo('adminLogin')">Admin Login</button>
       </div>
     </div>
   </header>
@@ -426,17 +427,24 @@
           <p style="font-size:12px; margin-top:6px; font-style:italic; color:#92400e;">"Education is the manifestation of the perfection already in man."</p>
         </div>
       </div>
+    </section>
 
-      <!-- Downloads Window / Section -->
-      <div class="card" style="margin-top:20px; border-left: 5px solid #0284c7;">
-        <h3 style="color:#0369a1; font-size:16px;">Institutional Downloads & Formats</h3>
-        <p style="font-size:13px; color:#57534e; margin-top:4px;">Download official prescribed formats and prayer forms required for scholarship documentation:</p>
+    <!-- 2. DOWNLOADS WINDOW / PAGE -->
+    <section id="sec-downloads" class="page-section">
+      <div class="card" style="border-left: 5px solid #0284c7;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <h3 style="color:#0369a1; font-size:18px;">Official Documents & Formats</h3>
+            <p style="font-size:13px; color:#57534e; margin-top:4px;">Download the prescribed forms and prayer documents required for scholarship applications:</p>
+          </div>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('home')">Back to Home</button>
+        </div>
         
         <div class="downloads-grid">
           <div class="download-item">
             <div>
               <h4>1. Belur Math Application Prayer</h4>
-              <p style="font-size:11px; color:#78716c;">Prescribed prayer format of Belur Math Headquarters.</p>
+              <p style="font-size:11px; color:#78716c;">Official prayer format of Belur Math Headquarters.</p>
             </div>
             <a href="https://drive.google.com/file/d/1OAOoBDEUNUjGMIzM_eJfZwqKKl3ir8c2/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="download-link">📥 Download Document</a>
           </div>
@@ -468,7 +476,7 @@
       </div>
     </section>
 
-    <!-- 2. ADMIN LOGIN WITH OTP -->
+    <!-- 3. ADMIN LOGIN WITH OTP -->
     <section id="sec-adminLogin" class="page-section">
       <div class="card" style="max-width:420px; margin:0 auto;">
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
@@ -510,7 +518,7 @@
       </div>
     </section>
 
-    <!-- 3. CANDIDATE LOGIN WITH OTP -->
+    <!-- 4. CANDIDATE LOGIN WITH OTP -->
     <section id="sec-candidateLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:0 auto;">
         <h2 style="text-align:center; font-size:18px;">Candidate Portal</h2>
@@ -539,7 +547,7 @@
       </div>
     </section>
 
-    <!-- 4. CANDIDATE DASHBOARD -->
+    <!-- 5. CANDIDATE DASHBOARD -->
     <section id="sec-candidateDashboard" class="page-section">
       <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
         <div>
@@ -566,7 +574,7 @@
       </div>
     </section>
 
-    <!-- 5. 6-STEP SCHOLARSHIP APPLICATION FORM -->
+    <!-- 6. 6-STEP SCHOLARSHIP APPLICATION FORM -->
     <section id="sec-applicationForm" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -858,7 +866,7 @@
       </div>
     </section>
 
-    <!-- 6. TRACK STATUS -->
+    <!-- 7. TRACK STATUS -->
     <section id="sec-trackStatus" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -869,7 +877,7 @@
       </div>
     </section>
 
-    <!-- 7. ADMIN DASHBOARD -->
+    <!-- 8. ADMIN DASHBOARD -->
     <section id="sec-adminDashboard" class="page-section">
       <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
