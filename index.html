@@ -596,4 +596,79 @@
       const id = document.getElementById('adminIdField').value.trim();
       const pass = document.getElementById('adminPassField').value.trim();
 
-     
+      const adminProfiles = {
+        'Secretary@RKMAJGM': 'SECRETARY, RKMA JHARGRAM',
+        'SBMAHARAJ@RKMAJGM': 'SWAMI BRAHMESHWARANANDA, RKMA JHARGRAM',
+        'DEOSCH@RKMAJGM': 'Data Entry Operator, RKMA JHARGRAM'
+      };
+
+      if (!id || !pass) {
+        alert('Both Admin ID and Password are required!');
+        return;
+      }
+
+      if (adminProfiles[id] && pass === getStoredPassword(id)) {
+        document.getElementById('activeAdminTitle').innerText = adminProfiles[id];
+        document.getElementById('activeAdminIdText').innerText = 'Logged ID: ' + id;
+        document.getElementById('adminPassField').value = '';
+        navigateTo('adminDashboard');
+      } else {
+        alert('Invalid Admin ID or Password! Please verify and enter the correct credentials.');
+      }
+    }
+
+    // Execute Password Change
+    function executePasswordChange() {
+      const id = document.getElementById('cpAdminId').value.trim();
+      const oldPass = document.getElementById('cpOldPass').value.trim();
+      const newPass = document.getElementById('cpNewPass').value.trim();
+      const confirmPass = document.getElementById('cpConfirmPass').value.trim();
+
+      if (!id || !oldPass || !newPass || !confirmPass) {
+        alert('All fields are mandatory!');
+        return;
+      }
+
+      if (oldPass !== getStoredPassword(id)) {
+        alert('Current password entered is incorrect!');
+        return;
+      }
+
+      if (newPass.length < 6) {
+        alert('New password must be at least 6 characters long!');
+        return;
+      }
+
+      if (newPass !== confirmPass) {
+        alert('New Password and Confirm Password do not match!');
+        return;
+      }
+
+      // Save to device storage
+      setStoredPassword(id, newPass);
+      alert('Password updated successfully! Please log in with your new password.');
+
+      // Clear input fields
+      document.getElementById('cpAdminId').value = '';
+      document.getElementById('cpOldPass').value = '';
+      document.getElementById('cpNewPass').value = '';
+      document.getElementById('cpConfirmPass').value = '';
+
+      navigateTo('adminLogin');
+    }
+
+    // Execute Candidate Login
+    function executeCandidateAuth() {
+      const cid = document.getElementById('candIdField').value.trim();
+      const cpass = document.getElementById('candPassField').value.trim();
+
+      if (cid === 'RKM-2026-001' && cpass === 'RKM@Student2026') {
+        document.getElementById('candPassField').value = '';
+        navigateTo('candidateDashboard');
+      } else {
+        alert('Invalid Candidate ID or Password! (For demo: ID: RKM-2026-001 and Pass: RKM@Student2026)');
+      }
+    }
+  </script>
+</body>
+</html>
