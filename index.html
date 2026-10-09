@@ -576,8 +576,8 @@
       <div class="brand" onclick="navigateTo('home')">
         <div class="om-badge">ॐ</div>
         <div>
-          <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION ASHRAMA</div>
-          <div style="font-size:11px; color:#fed7aa;">Satyabanpally, Jhargram, 721507</div>
+          <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION</div>
+          <div style="font-size:11px; color:#fed7aa;">Ashrama, Jhargram - 721507</div>
         </div>
       </div>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
@@ -706,7 +706,6 @@
       <div class="card" style="padding: 12px;">
         <div class="slider-container">
           <div class="slide-wrapper" id="carouselWrapper">
-            <!-- 15 Attached Drive Images -->
             <div class="slide-item">
               <img src="https://lh3.googleusercontent.com/d/1vqBJNgB72mfDmscTdjOuf9LN-dZ2aM8I" alt="Ashrama Activity 1">
               <div class="slide-caption">Glimpses of Ashrama Activities - 1</div>
@@ -773,7 +772,7 @@
           <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
           <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
 
-          <!-- 15 Dots -->
+          <!-- Dots -->
           <div class="slider-dots" id="sliderDots"></div>
         </div>
       </div>
@@ -869,13 +868,13 @@
       </div>
     </section>
 
-    <!-- 3. ADMIN LOGIN WITH OTP -->
+    <!-- 3. ADMIN LOGIN (NO OTP) -->
     <section id="sec-adminLogin" class="page-section">
       <div class="card" style="max-width:420px; margin:0 auto;">
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only (Mobile OTP Secured)</p>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only</p>
 
-        <div id="adminCredBox">
+        <div>
           <div class="form-group">
             <label>Select Authorized Officer</label>
             <select id="adminDropdown">
@@ -891,31 +890,20 @@
             <input type="password" id="adminPassField" placeholder="Enter Password" autocomplete="new-password">
           </div>
 
-          <button class="submit-btn" style="background:#1c1917; color:#fde047; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="requestAdminLoginOTP()">
-            Send OTP to Mobile
-          </button>
-        </div>
-
-        <div id="adminOtpBox" style="display:none; margin-top:14px; border-top:1px dashed #d6d3d1; padding-top:14px;">
-          <p id="adminOtpNotice" style="font-size:12px; color:#15803d; font-weight:bold; margin-bottom:8px;"></p>
-          <div class="form-group">
-            <label>Enter 6-Digit OTP</label>
-            <input type="text" id="adminOtpInput" placeholder="Enter OTP">
-          </div>
-          <button class="submit-btn" style="background:#15803d; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="verifyAdminLoginOTP()">
-            Verify OTP & Login
+          <button class="submit-btn" style="background:#1c1917; color:#fde047; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="executeAdminDirectLogin()">
+            Login to Admin Console
           </button>
         </div>
       </div>
     </section>
 
-    <!-- 4. CANDIDATE LOGIN WITH OTP -->
+    <!-- 4. CANDIDATE LOGIN (NO OTP) -->
     <section id="sec-candidateLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:0 auto;">
         <h2 style="text-align:center; font-size:18px;">Candidate Portal</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Step 1: ID & Password | Step 2: Mobile OTP</p>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Sign in with your Candidate ID and Password</p>
 
-        <div id="candCredBox">
+        <div>
           <div class="form-group">
             <label>Candidate ID</label>
             <input type="text" id="candIdField" placeholder="e.g. RKM-2026-001">
@@ -924,16 +912,9 @@
             <label>Password</label>
             <input type="password" id="candPassField" placeholder="Enter Password">
           </div>
-          <button class="submit-btn" style="background:#ea580c; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="requestCandidateLoginOTP()">Send OTP to Mobile</button>
-        </div>
-
-        <div id="candOtpBox" style="display:none; margin-top:14px; border-top:1px dashed #d6d3d1; padding-top:14px;">
-          <p id="candOtpNotice" style="font-size:12px; color:#15803d; font-weight:bold; margin-bottom:8px;"></p>
-          <div class="form-group">
-            <label>Enter 6-Digit OTP</label>
-            <input type="text" id="candLoginOtpInput" placeholder="Enter OTP">
-          </div>
-          <button class="submit-btn" style="background:#15803d; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="verifyCandidateLoginOTP()">Verify OTP & Login</button>
+          <button class="submit-btn" style="background:#ea580c; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="executeCandidateDirectLogin()">
+            Login
+          </button>
         </div>
       </div>
     </section>
@@ -952,7 +933,7 @@
         <!-- Option 1: Continue Application -->
         <div class="card" style="border-top:4px solid #ea580c; text-align:center;">
           <h3 style="margin-bottom:8px; color:#ea580c;">1. Apply / Continue Application</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Fill, review, verify with OTP and submit your scholarship application.</p>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Fill, review, and submit your official scholarship application.</p>
           <button class="btn-primary" onclick="openApplicationForm()">Open Application Form</button>
         </div>
 
@@ -1217,7 +1198,7 @@
             </div>
           </div>
 
-          <!-- STEP 6: Document Upload -->
+          <!-- STEP 6: Document Upload & Direct Submit -->
           <div class="form-step" id="formStep6">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Documents Upload</h4>
             <div class="form-grid">
@@ -1247,6 +1228,7 @@
               </div>
             </div>
 
+            <!-- Verification & Captcha Section -->
             <div style="background:#fffbeb; border:1px solid #fef3c7; padding:14px; border-radius:8px; margin-top:16px;">
               <h5 style="color:#b45309; margin-bottom:8px;">Final Verification & Security Check</h5>
               
@@ -1255,18 +1237,9 @@
                 <button type="button" style="padding:4px 8px; font-size:11px;" onclick="refreshCaptcha()">Refresh Captcha</button>
               </div>
               
-              <div class="form-grid">
-                <div class="form-group">
-                  <label>Enter Captcha</label>
-                  <input type="text" id="f_captchaInput" placeholder="Enter text shown above">
-                </div>
-                <div class="form-group">
-                  <label>Mobile OTP (Sent to candidate mobile)</label>
-                  <div style="display:flex; gap:6px;">
-                    <input type="text" id="f_submitOtpInput" placeholder="Enter OTP">
-                    <button type="button" class="btn-primary" style="padding:6px 12px; font-size:12px; white-space:nowrap;" onclick="sendFinalSubmitOTP()">Send OTP</button>
-                  </div>
-                </div>
+              <div class="form-group" style="max-width:300px;">
+                <label>Enter Captcha</label>
+                <input type="text" id="f_captchaInput" placeholder="Enter text shown above">
               </div>
             </div>
 
@@ -1304,12 +1277,12 @@
         <button onclick="navigateTo('home')" class="nav-btn" style="background:#ef4444; border:none;">Logout</button>
       </div>
 
-      <!-- Update Admin Mobile & Email -->
+      <!-- Update Admin Mobile & Email (Direct Update) -->
       <div class="card" style="border-left: 5px solid #0284c7;">
         <h3 style="font-size:15px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
-        <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Security Protocol: An OTP will be sent to your current mobile number before updating.</p>
+        <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Update your official administrative contact records directly:</p>
         
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:10px;">
           <div>
             <label>New Mobile Number</label>
             <input type="tel" id="updNewMobile" placeholder="10-digit Mobile">
@@ -1318,16 +1291,9 @@
             <label>New Email Address</label>
             <input type="email" id="updNewEmail" placeholder="Official Email">
           </div>
-          <div>
-            <label>Current Mobile OTP</label>
-            <div style="display:flex; gap:6px;">
-              <input type="text" id="adminProfileOtpInput" placeholder="Enter OTP">
-              <button type="button" class="btn-primary" style="padding:6px 12px; font-size:12px;" onclick="sendAdminProfileUpdateOTP()">Send OTP</button>
-            </div>
-          </div>
         </div>
         <div style="margin-top:12px; display:flex; justify-content:flex-end;">
-          <button class="btn-primary" style="background:#0284c7;" onclick="executeAdminProfileUpdate()">Verify & Save Changes</button>
+          <button class="btn-primary" style="background:#0284c7;" onclick="executeAdminDirectProfileUpdate()">Save Changes</button>
         </div>
       </div>
 
@@ -1463,15 +1429,9 @@
     };
 
     let activeAdminId = null;
-    let pendingAdminLoginOtp = null;
-    let pendingAdminProfileOtp = null;
-
     let activeCandidateId = null;
-    let pendingCandidateLoginOtp = null;
-    let pendingSubmitOtp = null;
     let currentGeneratedCaptcha = '';
 
-    // In-memory base64 holder for photos and signatures
     let currentUploadedPhotoBase64 = '';
     let currentUploadedSignBase64 = '';
 
@@ -1490,7 +1450,6 @@
       }
     }
 
-    // Image file to base64 preview generator
     function previewImageFile(input, targetPreviewId) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -1583,8 +1542,8 @@
       document.getElementById('contactMessage').value = '';
     }
 
-    // Admin Authentication
-    function requestAdminLoginOTP() {
+    // Direct Admin Login (No OTP)
+    function executeAdminDirectLogin() {
       const selectedId = document.getElementById('adminDropdown').value;
       const pass = document.getElementById('adminPassField').value.trim();
 
@@ -1596,55 +1555,25 @@
       const admin = admins[selectedId];
       if (admin && admin.pass === pass) {
         activeAdminId = selectedId;
-        pendingAdminLoginOtp = Math.floor(100000 + Math.random() * 900000).toString();
-        const masked = admin.mobile.slice(0, 2) + 'XXXXXX' + admin.mobile.slice(-2);
-
-        document.getElementById('adminCredBox').style.display = 'none';
-        document.getElementById('adminOtpBox').style.display = 'block';
-        document.getElementById('adminOtpNotice').innerText = `OTP has been sent to ${masked}. (Demo OTP: ${pendingAdminLoginOtp})`;
-      } else {
-        alert('Invalid Password! Please enter the correct password.');
-      }
-    }
-
-    function verifyAdminLoginOTP() {
-      const otpInput = document.getElementById('adminOtpInput').value.trim();
-
-      if (otpInput === pendingAdminLoginOtp) {
-        const admin = admins[activeAdminId];
         document.getElementById('activeAdminTitle').innerText = admin.name;
         document.getElementById('activeAdminContact').innerText = `Mobile: ${admin.mobile} | Email: ${admin.email}`;
-
-        document.getElementById('adminCredBox').style.display = 'block';
-        document.getElementById('adminOtpBox').style.display = 'none';
         document.getElementById('adminPassField').value = '';
-        document.getElementById('adminOtpInput').value = '';
 
         renderAdminTable();
         navigateTo('adminDashboard');
       } else {
-        alert('Invalid OTP! Please enter the correct code.');
+        alert('Invalid Password! Please enter the correct administrator password.');
       }
     }
 
-    function sendAdminProfileUpdateOTP() {
-      if (!activeAdminId) return;
-      const admin = admins[activeAdminId];
-      pendingAdminProfileOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      alert(`Profile update OTP sent to registered mobile ${admin.mobile}.\n\n(Demo OTP: ${pendingAdminProfileOtp})`);
-    }
-
-    function executeAdminProfileUpdate() {
+    // Direct Admin Profile Update (No OTP)
+    function executeAdminDirectProfileUpdate() {
       const newMobile = document.getElementById('updNewMobile').value.trim();
       const newEmail = document.getElementById('updNewEmail').value.trim();
-      const otp = document.getElementById('adminProfileOtpInput').value.trim();
 
       if (!newMobile && !newEmail) {
         alert('Please provide a new Mobile Number or Email Address!');
         return;
-      }
-      if (!pendingAdminProfileOtp || otp !== pendingAdminProfileOtp) {
-        alert('Invalid OTP! Click "Send OTP" and enter the verification code.');
       }
 
       if (newMobile) {
@@ -1664,10 +1593,34 @@
 
       document.getElementById('updNewMobile').value = '';
       document.getElementById('updNewEmail').value = '';
-      document.getElementById('adminProfileOtpInput').value = '';
-      pendingAdminProfileOtp = null;
     }
 
+    // Direct Candidate Login (No OTP)
+    function executeCandidateDirectLogin() {
+      const id = document.getElementById('candIdField').value.trim();
+      const pass = document.getElementById('candPassField').value.trim();
+
+      if (!id || !pass) {
+        alert('Please enter both Candidate ID and Password!');
+        return;
+      }
+
+      if (candidates[id] && candidates[id].pass === pass) {
+        activeCandidateId = id;
+        const cand = candidates[id];
+        document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
+        document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + id + ' | Mobile: ' + cand.mobile;
+
+        document.getElementById('candIdField').value = '';
+        document.getElementById('candPassField').value = '';
+
+        navigateTo('candidateDashboard');
+      } else {
+        alert('Invalid Candidate ID or Password!');
+      }
+    }
+
+    // Admin: Create Candidate Account
     function adminCreateCustomCandidate() {
       const name = document.getElementById('genCandName').value.trim();
       const mobile = document.getElementById('genCandMobile').value.trim();
@@ -1693,46 +1646,6 @@
       document.getElementById('genCandMobile').value = '';
       document.getElementById('genCandId').value = '';
       document.getElementById('genCandPass').value = '';
-    }
-
-    // Candidate Auth
-    function requestCandidateLoginOTP() {
-      const id = document.getElementById('candIdField').value.trim();
-      const pass = document.getElementById('candPassField').value.trim();
-
-      if (!candidates[id] || candidates[id].pass !== pass) {
-        alert('Invalid Candidate ID or Password!');
-        return;
-      }
-
-      pendingCandidateLoginOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      const cand = candidates[id];
-      const maskedPhone = cand.mobile.slice(0, 2) + 'XXXXXX' + cand.mobile.slice(-2);
-
-      document.getElementById('candCredBox').style.display = 'none';
-      document.getElementById('candOtpBox').style.display = 'block';
-      document.getElementById('candOtpNotice').innerText = `OTP has been sent to ${maskedPhone}. (Demo OTP: ${pendingCandidateLoginOtp})`;
-      activeCandidateId = id;
-    }
-
-    function verifyCandidateLoginOTP() {
-      const otpInput = document.getElementById('candLoginOtpInput').value.trim();
-
-      if (otpInput === pendingCandidateLoginOtp) {
-        const cand = candidates[activeCandidateId];
-        document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
-        document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + activeCandidateId + ' | Mobile: ' + cand.mobile;
-
-        document.getElementById('candCredBox').style.display = 'block';
-        document.getElementById('candOtpBox').style.display = 'none';
-        document.getElementById('candIdField').value = '';
-        document.getElementById('candPassField').value = '';
-        document.getElementById('candLoginOtpInput').value = '';
-
-        navigateTo('candidateDashboard');
-      } else {
-        alert('Invalid OTP! Please enter the correct code.');
-      }
     }
 
     function openApplicationForm() {
@@ -1811,12 +1724,6 @@
       document.getElementById('captchaDisplay').innerText = result;
     }
 
-    function sendFinalSubmitOTP() {
-      const cand = candidates[activeCandidateId];
-      pendingSubmitOtp = Math.floor(1000 + Math.random() * 9000).toString();
-      alert(`Mobile OTP sent to ${cand.mobile}.\n\n(Demo OTP: ${pendingSubmitOtp})`);
-    }
-
     function openPreviewModal() {
       const body = document.getElementById('previewDetailsArea');
       body.innerHTML = `
@@ -1844,18 +1751,12 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
-    // Final Application Submit with Photo and Signature
+    // Final Application Submit (Direct without OTP)
     function executeFinalApplicationSubmit() {
       const captchaInput = document.getElementById('f_captchaInput').value.trim();
-      const otpInput = document.getElementById('f_submitOtpInput').value.trim();
 
       if (captchaInput.toUpperCase() !== currentGeneratedCaptcha) {
         alert('Invalid Captcha code! Please enter the correct captcha.');
-        return;
-      }
-
-      if (!pendingSubmitOtp || otpInput !== pendingSubmitOtp) {
-        alert('Invalid Mobile OTP! Please click "Send OTP" and enter the verification code.');
         return;
       }
 
@@ -2001,7 +1902,7 @@
 
           <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">6. Documents & Official Verification</th></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Uploaded Documents</td><td style="padding:5px; border:1px solid #444;">Aadhaar, Admission Receipt, Marksheet, Passbook, Income Proof, Prayer</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Submission Date & Status</td><td style="padding:5px; border:1px solid #444;">${app.submissionDate} | Status: <strong>${app.status}</strong></td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Verification Status</td><td style="padding:5px; border:1px solid #444;"><strong>${app.status}</strong></td></tr>
         </table>
       `;
 
