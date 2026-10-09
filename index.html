@@ -11,7 +11,6 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-    /* Clean, Elegant Normal Background without Joint Photo */
     body {
       background-color: #faf8f5;
       color: #2b2523;
@@ -86,19 +85,17 @@
     .card {
       background: #ffffff;
       border-radius: 12px;
-      padding: 22px;
+      padding: 24px;
       border: 1px solid #e7e5e4;
       box-shadow: 0 4px 10px rgba(0,0,0,0.06);
       margin-bottom: 20px;
     }
-    
-    /* Solid Elegant Hero Card without Background Photo */
     .hero-card {
       text-align: center;
       border-top: 5px solid #ea580c;
       color: #ffffff;
       background: linear-gradient(135deg, #7f1d1d, #991b1b, #831843);
-      padding: 44px 20px;
+      padding: 40px 20px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(127, 29, 29, 0.2);
     }
@@ -162,13 +159,75 @@
       font-size: 14px;
       cursor: pointer;
     }
+    .btn-view {
+      background: #0284c7;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* About Section */
+    .about-section {
+      line-height: 1.7;
+      font-size: 14px;
+      color: #3f3f46;
+    }
+    .about-intro {
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+    .activities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .activity-card {
+      background: #fafaf9;
+      border: 1px solid #e7e5e4;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .activity-card h4 {
+      font-size: 15px;
+      color: #7f1d1d;
+      margin-bottom: 8px;
+      border-bottom: 2px solid #fed7aa;
+      padding-bottom: 4px;
+    }
+    .activity-card ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+    .activity-card li {
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .section-title-box {
+      text-align: center;
+      margin: 30px 0 16px;
+    }
+    .section-title-box h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #7f1d1d;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: inline-block;
+      border-bottom: 3px solid #ea580c;
+      padding-bottom: 4px;
+    }
 
     /* Holy Trio Individual Photo Cards */
     .pillar-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 18px;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     .pillar-card {
       background: #ffffff;
@@ -193,6 +252,123 @@
       object-fit: cover;
       object-position: center top;
       display: block;
+    }
+
+    /* Image Carousel */
+    .slider-container {
+      position: relative;
+      max-width: 100%;
+      height: 380px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background-color: #1c1917;
+      margin-top: 10px;
+    }
+    .slide-wrapper {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s ease-in-out;
+    }
+    .slide-item {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    .slide-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .slide-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.75));
+      color: #ffffff;
+      padding: 20px 16px 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: #ffffff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .slider-btn.prev { left: 12px; }
+    .slider-btn.next { right: 12px; }
+    .slider-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+    }
+    .dot.active {
+      background: #ea580c;
+      width: 22px;
+      border-radius: 10px;
+    }
+
+    /* Contact Us Section */
+    .contact-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 14px;
+    }
+    .contact-info-box {
+      background: #fafaf9;
+      border: 1px solid #e7e5e4;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .contact-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: #ffedd5;
+      color: #c2410c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .contact-form-box input, .contact-form-box textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #d6d3d1;
+      font-size: 13px;
+      margin-bottom: 10px;
     }
 
     /* Downloads Grid */
@@ -288,6 +464,42 @@
       display: inline-block;
     }
 
+    /* Photo & Signature Preview Boxes */
+    .upload-preview-box {
+      width: 120px;
+      height: 140px;
+      border: 2px dashed #d6d3d1;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 8px;
+      background: #fafaf9;
+      overflow: hidden;
+    }
+    .upload-preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .upload-preview-sign {
+      width: 180px;
+      height: 70px;
+      border: 2px dashed #d6d3d1;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 8px;
+      background: #fafaf9;
+      overflow: hidden;
+    }
+    .upload-preview-sign img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
     /* Table */
     table {
       width: 100%;
@@ -349,7 +561,7 @@
 </head>
 <body>
 
-  <!-- Header with Downloads Navigation Item -->
+  <!-- Header -->
   <header>
     <div class="header-inner">
       <div class="brand" onclick="navigateTo('home')">
@@ -373,43 +585,191 @@
     <section id="sec-home" class="page-section active">
       <div class="card hero-card">
         <span class="badge">Academic Session 2026-2027</span>
-        <h2>Scholarship Management Portal</h2>
-        <p>Ramakrishna Mission Ashrama, Jhargram provides institutional scholarships to deserving and meritorious students to support higher education and holistic value-based learning.</p>
+        <h2>Ramakrishna Mission Ashrama, Jhargram</h2>
+        <p>Scholarship Application & Management Portal<br>Empowering Students Through Education, Values and Service</p>
         <div class="btn-group">
           <button class="btn-primary" onclick="navigateTo('candidateLogin')">Candidate Portal</button>
           <button class="btn-secondary" onclick="navigateTo('adminLogin')">Admin Login</button>
         </div>
       </div>
 
-      <!-- Holy Trio Individual Frames -->
+      <!-- Institutional Overview & Activities -->
+      <div class="card about-section">
+        <h3 style="color: #7f1d1d; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #fed7aa; padding-bottom: 6px;">
+          About Ramakrishna Mission Ashrama, Jhargram
+        </h3>
+        
+        <p class="about-intro">
+          Ramakrishna Mission Ashrama, Jhargram, a branch centre of the Ramakrishna Mission, Belur Math came into existence on 20th August 2017 on five acres of land obtained on lease from the Government of West Bengal. Srimat Swami Smarananandaji Maharaj, the 16th President of Ramakrishna Math and Ramakrishna Mission, Belur Math, inaugurated the newly constructed Assembly cum Prayer Hall in the Ashrama campus on 7th of December 2019.
+        </p>
+
+        <p style="font-weight: 600; color: #1c1917; margin-bottom: 8px;">The following activities/projects are carried out by the Ashrama at present:</p>
+
+        <div class="activities-grid">
+          <div class="activity-card">
+            <h4>Educational</h4>
+            <ul>
+              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> A Co-Educational Higher Secondary Residential School for the Tribal students. Most of the students are first generation learners with a roll strength of 460 students, at present.</li>
+              <li><strong>6 Free Coaching Centers:</strong> 320 students are given free coaching, dress, and a light tiffin.</li>
+              <li><strong>Scholarships to Deserving Students:</strong> In the year 2023-24, we have provided scholarships worth 13.41 lakhs to 152 students hailing from Jhargram district.</li>
+            </ul>
+          </div>
+
+          <div class="activity-card">
+            <h4>Welfare</h4>
+            <ul>
+              <li>Providing dress materials among the needy, pecuniary help and other types of assistance to the poor.</li>
+              <li>Distress Relief in times of natural calamities.</li>
+              <li>Winter relief by way of Jacket/Blanket distribution.</li>
+              <li>A monthly motivational program is held at the Jhargram correctional home.</li>
+              <li>A bi-monthly free homeopathic camp by Dr Ashoke Pradhan.</li>
+              <li>Yearly Blood Donation camp where more than 100 people donate blood.</li>
+              <li>Under Swami Vivekananda Tree Plantation program 16000 trees planted till now.</li>
+              <li>6 widows are given a monthly pension of Rs 1200.</li>
+            </ul>
+          </div>
+
+          <div class="activity-card">
+            <h4>Youth</h4>
+            <ul>
+              <li><strong>‘Arise, Awake’:</strong> A value education program in schools/colleges in Jhargram district. As on February 2024, nearly 8000 students and 400 teachers in 32 institutions were covered under this program.</li>
+              <li>Annual District level Football Tournament, Yogasana competitions, cultural competitions are conducted.</li>
+              <li>Vivekananda study circles conducted at 12 places in the district.</li>
+              <li>National Youth Day celebrations.</li>
+              <li>Sunday Value Education Classes for the children of 6 to 12 years.</li>
+            </ul>
+          </div>
+
+          <div class="activity-card">
+            <h4>Spiritual</h4>
+            <ul>
+              <li>Celebration of birth anniversaries of Sri Thakur, Holy Mother, Swami Vivekananda and Direct Disciples.</li>
+              <li>Regular religious discourses, Evening Prayer and Ramnam sankirtan on Ekadashi days.</li>
+              <li>Religious and Cultural functions including Spiritual Retreats, Youth Conventions, etc.</li>
+              <li>Sale of Ramakrishna-Vivekananda & Vedanta literature.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOLY TRIO SECTION -->
+      <div class="section-title-box">
+        <h3>HOLY TRIO</h3>
+      </div>
+
       <div class="pillar-grid">
         <div class="pillar-card">
           <div class="pillar-img-frame" style="border-color: #ea580c;">
             <img src="https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS" alt="Sri Ramakrishna" class="pillar-img">
           </div>
-          <strong style="font-size:15px; color:#1c1917; display:block;">Sri Ramakrishna</strong>
-          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#78350f;">"As many faiths, so many paths to truth."</p>
+          <strong style="font-size:16px; color:#1c1917; display:block;">Sri Ramakrishna Paramahamsa</strong>
+          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#78350f; line-height: 1.5;">
+            "As many faiths, so many paths to truth."
+          </p>
         </div>
 
         <div class="pillar-card">
           <div class="pillar-img-frame" style="border-color: #b91c1c;">
             <img src="https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE" alt="Sri Sarada Devi" class="pillar-img">
           </div>
-          <strong style="font-size:15px; color:#1c1917; display:block;">Sri Sarada Devi</strong>
-          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#991b1b;">"If you want peace of mind, do not find fault with others. Learn to see your own faults."</p>
+          <strong style="font-size:16px; color:#1c1917; display:block;">Sri Sarada Devi (Holy Mother)</strong>
+          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#991b1b; line-height: 1.5;">
+            "If you want peace of mind, do not find fault with others. Learn to see your own faults."
+          </p>
         </div>
 
         <div class="pillar-card">
           <div class="pillar-img-frame" style="border-color: #d97706;">
             <img src="https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn" alt="Swami Vivekananda" class="pillar-img">
           </div>
-          <strong style="font-size:15px; color:#1c1917; display:block;">Swami Vivekananda</strong>
-          <p style="font-size:12px; margin-top:6px; font-style:italic; color:#92400e;">"Education is the manifestation of the perfection already in man."</p>
+          <strong style="font-size:16px; color:#1c1917; display:block;">Swami Vivekananda</strong>
+          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#92400e; line-height: 1.5;">
+            "Education is the manifestation of the perfection already in man."
+          </p>
+        </div>
+      </div>
+
+      <!-- IMAGE SLIDER -->
+      <div class="section-title-box">
+        <h3>GLIMPSES OF ASHRAMA ACTIVITIES</h3>
+      </div>
+
+      <div class="card" style="padding: 12px;">
+        <div class="slider-container">
+          <div class="slide-wrapper" id="carouselWrapper">
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS" alt="Activity 1">
+              <div class="slide-caption">Assembly cum Prayer Hall & Campus Glimpses</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE" alt="Activity 2">
+              <div class="slide-caption">Educational Coaching & Welfare Programs</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn" alt="Activity 3">
+              <div class="slide-caption">Annual Youth Conventions & Value Education</div>
+            </div>
+            <div class="slide-item">
+              <img src="https://lh3.googleusercontent.com/d/148ib5DKc7Nj1MlVzQ1c9y2w9nk1GI5ZJ" alt="Activity 4">
+              <div class="slide-caption">Relief & Humanitarian Services</div>
+            </div>
+          </div>
+          <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+          <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
+          <div class="slider-dots" id="sliderDots">
+            <span class="dot active" onclick="currentSlide(0)"></span>
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACT US -->
+      <div class="section-title-box">
+        <h3>CONTACT US</h3>
+      </div>
+
+      <div class="card" style="border-left: 5px solid #ea580c;">
+        <div class="contact-container">
+          <div class="contact-info-box">
+            <h4 style="color:#7f1d1d; margin-bottom:14px; font-size:16px;">Ramakrishna Mission Ashrama, Jhargram</h4>
+            <div class="contact-item">
+              <div class="contact-icon">📍</div>
+              <div style="font-size:13px; color:#44403c;">
+                <strong>Address:</strong><br>
+                P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">📞</div>
+              <div style="font-size:13px; color:#44403c;">
+                <strong>Phone / Mobile:</strong><br>
+                <a href="tel:9339423401" style="color:#c2410c; text-decoration:none; font-weight:bold;">9339423401</a>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">✉️</div>
+              <div style="font-size:13px; color:#44403c;">
+                <strong>Official Email:</strong><br>
+                <a href="mailto:rkma.jgm.scholarship@gmail.com" style="color:#c2410c; text-decoration:none; font-weight:bold;">rkma.jgm.scholarship@gmail.com</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-form-box">
+            <h4 style="color:#1c1917; margin-bottom:10px; font-size:15px;">Send Us an Inquiry</h4>
+            <input type="text" id="contactName" placeholder="Your Name">
+            <input type="email" id="contactEmail" placeholder="Your Email">
+            <input type="tel" id="contactPhone" placeholder="Your Phone Number">
+            <textarea id="contactMessage" rows="3" placeholder="Your message or scholarship inquiry..."></textarea>
+            <button class="btn-primary" style="width:100%;" onclick="submitContactForm()">Send Message</button>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 2. DOWNLOADS WINDOW / PAGE -->
+    <!-- 2. DOWNLOADS WINDOW -->
     <section id="sec-downloads" class="page-section">
       <div class="card" style="border-left: 5px solid #0284c7;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
@@ -462,7 +822,6 @@
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
         <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only (Mobile OTP Secured)</p>
 
-        <!-- Credentials Step -->
         <div id="adminCredBox">
           <div class="form-group">
             <label>Select Authorized Officer</label>
@@ -484,7 +843,6 @@
           </button>
         </div>
 
-        <!-- OTP Step -->
         <div id="adminOtpBox" style="display:none; margin-top:14px; border-top:1px dashed #d6d3d1; padding-top:14px;">
           <p id="adminOtpNotice" style="font-size:12px; color:#15803d; font-weight:bold; margin-bottom:8px;"></p>
           <div class="form-group">
@@ -540,14 +898,21 @@
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
         <!-- Option 1: Continue Application -->
         <div class="card" style="border-top:4px solid #ea580c; text-align:center;">
-          <h3 style="margin-bottom:8px; color:#ea580c;">1. Continue Application</h3>
+          <h3 style="margin-bottom:8px; color:#ea580c;">1. Apply / Continue Application</h3>
           <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Fill, review, verify with OTP and submit your scholarship application.</p>
           <button class="btn-primary" onclick="openApplicationForm()">Open Application Form</button>
         </div>
 
-        <!-- Option 2: Track Status -->
+        <!-- Option 2: View & Download Application (Enabled upon Submission) -->
+        <div class="card" style="border-top:4px solid #15803d; text-align:center;">
+          <h3 style="margin-bottom:8px; color:#15803d;">2. View & Download Application</h3>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Inspect your submitted application details with photo & signature and download official PDF.</p>
+          <button class="btn-view" style="background:#15803d;" onclick="viewCandidateSubmittedApp()">View / Download PDF</button>
+        </div>
+
+        <!-- Option 3: Track Status -->
         <div class="card" style="border-top:4px solid #0284c7; text-align:center;">
-          <h3 style="margin-bottom:8px; color:#0284c7;">2. Track Status</h3>
+          <h3 style="margin-bottom:8px; color:#0284c7;">3. Track Status</h3>
           <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Check the current scrutiny, approval, and disbursement stage of your application.</p>
           <button class="btn-primary" style="background:#0284c7;" onclick="openTrackStatus()">Track Application Status</button>
         </div>
@@ -572,7 +937,7 @@
         </div>
 
         <form id="scholarshipMultiForm" onsubmit="return false;">
-          <!-- STEP 1: Personal Details (Only Next) -->
+          <!-- STEP 1: Personal Details (Includes Photo & Signature Upload) -->
           <div class="form-step active" id="formStep1">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 1: Personal Details</h4>
             <div class="form-grid">
@@ -605,13 +970,31 @@
                 <label>Aadhaar No.</label>
                 <input type="text" id="f_aadhaar" placeholder="Enter Aadhaar Number" required>
               </div>
+
+              <!-- Candidate Photo Upload -->
+              <div class="form-group">
+                <label>Candidate Passport Photo (JPG/PNG)</label>
+                <input type="file" id="f_cand_photo" accept="image/*" onchange="previewImageFile(this, 'candPhotoPreview')">
+                <div class="upload-preview-box" id="candPhotoPreview">
+                  <span style="font-size:10px; color:#a8a29e;">Photo Preview</span>
+                </div>
+              </div>
+
+              <!-- Candidate Signature Upload -->
+              <div class="form-group">
+                <label>Candidate Signature (JPG/PNG)</label>
+                <input type="file" id="f_cand_sign" accept="image/*" onchange="previewImageFile(this, 'candSignPreview')">
+                <div class="upload-preview-sign" id="candSignPreview">
+                  <span style="font-size:10px; color:#a8a29e;">Signature Preview</span>
+                </div>
+              </div>
             </div>
             <div class="step-btn-container" style="justify-content: flex-end;">
               <button type="button" class="btn-primary" onclick="goToStep(2)">Next Step &rarr;</button>
             </div>
           </div>
 
-          <!-- STEP 2: Parents and Guardian Details (Back / Next) -->
+          <!-- STEP 2: Parents and Guardian Details -->
           <div class="form-step" id="formStep2">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 2: Parents & Guardian Details</h4>
             <div class="form-grid">
@@ -650,7 +1033,7 @@
             </div>
           </div>
 
-          <!-- STEP 3: Contact and Address Details (Back / Next) -->
+          <!-- STEP 3: Contact and Address Details -->
           <div class="form-step" id="formStep3">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 3: Contact & Address Details</h4>
             <div class="form-grid">
@@ -697,7 +1080,7 @@
             </div>
           </div>
 
-          <!-- STEP 4: Educational & Income Details (Back / Next) -->
+          <!-- STEP 4: Educational & Income Details -->
           <div class="form-step" id="formStep4">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 4: Educational & Income Details</h4>
             <h5 style="font-size:13px; color:#44403c; margin-bottom:8px;">A. Present Course Details</h5>
@@ -754,7 +1137,7 @@
             </div>
           </div>
 
-          <!-- STEP 5: Bank Details (Back / Next) -->
+          <!-- STEP 5: Bank Details -->
           <div class="form-step" id="formStep5">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 5: Bank Details</h4>
             <div class="form-grid">
@@ -781,7 +1164,7 @@
             </div>
           </div>
 
-          <!-- STEP 6: Document Upload (Back / Submit) -->
+          <!-- STEP 6: Document Upload -->
           <div class="form-step" id="formStep6">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Documents Upload</h4>
             <div class="form-grid">
@@ -868,7 +1251,7 @@
         <button onclick="navigateTo('home')" class="nav-btn" style="background:#ef4444; border:none;">Logout</button>
       </div>
 
-      <!-- Update Admin Mobile & Email (OTP Secured) -->
+      <!-- Update Admin Mobile & Email -->
       <div class="card" style="border-left: 5px solid #0284c7;">
         <h3 style="font-size:15px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
         <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Security Protocol: An OTP will be sent to your current mobile number before updating.</p>
@@ -895,7 +1278,7 @@
         </div>
       </div>
 
-      <!-- Admin creates Candidate Credentials (Custom ID & Password) -->
+      <!-- Admin creates Candidate Credentials -->
       <div class="card" style="border-left: 5px solid #ea580c;">
         <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Create Candidate Credentials (ID & Password by Admin)</h3>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
@@ -932,6 +1315,7 @@
             <thead>
               <tr>
                 <th>App No</th>
+                <th>Photo</th>
                 <th>Candidate Name</th>
                 <th>Course</th>
                 <th>Marks %</th>
@@ -957,23 +1341,35 @@
       </div>
     </div>
 
-    <!-- Printable Template (PDF) -->
+    <!-- Official Printable Format for PDF (Candidate & Admin) -->
     <div id="printableApplication" style="display:none; padding:30px; font-family:serif; background:#fff;">
       <div style="text-align:center; border-bottom:2px solid #7f1d1d; padding-bottom:12px; margin-bottom:20px;">
         <h2 style="color:#7f1d1d; margin-bottom:4px;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
         <p style="font-size:14px;">P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India</p>
         <h3 style="margin-top:10px; text-decoration:underline;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
       </div>
-      <div id="pdfContentBody"></div>
-      <div style="margin-top:60px; display:flex; justify-content:space-between;">
-        <div style="text-align:center;">
-          <br>___________________________<br>
-          Candidate's Signature
+
+      <!-- Applicant Header Photo Banner -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
+        <div id="pdfHeaderMeta" style="font-size:14px; line-height:1.6;"></div>
+        <div id="pdfPhotoBox" style="width:110px; height:130px; border:1px solid #333; text-align:center; padding:2px;">
+          <span style="font-size:10px; color:#888;">Affix Photo</span>
         </div>
-        <div style="text-align:center;">
-          <br>___________________________<br>
-          Secretary / Competent Authority<br>
-          RKMA Jhargram
+      </div>
+
+      <div id="pdfContentBody"></div>
+
+      <!-- Footer with Signatures -->
+      <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
+        <div style="text-align:center; width:220px;">
+          <div id="pdfSignBox" style="height:50px; margin-bottom:4px; display:flex; align-items:center; justify-content:center;"></div>
+          <div style="border-top:1px solid #333; padding-top:4px; font-size:12px;">Candidate's Signature</div>
+        </div>
+        <div style="text-align:center; width:220px;">
+          <div style="height:50px;"></div>
+          <div style="border-top:1px solid #333; padding-top:4px; font-size:12px;">
+            Secretary / Competent Authority<br>RKMA Jhargram
+          </div>
         </div>
       </div>
     </div>
@@ -992,7 +1388,6 @@
       'RKM-2026-001': { name: 'Sourav Mahato', mobile: '9876543210', pass: 'RKMA@2026' }
     };
 
-    // 3 Designated Admins with Contact Details
     let admins = JSON.parse(localStorage.getItem('rkm_admins_db') || 'null') || {
       'Secretary@RKMAJGM': {
         name: 'Secretary Maharaj, RKMA Jhargram',
@@ -1023,6 +1418,10 @@
     let pendingSubmitOtp = null;
     let currentGeneratedCaptcha = '';
 
+    // In-memory base64 holder for photos and signatures
+    let currentUploadedPhotoBase64 = '';
+    let currentUploadedSignBase64 = '';
+
     function saveState() {
       localStorage.setItem('rkm_apps', JSON.stringify(applications));
       localStorage.setItem('rkm_cand_db', JSON.stringify(candidates));
@@ -1038,7 +1437,86 @@
       }
     }
 
-    // Admin Auth Step 1: Password Check & Request OTP
+    // Image file to base64 preview generator
+    function previewImageFile(input, targetPreviewId) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const container = document.getElementById(targetPreviewId);
+          container.innerHTML = `<img src="${e.target.result}" alt="Uploaded Preview">`;
+          if (targetPreviewId === 'candPhotoPreview') {
+            currentUploadedPhotoBase64 = e.target.result;
+          } else if (targetPreviewId === 'candSignPreview') {
+            currentUploadedSignBase64 = e.target.result;
+          }
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Carousel Functionality
+    let currentSlideIndex = 0;
+    const totalSlides = 4;
+    let autoSlideInterval = null;
+
+    function updateCarousel() {
+      const wrapper = document.getElementById('carouselWrapper');
+      if (wrapper) {
+        wrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+      }
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlideIndex) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
+    }
+
+    function moveSlide(step) {
+      currentSlideIndex = (currentSlideIndex + step + totalSlides) % totalSlides;
+      updateCarousel();
+      resetAutoSlide();
+    }
+
+    function currentSlide(index) {
+      currentSlideIndex = index;
+      updateCarousel();
+      resetAutoSlide();
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(() => {
+        currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+        updateCarousel();
+      }, 3500);
+    }
+
+    function resetAutoSlide() {
+      clearInterval(autoSlideInterval);
+      startAutoSlide();
+    }
+
+    window.addEventListener('load', () => {
+      startAutoSlide();
+    });
+
+    function submitContactForm() {
+      const name = document.getElementById('contactName').value.trim();
+      const phone = document.getElementById('contactPhone').value.trim();
+      const msg = document.getElementById('contactMessage').value.trim();
+
+      if (!name || !phone || !msg) {
+        alert('Please fill out your Name, Phone Number, and Message.');
+        return;
+      }
+
+      alert(`Thank you, ${name}! Your inquiry has been sent to rkma.jgm.scholarship@gmail.com.`);
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactMessage').value = '';
+    }
+
+    // Admin Authentication
     function requestAdminLoginOTP() {
       const selectedId = document.getElementById('adminDropdown').value;
       const pass = document.getElementById('adminPassField').value.trim();
@@ -1062,7 +1540,6 @@
       }
     }
 
-    // Admin Auth Step 2: Verify OTP
     function verifyAdminLoginOTP() {
       const otpInput = document.getElementById('adminOtpInput').value.trim();
 
@@ -1071,7 +1548,6 @@
         document.getElementById('activeAdminTitle').innerText = admin.name;
         document.getElementById('activeAdminContact').innerText = `Mobile: ${admin.mobile} | Email: ${admin.email}`;
 
-        // Reset
         document.getElementById('adminCredBox').style.display = 'block';
         document.getElementById('adminOtpBox').style.display = 'none';
         document.getElementById('adminPassField').value = '';
@@ -1084,7 +1560,6 @@
       }
     }
 
-    // Admin: Send Profile Update OTP
     function sendAdminProfileUpdateOTP() {
       if (!activeAdminId) return;
       const admin = admins[activeAdminId];
@@ -1092,7 +1567,6 @@
       alert(`Profile update OTP sent to registered mobile ${admin.mobile}.\n\n(Demo OTP: ${pendingAdminProfileOtp})`);
     }
 
-    // Admin: Execute Profile Update (Mobile / Email)
     function executeAdminProfileUpdate() {
       const newMobile = document.getElementById('updNewMobile').value.trim();
       const newEmail = document.getElementById('updNewEmail').value.trim();
@@ -1128,7 +1602,6 @@
       pendingAdminProfileOtp = null;
     }
 
-    // Admin: Create Candidate Account (Custom ID & Password by Admin)
     function adminCreateCustomCandidate() {
       const name = document.getElementById('genCandName').value.trim();
       const mobile = document.getElementById('genCandMobile').value.trim();
@@ -1156,7 +1629,7 @@
       document.getElementById('genCandPass').value = '';
     }
 
-    // Candidate Auth Step 1: Request OTP
+    // Candidate Auth
     function requestCandidateLoginOTP() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -1176,7 +1649,6 @@
       activeCandidateId = id;
     }
 
-    // Candidate Auth Step 2: Verify OTP
     function verifyCandidateLoginOTP() {
       const otpInput = document.getElementById('candLoginOtpInput').value.trim();
 
@@ -1185,7 +1657,6 @@
         document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
         document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + activeCandidateId + ' | Mobile: ' + cand.mobile;
 
-        // Reset
         document.getElementById('candCredBox').style.display = 'block';
         document.getElementById('candOtpBox').style.display = 'none';
         document.getElementById('candIdField').value = '';
@@ -1198,7 +1669,6 @@
       }
     }
 
-    // Candidate Dashboard Buttons
     function openApplicationForm() {
       const cand = candidates[activeCandidateId];
       document.getElementById('f_name').value = cand.name;
@@ -1213,7 +1683,7 @@
       const box = document.getElementById('trackTimelineBox');
 
       if (!existing) {
-        box.innerHTML = `<div style="padding:14px; background:#fff7ed; border-radius:6px; font-size:13px; color:#c2410c;">You have not submitted an application yet. Click "Continue Application" to proceed.</div>`;
+        box.innerHTML = `<div style="padding:14px; background:#fff7ed; border-radius:6px; font-size:13px; color:#c2410c;">You have not submitted an application yet. Click "Apply / Continue Application" to proceed.</div>`;
       } else {
         box.innerHTML = `
           <div style="padding:10px; background:#dcfce7; border-left:4px solid #16a34a; border-radius:4px; font-size:13px;">
@@ -1233,7 +1703,16 @@
       navigateTo('trackStatus');
     }
 
-    // Stepper Navigation
+    // View & Download submitted application by Candidate
+    function viewCandidateSubmittedApp() {
+      const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
+      if (existingIndex === -1) {
+        alert('No submitted application found for this account! Please complete and submit your application form first.');
+        return;
+      }
+      downloadApplicationPDF(existingIndex);
+    }
+
     function goToStep(stepNumber) {
       document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
       document.querySelectorAll('.step-item').forEach((ind, idx) => {
@@ -1275,11 +1754,22 @@
     function openPreviewModal() {
       const body = document.getElementById('previewDetailsArea');
       body.innerHTML = `
-        <p><strong>1. Personal:</strong> Name: ${document.getElementById('f_name').value}, DOB: ${document.getElementById('f_dob').value}, Caste: ${document.getElementById('f_caste').value}, Gender: ${document.getElementById('f_gender').value}, Aadhaar: [Aadhaar Redacted]</p>
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+          <div>
+            <p><strong>1. Personal:</strong> Name: ${document.getElementById('f_name').value}, DOB: ${document.getElementById('f_dob').value}, Caste: ${document.getElementById('f_caste').value}, Gender: ${document.getElementById('f_gender').value}</p>
+          </div>
+          <div style="text-align:center;">
+            ${currentUploadedPhotoBase64 ? `<img src="${currentUploadedPhotoBase64}" style="width:70px; height:80px; object-fit:cover; border:1px solid #777;">` : '<span style="font-size:11px; color:#888;">No Photo</span>'}
+          </div>
+        </div>
         <p><strong>2. Parents & Guardian:</strong> Father: ${document.getElementById('f_fname').value} (${document.getElementById('f_focc').value}), Mother: ${document.getElementById('f_mname').value} (${document.getElementById('f_mocc').value}), Guardian: ${document.getElementById('f_gname').value} (${document.getElementById('f_grel').value})</p>
         <p><strong>3. Contact & Address:</strong> Mobile: ${document.getElementById('f_mobile').value}, WhatsApp: ${document.getElementById('f_whatsapp').value}, Email: ${document.getElementById('f_email').value}, Address: Vill: ${document.getElementById('f_vill').value}, P.O: ${document.getElementById('f_po').value}, P.S: ${document.getElementById('f_ps').value}, Dist: ${document.getElementById('f_dist').value}, PIN: ${document.getElementById('f_pin').value}</p>
         <p><strong>4. Education & Income:</strong> Class: ${document.getElementById('f_currclass').value}, Stream: ${document.getElementById('f_stream').value}, Institution: ${document.getElementById('f_instname').value}, Last Exam: ${document.getElementById('f_lastexam').value}, Marks: ${document.getElementById('f_marksobtained').value}/${document.getElementById('f_fullmarks').value} (${document.getElementById('f_percentage').value}), Monthly Income: ₹${document.getElementById('f_income').value}</p>
         <p><strong>5. Bank Details:</strong> A/C Holder: ${document.getElementById('f_acholder').value}, Bank: ${document.getElementById('f_bankname').value}, A/C No: ${document.getElementById('f_acno').value}, IFSC: ${document.getElementById('f_ifsc').value}</p>
+        <div style="margin-top:10px;">
+          <strong>Candidate Signature:</strong><br>
+          ${currentUploadedSignBase64 ? `<img src="${currentUploadedSignBase64}" style="width:140px; height:50px; object-fit:contain; border:1px solid #aaa; margin-top:4px;">` : '<span style="font-size:11px; color:#888;">No Signature Uploaded</span>'}
+        </div>
       `;
       document.getElementById('previewModal').style.display = 'flex';
     }
@@ -1288,7 +1778,7 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
-    // Final Application Submit
+    // Final Application Submit with Photo and Signature
     function executeFinalApplicationSubmit() {
       const captchaInput = document.getElementById('f_captchaInput').value.trim();
       const otpInput = document.getElementById('f_submitOtpInput').value.trim();
@@ -1311,6 +1801,8 @@
         dob: document.getElementById('f_dob').value,
         caste: document.getElementById('f_caste').value,
         gender: document.getElementById('f_gender').value,
+        photoBase64: currentUploadedPhotoBase64,
+        signBase64: currentUploadedSignBase64,
         father: document.getElementById('f_fname').value,
         fatherOcc: document.getElementById('f_focc').value,
         mother: document.getElementById('f_mname').value,
@@ -1357,6 +1849,9 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${app.appNo}</strong></td>
+          <td>
+            ${app.photoBase64 ? `<img src="${app.photoBase64}" style="width:36px; height:42px; object-fit:cover; border-radius:4px; border:1px solid #d6d3d1;">` : '<span style="color:#aaa; font-size:10px;">N/A</span>'}
+          </td>
           <td>${app.name}<br><span style="color:#78716c; font-size:10px;">ID: ${app.candidateId}</span></td>
           <td>${app.currClass} (${app.stream})<br><span style="color:#78716c; font-size:10px;">${app.institution}</span></td>
           <td style="color:#15803d; font-weight:bold;">${app.marksPct}</td>
@@ -1384,19 +1879,38 @@
       }
     }
 
-    // PDF Download
+    // Comprehensive PDF Generator (with Photo and Signature)
     function downloadApplicationPDF(index) {
       const app = applications[index];
+      const headerMeta = document.getElementById('pdfHeaderMeta');
+      const photoBox = document.getElementById('pdfPhotoBox');
+      const signBox = document.getElementById('pdfSignBox');
       const body = document.getElementById('pdfContentBody');
+
+      headerMeta.innerHTML = `
+        <strong>Application Number:</strong> ${app.appNo}<br>
+        <strong>Candidate ID:</strong> ${app.candidateId}<br>
+        <strong>Candidate Name:</strong> ${app.name}<br>
+        <strong>Submission Date:</strong> ${app.submissionDate}
+      `;
+
+      if (app.photoBase64) {
+        photoBox.innerHTML = `<img src="${app.photoBase64}" style="width:100%; height:100%; object-fit:cover;">`;
+      } else {
+        photoBox.innerHTML = `<div style="padding-top:40px; font-size:11px; color:#999;">Photo</div>`;
+      }
+
+      if (app.signBase64) {
+        signBox.innerHTML = `<img src="${app.signBase64}" style="max-height:45px; max-width:180px; object-fit:contain;">`;
+      } else {
+        signBox.innerHTML = `<span style="font-size:11px; color:#999;">(Uploaded Signature)</span>`;
+      }
 
       body.innerHTML = `
         <table style="width:100%; border:1px solid #444; border-collapse:collapse; font-size:13px; margin-bottom:12px;">
           <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">1. Application & Personal Details</th></tr>
-          <tr><td style="padding:5px; border:1px solid #444; width:35%;">Application Number</td><td style="padding:5px; border:1px solid #444;"><strong>${app.appNo}</strong></td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Candidate ID</td><td style="padding:5px; border:1px solid #444;">${app.candidateId}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Full Name</td><td style="padding:5px; border:1px solid #444;">${app.name}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Date of Birth / Gender / Caste</td><td style="padding:5px; border:1px solid #444;">${app.dob} | ${app.gender} | ${app.caste}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Aadhaar Verification</td><td style="padding:5px; border:1px solid #444;">[Aadhaar Redacted] (Submitted)</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444; width:35%;">Date of Birth / Gender / Caste</td><td style="padding:5px; border:1px solid #444;">${app.dob} | ${app.gender} | ${app.caste}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Aadhaar Verification</td><td style="padding:5px; border:1px solid #444;">[Aadhaar Redacted] (Submitted for Verification)</td></tr>
 
           <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">2. Parents & Guardian Details</th></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Father's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${app.father} (${app.fatherOcc})</td></tr>
@@ -1421,7 +1935,7 @@
 
           <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">6. Documents & Official Verification</th></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Uploaded Documents</td><td style="padding:5px; border:1px solid #444;">Aadhaar, Admission Receipt, Marksheet, Passbook, Income Proof, Prayer</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Submission Date & Status</td><td style="padding:5px; border:1px solid #444;">${app.submissionDate} | Status: <strong>${app.status}</strong></td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Verification Status</td><td style="padding:5px; border:1px solid #444;"><strong>${app.status}</strong></td></tr>
         </table>
       `;
 
@@ -1494,9 +2008,7 @@
         </html>
       `;
 
-      const blob = new Blob(['\ufeff' + htmlContent], {
-        type: 'application/msword'
-      });
+      const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
