@@ -18,7 +18,9 @@
       flex-direction: column;
       min-height: 100vh;
     }
-    header {
+    
+    /* Public Navigation Header */
+    #publicHeader {
       background: linear-gradient(135deg, #7f1d1d, #9a3412);
       color: #ffffff;
       padding: 12px 16px;
@@ -69,6 +71,28 @@
       color: #fde047;
       border: 1px solid #fde047;
     }
+
+    /* Isolated Portal Top Header (Shown Only Upon Login) */
+    #portalTopHeader {
+      display: none;
+      background: #1c1917;
+      color: #ffffff;
+      padding: 12px 20px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 110;
+    }
+    .portal-header-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     main {
       max-width: 1000px;
       margin: 16px auto;
@@ -90,6 +114,8 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.06);
       margin-bottom: 20px;
     }
+
+    /* Hero Card */
     .hero-card {
       text-align: center;
       border-top: 5px solid #ea580c;
@@ -222,7 +248,7 @@
       padding-bottom: 4px;
     }
 
-    /* Holy Trio Individual Photo Cards */
+    /* Holy Trio */
     .pillar-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -254,7 +280,7 @@
       display: block;
     }
 
-    /* 15 Image Carousel / Slider */
+    /* 15 Image Slider */
     .slider-container {
       position: relative;
       max-width: 100%;
@@ -340,7 +366,7 @@
       border-radius: 10px;
     }
 
-    /* Contact Us Section */
+    /* Contact Us */
     .contact-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -380,7 +406,7 @@
       margin-bottom: 10px;
     }
 
-    /* Downloads Grid */
+    /* Downloads */
     .downloads-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -439,7 +465,7 @@
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 14px;
     }
-    .form-group { margin-bottom: 12px; }
+    .form-group { margin-bottom: 14px; }
     label {
       display: block;
       font-size: 12px;
@@ -473,7 +499,33 @@
       display: inline-block;
     }
 
-    /* Photo & Signature Preview Boxes */
+    /* Upload Instructions and Error State */
+    .file-rule-hint {
+      display: block;
+      font-size: 11px;
+      color: #78716c;
+      margin-top: 4px;
+    }
+    .input-file-field {
+      border: 1px solid #d6d3d1;
+      padding: 8px;
+      border-radius: 6px;
+      background: #fafaf9;
+      width: 100%;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    .input-file-field.file-invalid {
+      border: 2px solid #dc2626 !important;
+      background-color: #fef2f2 !important;
+    }
+    .file-error-msg {
+      display: none;
+      font-size: 11px;
+      color: #dc2626;
+      font-weight: bold;
+      margin-top: 3px;
+    }
+
     .upload-preview-box {
       width: 120px;
       height: 140px;
@@ -541,6 +593,7 @@
     .btn-pdf { background: #0284c7; color: #fff; }
     .btn-word { background: #2563eb; color: #fff; }
     .btn-delete { background: #dc2626; color: #fff; }
+    .btn-manage { background: #9a3412; color: #fff; }
     .btn-excel {
       background: #15803d;
       color: #ffffff;
@@ -552,7 +605,21 @@
       cursor: pointer;
     }
 
-    footer {
+    /* Status Pills */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    .st-submitted { background: #e0f2fe; color: #0369a1; }
+    .st-under-verification { background: #ffedd5; color: #9a3412; }
+    .st-approved { background: #dcfce7; color: #15803d; }
+    .st-sanctioned { background: #f3e8ff; color: #6b21a8; }
+    .st-returned { background: #fee2e2; color: #991b1b; }
+
+    #publicFooter {
       background: #1c1917;
       color: #a8a29e;
       padding: 18px 16px;
@@ -570,10 +637,10 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
+  <!-- 1. PUBLIC HEADER (Hidden when user is logged in) -->
+  <header id="publicHeader">
     <div class="header-inner">
-      <div class="brand" onclick="navigateTo('home')">
+      <div class="brand" onclick="navigateToPublic('home')">
         <div class="om-badge">ॐ</div>
         <div>
           <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION</div>
@@ -581,33 +648,49 @@
         </div>
       </div>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
-        <button class="nav-btn" onclick="navigateTo('home')">Home</button>
-        <button class="nav-btn" onclick="navigateTo('downloads')">Downloads</button>
-        <button class="nav-btn" onclick="navigateTo('candidateLogin')">Candidate Login</button>
-        <button class="nav-btn nav-btn-admin" onclick="navigateTo('adminLogin')">Admin Login</button>
+        <button class="nav-btn" onclick="navigateToPublic('home')">Home</button>
+        <button class="nav-btn" onclick="navigateToPublic('downloads')">Downloads</button>
+        <button class="nav-btn" onclick="navigateToPublic('candidateLogin')">Candidate Login</button>
+        <button class="nav-btn nav-btn-admin" onclick="navigateToPublic('adminLogin')">Admin Login</button>
       </div>
     </div>
   </header>
 
+  <!-- 2. ISOLATED WORKSPACE TOP BAR (Visible only when logged in) -->
+  <div id="portalTopHeader">
+    <div class="portal-header-inner">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="om-badge" style="width:32px; height:32px; font-size:16px;">ॐ</div>
+        <div>
+          <div style="font-weight:bold; font-size:13px; letter-spacing:0.5px;" id="portalWorkspaceTitle">RKMA PORTAL WORKSPACE</div>
+          <div style="font-size:11px; color:#fed7aa;" id="portalUserIdentity">Active Session</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="nav-btn" style="background:#44403c;" onclick="openProfileModal()">View Profile</button>
+        <button class="nav-btn" style="background:#dc2626; border-color:#ef4444;" onclick="executeSecureLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
   <main>
-    <!-- 1. LANDING PAGE -->
+    <!-- ================= PUBLIC SECTION 1: HOME ================= -->
     <section id="sec-home" class="page-section active">
       <div class="card hero-card">
         <span class="badge">Academic Session 2026-2027</span>
         <h2>Ramakrishna Mission Ashrama, Jhargram</h2>
         <p>Scholarship Application & Management Portal<br>Empowering Students Through Education, Values and Service</p>
         <div class="btn-group">
-          <button class="btn-primary" onclick="navigateTo('candidateLogin')">Candidate Portal</button>
-          <button class="btn-secondary" onclick="navigateTo('adminLogin')">Admin Login</button>
+          <button class="btn-primary" onclick="navigateToPublic('candidateLogin')">Candidate Portal</button>
+          <button class="btn-secondary" onclick="navigateToPublic('adminLogin')">Admin Login</button>
         </div>
       </div>
 
-      <!-- Institutional Overview & Activities -->
+      <!-- Institutional Activities -->
       <div class="card about-section">
         <h3 style="color: #7f1d1d; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #fed7aa; padding-bottom: 6px;">
           About Ramakrishna Mission Ashrama, Jhargram
         </h3>
-        
         <p class="about-intro">
           Ramakrishna Mission Ashrama, Jhargram, a branch centre of the Ramakrishna Mission, Belur Math came into existence on 20th August 2017 on five acres of land obtained on lease from the Government of West Bengal. Srimat Swami Smarananandaji Maharaj, the 16th President of Ramakrishna Math and Ramakrishna Mission, Belur Math, inaugurated the newly constructed Assembly cum Prayer Hall in the Ashrama campus on 7th of December 2019.
         </p>
@@ -618,50 +701,47 @@
           <div class="activity-card">
             <h4>Educational</h4>
             <ul>
-              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> A Co-Educational Higher Secondary Residential School for the Tribal students. Most of the students are first generation learners with a roll strength of 460 students, at present.</li>
-              <li><strong>6 Free Coaching Centers:</strong> 320 students are given free coaching, dress, and a light tiffin.</li>
-              <li><strong>Scholarships to Deserving Students:</strong> In the year 2023-24, we have provided scholarships worth 13.41 lakhs to 152 students hailing from Jhargram district.</li>
+              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> A Co-Educational Higher Secondary Residential School for Tribal students (460 students).</li>
+              <li><strong>6 Free Coaching Centers:</strong> 320 students receive free coaching, uniforms, and light tiffin.</li>
+              <li><strong>Scholarships:</strong> In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students of Jhargram district.</li>
             </ul>
           </div>
 
           <div class="activity-card">
             <h4>Welfare</h4>
             <ul>
-              <li>Providing dress materials among the needy, pecuniary help and other types of assistance to the poor.</li>
-              <li>Distress Relief in times of natural calamities.</li>
-              <li>Winter relief by way of Jacket/Blanket distribution.</li>
-              <li>A monthly motivational program is held at the Jhargram correctional home.</li>
-              <li>A bi-monthly free homeopathic camp by Dr Ashoke Pradhan.</li>
-              <li>Yearly Blood Donation camp where more than 100 people donate blood.</li>
-              <li>Under Swami Vivekananda Tree Plantation program 16000 trees planted till now.</li>
-              <li>6 widows are given a monthly pension of Rs 1200.</li>
+              <li>Distribution of clothes, relief assistance, and financial aid to underprivileged families.</li>
+              <li>Disaster relief and winter jacket/blanket distribution.</li>
+              <li>Monthly motivational programs at Jhargram Correctional Home.</li>
+              <li>Bi-monthly free homeopathic health camp by Dr. Ashoke Pradhan.</li>
+              <li>Annual blood donation drive with over 100 donors.</li>
+              <li>Swami Vivekananda Tree Plantation (16,000+ trees planted).</li>
+              <li>Monthly pension of Rs. 1,200 to 6 widows.</li>
             </ul>
           </div>
 
           <div class="activity-card">
             <h4>Youth</h4>
             <ul>
-              <li><strong>‘Arise, Awake’:</strong> A value education program in schools/colleges in Jhargram district. As on February 2024, nearly 8000 students and 400 teachers in 32 institutions were covered under this program.</li>
-              <li>Annual District level Football Tournament, Yogasana competitions, cultural competitions are conducted.</li>
-              <li>Vivekananda study circles conducted at 12 places in the district.</li>
-              <li>National Youth Day celebrations.</li>
-              <li>Sunday Value Education Classes for the children of 6 to 12 years.</li>
+              <li><strong>‘Arise, Awake’:</strong> Value education across 32 institutions covering 8,000 students and 400 teachers.</li>
+              <li>Annual district football tournament, yoga, and cultural competitions.</li>
+              <li>Vivekananda study circles at 12 centers.</li>
+              <li>National Youth Day celebrations and Sunday moral classes.</li>
             </ul>
           </div>
 
           <div class="activity-card">
             <h4>Spiritual</h4>
             <ul>
-              <li>Celebration of birth anniversaries of Sri Thakur, Holy Mother, Swami Vivekananda and Direct Disciples.</li>
-              <li>Regular religious discourses, Evening Prayer and Ramnam sankirtan on Ekadashi days.</li>
-              <li>Religious and Cultural functions including Spiritual Retreats, Youth Conventions, etc.</li>
-              <li>Sale of Ramakrishna-Vivekananda & Vedanta literature.</li>
+              <li>Birth anniversary celebrations of Sri Ramakrishna, Sri Sarada Devi, and Swami Vivekananda.</li>
+              <li>Daily evening prayer, religious discourses, and Ekadashi Ramnam Sankirtan.</li>
+              <li>Spiritual retreats and distribution of Vedanta literature.</li>
             </ul>
           </div>
         </div>
       </div>
 
-      <!-- HOLY TRIO SECTION -->
+      <!-- HOLY TRIO -->
       <div class="section-title-box">
         <h3>HOLY TRIO</h3>
       </div>
@@ -698,7 +778,7 @@
         </div>
       </div>
 
-      <!-- 15 IMAGES SLIDER / CAROUSEL -->
+      <!-- 15 Images Slider -->
       <div class="section-title-box">
         <h3>GLIMPSES OF ASHRAMA ACTIVITIES</h3>
       </div>
@@ -706,73 +786,24 @@
       <div class="card" style="padding: 12px;">
         <div class="slider-container">
           <div class="slide-wrapper" id="carouselWrapper">
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1vqBJNgB72mfDmscTdjOuf9LN-dZ2aM8I" alt="Ashrama Activity 1">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 1</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1OAmfCuUgSxExpW-ydCqNiMml91ge_2XE" alt="Ashrama Activity 2">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 2</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1mfncSNTU7OOIvYjDNmC-kGMfvMInUF0w" alt="Ashrama Activity 3">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 3</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1_4yGHmo_Zse35nuLvUpxrtMK8cfq-eVc" alt="Ashrama Activity 4">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 4</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/143J157Z0hgyw3dqjP1qG9kbQL78Wada-" alt="Ashrama Activity 5">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 5</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1m7-psF83cr7CHYYtg7a_bqh4VB1sbK5W" alt="Ashrama Activity 6">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 6</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1nOrr-Bsu7yP4nAUuByxiI9uy5feZU2Am" alt="Ashrama Activity 7">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 7</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1JuZ1xnlCAdAllJRaOqoJbKsThQiIlK75" alt="Ashrama Activity 8">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 8</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1TEiBReJ5Bjb18KemNhK9uWebXcUxHt7-" alt="Ashrama Activity 9">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 9</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/13RonHGvyYR8-WrECoA6MluL53W1V2o5S" alt="Ashrama Activity 10">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 10</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1T9Y-Zdg2B68RERJyfSKzqe_NuD97n0J-" alt="Ashrama Activity 11">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 11</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1kdyWabrOUIsY0Fc5W1bJUIjUthDORb8R" alt="Ashrama Activity 12">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 12</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1nZ1qrNQ1KGs6J7chYzGNSCqyIZrvFC64" alt="Ashrama Activity 13">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 13</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1GxfqbxroMc0cXcEpwB79spPqAkSE2MjC" alt="Ashrama Activity 14">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 14</div>
-            </div>
-            <div class="slide-item">
-              <img src="https://lh3.googleusercontent.com/d/1WdQhIl69O0q3BO1d7mJqbnr8FV56QrEt" alt="Ashrama Activity 15">
-              <div class="slide-caption">Glimpses of Ashrama Activities - 15</div>
-            </div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1vqBJNgB72mfDmscTdjOuf9LN-dZ2aM8I" alt="Activity 1"><div class="slide-caption">Glimpses of Ashrama Activities - 1</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1OAmfCuUgSxExpW-ydCqNiMml91ge_2XE" alt="Activity 2"><div class="slide-caption">Glimpses of Ashrama Activities - 2</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1mfncSNTU7OOIvYjDNmC-kGMfvMInUF0w" alt="Activity 3"><div class="slide-caption">Glimpses of Ashrama Activities - 3</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1_4yGHmo_Zse35nuLvUpxrtMK8cfq-eVc" alt="Activity 4"><div class="slide-caption">Glimpses of Ashrama Activities - 4</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/143J157Z0hgyw3dqjP1qG9kbQL78Wada-" alt="Activity 5"><div class="slide-caption">Glimpses of Ashrama Activities - 5</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1m7-psF83cr7CHYYtg7a_bqh4VB1sbK5W" alt="Activity 6"><div class="slide-caption">Glimpses of Ashrama Activities - 6</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1nOrr-Bsu7yP4nAUuByxiI9uy5feZU2Am" alt="Activity 7"><div class="slide-caption">Glimpses of Ashrama Activities - 7</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1JuZ1xnlCAdAllJRaOqoJbKsThQiIlK75" alt="Activity 8"><div class="slide-caption">Glimpses of Ashrama Activities - 8</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1TEiBReJ5Bjb18KemNhK9uWebXcUxHt7-" alt="Activity 9"><div class="slide-caption">Glimpses of Ashrama Activities - 9</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/13RonHGvyYR8-WrECoA6MluL53W1V2o5S" alt="Activity 10"><div class="slide-caption">Glimpses of Ashrama Activities - 10</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1T9Y-Zdg2B68RERJyfSKzqe_NuD97n0J-" alt="Activity 11"><div class="slide-caption">Glimpses of Ashrama Activities - 11</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1kdyWabrOUIsY0Fc5W1bJUIjUthDORb8R" alt="Activity 12"><div class="slide-caption">Glimpses of Ashrama Activities - 12</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1nZ1qrNQ1KGs6J7chYzGNSCqyIZrvFC64" alt="Activity 13"><div class="slide-caption">Glimpses of Ashrama Activities - 13</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1GxfqbxroMc0cXcEpwB79spPqAkSE2MjC" alt="Activity 14"><div class="slide-caption">Glimpses of Ashrama Activities - 14</div></div>
+            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1WdQhIl69O0q3BO1d7mJqbnr8FV56QrEt" alt="Activity 15"><div class="slide-caption">Glimpses of Ashrama Activities - 15</div></div>
           </div>
-
-          <!-- Controls -->
           <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
           <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
-
-          <!-- Dots -->
           <div class="slider-dots" id="sliderDots"></div>
         </div>
       </div>
@@ -821,15 +852,15 @@
       </div>
     </section>
 
-    <!-- 2. DOWNLOADS WINDOW -->
+    <!-- ================= PUBLIC SECTION 2: DOWNLOADS ================= -->
     <section id="sec-downloads" class="page-section">
       <div class="card" style="border-left: 5px solid #0284c7;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
           <div>
             <h3 style="color:#0369a1; font-size:18px;">Official Documents & Formats</h3>
-            <p style="font-size:13px; color:#57534e; margin-top:4px;">Download the prescribed forms and prayer documents required for scholarship applications:</p>
+            <p style="font-size:13px; color:#57534e; margin-top:4px;">Download prescribed forms and prayer documents required for scholarship applications:</p>
           </div>
-          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('home')">Back to Home</button>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateToPublic('home')">Back to Home</button>
         </div>
         
         <div class="downloads-grid">
@@ -868,97 +899,87 @@
       </div>
     </section>
 
-    <!-- 3. ADMIN LOGIN (NO OTP) -->
+    <!-- ================= PUBLIC SECTION 3: ADMIN LOGIN ================= -->
     <section id="sec-adminLogin" class="page-section">
-      <div class="card" style="max-width:420px; margin:0 auto;">
+      <div class="card" style="max-width:420px; margin:40px auto;">
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
         <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only</p>
 
-        <div>
-          <div class="form-group">
-            <label>Select Authorized Officer</label>
-            <select id="adminDropdown">
-              <option value="">-- Choose Profile --</option>
-              <option value="Secretary@RKMAJGM">Secretary Maharaj, RKMA Jhargram</option>
-              <option value="SBMaharaj@RKMAJGM">Swami Brahmeshwarananda, RKMA Jhargram</option>
-              <option value="DEO@RKMAJGM">Data Entry Operator, RKMA Jhargram</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="adminPassField" placeholder="Enter Password" autocomplete="new-password">
-          </div>
-
-          <button class="submit-btn" style="background:#1c1917; color:#fde047; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="executeAdminDirectLogin()">
-            Login to Admin Console
-          </button>
+        <div class="form-group">
+          <label>Select Authorized Officer</label>
+          <select id="adminDropdown">
+            <option value="">-- Choose Profile --</option>
+            <option value="Secretary@RKMAJGM">Secretary Maharaj, RKMA Jhargram</option>
+            <option value="SBMaharaj@RKMAJGM">Swami Brahmeshwarananda, RKMA Jhargram</option>
+            <option value="DEO@RKMAJGM">Data Entry Operator, RKMA Jhargram</option>
+          </select>
         </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="adminPassField" placeholder="Enter Password" autocomplete="new-password">
+        </div>
+
+        <button class="submit-btn" style="background:#1c1917; color:#fde047; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="executeAdminDirectLogin()">
+          Login to Admin Console
+        </button>
       </div>
     </section>
 
-    <!-- 4. CANDIDATE LOGIN (NO OTP) -->
+    <!-- ================= PUBLIC SECTION 4: CANDIDATE LOGIN ================= -->
     <section id="sec-candidateLogin" class="page-section">
-      <div class="card" style="max-width:400px; margin:0 auto;">
-        <h2 style="text-align:center; font-size:18px;">Candidate Portal</h2>
+      <div class="card" style="max-width:400px; margin:40px auto;">
+        <h2 style="text-align:center; font-size:18px;">Candidate Portal Login</h2>
         <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Sign in with your Candidate ID and Password</p>
 
-        <div>
-          <div class="form-group">
-            <label>Candidate ID</label>
-            <input type="text" id="candIdField" placeholder="e.g. RKM-2026-001">
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="candPassField" placeholder="Enter Password">
-          </div>
-          <button class="submit-btn" style="background:#ea580c; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="executeCandidateDirectLogin()">
-            Login
-          </button>
+        <div class="form-group">
+          <label>Candidate ID</label>
+          <input type="text" id="candIdField" placeholder="e.g. RKM-2026-001">
         </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="candPassField" placeholder="Enter Password">
+        </div>
+        <button class="submit-btn" style="background:#ea580c; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="executeCandidateDirectLogin()">
+          Login
+        </button>
       </div>
     </section>
 
-    <!-- 5. CANDIDATE DASHBOARD -->
+    <!-- ================= AUTHENTICATED SECTION: CANDIDATE DASHBOARD ================= -->
     <section id="sec-candidateDashboard" class="page-section">
-      <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div>
-          <h2 id="candWelcomeName">Welcome</h2>
-          <p id="candWelcomeId" style="font-size:12px; color:#78716c;"></p>
-        </div>
-        <button onclick="navigateTo('home')" class="nav-btn" style="background:#78716c; border:none;">Logout</button>
+      <div class="card" style="border-left: 5px solid #ea580c;">
+        <h2 id="candWelcomeName" style="font-size:18px; color:#1c1917;">Welcome, Candidate</h2>
+        <p id="candWelcomeId" style="font-size:12px; color:#78716c; margin-top:2px;"></p>
       </div>
 
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
-        <!-- Option 1: Continue Application -->
         <div class="card" style="border-top:4px solid #ea580c; text-align:center;">
           <h3 style="margin-bottom:8px; color:#ea580c;">1. Apply / Continue Application</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Fill, review, and submit your official scholarship application.</p>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Fill in your personal, academic, bank, and supporting documentation.</p>
           <button class="btn-primary" onclick="openApplicationForm()">Open Application Form</button>
         </div>
 
-        <!-- Option 2: View & Download Application -->
         <div class="card" style="border-top:4px solid #15803d; text-align:center;">
           <h3 style="margin-bottom:8px; color:#15803d;">2. View & Download Application</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Inspect your submitted application details with photo & signature and download official PDF.</p>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Inspect your submitted application with photo & signature and print PDF.</p>
           <button class="btn-view" style="background:#15803d;" onclick="viewCandidateSubmittedApp()">View / Download PDF</button>
         </div>
 
-        <!-- Option 3: Track Status -->
         <div class="card" style="border-top:4px solid #0284c7; text-align:center;">
-          <h3 style="margin-bottom:8px; color:#0284c7;">3. Track Status</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Check the current scrutiny, approval, and disbursement stage of your application.</p>
-          <button class="btn-primary" style="background:#0284c7;" onclick="openTrackStatus()">Track Application Status</button>
+          <h3 style="margin-bottom:8px; color:#0284c7;">3. Track Scrutiny Status</h3>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Monitor status changes (Submitted, Verified, Approved, Sanctioned, or Returned).</p>
+          <button class="btn-primary" style="background:#0284c7;" onclick="openTrackStatus()">Track Application</button>
         </div>
       </div>
     </section>
 
-    <!-- 6. 6-STEP SCHOLARSHIP APPLICATION FORM -->
+    <!-- ================= AUTHENTICATED SECTION: APPLICATION MULTI-STEP FORM ================= -->
     <section id="sec-applicationForm" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
           <h3>Scholarship Application Form (Session 2026-27)</h3>
-          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Dashboard</button>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateToAuth('candidateDashboard')">Back to Workspace</button>
         </div>
 
         <div class="stepper">
@@ -971,12 +992,12 @@
         </div>
 
         <form id="scholarshipMultiForm" onsubmit="return false;">
-          <!-- STEP 1: Personal Details (Photo & Signature) -->
+          <!-- STEP 1: Personal Details -->
           <div class="form-step active" id="formStep1">
-            <h4 style="margin-bottom:12px; color:#9a3412;">Step 1: Personal Details</h4>
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 1: Personal Details & Photographs</h4>
             <div class="form-grid">
               <div class="form-group">
-                <label>Name</label>
+                <label>Applicant Full Name</label>
                 <input type="text" id="f_name" required>
               </div>
               <div class="form-group">
@@ -1005,19 +1026,23 @@
                 <input type="text" id="f_aadhaar" placeholder="Enter Aadhaar Number" required>
               </div>
 
-              <!-- Candidate Photo Upload -->
+              <!-- Photo Upload with strict validation -->
               <div class="form-group">
-                <label>Candidate Passport Photo (JPG/PNG)</label>
-                <input type="file" id="f_cand_photo" accept="image/*" onchange="previewImageFile(this, 'candPhotoPreview')">
+                <label>Candidate Passport Photo</label>
+                <input type="file" id="f_cand_photo" class="input-file-field" accept=".jpg,.jpeg,.png" onchange="validateAndPreviewFile(this, 'candPhotoPreview', 100, ['image/jpeg','image/jpg','image/png'], 'photoErr')">
+                <span class="file-rule-hint">Format: JPG, JPEG, PNG | Max Size: 100 KB</span>
+                <span class="file-error-msg" id="photoErr">Invalid format or size exceeded!</span>
                 <div class="upload-preview-box" id="candPhotoPreview">
                   <span style="font-size:10px; color:#a8a29e;">Photo Preview</span>
                 </div>
               </div>
 
-              <!-- Candidate Signature Upload -->
+              <!-- Signature Upload with strict validation -->
               <div class="form-group">
-                <label>Candidate Signature (JPG/PNG)</label>
-                <input type="file" id="f_cand_sign" accept="image/*" onchange="previewImageFile(this, 'candSignPreview')">
+                <label>Candidate Specimen Signature</label>
+                <input type="file" id="f_cand_sign" class="input-file-field" accept=".jpg,.jpeg,.png" onchange="validateAndPreviewFile(this, 'candSignPreview', 50, ['image/jpeg','image/jpg','image/png'], 'signErr')">
+                <span class="file-rule-hint">Format: JPG, JPEG, PNG | Max Size: 50 KB</span>
+                <span class="file-error-msg" id="signErr">Invalid format or size exceeded!</span>
                 <div class="upload-preview-sign" id="candSignPreview">
                   <span style="font-size:10px; color:#a8a29e;">Signature Preview</span>
                 </div>
@@ -1028,7 +1053,7 @@
             </div>
           </div>
 
-          <!-- STEP 2: Parents and Guardian Details -->
+          <!-- STEP 2: Parents Details -->
           <div class="form-step" id="formStep2">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 2: Parents & Guardian Details</h4>
             <div class="form-grid">
@@ -1067,7 +1092,7 @@
             </div>
           </div>
 
-          <!-- STEP 3: Contact and Address Details -->
+          <!-- STEP 3: Contact Details -->
           <div class="form-step" id="formStep3">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 3: Contact & Address Details</h4>
             <div class="form-grid">
@@ -1104,7 +1129,7 @@
                 <input type="text" id="f_dist" required>
               </div>
               <div class="form-group">
-                <label>PIN</label>
+                <label>PIN Code</label>
                 <input type="text" id="f_pin" required>
               </div>
             </div>
@@ -1173,7 +1198,7 @@
 
           <!-- STEP 5: Bank Details -->
           <div class="form-step" id="formStep5">
-            <h4 style="margin-bottom:12px; color:#9a3412;">Step 5: Bank Details</h4>
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 5: Bank DBT Details</h4>
             <div class="form-grid">
               <div class="form-group">
                 <label>A/C Holder Name (as per Bank Passbook)</label>
@@ -1198,39 +1223,64 @@
             </div>
           </div>
 
-          <!-- STEP 6: Document Upload & Direct Submit -->
+          <!-- STEP 6: Document Uploads with Strict Rules -->
           <div class="form-step" id="formStep6">
-            <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Documents Upload</h4>
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Document Uploads</h4>
+            <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Only files conforming to specified format and size will be accepted. Invalid uploads will turn red.</p>
+            
             <div class="form-grid">
+              <!-- Doc 1 -->
               <div class="form-group">
-                <label>a. Aadhaar Card (PDF/Image)</label>
-                <input type="file" id="f_doc_aadhaar">
+                <label>a. Aadhaar Card</label>
+                <input type="file" id="f_doc_aadhaar" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errAadhaar')">
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-error-msg" id="errAadhaar">Exceeded 500 KB or invalid file type!</span>
               </div>
+
+              <!-- Doc 2 -->
               <div class="form-group">
                 <label>b. Admission Receipt</label>
-                <input type="file" id="f_doc_adm">
+                <input type="file" id="f_doc_adm" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errAdm')">
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-error-msg" id="errAdm">Exceeded 500 KB or invalid file type!</span>
               </div>
+
+              <!-- Doc 3 -->
               <div class="form-group">
                 <label>c. Qualifying Examination Marksheet</label>
-                <input type="file" id="f_doc_mark">
+                <input type="file" id="f_doc_mark" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errMark')">
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-error-msg" id="errMark">Exceeded 500 KB or invalid file type!</span>
               </div>
+
+              <!-- Doc 4 -->
               <div class="form-group">
-                <label>d. Bank Passbook</label>
-                <input type="file" id="f_doc_passbook">
+                <label>d. Bank Passbook First Page</label>
+                <input type="file" id="f_doc_passbook" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errPassbook')">
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-error-msg" id="errPassbook">Exceeded 500 KB or invalid file type!</span>
               </div>
+
+              <!-- Doc 5 -->
               <div class="form-group">
-                <label>e. Income Proof</label>
-                <input type="file" id="f_doc_income">
+                <label>e. Income Proof Certificate</label>
+                <input type="file" id="f_doc_income" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errIncome')">
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-error-msg" id="errIncome">Exceeded 500 KB or invalid file type!</span>
               </div>
+
+              <!-- Doc 6 -->
               <div class="form-group">
                 <label>f. Application Prayer</label>
-                <input type="file" id="f_doc_prayer">
+                <input type="file" id="f_doc_prayer" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errPrayer')">
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-error-msg" id="errPrayer">Exceeded 500 KB or invalid file type!</span>
               </div>
             </div>
 
-            <!-- Verification & Captcha Section -->
+            <!-- Verification & Captcha -->
             <div style="background:#fffbeb; border:1px solid #fef3c7; padding:14px; border-radius:8px; margin-top:16px;">
-              <h5 style="color:#b45309; margin-bottom:8px;">Final Verification & Security Check</h5>
+              <h5 style="color:#b45309; margin-bottom:8px;">Final Verification Check</h5>
               
               <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <div class="captcha-box" id="captchaDisplay">4A9X</div>
@@ -1255,29 +1305,29 @@
       </div>
     </section>
 
-    <!-- 7. TRACK STATUS -->
+    <!-- ================= AUTHENTICATED SECTION: CANDIDATE TRACKING ================= -->
     <section id="sec-trackStatus" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h3 id="trackHeading">Track Application Status</h3>
-          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Dashboard</button>
+          <h3 id="trackHeading">Application Scrutiny & Status History</h3>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateToAuth('candidateDashboard')">Back to Workspace</button>
         </div>
-        <div id="trackTimelineBox" style="margin-top:14px; display:flex; flex-direction:column; gap:8px;"></div>
+        <div id="trackTimelineBox" style="margin-top:14px; display:flex; flex-direction:column; gap:10px;"></div>
       </div>
     </section>
 
-    <!-- 8. ADMIN DASHBOARD -->
+    <!-- ================= AUTHENTICATED SECTION: ADMIN DASHBOARD ================= -->
     <section id="sec-adminDashboard" class="page-section">
-      <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <!-- Admin Workspace Greeting -->
+      <div class="card" style="border-left: 5px solid #7f1d1d; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
-          <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL CONSOLE</span>
-          <h2 id="activeAdminTitle" style="font-size:16px; margin-top:4px;">Administrator</h2>
+          <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL ADMINISTRATIVE PORTAL</span>
+          <h2 id="activeAdminTitle" style="font-size:16px; margin-top:4px;">Administrator Console</h2>
           <p id="activeAdminContact" style="font-size:12px; color:#78716c;"></p>
         </div>
-        <button onclick="navigateTo('home')" class="nav-btn" style="background:#ef4444; border:none;">Logout</button>
       </div>
 
-      <!-- Update Admin Mobile & Email (Direct Update) -->
+      <!-- Update Admin Contact Records directly -->
       <div class="card" style="border-left: 5px solid #0284c7;">
         <h3 style="font-size:15px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
         <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Update your official administrative contact records directly:</p>
@@ -1297,9 +1347,9 @@
         </div>
       </div>
 
-      <!-- Admin creates Candidate Credentials -->
+      <!-- Candidate Provisioning -->
       <div class="card" style="border-left: 5px solid #ea580c;">
-        <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Create Candidate Credentials (ID & Password by Admin)</h3>
+        <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Issue Candidate Credentials</h3>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
           <div>
             <label>Candidate Full Name</label>
@@ -1323,10 +1373,10 @@
         </div>
       </div>
 
-      <!-- Application Records Table -->
+      <!-- Applications Management Table -->
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-          <h3>Scholarship Applications (2026-27)</h3>
+          <h3>Scholarship Applications (Session 2026-27)</h3>
           <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export All to Excel (CSV)</button>
         </div>
         <div style="overflow-x:auto;">
@@ -1340,7 +1390,7 @@
                 <th>Marks %</th>
                 <th>Income (₹)</th>
                 <th>Status</th>
-                <th>Actions</th>
+                <th>Scrutiny & Actions</th>
               </tr>
             </thead>
             <tbody id="adminAppTableBody"></tbody>
@@ -1349,9 +1399,53 @@
       </div>
     </section>
 
-    <!-- Preview Modal -->
-    <div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:200; justify-content:center; align-items:center; padding:16px;">
-      <div style="background:#fff; border-radius:10px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+    <!-- ================= MODALS ================= -->
+    <!-- Admin Scrutiny / Status Update Modal -->
+    <div id="adminScrutinyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:10px; max-width:550px; width:100%; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+        <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:6px; margin-bottom:12px;">Application Scrutiny & Status Manager</h3>
+        
+        <div id="scrutinyAppInfo" style="font-size:13px; line-height:1.6; margin-bottom:14px; background:#fafaf9; padding:10px; border-radius:6px;"></div>
+
+        <div class="form-group">
+          <label>Select Status Action</label>
+          <select id="modalStatusSelect" onchange="handleStatusSelectionChange()">
+            <option value="Under Verification">Under Verification</option>
+            <option value="Approved">Approved</option>
+            <option value="Sanctioned" id="optSanctioned">Sanctioned (Amount Disbursed)</option>
+            <option value="Returned for Correction">Returned for Correction (Send Back)</option>
+          </select>
+          <span id="sanctionLockNotice" style="display:none; font-size:11px; color:#dc2626; margin-top:4px;">
+            ⚠️ Application must be "Approved" first before it can be Sanctioned.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Official Remarks / Correction Reason</label>
+          <textarea id="modalAdminRemarks" rows="3" style="width:100%; padding:10px; border-radius:6px; border:1px solid #d6d3d1; font-size:13px;" placeholder="Enter verification notes, approval endorsement, or required corrections..."></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <button type="button" class="btn-neutral" onclick="closeScrutinyModal()">Cancel</button>
+          <button type="button" class="btn-primary" onclick="saveAdminStatusDecision()">Update Status</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Candidate Profile Modal -->
+    <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; padding:20px; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+        <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">User Account Profile</h3>
+        <div id="profileModalContent" style="font-size:13px; line-height:1.8;"></div>
+        <div style="margin-top:16px; text-align:right;">
+          <button type="button" class="btn-neutral" onclick="closeProfileModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Application Preview Modal -->
+    <div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:10px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Preview Scholarship Application</h3>
         <div id="previewDetailsArea" style="font-size:13px; line-height:1.6;"></div>
         <div style="margin-top:16px; text-align:right;">
@@ -1360,7 +1454,7 @@
       </div>
     </div>
 
-    <!-- Official Printable Format for PDF (Candidate & Admin) -->
+    <!-- Printable Official Template -->
     <div id="printableApplication" style="display:none; padding:30px; font-family:serif; background:#fff;">
       <div style="text-align:center; border-bottom:2px solid #7f1d1d; padding-bottom:12px; margin-bottom:20px;">
         <h2 style="color:#7f1d1d; margin-bottom:4px;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
@@ -1368,17 +1462,13 @@
         <h3 style="margin-top:10px; text-decoration:underline;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
       </div>
 
-      <!-- Applicant Header Photo Banner -->
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
         <div id="pdfHeaderMeta" style="font-size:14px; line-height:1.6;"></div>
-        <div id="pdfPhotoBox" style="width:110px; height:130px; border:1px solid #333; text-align:center; padding:2px;">
-          <span style="font-size:10px; color:#888;">Affix Photo</span>
-        </div>
+        <div id="pdfPhotoBox" style="width:110px; height:130px; border:1px solid #333; text-align:center; padding:2px;"></div>
       </div>
 
       <div id="pdfContentBody"></div>
 
-      <!-- Footer with Signatures -->
       <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
         <div style="text-align:center; width:220px;">
           <div id="pdfSignBox" style="height:50px; margin-bottom:4px; display:flex; align-items:center; justify-content:center;"></div>
@@ -1394,14 +1484,15 @@
     </div>
   </main>
 
-  <footer>
+  <!-- PUBLIC FOOTER (Hidden during logged-in sessions) -->
+  <footer id="publicFooter">
     <strong>Ramakrishna Mission Ashrama, Jhargram</strong><br>
     P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India<br>
     © 2026 Ramakrishna Mission Ashrama, Jhargram. All Rights Reserved.
   </footer>
 
   <script>
-    // Storage & State Initialization
+    // Storage Initializer
     let applications = JSON.parse(localStorage.getItem('rkm_apps') || '[]');
     let candidates = JSON.parse(localStorage.getItem('rkm_cand_db') || 'null') || {
       'RKM-2026-001': { name: 'Sourav Mahato', mobile: '9876543210', pass: 'RKMA@2026' }
@@ -1428,12 +1519,15 @@
       }
     };
 
+    // Session State
+    let activeUserRole = null; // 'admin' | 'candidate' | null
     let activeAdminId = null;
     let activeCandidateId = null;
-    let currentGeneratedCaptcha = '';
+    let selectedScrutinyIndex = null;
 
     let currentUploadedPhotoBase64 = '';
     let currentUploadedSignBase64 = '';
+    let currentGeneratedCaptcha = '';
 
     function saveState() {
       localStorage.setItem('rkm_apps', JSON.stringify(applications));
@@ -1441,7 +1535,12 @@
       localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
     }
 
-    function navigateTo(sectionId) {
+    // Navigation for Public Pages
+    function navigateToPublic(sectionId) {
+      if (activeUserRole !== null) {
+        alert('You are currently logged into an active session. Please logout first to browse public sections.');
+        return;
+      }
       document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('sec-' + sectionId);
       if (target) {
@@ -1450,99 +1549,148 @@
       }
     }
 
-    function previewImageFile(input, targetPreviewId) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const container = document.getElementById(targetPreviewId);
-          container.innerHTML = `<img src="${e.target.result}" alt="Uploaded Preview">`;
-          if (targetPreviewId === 'candPhotoPreview') {
-            currentUploadedPhotoBase64 = e.target.result;
-          } else if (targetPreviewId === 'candSignPreview') {
-            currentUploadedSignBase64 = e.target.result;
-          }
-        };
-        reader.readAsDataURL(input.files[0]);
+    // Navigation within Authenticated Workspace
+    function navigateToAuth(sectionId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById('sec-' + sectionId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo(0, 0);
       }
     }
 
-    // 15 Images Carousel Functionality
-    let currentSlideIndex = 0;
-    const totalSlides = 15;
-    let autoSlideInterval = null;
+    // Session UI Switcher: Hides public header/footer and activates private workspace top bar
+    function setAuthenticatedUI(role, title, identity) {
+      activeUserRole = role;
+      document.getElementById('publicHeader').style.display = 'none';
+      document.getElementById('publicFooter').style.display = 'none';
 
-    function buildSliderDots() {
-      const dotsContainer = document.getElementById('sliderDots');
-      if (dotsContainer) {
-        dotsContainer.innerHTML = '';
-        for (let i = 0; i < totalSlides; i++) {
-          const dot = document.createElement('span');
-          dot.className = 'dot' + (i === 0 ? ' active' : '');
-          dot.onclick = () => currentSlide(i);
-          dotsContainer.appendChild(dot);
+      document.getElementById('portalTopHeader').style.display = 'block';
+      document.getElementById('portalWorkspaceTitle').innerText = title;
+      document.getElementById('portalUserIdentity').innerText = identity;
+    }
+
+    // Secure Logout: Restores public header/footer and redirects to Home
+    function executeSecureLogout() {
+      activeUserRole = null;
+      activeAdminId = null;
+      activeCandidateId = null;
+
+      document.getElementById('portalTopHeader').style.display = 'none';
+      document.getElementById('publicHeader').style.display = 'block';
+      document.getElementById('publicFooter').style.display = 'block';
+
+      navigateToPublic('home');
+    }
+
+    // View Profile Modal for Authenticated Users
+    function openProfileModal() {
+      const modal = document.getElementById('profileModal');
+      const content = document.getElementById('profileModalContent');
+
+      if (activeUserRole === 'admin' && activeAdminId) {
+        const a = admins[activeAdminId];
+        content.innerHTML = `
+          <strong>Account Role:</strong> Authorized Administrator<br>
+          <strong>Official Designation:</strong> ${a.name}<br>
+          <strong>Admin ID:</strong> ${activeAdminId}<br>
+          <strong>Mobile Number:</strong> ${a.mobile}<br>
+          <strong>Email:</strong> ${a.email}
+        `;
+      } else if (activeUserRole === 'candidate' && activeCandidateId) {
+        const c = candidates[activeCandidateId];
+        content.innerHTML = `
+          <strong>Account Role:</strong> Registered Candidate<br>
+          <strong>Candidate Full Name:</strong> ${c.name}<br>
+          <strong>Candidate ID:</strong> ${activeCandidateId}<br>
+          <strong>Mobile Number:</strong> ${c.mobile}
+        `;
+      }
+      modal.style.display = 'flex';
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
+    // Client-side Strict File Validation & Alerts
+    function validateAndPreviewFile(input, previewId, maxKb, allowedTypes, errSpanId) {
+      const errSpan = document.getElementById(errSpanId);
+      input.classList.remove('file-invalid');
+      if (errSpan) errSpan.style.display = 'none';
+
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileSizeKb = file.size / 1024;
+
+        if (!allowedTypes.includes(file.type)) {
+          input.classList.add('file-invalid');
+          if (errSpan) {
+            errSpan.innerText = 'Unsupported file format! Allowed: JPG, JPEG, PNG.';
+            errSpan.style.display = 'block';
+          }
+          alert('Upload Error: Unsupported format. Allowed file types are JPG, JPEG, PNG.');
+          input.value = '';
+          return;
+        }
+
+        if (fileSizeKb > maxKb) {
+          input.classList.add('file-invalid');
+          if (errSpan) {
+            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds permitted limit of ${maxKb} KB!`;
+            errSpan.style.display = 'block';
+          }
+          alert(`Upload Error: File size exceeds the maximum limit of ${maxKb} KB.`);
+          input.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const container = document.getElementById(previewId);
+          container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+          if (previewId === 'candPhotoPreview') currentUploadedPhotoBase64 = e.target.result;
+          if (previewId === 'candSignPreview') currentUploadedSignBase64 = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function validateGeneralDocument(input, maxKb, errSpanId) {
+      const errSpan = document.getElementById(errSpanId);
+      input.classList.remove('file-invalid');
+      if (errSpan) errSpan.style.display = 'none';
+
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileSizeKb = file.size / 1024;
+        const validExtensions = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+
+        if (!validExtensions.includes(file.type)) {
+          input.classList.add('file-invalid');
+          if (errSpan) {
+            errSpan.innerText = 'Unsupported file format! Allowed: PDF, JPG, JPEG, PNG.';
+            errSpan.style.display = 'block';
+          }
+          alert('Upload Error: Unsupported document format. Please upload PDF, JPG, or PNG.');
+          input.value = '';
+          return;
+        }
+
+        if (fileSizeKb > maxKb) {
+          input.classList.add('file-invalid');
+          if (errSpan) {
+            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds permitted limit of ${maxKb} KB!`;
+            errSpan.style.display = 'block';
+          }
+          alert(`Upload Error: File size exceeds the limit of ${maxKb} KB.`);
+          input.value = '';
+          return;
         }
       }
     }
 
-    function updateCarousel() {
-      const wrapper = document.getElementById('carouselWrapper');
-      if (wrapper) {
-        wrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-      }
-      const dots = document.querySelectorAll('.dot');
-      dots.forEach((dot, idx) => {
-        if (idx === currentSlideIndex) dot.classList.add('active');
-        else dot.classList.remove('active');
-      });
-    }
-
-    function moveSlide(step) {
-      currentSlideIndex = (currentSlideIndex + step + totalSlides) % totalSlides;
-      updateCarousel();
-      resetAutoSlide();
-    }
-
-    function currentSlide(index) {
-      currentSlideIndex = index;
-      updateCarousel();
-      resetAutoSlide();
-    }
-
-    function startAutoSlide() {
-      autoSlideInterval = setInterval(() => {
-        currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
-        updateCarousel();
-      }, 3500);
-    }
-
-    function resetAutoSlide() {
-      clearInterval(autoSlideInterval);
-      startAutoSlide();
-    }
-
-    window.addEventListener('load', () => {
-      buildSliderDots();
-      startAutoSlide();
-    });
-
-    function submitContactForm() {
-      const name = document.getElementById('contactName').value.trim();
-      const phone = document.getElementById('contactPhone').value.trim();
-      const msg = document.getElementById('contactMessage').value.trim();
-
-      if (!name || !phone || !msg) {
-        alert('Please fill out your Name, Phone Number, and Message.');
-        return;
-      }
-
-      alert(`Thank you, ${name}! Your inquiry has been sent to rkma.jgm.scholarship@gmail.com.`);
-      document.getElementById('contactName').value = '';
-      document.getElementById('contactEmail').value = '';
-      document.getElementById('contactPhone').value = '';
-      document.getElementById('contactMessage').value = '';
-    }
-
-    // Direct Admin Login (No OTP)
+    // Direct Admin Login
     function executeAdminDirectLogin() {
       const selectedId = document.getElementById('adminDropdown').value;
       const pass = document.getElementById('adminPassField').value.trim();
@@ -1559,43 +1707,15 @@
         document.getElementById('activeAdminContact').innerText = `Mobile: ${admin.mobile} | Email: ${admin.email}`;
         document.getElementById('adminPassField').value = '';
 
+        setAuthenticatedUI('admin', 'ADMINISTRATOR CONSOLE', admin.name);
         renderAdminTable();
-        navigateTo('adminDashboard');
+        navigateToAuth('adminDashboard');
       } else {
-        alert('Invalid Password! Please enter the correct administrator password.');
+        alert('Invalid Administrator Password! Please try again.');
       }
     }
 
-    // Direct Admin Profile Update (No OTP)
-    function executeAdminDirectProfileUpdate() {
-      const newMobile = document.getElementById('updNewMobile').value.trim();
-      const newEmail = document.getElementById('updNewEmail').value.trim();
-
-      if (!newMobile && !newEmail) {
-        alert('Please provide a new Mobile Number or Email Address!');
-        return;
-      }
-
-      if (newMobile) {
-        if (newMobile.length !== 10) {
-          alert('Mobile Number must be exactly 10 digits!');
-          return;
-        }
-        admins[activeAdminId].mobile = newMobile;
-      }
-      if (newEmail) {
-        admins[activeAdminId].email = newEmail;
-      }
-
-      saveState();
-      alert('Administrator profile updated successfully!');
-      document.getElementById('activeAdminContact').innerText = `Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
-
-      document.getElementById('updNewMobile').value = '';
-      document.getElementById('updNewEmail').value = '';
-    }
-
-    // Direct Candidate Login (No OTP)
+    // Direct Candidate Login
     function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -1614,7 +1734,8 @@
         document.getElementById('candIdField').value = '';
         document.getElementById('candPassField').value = '';
 
-        navigateTo('candidateDashboard');
+        setAuthenticatedUI('candidate', 'CANDIDATE SCHOLARSHIP WORKSPACE', cand.name + ' (' + id + ')');
+        navigateToAuth('candidateDashboard');
       } else {
         alert('Invalid Candidate ID or Password!');
       }
@@ -1648,48 +1769,47 @@
       document.getElementById('genCandPass').value = '';
     }
 
+    function executeAdminDirectProfileUpdate() {
+      const newMobile = document.getElementById('updNewMobile').value.trim();
+      const newEmail = document.getElementById('updNewEmail').value.trim();
+
+      if (!newMobile && !newEmail) {
+        alert('Please provide a new Mobile Number or Email Address!');
+        return;
+      }
+
+      if (newMobile) {
+        if (newMobile.length !== 10) {
+          alert('Mobile Number must be exactly 10 digits!');
+          return;
+        }
+        admins[activeAdminId].mobile = newMobile;
+      }
+      if (newEmail) {
+        admins[activeAdminId].email = newEmail;
+      }
+
+      saveState();
+      alert('Administrator profile updated successfully!');
+      document.getElementById('activeAdminContact').innerText = `Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
+      document.getElementById('updNewMobile').value = '';
+      document.getElementById('updNewEmail').value = '';
+    }
+
+    // Candidate Multi-step Form Handlers
     function openApplicationForm() {
+      const existing = applications.find(a => a.candidateId === activeCandidateId);
+      if (existing && existing.status !== 'Returned for Correction') {
+        alert('You have already submitted an application (Status: ' + existing.status + '). Editing is locked unless returned for correction.');
+        return;
+      }
+
       const cand = candidates[activeCandidateId];
       document.getElementById('f_name').value = cand.name;
       document.getElementById('f_mobile').value = cand.mobile;
       refreshCaptcha();
       goToStep(1);
-      navigateTo('applicationForm');
-    }
-
-    function openTrackStatus() {
-      const existing = applications.find(a => a.candidateId === activeCandidateId);
-      const box = document.getElementById('trackTimelineBox');
-
-      if (!existing) {
-        box.innerHTML = `<div style="padding:14px; background:#fff7ed; border-radius:6px; font-size:13px; color:#c2410c;">You have not submitted an application yet. Click "Apply / Continue Application" to proceed.</div>`;
-      } else {
-        box.innerHTML = `
-          <div style="padding:10px; background:#dcfce7; border-left:4px solid #16a34a; border-radius:4px; font-size:13px;">
-            <strong>Stage 1: Submitted</strong> - Completed on ${existing.submissionDate} (App No: ${existing.appNo})
-          </div>
-          <div style="padding:10px; background:#ffedd5; border-left:4px solid #ea580c; border-radius:4px; font-size:13px; font-weight:bold;">
-            Stage 2: Under Verification - Scrutiny currently in progress at RKMA Jhargram
-          </div>
-          <div style="padding:10px; background:#f5f5f4; border-left:4px solid #d6d3d1; border-radius:4px; font-size:13px; color:#a8a29e;">
-            Stage 3: Approved
-          </div>
-          <div style="padding:10px; background:#f5f5f4; border-left:4px solid #d6d3d1; border-radius:4px; font-size:13px; color:#a8a29e;">
-            Stage 4: Amount Disbursed
-          </div>
-        `;
-      }
-      navigateTo('trackStatus');
-    }
-
-    // View & Download submitted application by Candidate
-    function viewCandidateSubmittedApp() {
-      const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
-      if (existingIndex === -1) {
-        alert('No submitted application found for this account! Please complete and submit your application form first.');
-        return;
-      }
-      downloadApplicationPDF(existingIndex);
+      navigateToAuth('applicationForm');
     }
 
     function goToStep(stepNumber) {
@@ -1751,18 +1871,19 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
-    // Final Application Submit (Direct without OTP)
     function executeFinalApplicationSubmit() {
       const captchaInput = document.getElementById('f_captchaInput').value.trim();
 
       if (captchaInput.toUpperCase() !== currentGeneratedCaptcha) {
-        alert('Invalid Captcha code! Please enter the correct captcha.');
+        alert('Invalid Captcha code! Please enter the correct characters.');
         return;
       }
 
-      const newAppNo = 'RKM-SCH-2026-' + String(applications.length + 1).padStart(3, '0');
+      const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
+      const appNo = existingIndex >= 0 ? applications[existingIndex].appNo : 'RKM-SCH-2026-' + String(applications.length + 1).padStart(3, '0');
+
       const record = {
-        appNo: newAppNo,
+        appNo: appNo,
         candidateId: activeCandidateId,
         name: document.getElementById('f_name').value,
         dob: document.getElementById('f_dob').value,
@@ -1797,17 +1918,80 @@
         ifsc: document.getElementById('f_ifsc').value,
         bankName: document.getElementById('f_bankname').value,
         status: 'Submitted',
+        adminRemarks: 'Application submitted successfully. Awaiting scrutiny.',
         submissionDate: new Date().toISOString().slice(0, 10)
       };
 
-      applications.push(record);
-      saveState();
+      if (existingIndex >= 0) {
+        applications[existingIndex] = record;
+      } else {
+        applications.push(record);
+      }
 
-      alert(`Application Submitted Successfully!\n\nApplication No: ${newAppNo}\nStatus: Submitted`);
-      navigateTo('candidateDashboard');
+      saveState();
+      alert(`Application Submitted Successfully!\n\nApplication No: ${appNo}\nStatus: Submitted`);
+      navigateToAuth('candidateDashboard');
     }
 
-    // Render Admin Table
+    // View Application Details & Download PDF by Candidate
+    function viewCandidateSubmittedApp() {
+      const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
+      if (existingIndex === -1) {
+        alert('No submitted application found for this account! Please complete and submit your application form first.');
+        return;
+      }
+      downloadApplicationPDF(existingIndex);
+    }
+
+    // Candidate Scrutiny Tracking
+    function openTrackStatus() {
+      const existing = applications.find(a => a.candidateId === activeCandidateId);
+      const box = document.getElementById('trackTimelineBox');
+
+      if (!existing) {
+        box.innerHTML = `<div style="padding:14px; background:#fff7ed; border-radius:6px; font-size:13px; color:#c2410c;">You have not submitted an application yet. Click "Apply / Continue Application" to proceed.</div>`;
+      } else {
+        box.innerHTML = `
+          <div style="padding:12px; background:#f0f9ff; border-left:4px solid #0284c7; border-radius:6px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:bold; font-size:14px;">Current Status: <span class="status-badge ${getStatusBadgeClass(existing.status)}">${existing.status}</span></span>
+              <span style="font-size:12px; color:#64748b;">Submitted: ${existing.submissionDate}</span>
+            </div>
+            <div style="font-size:13px; color:#334155; margin-top:8px;">
+              <strong>Official Scrutiny Remarks:</strong><br>
+              ${existing.adminRemarks || 'No remarks provided yet.'}
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+            <div style="padding:8px 12px; background:${existing.status !== 'Returned for Correction' ? '#dcfce7' : '#fee2e2'}; border-radius:4px; font-size:12px;">
+              <strong>Stage 1: Application Submission</strong> - Completed (App No: ${existing.appNo})
+            </div>
+            <div style="padding:8px 12px; background:${['Under Verification', 'Approved', 'Sanctioned'].includes(existing.status) ? '#dcfce7' : '#f5f5f4'}; border-radius:4px; font-size:12px;">
+              <strong>Stage 2: Official Scrutiny & Verification</strong> - ${existing.status === 'Under Verification' ? 'In Progress' : (['Approved', 'Sanctioned'].includes(existing.status) ? 'Verified' : 'Pending')}
+            </div>
+            <div style="padding:8px 12px; background:${['Approved', 'Sanctioned'].includes(existing.status) ? '#dcfce7' : '#f5f5f4'}; border-radius:4px; font-size:12px;">
+              <strong>Stage 3: Institutional Approval</strong> - ${['Approved', 'Sanctioned'].includes(existing.status) ? 'Approved by Authority' : 'Pending'}
+            </div>
+            <div style="padding:8px 12px; background:${existing.status === 'Sanctioned' ? '#dcfce7' : '#f5f5f4'}; border-radius:4px; font-size:12px;">
+              <strong>Stage 4: Fund Sanction & Disbursement</strong> - ${existing.status === 'Sanctioned' ? 'Sanctioned (Amount Disbursed)' : 'Pending'}
+            </div>
+          </div>
+        `;
+      }
+      navigateToAuth('trackStatus');
+    }
+
+    function getStatusBadgeClass(status) {
+      if (status === 'Submitted') return 'st-submitted';
+      if (status === 'Under Verification') return 'st-under-verification';
+      if (status === 'Approved') return 'st-approved';
+      if (status === 'Sanctioned') return 'st-sanctioned';
+      if (status === 'Returned for Correction') return 'st-returned';
+      return 'st-submitted';
+    }
+
+    // Admin Table
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -1823,9 +2007,10 @@
           <td>${app.currClass} (${app.stream})<br><span style="color:#78716c; font-size:10px;">${app.institution}</span></td>
           <td style="color:#15803d; font-weight:bold;">${app.marksPct}</td>
           <td>₹${app.income}</td>
-          <td><span style="display:inline-block; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:bold; background:#ffedd5; color:#9a3412;">${app.status}</span></td>
+          <td><span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span></td>
           <td>
             <div class="action-btn-group">
+              <button class="action-btn btn-manage" onclick="openScrutinyModal(${index})">Scrutiny</button>
               <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
               <button class="action-btn btn-word" onclick="downloadApplicationWord(${index})">Word</button>
               <button class="action-btn btn-delete" onclick="deleteApplication(${index})">Delete</button>
@@ -1834,6 +2019,70 @@
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    // Scrutiny Modal Handlers
+    function openScrutinyModal(index) {
+      selectedScrutinyIndex = index;
+      const app = applications[index];
+
+      document.getElementById('scrutinyAppInfo').innerHTML = `
+        <strong>Applicant:</strong> ${app.name} (${app.candidateId})<br>
+        <strong>Application No:</strong> ${app.appNo} | <strong>Current Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span><br>
+        <strong>Course:</strong> ${app.currClass} (${app.institution})
+      `;
+
+      document.getElementById('modalStatusSelect').value = app.status;
+      document.getElementById('modalAdminRemarks').value = app.adminRemarks || '';
+
+      handleStatusSelectionChange();
+      document.getElementById('adminScrutinyModal').style.display = 'flex';
+    }
+
+    function closeScrutinyModal() {
+      document.getElementById('adminScrutinyModal').style.display = 'none';
+      selectedScrutinyIndex = null;
+    }
+
+    // Enforce approval before sanctioning rule
+    function handleStatusSelectionChange() {
+      if (selectedScrutinyIndex === null) return;
+      const app = applications[selectedScrutinyIndex];
+      const select = document.getElementById('modalStatusSelect');
+      const notice = document.getElementById('sanctionLockNotice');
+
+      if (select.value === 'Sanctioned' && app.status !== 'Approved') {
+        notice.style.display = 'block';
+      } else {
+        notice.style.display = 'none';
+      }
+    }
+
+    function saveAdminStatusDecision() {
+      if (selectedScrutinyIndex === null) return;
+      const app = applications[selectedScrutinyIndex];
+      const newStatus = document.getElementById('modalStatusSelect').value;
+      const remarks = document.getElementById('modalAdminRemarks').value.trim();
+
+      // Rule: An application must be approved first before sanctioning
+      if (newStatus === 'Sanctioned' && app.status !== 'Approved') {
+        alert('Validation Error: You cannot sanction an application directly. Please update the status to "Approved" first, verify it, and then proceed to sanction.');
+        return;
+      }
+
+      // Rule: When returning application, remarks are mandatory
+      if (newStatus === 'Returned for Correction' && !remarks) {
+        alert('Action Required: Please provide specific remarks explaining why the application is being returned for correction.');
+        return;
+      }
+
+      app.status = newStatus;
+      app.adminRemarks = remarks;
+      saveState();
+
+      alert(`Status updated successfully to: ${newStatus}`);
+      closeScrutinyModal();
+      renderAdminTable();
     }
 
     function deleteApplication(index) {
@@ -1846,7 +2095,7 @@
       }
     }
 
-    // Comprehensive PDF Generator (with Photo and Signature)
+    // Official PDF Print Generator
     function downloadApplicationPDF(index) {
       const app = applications[index];
       const headerMeta = document.getElementById('pdfHeaderMeta');
@@ -1858,7 +2107,7 @@
         <strong>Application Number:</strong> ${app.appNo}<br>
         <strong>Candidate ID:</strong> ${app.candidateId}<br>
         <strong>Candidate Name:</strong> ${app.name}<br>
-        <strong>Submission Date:</strong> ${app.submissionDate}
+        <strong>Current Status:</strong> ${app.status} | <strong>Submitted:</strong> ${app.submissionDate}
       `;
 
       if (app.photoBase64) {
@@ -1900,16 +2149,16 @@
           <tr><td style="padding:5px; border:1px solid #444;">Bank Name & A/C No</td><td style="padding:5px; border:1px solid #444;">${app.bankName} (A/C: ${app.bankAcc})</td></tr>
           <tr><td style="padding:5px; border:1px solid #444;">IFSC Code</td><td style="padding:5px; border:1px solid #444;">${app.ifsc}</td></tr>
 
-          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">6. Documents & Official Verification</th></tr>
+          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">6. Documents & Verification Remarks</th></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Uploaded Documents</td><td style="padding:5px; border:1px solid #444;">Aadhaar, Admission Receipt, Marksheet, Passbook, Income Proof, Prayer</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Verification Status</td><td style="padding:5px; border:1px solid #444;"><strong>${app.status}</strong></td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Official Authority Remarks</td><td style="padding:5px; border:1px solid #444;"><strong>${app.adminRemarks || 'Under standard institutional scrutiny.'}</strong></td></tr>
         </table>
       `;
 
       window.print();
     }
 
-    // Word (.doc) Download
+    // Word (.doc) Generator
     function downloadApplicationWord(index) {
       const app = applications[index];
       const htmlContent = `
@@ -1935,6 +2184,7 @@
             <tr><td width="35%"><b>Application Number</b></td><td>${app.appNo}</td></tr>
             <tr><td><b>Candidate ID</b></td><td>${app.candidateId}</td></tr>
             <tr><td><b>Full Name</b></td><td>${app.name}</td></tr>
+            <tr><td><b>Current Status</b></td><td><b>${app.status}</b></td></tr>
             <tr><td><b>Date of Birth / Gender / Caste</b></td><td>${app.dob} | ${app.gender} | ${app.caste}</td></tr>
             <tr><td><b>Aadhaar Card Verification</b></td><td>[Aadhaar Redacted] (Submitted)</td></tr>
 
@@ -1959,9 +2209,9 @@
             <tr><td><b>Bank Name & A/C No</b></td><td>${app.bankName} (A/C: ${app.bankAcc})</td></tr>
             <tr><td><b>IFSC Code</b></td><td>${app.ifsc}</td></tr>
 
-            <tr style="background:#eaeaea;"><th colspan="2">6. Verification & Status</th></tr>
-            <tr><td><b>Uploaded Documents</b></td><td>Aadhaar, Admission Receipt, Marksheet, Passbook, Income Proof, Prayer</td></tr>
-            <tr><td><b>Submission Date & Status</b></td><td>${app.submissionDate} | Status: <b>${app.status}</b></td></tr>
+            <tr style="background:#eaeaea;"><th colspan="2">6. Verification & Status Remarks</th></tr>
+            <tr><td><b>Official Scrutiny Remarks</b></td><td>${app.adminRemarks || 'Scrutinized by RKMA Administration.'}</td></tr>
+            <tr><td><b>Submission Date</b></td><td>${app.submissionDate}</td></tr>
           </table>
 
           <br><br><br>
@@ -1992,10 +2242,10 @@
         return;
       }
 
-      let csv = 'Application No,Candidate ID,Full Name,DOB,Caste,Gender,Father Name,Father Occ,Mother Name,Mobile,Email,Address,Class,Stream,Institution,Last Exam,Marks %,Income,Bank Name,Account No,IFSC,Status,Date\n';
+      let csv = 'Application No,Candidate ID,Full Name,DOB,Caste,Gender,Father Name,Father Occ,Mother Name,Mobile,Email,Address,Class,Stream,Institution,Last Exam,Marks %,Income,Bank Name,Account No,IFSC,Status,Remarks,Date\n';
 
       applications.forEach(app => {
-        csv += `"${app.appNo}","${app.candidateId}","${app.name}","${app.dob}","${app.caste}","${app.gender}","${app.father}","${app.fatherOcc}","${app.mother}","${app.mobile}","${app.email}","${app.vill}, ${app.dist}","${app.currClass}","${app.stream}","${app.institution}","${app.lastExam}","${app.marksPct}","${app.income}","${app.bankName}","${app.bankAcc}","${app.ifsc}","${app.status}","${app.submissionDate}"\n`;
+        csv += `"${app.appNo}","${app.candidateId}","${app.name}","${app.dob}","${app.caste}","${app.gender}","${app.father}","${app.fatherOcc}","${app.mother}","${app.mobile}","${app.email}","${app.vill}, ${app.dist}","${app.currClass}","${app.stream}","${app.institution}","${app.lastExam}","${app.marksPct}","${app.income}","${app.bankName}","${app.bankAcc}","${app.ifsc}","${app.status}","${(app.adminRemarks || '').replace(/"/g, '""')}","${app.submissionDate}"\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -2007,6 +2257,80 @@
       link.click();
       document.body.removeChild(link);
     }
+
+    // Carousel Setup
+    let currentSlideIndex = 0;
+    const totalSlides = 15;
+    let autoSlideInterval = null;
+
+    function buildSliderDots() {
+      const dotsContainer = document.getElementById('sliderDots');
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < totalSlides; i++) {
+          const dot = document.createElement('span');
+          dot.className = 'dot' + (i === 0 ? ' active' : '');
+          dot.onclick = () => currentSlide(i);
+          dotsContainer.appendChild(dot);
+        }
+      }
+    }
+
+    function updateCarousel() {
+      const wrapper = document.getElementById('carouselWrapper');
+      if (wrapper) wrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlideIndex) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
+    }
+
+    function moveSlide(step) {
+      currentSlideIndex = (currentSlideIndex + step + totalSlides) % totalSlides;
+      updateCarousel();
+      resetAutoSlide();
+    }
+
+    function currentSlide(index) {
+      currentSlideIndex = index;
+      updateCarousel();
+      resetAutoSlide();
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(() => {
+        currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+        updateCarousel();
+      }, 3500);
+    }
+
+    function resetAutoSlide() {
+      clearInterval(autoSlideInterval);
+      startAutoSlide();
+    }
+
+    function submitContactForm() {
+      const name = document.getElementById('contactName').value.trim();
+      const phone = document.getElementById('contactPhone').value.trim();
+      const msg = document.getElementById('contactMessage').value.trim();
+
+      if (!name || !phone || !msg) {
+        alert('Please fill out your Name, Phone Number, and Message.');
+        return;
+      }
+
+      alert(`Thank you, ${name}! Your inquiry has been sent to rkma.jgm.scholarship@gmail.com.`);
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactMessage').value = '';
+    }
+
+    window.addEventListener('load', () => {
+      buildSliderDots();
+      startAutoSlide();
+    });
   </script>
 </body>
 </html>
