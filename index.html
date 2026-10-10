@@ -200,13 +200,14 @@
     /* Admin Window Switcher Tabs */
     .admin-nav-tabs {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       border-bottom: 2px solid #e7e5e4;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
     .admin-tab-btn {
-      padding: 12px 24px;
-      font-size: 14px;
+      padding: 10px 18px;
+      font-size: 13px;
       font-weight: bold;
       border: none;
       background: transparent;
@@ -525,6 +526,7 @@
       display: inline-block;
     }
 
+    /* Upload Styling */
     .file-rule-hint {
       display: block;
       font-size: 11px;
@@ -669,8 +671,8 @@
       <div class="brand" onclick="navigateToPublic('home')">
         <div class="om-badge">ॐ</div>
         <div>
-          <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION</div>
-          <div style="font-size:11px; color:#fed7aa;">Ashrama, Jhargram - 721507</div>
+          <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION ASHRAMA</div>
+          <div style="font-size:11px; color:#fed7aa;">Satyabanpally, Jhargram, 721507</div>
         </div>
       </div>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
@@ -727,9 +729,9 @@
           <div class="activity-card">
             <h4>Educational</h4>
             <ul>
-              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> A Co-Educational Higher Secondary Residential School for Tribal students (460 students).</li>
+              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> Residential School for Tribal students (460 students).</li>
               <li><strong>6 Free Coaching Centers:</strong> 320 students receive free coaching, uniforms, and light tiffin.</li>
-              <li><strong>Scholarships:</strong> In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students of Jhargram district.</li>
+              <li><strong>Scholarships:</strong> In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students.</li>
             </ul>
           </div>
 
@@ -847,7 +849,7 @@
               <div class="contact-icon">📍</div>
               <div style="font-size:13px; color:#44403c;">
                 <strong>Address:</strong><br>
-                P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India
+                At- Satyabanpally, P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India
               </div>
             </div>
             <div class="contact-item">
@@ -934,7 +936,7 @@
         <div class="form-group">
           <label>Select Authorized Officer</label>
           <select id="adminDropdown">
-            <!-- Dynamically populated to include any newly created admins -->
+            <!-- Dynamically populated -->
           </select>
         </div>
 
@@ -1335,7 +1337,6 @@
 
     <!-- ================= AUTHENTICATED SECTION: ADMIN DASHBOARD ================= -->
     <section id="sec-adminDashboard" class="page-section">
-      <!-- Admin Workspace Greeting & Management -->
       <div class="card" style="border-left: 5px solid #7f1d1d; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
           <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL ADMINISTRATIVE PORTAL</span>
@@ -1344,7 +1345,7 @@
         </div>
       </div>
 
-      <!-- Navigation Tabs: Two Separate Windows (Applications vs Registration) -->
+      <!-- Navigation Tabs: 4 Separate Windows -->
       <div class="admin-nav-tabs">
         <button class="admin-tab-btn active" id="tabBtnApplications" onclick="switchAdminWindow('applications')">
           📋 Applications Window (<span id="appCountBadge">0</span>)
@@ -1352,15 +1353,21 @@
         <button class="admin-tab-btn" id="tabBtnRegistration" onclick="switchAdminWindow('registration')">
           👤 Registration Window (<span id="regCountBadge">0</span>)
         </button>
+        <button class="admin-tab-btn" id="tabBtnCreateAdmin" onclick="switchAdminWindow('createAdmin')">
+          ➕ Create New Admin
+        </button>
+        <button class="admin-tab-btn" id="tabBtnUpdateProfile" onclick="switchAdminWindow('updateProfile')">
+          ⚙️ Update Admin Profile
+        </button>
       </div>
 
-      <!-- WINDOW 1: APPLICATIONS WINDOW (Only candidates who submitted applications) -->
+      <!-- WINDOW 1: APPLICATIONS WINDOW -->
       <div id="adminWindowApplications">
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <div>
               <h3 style="color:#7f1d1d;">Submitted Scholarship Applications</h3>
-              <p style="font-size:12px; color:#78716c;">Contains records of candidates who have actively applied for scholarship.</p>
+              <p style="font-size:12px; color:#78716c;">Contains records of candidates who have actively submitted their scholarship applications.</p>
             </div>
             <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export Filtered to Excel (CSV)</button>
           </div>
@@ -1384,7 +1391,7 @@
         </div>
       </div>
 
-      <!-- WINDOW 2: REGISTRATION WINDOW (All registered candidates + Bulk/Single Account Management) -->
+      <!-- WINDOW 2: REGISTRATION WINDOW -->
       <div id="adminWindowRegistration" style="display:none;">
         <!-- Bulk Upload -->
         <div class="card" style="border-left: 5px solid #15803d;">
@@ -1463,38 +1470,41 @@
         </div>
       </div>
 
-      <!-- Administrator Account Creation & Profile Updates (Bottom Panels) -->
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:16px;">
-        <!-- Create New Admin -->
-        <div class="card" style="border-left: 5px solid #4338ca;">
-          <h3 style="font-size:15px; margin-bottom:6px; color:#3730a3;">Create New Administrator Account</h3>
-          <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Existing admins can provision new administrator credentials:</p>
+      <!-- WINDOW 3: CREATE NEW ADMIN WINDOW -->
+      <div id="adminWindowCreateAdmin" style="display:none;">
+        <div class="card" style="border-left: 5px solid #4338ca; max-width:650px; margin:0 auto;">
+          <h3 style="font-size:16px; margin-bottom:6px; color:#3730a3;">Create New Administrator Account</h3>
+          <p style="font-size:12px; color:#78716c; margin-bottom:16px;">Authorized administrators can provision new admin access credentials:</p>
           
           <div class="form-group">
-            <label>Admin Full Name & Title</label>
-            <input type="text" id="newAdminName" placeholder="e.g. Swami X Maharaj / Office Incharge">
+            <label>Admin Full Name & Designation</label>
+            <input type="text" id="newAdminName" placeholder="e.g. Swami X Maharaj / Office Secretary">
           </div>
           <div class="form-group">
-            <label>Admin Official Mobile</label>
+            <label>Admin Official Mobile Number</label>
             <input type="tel" id="newAdminMobile" placeholder="10-digit Phone">
           </div>
           <div class="form-group">
-            <label>Admin ID</label>
+            <label>Assign Admin ID</label>
             <input type="text" id="newAdminId" placeholder="e.g. NewAdmin@RKMAJGM">
           </div>
           <div class="form-group">
-            <label>Admin Password</label>
+            <label>Assign Password</label>
             <input type="text" id="newAdminPass" placeholder="Secret Password">
           </div>
-          <button class="btn-primary" style="background:#4338ca; width:100%;" onclick="createNewAdministratorAccount()">
-            Provision Administrator
-          </button>
+          <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+            <button class="btn-primary" style="background:#4338ca;" onclick="createNewAdministratorAccount()">
+              ➕ Provision Administrator Account
+            </button>
+          </div>
         </div>
+      </div>
 
-        <!-- Update Active Admin Contact Records -->
-        <div class="card" style="border-left: 5px solid #0284c7;">
-          <h3 style="font-size:15px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
-          <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Update your own administrative contact records directly:</p>
+      <!-- WINDOW 4: UPDATE ADMIN PROFILE WINDOW -->
+      <div id="adminWindowUpdateProfile" style="display:none;">
+        <div class="card" style="border-left: 5px solid #0284c7; max-width:650px; margin:0 auto;">
+          <h3 style="font-size:16px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
+          <p style="font-size:12px; color:#78716c; margin-bottom:16px;">Modify your official registered administrative contact records:</p>
           
           <div class="form-group">
             <label>New Mobile Number</label>
@@ -1504,9 +1514,11 @@
             <label>New Email Address</label>
             <input type="email" id="updNewEmail" placeholder="Official Email">
           </div>
-          <button class="btn-primary" style="background:#0284c7; width:100%;" onclick="executeAdminDirectProfileUpdate()">
-            Save Profile Changes
-          </button>
+          <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+            <button class="btn-primary" style="background:#0284c7;" onclick="executeAdminDirectProfileUpdate()">
+              💾 Save Profile Changes
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -1773,6 +1785,7 @@
 
         setAuthenticatedUI('admin', 'ADMINISTRATOR CONSOLE', admin.name);
         refreshAdminDashboardPanels();
+        switchAdminWindow('applications');
         navigateToAuth('adminDashboard');
       } else {
         alert('Invalid Administrator Password! Please try again.');
@@ -1804,23 +1817,42 @@
       }
     }
 
-    // Admin Window Switcher (Applications vs Registration)
+    // Admin Window Switcher (4 Windows)
     function switchAdminWindow(windowType) {
       const tabApps = document.getElementById('tabBtnApplications');
       const tabReg = document.getElementById('tabBtnRegistration');
+      const tabCreate = document.getElementById('tabBtnCreateAdmin');
+      const tabUpdate = document.getElementById('tabBtnUpdateProfile');
+
       const winApps = document.getElementById('adminWindowApplications');
       const winReg = document.getElementById('adminWindowRegistration');
+      const winCreate = document.getElementById('adminWindowCreateAdmin');
+      const winUpdate = document.getElementById('adminWindowUpdateProfile');
+
+      // Reset tabs
+      tabApps.classList.remove('active');
+      tabReg.classList.remove('active');
+      tabCreate.classList.remove('active');
+      tabUpdate.classList.remove('active');
+
+      // Reset windows
+      winApps.style.display = 'none';
+      winReg.style.display = 'none';
+      winCreate.style.display = 'none';
+      winUpdate.style.display = 'none';
 
       if (windowType === 'applications') {
         tabApps.classList.add('active');
-        tabReg.classList.remove('active');
         winApps.style.display = 'block';
-        winReg.style.display = 'none';
-      } else {
+      } else if (windowType === 'registration') {
         tabReg.classList.add('active');
-        tabApps.classList.remove('active');
         winReg.style.display = 'block';
-        winApps.style.display = 'none';
+      } else if (windowType === 'createAdmin') {
+        tabCreate.classList.add('active');
+        winCreate.style.display = 'block';
+      } else if (windowType === 'updateProfile') {
+        tabUpdate.classList.add('active');
+        winUpdate.style.display = 'block';
       }
     }
 
@@ -2188,7 +2220,7 @@
       }
     }
 
-    // Candidate Multi-step Form
+    // Candidate Form Steps
     function openApplicationForm() {
       const existing = applications.find(a => a.candidateId === activeCandidateId);
       if (existing && existing.status !== 'Returned for Correction') {
@@ -2636,8 +2668,8 @@
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = url;
-      link.download = `RKMA_Scholarship_All_Data_${new Date().toISOString().slice(0,10)}.csv`;
+      link.setAttribute('href', url);
+      link.setAttribute('download', `RKMA_Scholarship_All_Data_${new Date().toISOString().slice(0,10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
