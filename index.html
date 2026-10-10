@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scholarship Portal | Ramakrishna Mission Ashrama, Jhargram</title>
-  <!-- SheetJS Library for Parsing and Reading Excel Files -->
+  <!-- SheetJS Library for Excel Parsing -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     * {
@@ -193,16 +193,16 @@
       cursor: pointer;
     }
 
-    /* Admin Window Switcher Tabs */
+    /* Admin Window Navigation Tabs */
     .admin-nav-tabs {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       border-bottom: 2px solid #e7e5e4;
       margin-bottom: 20px;
       flex-wrap: wrap;
     }
     .admin-tab-btn {
-      padding: 10px 18px;
+      padding: 10px 14px;
       font-size: 13px;
       font-weight: bold;
       border: none;
@@ -225,10 +225,6 @@
       font-size: 14px;
       color: #3f3f46;
     }
-    .about-intro {
-      margin-bottom: 20px;
-      text-align: justify;
-    }
     .activities-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -248,13 +244,10 @@
       border-bottom: 2px solid #fed7aa;
       padding-bottom: 4px;
     }
-    .activity-card ul {
-      padding-left: 18px;
-      margin: 0;
-    }
-    .activity-card li {
-      margin-bottom: 6px;
+    .activity-card div {
       font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-line;
     }
     .section-title-box {
       text-align: center;
@@ -303,7 +296,7 @@
       display: block;
     }
 
-    /* 15 Image Slider */
+    /* Image Slider */
     .slider-container {
       position: relative;
       max-width: 100%;
@@ -358,9 +351,7 @@
       z-index: 10;
       transition: background 0.2s;
     }
-    .slider-btn:hover {
-      background: rgba(234, 88, 12, 0.95);
-    }
+    .slider-btn:hover { background: rgba(234, 88, 12, 0.95); }
     .slider-btn.prev { left: 12px; }
     .slider-btn.next { right: 12px; }
     .slider-dots {
@@ -389,81 +380,48 @@
       border-radius: 10px;
     }
 
-    /* Contact Us */
-    .contact-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-top: 14px;
-    }
-    .contact-info-box {
-      background: #fafaf9;
-      border: 1px solid #e7e5e4;
-      border-radius: 8px;
-      padding: 20px;
-    }
-    .contact-item {
+    /* Notice Board Items */
+    .notice-item {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
+      padding: 12px;
+      border-bottom: 1px dashed #d6d3d1;
+      gap: 10px;
     }
-    .contact-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
-      background: #ffedd5;
-      color: #c2410c;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
+    .notice-item:last-child { border-bottom: none; }
+    .notice-date {
+      font-size: 11px;
+      color: #9a3412;
       font-weight: bold;
+      background: #ffedd5;
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
     }
-    .contact-form-box input, .contact-form-box textarea {
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .form-group { margin-bottom: 14px; }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      color: #44403c;
+      margin-bottom: 4px;
+    }
+    input, select, textarea {
       width: 100%;
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #d6d3d1;
       font-size: 13px;
-      margin-bottom: 10px;
     }
 
-    /* Downloads */
-    .downloads-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 14px;
-    }
-    .download-item {
-      border: 1px solid #e7e5e4;
-      border-radius: 8px;
-      padding: 14px;
-      background: #fafaf9;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .download-item h4 {
-      font-size: 13px;
-      color: #1c1917;
-      margin-bottom: 8px;
-    }
-    .download-link {
-      display: inline-block;
-      text-align: center;
-      background: #9a3412;
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: bold;
-      border-radius: 6px;
-      margin-top: 10px;
-    }
-
-    /* Stepper */
     .stepper {
       display: flex;
       justify-content: space-between;
@@ -482,27 +440,6 @@
     .step-item.completed { color: #16a34a; }
     .form-step { display: none; }
     .form-step.active { display: block; }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 14px;
-    }
-    .form-group { margin-bottom: 14px; }
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: bold;
-      color: #44403c;
-      margin-bottom: 4px;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #d6d3d1;
-      font-size: 14px;
-    }
     .step-btn-container {
       display: flex;
       justify-content: space-between;
@@ -522,32 +459,10 @@
       display: inline-block;
     }
 
-    /* Upload Styling */
-    .file-rule-hint {
-      display: block;
-      font-size: 11px;
-      color: #78716c;
-      margin-top: 4px;
-    }
-    .input-file-field {
-      border: 1px solid #d6d3d1;
-      padding: 8px;
-      border-radius: 6px;
-      background: #fafaf9;
-      width: 100%;
-      transition: border-color 0.2s, background-color 0.2s;
-    }
-    .input-file-field.file-invalid {
-      border: 2px solid #dc2626 !important;
-      background-color: #fef2f2 !important;
-    }
-    .file-error-msg {
-      display: none;
-      font-size: 11px;
-      color: #dc2626;
-      font-weight: bold;
-      margin-top: 3px;
-    }
+    .file-rule-hint { display: block; font-size: 11px; color: #78716c; margin-top: 4px; }
+    .input-file-field { border: 1px solid #d6d3d1; padding: 8px; border-radius: 6px; background: #fafaf9; width: 100%; }
+    .input-file-field.file-invalid { border: 2px solid #dc2626 !important; background-color: #fef2f2 !important; }
+    .file-error-msg { display: none; font-size: 11px; color: #dc2626; font-weight: bold; margin-top: 3px; }
 
     .upload-preview-box {
       width: 120px;
@@ -561,11 +476,7 @@
       background: #fafaf9;
       overflow: hidden;
     }
-    .upload-preview-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .upload-preview-box img { width: 100%; height: 100%; object-fit: cover; }
     .upload-preview-sign {
       width: 180px;
       height: 70px;
@@ -578,77 +489,28 @@
       background: #fafaf9;
       overflow: hidden;
     }
-    .upload-preview-sign img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+    .upload-preview-sign img { width: 100%; height: 100%; object-fit: contain; }
 
     /* Tables */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      margin-top: 10px;
-    }
-    th, td {
-      padding: 10px 8px;
-      border-bottom: 1px solid #e7e5e4;
-      text-align: left;
-    }
-    th {
-      background: #f5f5f4;
-      color: #44403c;
-    }
-    .action-btn-group {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-    .action-btn {
-      padding: 5px 8px;
-      font-size: 11px;
-      border-radius: 4px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid #e7e5e4; text-align: left; }
+    th { background: #f5f5f4; color: #44403c; }
+    .action-btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+    .action-btn { padding: 5px 8px; font-size: 11px; border-radius: 4px; border: none; cursor: pointer; font-weight: 600; }
     .btn-pdf { background: #0284c7; color: #fff; }
     .btn-word { background: #2563eb; color: #fff; }
     .btn-delete { background: #dc2626; color: #fff; }
     .btn-manage { background: #9a3412; color: #fff; }
-    .btn-excel {
-      background: #15803d;
-      color: #ffffff;
-      padding: 8px 14px;
-      border-radius: 6px;
-      border: none;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+    .btn-excel { background: #15803d; color: #ffffff; padding: 8px 14px; border-radius: 6px; border: none; font-size: 12px; font-weight: bold; cursor: pointer; }
 
-    .status-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-    }
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
     .st-submitted { background: #e0f2fe; color: #0369a1; }
     .st-under-verification { background: #ffedd5; color: #9a3412; }
     .st-approved { background: #dcfce7; color: #15803d; }
     .st-sanctioned { background: #f3e8ff; color: #6b21a8; }
     .st-returned { background: #fee2e2; color: #991b1b; }
 
-    #publicFooter {
-      background: #1c1917;
-      color: #a8a29e;
-      padding: 18px 16px;
-      text-align: center;
-      font-size: 12px;
-      margin-top: auto;
-    }
+    #publicFooter { background: #1c1917; color: #a8a29e; padding: 18px 16px; text-align: center; font-size: 12px; margin-top: auto; }
 
     @media print {
       body * { visibility: hidden; }
@@ -673,6 +535,7 @@
       </div>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
         <button class="nav-btn" onclick="navigateToPublic('home')">Home</button>
+        <button class="nav-btn" onclick="navigateToPublic('notices')">Notice Board</button>
         <button class="nav-btn" onclick="navigateToPublic('downloads')">Downloads</button>
         <button class="nav-btn" onclick="navigateToPublic('candidateLogin')">Candidate Login</button>
         <button class="nav-btn nav-btn-admin" onclick="navigateToPublic('adminLogin')">Admin Login</button>
@@ -680,7 +543,7 @@
     </div>
   </header>
 
-  <!-- 2. ISOLATED WORKSPACE TOP BAR -->
+  <!-- 2. ISOLATED PORTAL TOP BAR -->
   <div id="portalTopHeader">
     <div class="portal-header-inner">
       <div style="display:flex; align-items:center; gap:10px;">
@@ -710,62 +573,45 @@
         </div>
       </div>
 
-      <!-- Institutional Activities -->
+      <!-- Quick Notices Preview on Home -->
+      <div class="card" style="border-left:5px solid #ea580c;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h3 style="color:#7f1d1d; font-size:16px;">📢 Latest Institutional Notices</h3>
+          <button class="nav-btn" style="background:#ea580c; border:none;" onclick="navigateToPublic('notices')">View All Notices &rarr;</button>
+        </div>
+        <div id="homeNoticesList"></div>
+      </div>
+
+      <!-- Institutional Activities (Managed via CMS) -->
       <div class="card about-section">
         <h3 style="color: #7f1d1d; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #fed7aa; padding-bottom: 6px;">
           About Ramakrishna Mission Ashrama, Jhargram
         </h3>
-        <p class="about-intro">
-          Ramakrishna Mission Ashrama, Jhargram, a branch centre of the Ramakrishna Mission, Belur Math came into existence on 20th August 2017 on five acres of land obtained on lease from the Government of West Bengal. Srimat Swami Smarananandaji Maharaj, the 16th President of Ramakrishna Math and Ramakrishna Mission, Belur Math, inaugurated the newly constructed Assembly cum Prayer Hall in the Ashrama campus on 7th of December 2019.
-        </p>
+        <p class="about-intro" id="viewAboutIntro"></p>
 
         <p style="font-weight: 600; color: #1c1917; margin-bottom: 8px;">The following activities/projects are carried out by the Ashrama at present:</p>
 
         <div class="activities-grid">
           <div class="activity-card">
             <h4>Educational</h4>
-            <ul>
-              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> Residential School for Tribal students (460 students).</li>
-              <li><strong>6 Free Coaching Centers:</strong> 320 students receive free coaching, uniforms, and light tiffin.</li>
-              <li><strong>Scholarships:</strong> In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students.</li>
-            </ul>
+            <div id="viewActEdu"></div>
           </div>
-
           <div class="activity-card">
             <h4>Welfare</h4>
-            <ul>
-              <li>Distribution of clothes, relief assistance, and financial aid to underprivileged families.</li>
-              <li>Disaster relief and winter jacket/blanket distribution.</li>
-              <li>Monthly motivational programs at Jhargram Correctional Home.</li>
-              <li>Bi-monthly free homeopathic health camp by Dr. Ashoke Pradhan.</li>
-              <li>Annual blood donation drive with over 100 donors.</li>
-              <li>Swami Vivekananda Tree Plantation (16,000+ trees planted).</li>
-              <li>Monthly pension of Rs. 1,200 to 6 widows.</li>
-            </ul>
+            <div id="viewActWelfare"></div>
           </div>
-
           <div class="activity-card">
             <h4>Youth</h4>
-            <ul>
-              <li><strong>‘Arise, Awake’:</strong> Value education across 32 institutions covering 8,000 students and 400 teachers.</li>
-              <li>Annual district football tournament, yoga, and cultural competitions.</li>
-              <li>Vivekananda study circles at 12 centers.</li>
-              <li>National Youth Day celebrations and Sunday moral classes.</li>
-            </ul>
+            <div id="viewActYouth"></div>
           </div>
-
           <div class="activity-card">
             <h4>Spiritual</h4>
-            <ul>
-              <li>Birth anniversary celebrations of Sri Ramakrishna, Sri Sarada Devi, and Swami Vivekananda.</li>
-              <li>Daily evening prayer, religious discourses, and Ekadashi Ramnam Sankirtan.</li>
-              <li>Spiritual retreats and distribution of Vedanta literature.</li>
-            </ul>
+            <div id="viewActSpiritual"></div>
           </div>
         </div>
       </div>
 
-      <!-- HOLY TRIO -->
+      <!-- Holy Trio -->
       <div class="section-title-box">
         <h3>HOLY TRIO</h3>
       </div>
@@ -838,118 +684,71 @@
       </div>
 
       <div class="card" style="border-left: 5px solid #ea580c;">
-        <div class="contact-container">
-          <div class="contact-info-box">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+          <div>
             <h4 style="color:#7f1d1d; margin-bottom:14px; font-size:16px;">Ramakrishna Mission Ashrama, Jhargram</h4>
-            <div class="contact-item">
-              <div class="contact-icon">📍</div>
-              <div style="font-size:13px; color:#44403c;">
-                <strong>Address:</strong><br>
-                Satyabanpally, P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-icon">📞</div>
-              <div style="font-size:13px; color:#44403c;">
-                <strong>Phone / Mobile:</strong><br>
-                <a href="tel:9339423401" style="color:#c2410c; text-decoration:none; font-weight:bold;">9339423401</a>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-icon">✉️</div>
-              <div style="font-size:13px; color:#44403c;">
-                <strong>Official Email:</strong><br>
-                <a href="mailto:rkma.jgm.scholarship@gmail.com" style="color:#c2410c; text-decoration:none; font-weight:bold;">rkma.jgm.scholarship@gmail.com</a>
-              </div>
-            </div>
+            <p style="font-size:13px; color:#444; margin-bottom:8px;">📍 <strong>Address:</strong> Satyabanpally, Jhargram, PIN - 721507, WB</p>
+            <p style="font-size:13px; color:#444; margin-bottom:8px;">📞 <strong>Phone:</strong> <a href="tel:9339423401" style="color:#c2410c; font-weight:bold;">9339423401</a></p>
+            <p style="font-size:13px; color:#444;">✉️ <strong>Email:</strong> <a href="mailto:rkma.jgm.scholarship@gmail.com" style="color:#c2410c; font-weight:bold;">rkma.jgm.scholarship@gmail.com</a></p>
           </div>
-
-          <div class="contact-form-box">
+          <div>
             <h4 style="color:#1c1917; margin-bottom:10px; font-size:15px;">Send Us an Inquiry</h4>
-            <input type="text" id="contactName" placeholder="Your Name">
-            <input type="email" id="contactEmail" placeholder="Your Email">
-            <input type="tel" id="contactPhone" placeholder="Your Phone Number">
-            <textarea id="contactMessage" rows="3" placeholder="Your message or scholarship inquiry..."></textarea>
-            <button class="btn-primary" style="width:100%;" onclick="submitContactForm()">Send Message</button>
+            <input type="text" id="contactName" placeholder="Your Name" style="margin-bottom:8px;">
+            <input type="tel" id="contactPhone" placeholder="Your Phone Number" style="margin-bottom:8px;">
+            <textarea id="contactMessage" rows="2" placeholder="Your inquiry..."></textarea>
+            <button class="btn-primary" style="width:100%; margin-top:6px;" onclick="submitContactForm()">Send Message</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= PUBLIC SECTION 2: DOWNLOADS ================= -->
-    <section id="sec-downloads" class="page-section">
-      <div class="card" style="border-left: 5px solid #0284c7;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-          <div>
-            <h3 style="color:#0369a1; font-size:18px;">Official Documents & Formats</h3>
-            <p style="font-size:13px; color:#57534e; margin-top:4px;">Download prescribed forms and prayer documents required for scholarship applications:</p>
-          </div>
+    <!-- ================= PUBLIC SECTION 2: NOTICE BOARD ================= -->
+    <section id="sec-notices" class="page-section">
+      <div class="card" style="border-left: 5px solid #ea580c;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="color:#7f1d1d; font-size:18px;">Official Notice Board</h3>
           <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateToPublic('home')">Back to Home</button>
         </div>
-        
-        <div class="downloads-grid">
-          <div class="download-item">
-            <div>
-              <h4>1. Belur Math Application Prayer</h4>
-              <p style="font-size:11px; color:#78716c;">Official prayer format of Belur Math Headquarters.</p>
-            </div>
-            <a href="https://drive.google.com/file/d/1OAOoBDEUNUjGMIzM_eJfZwqKKl3ir8c2/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="download-link">📥 Download Document</a>
-          </div>
-
-          <div class="download-item">
-            <div>
-              <h4>2. RKMA JGM Application Prayer</h4>
-              <p style="font-size:11px; color:#78716c;">Official scholarship prayer format of RKMA Jhargram.</p>
-            </div>
-            <a href="https://drive.google.com/file/d/1Xkx7_5_eBTK0WDMprzcSBTV6gvKUUnkq/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="download-link">📥 Download Document</a>
-          </div>
-
-          <div class="download-item">
-            <div>
-              <h4>3. Income Certificate Format</h4>
-              <p style="font-size:11px; color:#78716c;">Prescribed family annual income certificate declaration format.</p>
-            </div>
-            <a href="https://drive.google.com/file/d/1xfcT9sT9MvJ9XqR964lbM5UwdBP8wi1J/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="download-link">📥 Download Document</a>
-          </div>
-
-          <div class="download-item">
-            <div>
-              <h4>4. Bonafide Certificate Format</h4>
-              <p style="font-size:11px; color:#78716c;">Institution bonafide student endorsement certificate format.</p>
-            </div>
-            <a href="https://drive.google.com/file/d/12iYWXTnUAfcY1KE-i8yX3H6Aq7jJr0sF/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="download-link">📥 Download Document</a>
-          </div>
-        </div>
+        <div id="fullNoticesList"></div>
       </div>
     </section>
 
-    <!-- ================= PUBLIC SECTION 3: ADMIN LOGIN ================= -->
+    <!-- ================= PUBLIC SECTION 3: DOWNLOADS ================= -->
+    <section id="sec-downloads" class="page-section">
+      <div class="card" style="border-left: 5px solid #0284c7;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="color:#0369a1; font-size:18px;">Official Document Downloads</h3>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateToPublic('home')">Back to Home</button>
+        </div>
+        <div class="downloads-grid" id="publicDownloadsGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= PUBLIC SECTION 4: ADMIN LOGIN (MANUAL ID & PASS) ================= -->
     <section id="sec-adminLogin" class="page-section">
-      <div class="card" style="max-width:420px; margin:40px auto;">
+      <div class="card" style="max-width:400px; margin:40px auto; border-top:5px solid #1c1917;">
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only</p>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Super Admins & Officials Only</p>
 
         <div class="form-group">
-          <label>Select Authorized Officer</label>
-          <select id="adminDropdown">
-            <!-- Dynamically populated -->
-          </select>
+          <label>Admin ID</label>
+          <input type="text" id="manualAdminId" placeholder="Enter Official Admin ID" autocomplete="off">
         </div>
 
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="adminPassField" placeholder="Enter Password" autocomplete="new-password">
+          <input type="password" id="manualAdminPass" placeholder="Enter Secret Password" autocomplete="current-password">
         </div>
 
         <button class="submit-btn" style="background:#1c1917; color:#fde047; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="executeAdminDirectLogin()">
-          Login to Admin Console
+          Login to Console
         </button>
       </div>
     </section>
 
-    <!-- ================= PUBLIC SECTION 4: CANDIDATE LOGIN ================= -->
+    <!-- ================= PUBLIC SECTION 5: CANDIDATE LOGIN ================= -->
     <section id="sec-candidateLogin" class="page-section">
-      <div class="card" style="max-width:400px; margin:40px auto;">
+      <div class="card" style="max-width:400px; margin:40px auto; border-top:5px solid #ea580c;">
         <h2 style="text-align:center; font-size:18px;">Candidate Portal Login</h2>
         <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Sign in with your Candidate ID and Password</p>
 
@@ -967,7 +766,7 @@
       </div>
     </section>
 
-    <!-- ================= AUTHENTICATED SECTION: CANDIDATE DASHBOARD ================= -->
+    <!-- ================= AUTHENTICATED: CANDIDATE DASHBOARD ================= -->
     <section id="sec-candidateDashboard" class="page-section">
       <div class="card" style="border-left: 5px solid #ea580c;">
         <h2 id="candWelcomeName" style="font-size:18px; color:#1c1917;">Welcome, Candidate</h2>
@@ -995,7 +794,7 @@
       </div>
     </section>
 
-    <!-- ================= AUTHENTICATED SECTION: APPLICATION MULTI-STEP FORM ================= -->
+    <!-- ================= AUTHENTICATED: CANDIDATE APPLICATION FORM ================= -->
     <section id="sec-applicationForm" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -1013,60 +812,30 @@
         </div>
 
         <form id="scholarshipMultiForm" onsubmit="return false;">
-          <!-- STEP 1: Personal Details -->
+          <!-- STEP 1 -->
           <div class="form-step active" id="formStep1">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 1: Personal Details & Photographs</h4>
             <div class="form-grid">
-              <div class="form-group">
-                <label>Applicant Full Name</label>
-                <input type="text" id="f_name" required>
-              </div>
-              <div class="form-group">
-                <label>Date of Birth</label>
-                <input type="date" id="f_dob" required>
-              </div>
-              <div class="form-group">
-                <label>Caste</label>
-                <select id="f_caste" required>
-                  <option value="General">General</option>
-                  <option value="SC">SC</option>
-                  <option value="ST">ST</option>
-                  <option value="OBC">OBC</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Gender</label>
-                <select id="f_gender" required>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Aadhaar No.</label>
-                <input type="text" id="f_aadhaar" placeholder="Enter Aadhaar Number" required>
-              </div>
+              <div class="form-group"><label>Applicant Full Name</label><input type="text" id="f_name" required></div>
+              <div class="form-group"><label>Date of Birth</label><input type="date" id="f_dob" required></div>
+              <div class="form-group"><label>Caste</label><select id="f_caste" required><option value="General">General</option><option value="SC">SC</option><option value="ST">ST</option><option value="OBC">OBC</option></select></div>
+              <div class="form-group"><label>Gender</label><select id="f_gender" required><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+              <div class="form-group"><label>Aadhaar No.</label><input type="text" id="f_aadhaar" placeholder="Enter Aadhaar Number" required></div>
 
-              <!-- Photo Upload -->
               <div class="form-group">
                 <label>Candidate Passport Photo</label>
                 <input type="file" id="f_cand_photo" class="input-file-field" accept=".jpg,.jpeg,.png" onchange="validateAndPreviewFile(this, 'candPhotoPreview', 100, ['image/jpeg','image/jpg','image/png'], 'photoErr')">
                 <span class="file-rule-hint">Format: JPG, JPEG, PNG | Max Size: 100 KB</span>
                 <span class="file-error-msg" id="photoErr">Invalid format or size exceeded!</span>
-                <div class="upload-preview-box" id="candPhotoPreview">
-                  <span style="font-size:10px; color:#a8a29e;">Photo Preview</span>
-                </div>
+                <div class="upload-preview-box" id="candPhotoPreview"><span style="font-size:10px; color:#a8a29e;">Photo Preview</span></div>
               </div>
 
-              <!-- Signature Upload -->
               <div class="form-group">
                 <label>Candidate Specimen Signature</label>
                 <input type="file" id="f_cand_sign" class="input-file-field" accept=".jpg,.jpeg,.png" onchange="validateAndPreviewFile(this, 'candSignPreview', 50, ['image/jpeg','image/jpg','image/png'], 'signErr')">
                 <span class="file-rule-hint">Format: JPG, JPEG, PNG | Max Size: 50 KB</span>
                 <span class="file-error-msg" id="signErr">Invalid format or size exceeded!</span>
-                <div class="upload-preview-sign" id="candSignPreview">
-                  <span style="font-size:10px; color:#a8a29e;">Signature Preview</span>
-                </div>
+                <div class="upload-preview-sign" id="candSignPreview"><span style="font-size:10px; color:#a8a29e;">Signature Preview</span></div>
               </div>
             </div>
             <div class="step-btn-container" style="justify-content: flex-end;">
@@ -1074,38 +843,17 @@
             </div>
           </div>
 
-          <!-- STEP 2: Parents Details -->
+          <!-- STEP 2 -->
           <div class="form-step" id="formStep2">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 2: Parents & Guardian Details</h4>
             <div class="form-grid">
-              <div class="form-group">
-                <label>Father's Name</label>
-                <input type="text" id="f_fname" required>
-              </div>
-              <div class="form-group">
-                <label>Father's Occupation</label>
-                <input type="text" id="f_focc" required>
-              </div>
-              <div class="form-group">
-                <label>Mother's Name</label>
-                <input type="text" id="f_mname" required>
-              </div>
-              <div class="form-group">
-                <label>Mother's Occupation</label>
-                <input type="text" id="f_mocc" required>
-              </div>
-              <div class="form-group">
-                <label>Guardian's Name</label>
-                <input type="text" id="f_gname">
-              </div>
-              <div class="form-group">
-                <label>Guardian's Occupation</label>
-                <input type="text" id="f_gocc">
-              </div>
-              <div class="form-group">
-                <label>Relation with Guardian</label>
-                <input type="text" id="f_grel">
-              </div>
+              <div class="form-group"><label>Father's Name</label><input type="text" id="f_fname" required></div>
+              <div class="form-group"><label>Father's Occupation</label><input type="text" id="f_focc" required></div>
+              <div class="form-group"><label>Mother's Name</label><input type="text" id="f_mname" required></div>
+              <div class="form-group"><label>Mother's Occupation</label><input type="text" id="f_mocc" required></div>
+              <div class="form-group"><label>Guardian's Name</label><input type="text" id="f_gname"></div>
+              <div class="form-group"><label>Guardian's Occupation</label><input type="text" id="f_gocc"></div>
+              <div class="form-group"><label>Relation with Guardian</label><input type="text" id="f_grel"></div>
             </div>
             <div class="step-btn-container">
               <button type="button" class="btn-neutral" onclick="goToStep(1)">&larr; Back</button>
@@ -1113,46 +861,19 @@
             </div>
           </div>
 
-          <!-- STEP 3: Contact Details -->
+          <!-- STEP 3 -->
           <div class="form-step" id="formStep3">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 3: Contact & Address Details</h4>
             <div class="form-grid">
-              <div class="form-group">
-                <label>Mobile No.</label>
-                <input type="tel" id="f_mobile" required>
-              </div>
-              <div class="form-group">
-                <label>Alternative Mobile No.</label>
-                <input type="tel" id="f_altmobile">
-              </div>
-              <div class="form-group">
-                <label>WhatsApp No.</label>
-                <input type="tel" id="f_whatsapp" required>
-              </div>
-              <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="f_email" required>
-              </div>
-              <div class="form-group">
-                <label>Village</label>
-                <input type="text" id="f_vill" required>
-              </div>
-              <div class="form-group">
-                <label>P.O.</label>
-                <input type="text" id="f_po" required>
-              </div>
-              <div class="form-group">
-                <label>P.S.</label>
-                <input type="text" id="f_ps" required>
-              </div>
-              <div class="form-group">
-                <label>District</label>
-                <input type="text" id="f_dist" required>
-              </div>
-              <div class="form-group">
-                <label>PIN Code</label>
-                <input type="text" id="f_pin" required>
-              </div>
+              <div class="form-group"><label>Mobile No.</label><input type="tel" id="f_mobile" required></div>
+              <div class="form-group"><label>Alternative Mobile No.</label><input type="tel" id="f_altmobile"></div>
+              <div class="form-group"><label>WhatsApp No.</label><input type="tel" id="f_whatsapp" required></div>
+              <div class="form-group"><label>Email</label><input type="email" id="f_email" required></div>
+              <div class="form-group"><label>Village</label><input type="text" id="f_vill" required></div>
+              <div class="form-group"><label>P.O.</label><input type="text" id="f_po" required></div>
+              <div class="form-group"><label>P.S.</label><input type="text" id="f_ps" required></div>
+              <div class="form-group"><label>District</label><input type="text" id="f_dist" required></div>
+              <div class="form-group"><label>PIN Code</label><input type="text" id="f_pin" required></div>
             </div>
             <div class="step-btn-container">
               <button type="button" class="btn-neutral" onclick="goToStep(2)">&larr; Back</button>
@@ -1160,83 +881,41 @@
             </div>
           </div>
 
-          <!-- STEP 4: Educational & Income Details -->
+          <!-- STEP 4 -->
           <div class="form-step" id="formStep4">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 4: Educational & Income Details</h4>
             <h5 style="font-size:13px; color:#44403c; margin-bottom:8px;">A. Present Course Details</h5>
             <div class="form-grid">
-              <div class="form-group">
-                <label>Present Class of Study</label>
-                <input type="text" id="f_currclass" placeholder="e.g. B.A. 1st Year / Class XI" required>
-              </div>
-              <div class="form-group">
-                <label>Admission Date</label>
-                <input type="date" id="f_admdate" required>
-              </div>
-              <div class="form-group">
-                <label>Department / Stream Name</label>
-                <input type="text" id="f_stream" placeholder="e.g. Arts / Science / Law" required>
-              </div>
-              <div class="form-group">
-                <label>Institution Name</label>
-                <input type="text" id="f_instname" placeholder="e.g. Jhargram Raj College" required>
-              </div>
+              <div class="form-group"><label>Present Class of Study</label><input type="text" id="f_currclass" required></div>
+              <div class="form-group"><label>Admission Date</label><input type="date" id="f_admdate" required></div>
+              <div class="form-group"><label>Department / Stream Name</label><input type="text" id="f_stream" required></div>
+              <div class="form-group"><label>Institution Name</label><input type="text" id="f_instname" required></div>
             </div>
-
             <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">B. Qualifying Course Details</h5>
             <div class="form-grid">
-              <div class="form-group">
-                <label>Last Qualifying Examination</label>
-                <input type="text" id="f_lastexam" placeholder="e.g. Madhyamik / H.S." required>
-              </div>
-              <div class="form-group">
-                <label>Full Marks</label>
-                <input type="number" id="f_fullmarks" oninput="calculatePercentage()" required>
-              </div>
-              <div class="form-group">
-                <label>Marks Obtained</label>
-                <input type="number" id="f_marksobtained" oninput="calculatePercentage()" required>
-              </div>
-              <div class="form-group">
-                <label>Percentage (%)</label>
-                <input type="text" id="f_percentage" readonly style="background:#f5f5f4; font-weight:bold; color:#15803d;">
-              </div>
+              <div class="form-group"><label>Last Qualifying Examination</label><input type="text" id="f_lastexam" required></div>
+              <div class="form-group"><label>Full Marks</label><input type="number" id="f_fullmarks" oninput="calculatePercentage()" required></div>
+              <div class="form-group"><label>Marks Obtained</label><input type="number" id="f_marksobtained" oninput="calculatePercentage()" required></div>
+              <div class="form-group"><label>Percentage (%)</label><input type="text" id="f_percentage" readonly style="background:#f5f5f4; font-weight:bold; color:#15803d;"></div>
             </div>
-
             <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">C. Income Details</h5>
             <div class="form-grid">
-              <div class="form-group">
-                <label>Monthly Income (₹)</label>
-                <input type="number" id="f_income" placeholder="Family monthly income" required>
-              </div>
+              <div class="form-group"><label>Monthly Income (₹)</label><input type="number" id="f_income" required></div>
             </div>
-
             <div class="step-btn-container">
               <button type="button" class="btn-neutral" onclick="goToStep(3)">&larr; Back</button>
               <button type="button" class="btn-primary" onclick="goToStep(5)">Next Step &rarr;</button>
             </div>
           </div>
 
-          <!-- STEP 5: Bank Details -->
+          <!-- STEP 5 -->
           <div class="form-step" id="formStep5">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 5: Bank DBT Details</h4>
             <div class="form-grid">
-              <div class="form-group">
-                <label>A/C Holder Name (as per Bank Passbook)</label>
-                <input type="text" id="f_acholder" required>
-              </div>
-              <div class="form-group">
-                <label>IFSC Code</label>
-                <input type="text" id="f_ifsc" required>
-              </div>
-              <div class="form-group">
-                <label>A/C No.</label>
-                <input type="text" id="f_acno" required>
-              </div>
-              <div class="form-group">
-                <label>Bank Name</label>
-                <input type="text" id="f_bankname" required>
-              </div>
+              <div class="form-group"><label>A/C Holder Name</label><input type="text" id="f_acholder" required></div>
+              <div class="form-group"><label>IFSC Code</label><input type="text" id="f_ifsc" required></div>
+              <div class="form-group"><label>A/C No.</label><input type="text" id="f_acno" required></div>
+              <div class="form-group"><label>Bank Name</label><input type="text" id="f_bankname" required></div>
             </div>
             <div class="step-btn-container">
               <button type="button" class="btn-neutral" onclick="goToStep(4)">&larr; Back</button>
@@ -1244,11 +923,9 @@
             </div>
           </div>
 
-          <!-- STEP 6: Document Uploads -->
+          <!-- STEP 6 -->
           <div class="form-step" id="formStep6">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Document Uploads</h4>
-            <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Only files conforming to specified format and size will be accepted. Invalid uploads will turn red.</p>
-            
             <div class="form-grid">
               <div class="form-group">
                 <label>a. Aadhaar Card</label>
@@ -1256,35 +933,30 @@
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errAadhaar">Exceeded 500 KB or invalid file type!</span>
               </div>
-
               <div class="form-group">
                 <label>b. Admission Receipt</label>
                 <input type="file" id="f_doc_adm" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errAdm', 'docAdm')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errAdm">Exceeded 500 KB or invalid file type!</span>
               </div>
-
               <div class="form-group">
-                <label>c. Qualifying Examination Marksheet</label>
+                <label>c. Qualifying Exam Marksheet</label>
                 <input type="file" id="f_doc_mark" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errMark', 'docMark')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errMark">Exceeded 500 KB or invalid file type!</span>
               </div>
-
               <div class="form-group">
-                <label>d. Bank Passbook First Page</label>
+                <label>d. Bank Passbook</label>
                 <input type="file" id="f_doc_passbook" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errPassbook', 'docPassbook')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errPassbook">Exceeded 500 KB or invalid file type!</span>
               </div>
-
               <div class="form-group">
-                <label>e. Income Proof Certificate</label>
+                <label>e. Income Proof</label>
                 <input type="file" id="f_doc_income" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errIncome', 'docIncome')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errIncome">Exceeded 500 KB or invalid file type!</span>
               </div>
-
               <div class="form-group">
                 <label>f. Application Prayer</label>
                 <input type="file" id="f_doc_prayer" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errPrayer', 'docPrayer')">
@@ -1293,15 +965,12 @@
               </div>
             </div>
 
-            <!-- Verification & Captcha -->
             <div style="background:#fffbeb; border:1px solid #fef3c7; padding:14px; border-radius:8px; margin-top:16px;">
               <h5 style="color:#b45309; margin-bottom:8px;">Final Verification Check</h5>
-              
               <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <div class="captcha-box" id="captchaDisplay">4A9X</div>
                 <button type="button" style="padding:4px 8px; font-size:11px;" onclick="refreshCaptcha()">Refresh Captcha</button>
               </div>
-              
               <div class="form-group" style="max-width:300px;">
                 <label>Enter Captcha</label>
                 <input type="text" id="f_captchaInput" placeholder="Enter text shown above">
@@ -1320,7 +989,7 @@
       </div>
     </section>
 
-    <!-- ================= AUTHENTICATED SECTION: CANDIDATE TRACKING ================= -->
+    <!-- ================= AUTHENTICATED: CANDIDATE TRACKING ================= -->
     <section id="sec-trackStatus" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1331,21 +1000,20 @@
       </div>
     </section>
 
-    <!-- ================= AUTHENTICATED SECTION: ADMIN DASHBOARD ================= -->
+    <!-- ================= AUTHENTICATED: ADMIN WORKSPACE ================= -->
     <section id="sec-adminDashboard" class="page-section">
-      <!-- Admin Workspace Greeting & Management -->
       <div class="card" style="border-left: 5px solid #7f1d1d; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div style="display:flex; align-items:center; gap:12px;">
           <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" class="rkm-logo-img">
           <div>
-            <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL ADMINISTRATIVE PORTAL</span>
+            <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;" id="adminRoleBadge">ADMIN CONSOLE</span>
             <h2 id="activeAdminTitle" style="font-size:16px; margin-top:4px;">Administrator Console</h2>
             <p id="activeAdminContact" style="font-size:12px; color:#78716c;"></p>
           </div>
         </div>
       </div>
 
-      <!-- Navigation Tabs: 4 Separate Windows -->
+      <!-- Admin Windows / Tabs -->
       <div class="admin-nav-tabs">
         <button class="admin-tab-btn active" id="tabBtnApplications" onclick="switchAdminWindow('applications')">
           📋 Applications Window (<span id="appCountBadge">0</span>)
@@ -1353,23 +1021,33 @@
         <button class="admin-tab-btn" id="tabBtnRegistration" onclick="switchAdminWindow('registration')">
           👤 Registration Window (<span id="regCountBadge">0</span>)
         </button>
-        <button class="admin-tab-btn" id="tabBtnCreateAdmin" onclick="switchAdminWindow('createAdmin')">
-          ➕ Create New Admin
+        <button class="admin-tab-btn" id="tabBtnManageNotices" onclick="switchAdminWindow('manageNotices')">
+          📢 Manage Notices
+        </button>
+        <button class="admin-tab-btn" id="tabBtnManageDownloads" onclick="switchAdminWindow('manageDownloads')">
+          📥 Manage Downloads
+        </button>
+        <button class="admin-tab-btn" id="tabBtnManageSite" onclick="switchAdminWindow('manageSite')">
+          ✏️ Edit Website Content
+        </button>
+        <!-- Visible Only to Super Admin -->
+        <button class="admin-tab-btn" id="tabBtnSuperAdminOnly" style="display:none; color:#4338ca;" onclick="switchAdminWindow('superAdminManage')">
+          👑 Manage Admins (Super Admin Only)
         </button>
         <button class="admin-tab-btn" id="tabBtnUpdateProfile" onclick="switchAdminWindow('updateProfile')">
-          ⚙️ Update Admin Profile
+          ⚙️ My Profile
         </button>
       </div>
 
-      <!-- WINDOW 1: APPLICATIONS WINDOW -->
+      <!-- WINDOW 1: APPLICATIONS -->
       <div id="adminWindowApplications">
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <div>
               <h3 style="color:#7f1d1d;">Submitted Scholarship Applications</h3>
-              <p style="font-size:12px; color:#78716c;">Contains records of candidates who have actively submitted their scholarship applications.</p>
+              <p style="font-size:12px; color:#78716c;">Review and verify applications submitted by registered candidates.</p>
             </div>
-            <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export Applications to Excel (CSV)</button>
+            <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export to Excel</button>
           </div>
           <div style="overflow-x:auto;">
             <table>
@@ -1382,7 +1060,7 @@
                   <th>Marks %</th>
                   <th>Income (₹)</th>
                   <th>Status</th>
-                  <th>Scrutiny & Actions</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="adminAppTableBody"></tbody>
@@ -1391,77 +1069,52 @@
         </div>
       </div>
 
-      <!-- WINDOW 2: REGISTRATION WINDOW -->
+      <!-- WINDOW 2: REGISTRATION (With Candidate Delete Option) -->
       <div id="adminWindowRegistration" style="display:none;">
-        <!-- Bulk Upload -->
         <div class="card" style="border-left: 5px solid #15803d;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-            <div>
-              <h3 style="font-size:15px; color:#15803d;">Bulk Register Candidates (Excel / CSV Upload)</h3>
-              <p style="font-size:12px; color:#78716c; margin-top:2px;">Upload spreadsheet containing candidate accounts (Name, Phone, CandidateID, Password).</p>
-            </div>
-            <button type="button" class="action-btn btn-excel" onclick="downloadSampleCandidateTemplate()">
-              📄 Download Sample Excel Template
-            </button>
+            <h3 style="font-size:15px; color:#15803d;">Bulk Register Candidates (Excel Upload)</h3>
+            <button type="button" class="action-btn btn-excel" onclick="downloadSampleCandidateTemplate()">📄 Download Sample Template</button>
           </div>
-
-          <div style="background:#fafaf9; border:1px dashed #d6d3d1; padding:16px; border-radius:8px;">
+          <div style="background:#fafaf9; border:1px dashed #d6d3d1; padding:14px; border-radius:8px;">
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
               <input type="file" id="bulkExcelFileInput" class="input-file-field" accept=".xlsx,.xls,.csv" style="max-width:380px;">
-              <button class="btn-primary" style="background:#15803d;" onclick="processBulkCandidateExcelUpload()">
-                🚀 Upload & Generate Accounts
-              </button>
+              <button class="btn-primary" style="background:#15803d;" onclick="processBulkCandidateExcelUpload()">🚀 Upload & Register</button>
             </div>
             <div id="bulkUploadReport" style="margin-top:10px; font-size:12px; display:none;"></div>
           </div>
         </div>
 
-        <!-- Single Candidate Registration -->
         <div class="card" style="border-left: 5px solid #ea580c;">
-          <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Single Candidate Manual Registration</h3>
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
-            <div>
-              <label>Candidate Full Name</label>
-              <input type="text" id="genCandName" placeholder="Full Name">
-            </div>
-            <div>
-              <label>Candidate Mobile Number</label>
-              <input type="tel" id="genCandMobile" placeholder="10-digit Mobile">
-            </div>
-            <div>
-              <label>Assign Candidate ID</label>
-              <input type="text" id="genCandId" placeholder="e.g. RKM-2026-002">
-            </div>
-            <div>
-              <label>Assign Password</label>
-              <input type="text" id="genCandPass" placeholder="e.g. Student@2026">
-            </div>
+          <h3 style="font-size:15px; margin-bottom:10px; color:#9a3412;">Single Candidate Manual Registration</h3>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+            <div><label>Name</label><input type="text" id="genCandName" placeholder="Full Name"></div>
+            <div><label>Mobile</label><input type="tel" id="genCandMobile" placeholder="10-digit Phone"></div>
+            <div><label>Candidate ID</label><input type="text" id="genCandId" placeholder="e.g. RKM-2026-002"></div>
+            <div><label>Password</label><input type="text" id="genCandPass" placeholder="e.g. Student@2026"></div>
           </div>
-          <div style="margin-top:12px; display:flex; justify-content:flex-end;">
-            <button class="btn-primary" onclick="adminCreateCustomCandidate()">Create Candidate Account</button>
+          <div style="margin-top:10px; text-align:right;">
+            <button class="btn-primary" onclick="adminCreateCustomCandidate()">Create Candidate</button>
           </div>
         </div>
 
-        <!-- Master Candidates Directory Table with Registration Slips -->
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-            <div>
-              <h3 style="color:#1c1917;">Registered Candidates Directory (Master Roster)</h3>
-              <p style="font-size:12px; color:#78716c;">All candidate accounts created in the system with printable registration cards.</p>
-            </div>
-            <button class="btn-excel" onclick="exportCandidatesRosterCSV()">📥 Export Candidates List (CSV)</button>
+            <h3 style="color:#1c1917;">Registered Candidates Directory</h3>
+            <button class="btn-excel" onclick="exportCandidatesRosterCSV()">📥 Export Candidates List</button>
           </div>
           <div style="overflow-x:auto;">
             <table>
               <thead>
                 <tr>
-                  <th>Sl No</th>
+                  <th>Sl</th>
                   <th>Candidate ID</th>
                   <th>Full Name</th>
                   <th>Phone Number</th>
-                  <th>Portal Password</th>
-                  <th>App Submitted?</th>
-                  <th>Registration Card / Slip</th>
+                  <th>Password</th>
+                  <th>Applied?</th>
+                  <th>Registration Card</th>
+                  <th>Delete Candidate</th>
                 </tr>
               </thead>
               <tbody id="registeredCandidatesTableBody"></tbody>
@@ -1470,86 +1123,142 @@
         </div>
       </div>
 
-      <!-- WINDOW 3: CREATE NEW ADMIN WINDOW -->
-      <div id="adminWindowCreateAdmin" style="display:none;">
-        <div class="card" style="border-left: 5px solid #4338ca; max-width:650px; margin:0 auto;">
-          <h3 style="font-size:16px; margin-bottom:6px; color:#3730a3;">Create New Administrator Account</h3>
-          <p style="font-size:12px; color:#78716c; margin-bottom:16px;">Authorized administrators can provision new admin access credentials:</p>
+      <!-- WINDOW 3: MANAGE NOTICES -->
+      <div id="adminWindowManageNotices" style="display:none;">
+        <div class="card" style="border-left:5px solid #ea580c;">
+          <h3 style="color:#9a3412; margin-bottom:10px;">Publish New Official Notice</h3>
+          <div class="form-grid">
+            <div class="form-group"><label>Notice Title</label><input type="text" id="noticeTitleInput" placeholder="e.g. Scholarship Application Extended"></div>
+            <div class="form-group"><label>Notice Date</label><input type="date" id="noticeDateInput"></div>
+            <div class="form-group"><label>Document Link (Google Drive / URL)</label><input type="url" id="noticeLinkInput" placeholder="https://drive.google.com/..."></div>
+          </div>
+          <button class="btn-primary" onclick="publishNewNotice()">📢 Publish Notice to Website</button>
+        </div>
+
+        <div class="card">
+          <h3 style="color:#7f1d1d; margin-bottom:12px;">Active Website Notices</h3>
+          <div id="adminNoticeList"></div>
+        </div>
+      </div>
+
+      <!-- WINDOW 4: MANAGE DOWNLOADS -->
+      <div id="adminWindowManageDownloads" style="display:none;">
+        <div class="card" style="border-left:5px solid #0284c7;">
+          <h3 style="color:#0369a1; margin-bottom:10px;">Add New Downloadable Form / Document</h3>
+          <div class="form-grid">
+            <div class="form-group"><label>Document Title</label><input type="text" id="dlTitleInput" placeholder="e.g. Character Certificate Format"></div>
+            <div class="form-group"><label>Description</label><input type="text" id="dlDescInput" placeholder="Short description of document"></div>
+            <div class="form-group"><label>Document File URL</label><input type="url" id="dlLinkInput" placeholder="https://drive.google.com/..."></div>
+          </div>
+          <button class="btn-primary" style="background:#0284c7;" onclick="addNewDownloadItem()">📥 Add Document</button>
+        </div>
+
+        <div class="card">
+          <h3 style="color:#1c1917; margin-bottom:12px;">Active Downloadable Documents</h3>
+          <div id="adminDownloadList"></div>
+        </div>
+      </div>
+
+      <!-- WINDOW 5: EDIT WEBSITE CONTENT (CMS) -->
+      <div id="adminWindowManageSite" style="display:none;">
+        <div class="card" style="border-left:5px solid #16a34a;">
+          <h3 style="color:#15803d; margin-bottom:12px;">Direct Website Content Manager</h3>
           
           <div class="form-group">
-            <label>Admin Full Name & Designation</label>
-            <input type="text" id="newAdminName" placeholder="e.g. Swami X Maharaj / Office Secretary">
+            <label>About Us Paragraph (Ashrama Overview)</label>
+            <textarea id="editAboutIntro" rows="4"></textarea>
           </div>
+
           <div class="form-group">
-            <label>Admin Official Mobile Number</label>
-            <input type="tel" id="newAdminMobile" placeholder="10-digit Phone">
+            <label>Educational Activities Details</label>
+            <textarea id="editActEdu" rows="4"></textarea>
           </div>
+
           <div class="form-group">
-            <label>Assign Admin ID</label>
-            <input type="text" id="newAdminId" placeholder="e.g. NewAdmin@RKMAJGM">
+            <label>Welfare Activities Details</label>
+            <textarea id="editActWelfare" rows="4"></textarea>
           </div>
+
           <div class="form-group">
-            <label>Assign Password</label>
-            <input type="text" id="newAdminPass" placeholder="Secret Password">
+            <label>Youth Activities Details</label>
+            <textarea id="editActYouth" rows="4"></textarea>
           </div>
-          <div style="margin-top:16px; display:flex; justify-content:flex-end;">
-            <button class="btn-primary" style="background:#4338ca;" onclick="createNewAdministratorAccount()">
-              ➕ Provision Administrator Account
-            </button>
+
+          <div class="form-group">
+            <label>Spiritual Activities Details</label>
+            <textarea id="editActSpiritual" rows="4"></textarea>
+          </div>
+
+          <button class="btn-primary" style="background:#15803d;" onclick="saveWebsiteContentChanges()">💾 Save Website Content</button>
+        </div>
+      </div>
+
+      <!-- WINDOW 6: SUPER ADMIN ONLY (MANAGE ADMINS) -->
+      <div id="adminWindowSuperAdminManage" style="display:none;">
+        <div class="card" style="border-left: 5px solid #4338ca;">
+          <h3 style="font-size:16px; margin-bottom:6px; color:#3730a3;">👑 Provision New Administrator Account</h3>
+          <p style="font-size:12px; color:#78716c; margin-bottom:14px;">Super Admin Authority: Only Secretary Maharaj can create or remove administrators.</p>
+          
+          <div class="form-grid">
+            <div class="form-group"><label>Name & Designation</label><input type="text" id="newAdminName" placeholder="e.g. Swami X Maharaj"></div>
+            <div class="form-group"><label>Mobile</label><input type="tel" id="newAdminMobile" placeholder="10-digit Phone"></div>
+            <div class="form-group"><label>Admin ID</label><input type="text" id="newAdminId" placeholder="e.g. SwamiX@RKMAJGM"></div>
+            <div class="form-group"><label>Password</label><input type="text" id="newAdminPass" placeholder="Secret Password"></div>
+          </div>
+          <button class="btn-primary" style="background:#4338ca;" onclick="superAdminCreateAdmin()">Provision Administrator</button>
+        </div>
+
+        <div class="card">
+          <h3 style="color:#1c1917; margin-bottom:12px;">Active Administrators Roster</h3>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Admin ID</th>
+                  <th>Full Name</th>
+                  <th>Mobile</th>
+                  <th>Role</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="superAdminTableBody"></tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      <!-- WINDOW 4: UPDATE ADMIN PROFILE WINDOW -->
+      <!-- WINDOW 7: UPDATE OWN ADMIN PROFILE -->
       <div id="adminWindowUpdateProfile" style="display:none;">
-        <div class="card" style="border-left: 5px solid #0284c7; max-width:650px; margin:0 auto;">
-          <h3 style="font-size:16px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
-          <p style="font-size:12px; color:#78716c; margin-bottom:16px;">Modify your official registered administrative contact records:</p>
-          
-          <div class="form-group">
-            <label>New Mobile Number</label>
-            <input type="tel" id="updNewMobile" placeholder="10-digit Mobile">
-          </div>
-          <div class="form-group">
-            <label>New Email Address</label>
-            <input type="email" id="updNewEmail" placeholder="Official Email">
-          </div>
-          <div style="margin-top:16px; display:flex; justify-content:flex-end;">
-            <button class="btn-primary" style="background:#0284c7;" onclick="executeAdminDirectProfileUpdate()">
-              💾 Save Profile Changes
-            </button>
-          </div>
+        <div class="card" style="border-left: 5px solid #0284c7; max-width:600px; margin:0 auto;">
+          <h3 style="font-size:16px; margin-bottom:12px; color:#0369a1;">My Profile Settings</h3>
+          <div class="form-group"><label>New Mobile Number</label><input type="tel" id="updNewMobile" placeholder="10-digit Phone"></div>
+          <div class="form-group"><label>New Email Address</label><input type="email" id="updNewEmail" placeholder="Official Email"></div>
+          <button class="btn-primary" style="background:#0284c7; width:100%;" onclick="executeAdminDirectProfileUpdate()">Save Profile</button>
         </div>
       </div>
     </section>
 
     <!-- ================= MODALS ================= -->
-    <!-- Admin Scrutiny / Status Update Modal -->
+    <!-- Scrutiny Modal -->
     <div id="adminScrutinyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
-      <div style="background:#fff; border-radius:10px; max-width:550px; width:100%; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+      <div style="background:#fff; border-radius:10px; max-width:550px; width:100%; padding:22px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:6px; margin-bottom:12px;">Application Scrutiny & Status Manager</h3>
-        
         <div id="scrutinyAppInfo" style="font-size:13px; line-height:1.6; margin-bottom:14px; background:#fafaf9; padding:10px; border-radius:6px;"></div>
-
         <div class="form-group">
-          <label>Select Status Action</label>
+          <label>Status Action</label>
           <select id="modalStatusSelect" onchange="handleStatusSelectionChange()">
             <option value="Under Verification">Under Verification</option>
             <option value="Approved">Approved</option>
-            <option value="Sanctioned" id="optSanctioned">Sanctioned (Amount Disbursed)</option>
+            <option value="Sanctioned">Sanctioned (Amount Disbursed)</option>
             <option value="Returned for Correction">Returned for Correction (Send Back)</option>
           </select>
-          <span id="sanctionLockNotice" style="display:none; font-size:11px; color:#dc2626; margin-top:4px;">
-            ⚠️ Application must be "Approved" first before it can be Sanctioned.
-          </span>
+          <span id="sanctionLockNotice" style="display:none; font-size:11px; color:#dc2626; margin-top:4px;">⚠️ Must be Approved before Sanctioned.</span>
         </div>
-
         <div class="form-group">
-          <label>Official Remarks / Correction Reason</label>
-          <textarea id="modalAdminRemarks" rows="3" style="width:100%; padding:10px; border-radius:6px; border:1px solid #d6d3d1; font-size:13px;" placeholder="Enter verification notes, approval endorsement, or required corrections..."></textarea>
+          <label>Official Remarks</label>
+          <textarea id="modalAdminRemarks" rows="3" placeholder="Enter remarks..."></textarea>
         </div>
-
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
           <button type="button" class="btn-neutral" onclick="closeScrutinyModal()">Cancel</button>
           <button type="button" class="btn-primary" onclick="saveAdminStatusDecision()">Update Status</button>
         </div>
@@ -1558,7 +1267,7 @@
 
     <!-- User Profile Modal -->
     <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
-      <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; padding:20px; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+      <div style="background:#fff; border-radius:10px; max-width:450px; width:100%; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">User Account Profile</h3>
         <div id="profileModalContent" style="font-size:13px; line-height:1.8;"></div>
         <div style="margin-top:16px; text-align:right;">
@@ -1569,8 +1278,8 @@
 
     <!-- Application Preview Modal -->
     <div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
-      <div style="background:#fff; border-radius:10px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
-        <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Preview Scholarship Application</h3>
+      <div style="background:#fff; border-radius:10px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:20px;">
+        <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Preview Application</h3>
         <div id="previewDetailsArea" style="font-size:13px; line-height:1.6;"></div>
         <div style="margin-top:16px; text-align:right;">
           <button type="button" class="btn-neutral" onclick="closePreviewModal()">Close Preview</button>
@@ -1578,7 +1287,7 @@
       </div>
     </div>
 
-    <!-- Printable Official Application (PDF with Attached Docs) -->
+    <!-- Printable Application -->
     <div id="printableApplication" style="display:none; padding:30px; font-family:serif; background:#fff;">
       <div style="text-align:center; border-bottom:2px solid #7f1d1d; padding-bottom:12px; margin-bottom:20px;">
         <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" style="width:65px; height:65px; margin-bottom:6px;">
@@ -1586,14 +1295,11 @@
         <p style="font-size:14px; margin:4px 0;">Satyabanpally, Jhargram, West Bengal - 721507</p>
         <h3 style="margin-top:8px; text-decoration:underline;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
       </div>
-
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
         <div id="pdfHeaderMeta" style="font-size:14px; line-height:1.6;"></div>
         <div id="pdfPhotoBox" style="width:110px; height:130px; border:1px solid #333; text-align:center; padding:2px;"></div>
       </div>
-
       <div id="pdfContentBody"></div>
-
       <div style="margin-top:40px; display:flex; justify-content:space-between; align-items:flex-end;">
         <div style="text-align:center; width:220px;">
           <div id="pdfSignBox" style="height:50px; margin-bottom:4px; display:flex; align-items:center; justify-content:center;"></div>
@@ -1601,34 +1307,24 @@
         </div>
         <div style="text-align:center; width:220px;">
           <div style="height:50px;"></div>
-          <div style="border-top:1px solid #333; padding-top:4px; font-size:12px;">
-            Secretary / Competent Authority<br>RKMA Jhargram
-          </div>
+          <div style="border-top:1px solid #333; padding-top:4px; font-size:12px;">Secretary / Competent Authority<br>RKMA Jhargram</div>
         </div>
       </div>
-
-      <!-- Automatically Attached Uploaded Documents Section -->
       <div id="pdfAttachedDocumentsSection" style="margin-top:50px; page-break-before:always;"></div>
     </div>
 
-    <!-- Official Candidate Registration Card (Exact Text & Rules, No Photo/Sign) -->
+    <!-- Printable Registration Card -->
     <div id="printableSlip" style="display:none; padding:40px; font-family:serif; background:#fff;">
       <div style="border:3px double #7f1d1d; padding:26px; border-radius:10px; max-width:680px; margin:0 auto; line-height:1.7;">
-        
-        <!-- Logo & Header -->
         <div style="text-align:center; border-bottom:2px solid #ea580c; padding-bottom:12px; margin-bottom:18px;">
           <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" style="width:60px; height:60px; margin-bottom:6px;">
-          <h2 style="color:#7f1d1d; margin:0; font-size:22px; letter-spacing:0.5px;">RAMAKRISHNA MISSION ASHRAMA</h2>
+          <h2 style="color:#7f1d1d; margin:0; font-size:22px;">RAMAKRISHNA MISSION ASHRAMA</h2>
           <p style="margin:4px 0; font-size:14px; font-weight:bold; color:#444;">Satyabanpally, Jhargram, West Bengal-721507</p>
           <div style="display:inline-block; background:#ffedd5; color:#9a3412; font-weight:bold; font-size:13px; padding:4px 14px; border-radius:15px; margin-top:8px;">
             OFFICIAL CANDIDATE REGISTRATION CARD
           </div>
         </div>
-
-        <!-- Candidate Specific Information Body -->
         <div id="slipBodyContent" style="font-size:14px; margin-bottom:20px;"></div>
-
-        <!-- Exact Important Instructions -->
         <div style="background:#fafaf9; border:1px solid #e7e5e4; padding:14px; border-radius:6px; font-size:13px; color:#292524;">
           <strong>Important Instructions for Candidate:</strong>
           <ol style="margin:8px 0 0 20px; padding:0;">
@@ -1637,12 +1333,9 @@
             <li>Upload genuine documents and complete all steps before final submission.</li>
           </ol>
         </div>
-
-        <!-- Footer Meta & Computer Generated Disclaimer -->
         <div style="margin-top:28px; display:flex; justify-content:space-between; align-items:flex-end; font-size:13px;">
           <div><strong>Date of Issuance:</strong> <span id="slipDate"></span></div>
         </div>
-
         <div style="margin-top:25px; text-align:center; border-top:1px dashed #a8a29e; padding-top:10px; font-size:12px; color:#57534e; font-style:italic;">
           "This document is computer-generated, hence no physical signature is required."
         </div>
@@ -1650,7 +1343,6 @@
     </div>
   </main>
 
-  <!-- PUBLIC FOOTER -->
   <footer id="publicFooter">
     <strong>Ramakrishna Mission Ashrama, Jhargram</strong><br>
     Satyabanpally, P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India<br>
@@ -1658,31 +1350,58 @@
   </footer>
 
   <script>
-    // Storage Initializer
+    // Master Initial Data Storage
     let applications = JSON.parse(localStorage.getItem('rkm_apps') || '[]');
     let candidates = JSON.parse(localStorage.getItem('rkm_cand_db') || 'null') || {
       'RKM-2026-001': { name: 'Sourav Mahato', mobile: '9876543210', pass: 'RKMA@2026' }
     };
 
+    // Admins Roster (Secretary Maharaj is SUPER_ADMIN)
     let admins = JSON.parse(localStorage.getItem('rkm_admins_db') || 'null') || {
       'Secretary@RKMAJGM': {
         name: 'Secretary Maharaj, RKMA Jhargram',
         mobile: '9007085285',
         pass: 'RKMA@jgm2026',
-        email: 'jhargram@rkmm.org'
+        email: 'jhargram@rkmm.org',
+        role: 'SUPER_ADMIN'
       },
       'SBMaharaj@RKMAJGM': {
         name: 'Swami Brahmeshwarananda, RKMA Jhargram',
         mobile: '8509317275',
         pass: 'RKMA@jgm2026',
-        email: 'brahmeshwarananda@gmail.com'
+        email: 'brahmeshwarananda@gmail.com',
+        role: 'ADMIN'
       },
       'DEO@RKMAJGM': {
         name: 'Data Entry Operator',
         mobile: '9339423401',
         pass: 'RKMA@jgm2026',
-        email: 'rkma.jgm.scholarship@gmail.com'
+        email: 'rkma.jgm.scholarship@gmail.com',
+        role: 'ADMIN'
       }
+    };
+
+    // Notices Storage
+    let notices = JSON.parse(localStorage.getItem('rkm_notices') || 'null') || [
+      { id: 1, title: 'Scholarship Application Window Open for Session 2026-27', date: '2026-10-01', link: '#' },
+      { id: 2, title: 'Submission of Bonafide Certificates and Marksheets Instructions', date: '2026-10-05', link: '#' }
+    ];
+
+    // Downloads Storage
+    let downloads = JSON.parse(localStorage.getItem('rkm_downloads') || 'null') || [
+      { id: 1, title: '1. Belur Math Application Prayer', desc: 'Official prayer format of Belur Math Headquarters.', link: 'https://drive.google.com/file/d/1OAOoBDEUNUjGMIzM_eJfZwqKKl3ir8c2/view?usp=drivesdk' },
+      { id: 2, title: '2. RKMA JGM Application Prayer', desc: 'Official scholarship prayer format of RKMA Jhargram.', link: 'https://drive.google.com/file/d/1Xkx7_5_eBTK0WDMprzcSBTV6gvKUUnkq/view?usp=drivesdk' },
+      { id: 3, title: '3. Income Certificate Format', desc: 'Prescribed family annual income certificate declaration format.', link: 'https://drive.google.com/file/d/1xfcT9sT9MvJ9XqR964lbM5UwdBP8wi1J/view?usp=drivesdk' },
+      { id: 4, title: '4. Bonafide Certificate Format', desc: 'Institution bonafide student endorsement certificate format.', link: 'https://drive.google.com/file/d/12iYWXTnUAfcY1KE-i8yX3H6Aq7jJr0sF/view?usp=drivesdk' }
+    ];
+
+    // Website Content (CMS) Storage
+    let siteContent = JSON.parse(localStorage.getItem('rkm_site_content') || 'null') || {
+      aboutIntro: 'Ramakrishna Mission Ashrama, Jhargram, a branch centre of the Ramakrishna Mission, Belur Math came into existence on 20th August 2017 on five acres of land obtained on lease from the Government of West Bengal. Srimat Swami Smarananandaji Maharaj, the 16th President of Ramakrishna Math and Ramakrishna Mission, Belur Math, inaugurated the newly constructed Assembly cum Prayer Hall in the Ashrama campus on 7th of December 2019.',
+      actEdu: '• Ramakrishna Mission Vidyamandira (EMRS), Jhargram: Residential School for Tribal students (460 students).\n• 6 Free Coaching Centers: 320 students receive free coaching, uniforms, and light tiffin.\n• Scholarships: In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students.',
+      actWelfare: '• Distribution of clothes, relief assistance, and financial aid to underprivileged families.\n• Disaster relief and winter jacket/blanket distribution.\n• Monthly motivational programs at Jhargram Correctional Home.\n• Bi-monthly free homeopathic health camp by Dr. Ashoke Pradhan.\n• Annual blood donation drive with over 100 donors.\n• Swami Vivekananda Tree Plantation (16,000+ trees planted).\n• Monthly pension of Rs. 1,200 to 6 widows.',
+      actYouth: '• ‘Arise, Awake’: Value education across 32 institutions covering 8,000 students and 400 teachers.\n• Annual district football tournament, yoga, and cultural competitions.\n• Vivekananda study circles at 12 centers.\n• National Youth Day celebrations and Sunday moral classes.',
+      actSpiritual: '• Birth anniversary celebrations of Sri Ramakrishna, Sri Sarada Devi, and Swami Vivekananda.\n• Daily evening prayer, religious discourses, and Ekadashi Ramnam Sankirtan.\n• Spiritual retreats and distribution of Vedanta literature.'
     };
 
     let activeUserRole = null;
@@ -1692,26 +1411,63 @@
 
     let currentUploadedPhotoBase64 = '';
     let currentUploadedSignBase64 = '';
-    let currentUploadedDocs = {}; // Stores base64 representations of uploaded documents
+    let currentUploadedDocs = {};
     let currentGeneratedCaptcha = '';
 
     function saveState() {
       localStorage.setItem('rkm_apps', JSON.stringify(applications));
       localStorage.setItem('rkm_cand_db', JSON.stringify(candidates));
       localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
+      localStorage.setItem('rkm_notices', JSON.stringify(notices));
+      localStorage.setItem('rkm_downloads', JSON.stringify(downloads));
+      localStorage.setItem('rkm_site_content', JSON.stringify(siteContent));
     }
 
-    function renderAdminDropdown() {
-      const select = document.getElementById('adminDropdown');
-      select.innerHTML = '<option value="">-- Choose Profile --</option>';
-      for (let adminId in admins) {
-        const opt = document.createElement('option');
-        opt.value = adminId;
-        opt.textContent = `${admins[adminId].name} (${adminId})`;
-        select.appendChild(opt);
-      }
+    // Render Dynamic Content on Website
+    function renderPublicSiteContent() {
+      document.getElementById('viewAboutIntro').innerText = siteContent.aboutIntro;
+      document.getElementById('viewActEdu').innerText = siteContent.actEdu;
+      document.getElementById('viewActWelfare').innerText = siteContent.actWelfare;
+      document.getElementById('viewActYouth').innerText = siteContent.actYouth;
+      document.getElementById('viewActSpiritual').innerText = siteContent.actSpiritual;
+
+      // Notices preview on Home
+      const homeNotices = document.getElementById('homeNoticesList');
+      homeNotices.innerHTML = notices.slice(0, 3).map(n => `
+        <div class="notice-item">
+          <div><a href="${n.link}" target="_blank" style="color:#1c1917; text-decoration:none; font-weight:600; font-size:13px;">${n.title}</a></div>
+          <span class="notice-date">${n.date}</span>
+        </div>
+      `).join('') || '<p style="font-size:12px; color:#888;">No current notices.</p>';
+
+      // Full Notices Page
+      const fullNotices = document.getElementById('fullNoticesList');
+      fullNotices.innerHTML = notices.map(n => `
+        <div class="notice-item">
+          <div>
+            <a href="${n.link}" target="_blank" style="color:#7f1d1d; text-decoration:none; font-weight:700; font-size:14px;">${n.title}</a>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="notice-date">${n.date}</span>
+            <a href="${n.link}" target="_blank" class="action-btn btn-pdf" style="text-decoration:none;">View</a>
+          </div>
+        </div>
+      `).join('') || '<p style="font-size:12px; color:#888;">No notices published yet.</p>';
+
+      // Downloads Page
+      const dlGrid = document.getElementById('publicDownloadsGrid');
+      dlGrid.innerHTML = downloads.map(d => `
+        <div class="download-item">
+          <div>
+            <h4>${d.title}</h4>
+            <p style="font-size:11px; color:#78716c;">${d.desc}</p>
+          </div>
+          <a href="${d.link}" target="_blank" class="download-link">📥 Download Document</a>
+        </div>
+      `).join('');
     }
 
+    // Navigation
     function navigateToPublic(sectionId) {
       if (activeUserRole !== null) {
         alert('Active session detected. Please log out first.');
@@ -1738,7 +1494,6 @@
       activeUserRole = role;
       document.getElementById('publicHeader').style.display = 'none';
       document.getElementById('publicFooter').style.display = 'none';
-
       document.getElementById('portalTopHeader').style.display = 'block';
       document.getElementById('portalWorkspaceTitle').innerText = title;
       document.getElementById('portalUserIdentity').innerText = identity;
@@ -1753,62 +1508,39 @@
       document.getElementById('publicHeader').style.display = 'block';
       document.getElementById('publicFooter').style.display = 'block';
 
-      renderAdminDropdown();
       navigateToPublic('home');
-    }
-
-    function openProfileModal() {
-      const modal = document.getElementById('profileModal');
-      const content = document.getElementById('profileModalContent');
-
-      if (activeUserRole === 'admin' && activeAdminId) {
-        const a = admins[activeAdminId];
-        content.innerHTML = `
-          <strong>Account Role:</strong> Authorized Administrator<br>
-          <strong>Official Designation:</strong> ${a.name}<br>
-          <strong>Admin ID:</strong> ${activeAdminId}<br>
-          <strong>Mobile Number:</strong> ${a.mobile}<br>
-          <strong>Email:</strong> ${a.email}
-        `;
-      } else if (activeUserRole === 'candidate' && activeCandidateId) {
-        const c = candidates[activeCandidateId];
-        content.innerHTML = `
-          <strong>Account Role:</strong> Registered Candidate<br>
-          <strong>Candidate Full Name:</strong> ${c.name}<br>
-          <strong>Candidate ID:</strong> ${activeCandidateId}<br>
-          <strong>Mobile Number:</strong> ${c.mobile}
-        `;
-      }
-      modal.style.display = 'flex';
-    }
-
-    function closeProfileModal() {
-      document.getElementById('profileModal').style.display = 'none';
     }
 
     // Direct Login Functions
     function executeAdminDirectLogin() {
-      const selectedId = document.getElementById('adminDropdown').value;
-      const pass = document.getElementById('adminPassField').value.trim();
+      const id = document.getElementById('manualAdminId').value.trim();
+      const pass = document.getElementById('manualAdminPass').value.trim();
 
-      if (!selectedId || !pass) {
-        alert('Please select an Administrator profile and enter the password!');
+      if (!id || !pass) {
+        alert('Please enter both Admin ID and Password!');
         return;
       }
 
-      const admin = admins[selectedId];
+      const admin = admins[id];
       if (admin && admin.pass === pass) {
-        activeAdminId = selectedId;
+        activeAdminId = id;
         document.getElementById('activeAdminTitle').innerText = admin.name;
-        document.getElementById('activeAdminContact').innerText = `Mobile: ${admin.mobile} | Email: ${admin.email}`;
-        document.getElementById('adminPassField').value = '';
+        document.getElementById('activeAdminContact').innerText = `Admin ID: ${id} | Mobile: ${admin.mobile} | Email: ${admin.email}`;
+        document.getElementById('manualAdminId').value = '';
+        document.getElementById('manualAdminPass').value = '';
 
-        setAuthenticatedUI('admin', 'ADMINISTRATOR CONSOLE', admin.name);
+        const isSuperAdmin = (admin.role === 'SUPER_ADMIN');
+        document.getElementById('adminRoleBadge').innerText = isSuperAdmin ? '👑 SUPER ADMIN CONSOLE' : 'ADMIN CONSOLE';
+        
+        // Show/Hide Super Admin Window Tab
+        document.getElementById('tabBtnSuperAdminOnly').style.display = isSuperAdmin ? 'inline-block' : 'none';
+
+        setAuthenticatedUI('admin', isSuperAdmin ? 'SUPER ADMIN WORKSPACE' : 'ADMINISTRATOR CONSOLE', admin.name);
         refreshAdminDashboardPanels();
         switchAdminWindow('applications');
         navigateToAuth('adminDashboard');
       } else {
-        alert('Invalid Administrator Password! Please try again.');
+        alert('Invalid Administrator Credentials! Please verify ID and Password.');
       }
     }
 
@@ -1837,41 +1569,30 @@
       }
     }
 
-    // Admin Window Switcher
+    // Admin Tabs Switcher
     function switchAdminWindow(windowType) {
-      const tabApps = document.getElementById('tabBtnApplications');
-      const tabReg = document.getElementById('tabBtnRegistration');
-      const tabCreate = document.getElementById('tabBtnCreateAdmin');
-      const tabUpdate = document.getElementById('tabBtnUpdateProfile');
+      const tabs = ['applications', 'registration', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'updateProfile'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+        const win = document.getElementById('adminWindow' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (btn) btn.classList.remove('active');
+        if (win) win.style.display = 'none';
+      });
 
-      const winApps = document.getElementById('adminWindowApplications');
-      const winReg = document.getElementById('adminWindowRegistration');
-      const winCreate = document.getElementById('adminWindowCreateAdmin');
-      const winUpdate = document.getElementById('adminWindowUpdateProfile');
-
-      tabApps.classList.remove('active');
-      tabReg.classList.remove('active');
-      tabCreate.classList.remove('active');
-      tabUpdate.classList.remove('active');
-
-      winApps.style.display = 'none';
-      winReg.style.display = 'none';
-      winCreate.style.display = 'none';
-      winUpdate.style.display = 'none';
-
-      if (windowType === 'applications') {
-        tabApps.classList.add('active');
-        winApps.style.display = 'block';
-      } else if (windowType === 'registration') {
-        tabReg.classList.add('active');
-        winReg.style.display = 'block';
-      } else if (windowType === 'createAdmin') {
-        tabCreate.classList.add('active');
-        winCreate.style.display = 'block';
-      } else if (windowType === 'updateProfile') {
-        tabUpdate.classList.add('active');
-        winUpdate.style.display = 'block';
+      if (windowType === 'superAdminManage' && admins[activeAdminId].role !== 'SUPER_ADMIN') {
+        alert('Unauthorized Access! Only Super Admin can access this window.');
+        return;
       }
+
+      const activeBtn = document.getElementById('tabBtn' + windowType.charAt(0).toUpperCase() + windowType.slice(1));
+      const activeWin = document.getElementById('adminWindow' + windowType.charAt(0).toUpperCase() + windowType.slice(1));
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activeWin) activeWin.style.display = 'block';
+
+      if (windowType === 'manageSite') loadCMSInputs();
+      if (windowType === 'manageNotices') renderAdminNoticesTable();
+      if (windowType === 'manageDownloads') renderAdminDownloadsTable();
+      if (windowType === 'superAdminManage') renderSuperAdminTable();
     }
 
     function refreshAdminDashboardPanels() {
@@ -1881,135 +1602,46 @@
       document.getElementById('regCountBadge').innerText = Object.keys(candidates).length;
     }
 
-    function adminCreateCustomCandidate() {
-      const name = document.getElementById('genCandName').value.trim();
-      const mobile = document.getElementById('genCandMobile').value.trim();
-      const id = document.getElementById('genCandId').value.trim();
-      const pass = document.getElementById('genCandPass').value.trim();
+    // Applications Window & Candidate Delete Handlers
+    function renderAdminTable() {
+      const tbody = document.getElementById('adminAppTableBody');
+      tbody.innerHTML = '';
 
-      if (!name || mobile.length !== 10 || !id || !pass) {
-        alert('All fields are mandatory (including a valid 10-digit mobile number)!');
-        return;
-      }
-
-      if (candidates[id]) {
-        alert('This Candidate ID is already assigned! Please provide a unique ID.');
-        return;
-      }
-
-      candidates[id] = { name: name, mobile: mobile, pass: pass };
-      saveState();
-
-      alert(`Candidate Account Created Successfully!\n\nCandidate Name: ${name}\nMobile: ${mobile}\nCandidate ID: ${id}\nPassword: ${pass}`);
-
-      document.getElementById('genCandName').value = '';
-      document.getElementById('genCandMobile').value = '';
-      document.getElementById('genCandId').value = '';
-      document.getElementById('genCandPass').value = '';
-
-      refreshAdminDashboardPanels();
-    }
-
-    function downloadSampleCandidateTemplate() {
-      const sampleData = [
-        ["Name", "Phone", "CandidateID", "Password"],
-        ["Swapan Mahato", "9876543211", "RKM-2026-003", "Pass@1234"],
-        ["Raju Murmu", "9876543212", "RKM-2026-004", "Pass@5678"]
-      ];
-
-      const ws = XLSX.utils.aoa_to_sheet(sampleData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Candidates_Template");
-      XLSX.writeFile(wb, "RKMA_Bulk_Candidates_Sample_Template.xlsx");
-    }
-
-    function processBulkCandidateExcelUpload() {
-      const fileInput = document.getElementById('bulkExcelFileInput');
-      const reportBox = document.getElementById('bulkUploadReport');
-      reportBox.style.display = 'none';
-
-      if (!fileInput.files || fileInput.files.length === 0) {
-        alert('Please choose an Excel (.xlsx / .xls) or CSV file first!');
-        return;
-      }
-
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-
-      reader.onload = function(e) {
-        try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-
-          if (!jsonData || jsonData.length === 0) {
-            alert('The uploaded file appears to be empty or has an invalid structure.');
-            return;
-          }
-
-          let addedCount = 0;
-          let skippedCount = 0;
-          let errorMessages = [];
-
-          jsonData.forEach((row, idx) => {
-            const name = (row['Name'] || row['name'] || '').toString().trim();
-            const phone = (row['Phone'] || row['phone'] || '').toString().trim();
-            const candId = (row['CandidateID'] || row['candidateid'] || '').toString().trim();
-            const pass = (row['Password'] || row['password'] || '').toString().trim();
-
-            if (!name || !candId || !pass) {
-              skippedCount++;
-              errorMessages.push(`Row ${idx + 2}: Missing required fields.`);
-              return;
-            }
-
-            if (candidates[candId]) {
-              skippedCount++;
-              errorMessages.push(`Row ${idx + 2}: Candidate ID "${candId}" already exists. Skipped.`);
-              return;
-            }
-
-            const cleanPhone = phone.replace(/[^0-9]/g, '');
-            if (cleanPhone.length < 10) {
-              skippedCount++;
-              errorMessages.push(`Row ${idx + 2}: Invalid mobile number for "${name}".`);
-              return;
-            }
-
-            candidates[candId] = {
-              name: name,
-              mobile: cleanPhone.slice(-10),
-              pass: pass
-            };
-            addedCount++;
-          });
-
-          saveState();
-
-          reportBox.style.display = 'block';
-          reportBox.innerHTML = `
-            <div style="padding:10px; border-radius:6px; background:${addedCount > 0 ? '#dcfce7' : '#fee2e2'}; color:${addedCount > 0 ? '#15803d' : '#991b1b'}; font-weight:bold;">
-              ✅ Successfully Imported: ${addedCount} candidate account(s).<br>
-              ⚠️ Skipped/Failed: ${skippedCount} record(s).
+      applications.forEach((app, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${app.appNo}</strong></td>
+          <td>${app.photoBase64 ? `<img src="${app.photoBase64}" style="width:36px; height:42px; object-fit:cover; border-radius:4px;">` : '<span style="color:#aaa; font-size:10px;">N/A</span>'}</td>
+          <td>${app.name}<br><span style="color:#78716c; font-size:10px;">ID: ${app.candidateId}</span></td>
+          <td>${app.currClass} (${app.stream})<br><span style="color:#78716c; font-size:10px;">${app.institution}</span></td>
+          <td style="color:#15803d; font-weight:bold;">${app.marksPct}</td>
+          <td>₹${app.income}</td>
+          <td><span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span></td>
+          <td>
+            <div class="action-btn-group">
+              <button class="action-btn btn-manage" onclick="openScrutinyModal(${index})">Scrutiny</button>
+              <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
+              <button class="action-btn btn-word" onclick="downloadApplicationWord(${index})">Word</button>
+              <button class="action-btn btn-delete" onclick="deleteApplicationOnly(${index})">Delete App</button>
             </div>
-            ${errorMessages.length > 0 ? `<div style="margin-top:6px; color:#dc2626; max-height:100px; overflow-y:auto; font-size:11px;">${errorMessages.join('<br>')}</div>` : ''}
-          `;
-
-          alert(`Bulk Upload Processed!\n\nSuccessfully Created: ${addedCount}\nSkipped: ${skippedCount}`);
-          fileInput.value = '';
-          refreshAdminDashboardPanels();
-
-        } catch (err) {
-          console.error(err);
-          alert('Failed to parse file! Ensure the spreadsheet contains valid columns (Name, Phone, CandidateID, Password).');
-        }
-      };
-
-      reader.readAsArrayBuffer(file);
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
+    // Delete Application only (From Application Window)
+    function deleteApplicationOnly(index) {
+      const item = applications[index];
+      if (confirm(`Delete application "${item.appNo}" for ${item.name}? This removes the application submission but preserves candidate registration.`)) {
+        applications.splice(index, 1);
+        saveState();
+        refreshAdminDashboardPanels();
+        alert('Application deleted successfully.');
+      }
+    }
+
+    // Registration Window (With Full Candidate Delete Option)
     function renderRegisteredCandidatesTable() {
       const tbody = document.getElementById('registeredCandidatesTableBody');
       tbody.innerHTML = '';
@@ -2026,28 +1658,282 @@
           <td>${cand.name}</td>
           <td>${cand.mobile}</td>
           <td><code style="background:#f5f5f4; padding:2px 6px; border-radius:4px;">${cand.pass}</code></td>
+          <td><span style="font-weight:bold; color:${isSubmitted ? '#15803d' : '#dc2626'};">${isSubmitted ? '✅ Yes' : '⏳ Pending'}</span></td>
+          <td><button class="action-btn btn-pdf" onclick="downloadCandidateRegistrationSlip('${cid}')">🖨️ Download Slip</button></td>
+          <td><button class="action-btn btn-delete" onclick="deleteEntireCandidateAccount('${cid}')">❌ Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    // Delete Entire Candidate Account (From Registration Window)
+    function deleteEntireCandidateAccount(cid) {
+      const cand = candidates[cid];
+      if (confirm(`CRITICAL: Are you sure you want to permanently delete Candidate "${cand.name}" (${cid}) and all associated records?`)) {
+        delete candidates[cid];
+        applications = applications.filter(a => a.candidateId !== cid);
+        saveState();
+        refreshAdminDashboardPanels();
+        alert(`Candidate ${cid} deleted successfully.`);
+      }
+    }
+
+    // Single & Bulk Registration
+    function adminCreateCustomCandidate() {
+      const name = document.getElementById('genCandName').value.trim();
+      const mobile = document.getElementById('genCandMobile').value.trim();
+      const id = document.getElementById('genCandId').value.trim();
+      const pass = document.getElementById('genCandPass').value.trim();
+
+      if (!name || mobile.length !== 10 || !id || !pass) {
+        alert('All fields are mandatory (with a valid 10-digit mobile number)!');
+        return;
+      }
+      if (candidates[id]) {
+        alert('Candidate ID already exists!');
+        return;
+      }
+
+      candidates[id] = { name: name, mobile: mobile, pass: pass };
+      saveState();
+      alert(`Candidate created successfully! (ID: ${id})`);
+      document.getElementById('genCandName').value = '';
+      document.getElementById('genCandMobile').value = '';
+      document.getElementById('genCandId').value = '';
+      document.getElementById('genCandPass').value = '';
+      refreshAdminDashboardPanels();
+    }
+
+    function downloadSampleCandidateTemplate() {
+      const sampleData = [
+        ["Name", "Phone", "CandidateID", "Password"],
+        ["Swapan Mahato", "9876543211", "RKM-2026-003", "Pass@1234"],
+        ["Raju Murmu", "9876543212", "RKM-2026-004", "Pass@5678"]
+      ];
+      const ws = XLSX.utils.aoa_to_sheet(sampleData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Candidates_Template");
+      XLSX.writeFile(wb, "RKMA_Bulk_Candidates_Sample_Template.xlsx");
+    }
+
+    function processBulkCandidateExcelUpload() {
+      const fileInput = document.getElementById('bulkExcelFileInput');
+      const reportBox = document.getElementById('bulkUploadReport');
+      reportBox.style.display = 'none';
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Please choose an Excel file first!');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+          let added = 0, skipped = 0;
+          jsonData.forEach((row, idx) => {
+            const name = (row['Name'] || row['name'] || '').toString().trim();
+            const phone = (row['Phone'] || row['phone'] || '').toString().trim().replace(/[^0-9]/g, '');
+            const cid = (row['CandidateID'] || row['candidateid'] || '').toString().trim();
+            const pass = (row['Password'] || row['password'] || '').toString().trim();
+
+            if (!name || !cid || !pass || phone.length < 10 || candidates[cid]) {
+              skipped++;
+              return;
+            }
+            candidates[cid] = { name: name, mobile: phone.slice(-10), pass: pass };
+            added++;
+          });
+
+          saveState();
+          reportBox.style.display = 'block';
+          reportBox.innerHTML = `<div style="padding:10px; background:#dcfce7; color:#15803d; font-weight:bold;">✅ Imported: ${added} candidates | Skipped/Duplicate: ${skipped}</div>`;
+          fileInput.value = '';
+          refreshAdminDashboardPanels();
+        } catch (err) {
+          alert('Error parsing Excel file!');
+        }
+      };
+      reader.readAsArrayBuffer(fileInput.files[0]);
+    }
+
+    // Manage Notices (CMS)
+    function renderAdminNoticesTable() {
+      const box = document.getElementById('adminNoticeList');
+      box.innerHTML = notices.map((n, i) => `
+        <div class="notice-item">
+          <div><strong>${n.title}</strong> (${n.date})<br><a href="${n.link}" target="_blank" style="font-size:11px; color:#0284c7;">${n.link}</a></div>
+          <button class="action-btn btn-delete" onclick="deleteNotice(${i})">Delete</button>
+        </div>
+      `).join('') || '<p style="font-size:12px; color:#888;">No notices.</p>';
+    }
+
+    function publishNewNotice() {
+      const title = document.getElementById('noticeTitleInput').value.trim();
+      const date = document.getElementById('noticeDateInput').value;
+      const link = document.getElementById('noticeLinkInput').value.trim() || '#';
+
+      if (!title || !date) {
+        alert('Notice title and date are required!');
+        return;
+      }
+      notices.unshift({ id: Date.now(), title: title, date: date, link: link });
+      saveState();
+      renderPublicSiteContent();
+      renderAdminNoticesTable();
+      alert('Notice published live!');
+      document.getElementById('noticeTitleInput').value = '';
+      document.getElementById('noticeLinkInput').value = '';
+    }
+
+    function deleteNotice(index) {
+      if (confirm('Delete this notice?')) {
+        notices.splice(index, 1);
+        saveState();
+        renderPublicSiteContent();
+        renderAdminNoticesTable();
+      }
+    }
+
+    // Manage Downloads (CMS)
+    function renderAdminDownloadsTable() {
+      const box = document.getElementById('adminDownloadList');
+      box.innerHTML = downloads.map((d, i) => `
+        <div class="notice-item">
+          <div><strong>${d.title}</strong> - <span style="font-size:12px; color:#666;">${d.desc}</span><br><a href="${d.link}" target="_blank" style="font-size:11px; color:#0284c7;">${d.link}</a></div>
+          <button class="action-btn btn-delete" onclick="deleteDownload(${i})">Delete</button>
+        </div>
+      `).join('') || '<p style="font-size:12px; color:#888;">No downloads.</p>';
+    }
+
+    function addNewDownloadItem() {
+      const title = document.getElementById('dlTitleInput').value.trim();
+      const desc = document.getElementById('dlDescInput').value.trim();
+      const link = document.getElementById('dlLinkInput').value.trim();
+
+      if (!title || !link) {
+        alert('Document title and link are required!');
+        return;
+      }
+      downloads.push({ id: Date.now(), title: title, desc: desc, link: link });
+      saveState();
+      renderPublicSiteContent();
+      renderAdminDownloadsTable();
+      alert('Downloadable document added live!');
+      document.getElementById('dlTitleInput').value = '';
+      document.getElementById('dlDescInput').value = '';
+      document.getElementById('dlLinkInput').value = '';
+    }
+
+    function deleteDownload(index) {
+      if (confirm('Delete this downloadable document?')) {
+        downloads.splice(index, 1);
+        saveState();
+        renderPublicSiteContent();
+        renderAdminDownloadsTable();
+      }
+    }
+
+    // Direct Website Content Editor (CMS)
+    function loadCMSInputs() {
+      document.getElementById('editAboutIntro').value = siteContent.aboutIntro;
+      document.getElementById('editActEdu').value = siteContent.actEdu;
+      document.getElementById('editActWelfare').value = siteContent.actWelfare;
+      document.getElementById('editActYouth').value = siteContent.actYouth;
+      document.getElementById('editActSpiritual').value = siteContent.actSpiritual;
+    }
+
+    function saveWebsiteContentChanges() {
+      siteContent.aboutIntro = document.getElementById('editAboutIntro').value.trim();
+      siteContent.actEdu = document.getElementById('editActEdu').value.trim();
+      siteContent.actWelfare = document.getElementById('editActWelfare').value.trim();
+      siteContent.actYouth = document.getElementById('editActYouth').value.trim();
+      siteContent.actSpiritual = document.getElementById('editActSpiritual').value.trim();
+
+      saveState();
+      renderPublicSiteContent();
+      alert('Website content updated live!');
+    }
+
+    // Super Admin Exclusive Management
+    function renderSuperAdminTable() {
+      const tbody = document.getElementById('superAdminTableBody');
+      tbody.innerHTML = '';
+
+      for (let aid in admins) {
+        const a = admins[aid];
+        const isSuper = (a.role === 'SUPER_ADMIN');
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${aid}</strong></td>
+          <td>${a.name}</td>
+          <td>${a.mobile}</td>
+          <td><span class="status-badge ${isSuper ? 'st-sanctioned' : 'st-submitted'}">${a.role}</span></td>
           <td>
-            <span style="font-weight:bold; color:${isSubmitted ? '#15803d' : '#dc2626'};">
-              ${isSubmitted ? '✅ Yes' : '⏳ Pending'}
-            </span>
-          </td>
-          <td>
-            <button class="action-btn btn-pdf" onclick="downloadCandidateRegistrationSlip('${cid}')">
-              🖨️ Download Slip
-            </button>
+            ${isSuper ? '<span style="font-size:11px; color:#888;">Permanent Super Admin</span>' : `<button class="action-btn btn-delete" onclick="superAdminDeleteAdmin('${aid}')">Remove Admin</button>`}
           </td>
         `;
         tbody.appendChild(tr);
       }
     }
 
-    // Download/Print Official Registration Card (Exact Text - No Photo/Sign)
+    function superAdminCreateAdmin() {
+      if (admins[activeAdminId].role !== 'SUPER_ADMIN') {
+        alert('Permission Denied!');
+        return;
+      }
+
+      const name = document.getElementById('newAdminName').value.trim();
+      const mobile = document.getElementById('newAdminMobile').value.trim();
+      const id = document.getElementById('newAdminId').value.trim();
+      const pass = document.getElementById('newAdminPass').value.trim();
+
+      if (!name || mobile.length !== 10 || !id || !pass) {
+        alert('All fields required with valid 10-digit mobile!');
+        return;
+      }
+      if (admins[id]) {
+        alert('Admin ID already exists!');
+        return;
+      }
+
+      admins[id] = { name: name, mobile: mobile, pass: pass, email: 'admin@rkmm.org', role: 'ADMIN' };
+      saveState();
+      alert(`Admin account created for ${name}!`);
+      document.getElementById('newAdminName').value = '';
+      document.getElementById('newAdminMobile').value = '';
+      document.getElementById('newAdminId').value = '';
+      document.getElementById('newAdminPass').value = '';
+      renderSuperAdminTable();
+    }
+
+    function superAdminDeleteAdmin(aid) {
+      if (admins[activeAdminId].role !== 'SUPER_ADMIN') {
+        alert('Permission Denied!');
+        return;
+      }
+      if (aid === 'Secretary@RKMAJGM') {
+        alert('Cannot delete the primary Super Administrator!');
+        return;
+      }
+      if (confirm(`Remove administrator "${admins[aid].name}" (${aid})?`)) {
+        delete admins[aid];
+        saveState();
+        renderSuperAdminTable();
+        alert('Administrator removed successfully.');
+      }
+    }
+
+    // Registration Slip Download
     function downloadCandidateRegistrationSlip(cid) {
       const cand = candidates[cid];
       if (!cand) return;
-
       const appData = applications.find(a => a.candidateId === cid);
-      const appStatusText = appData ? appData.status : 'Not Applied';
 
       document.getElementById('slipBodyContent').innerHTML = `
         <div style="font-size:14px; line-height:2.0; color:#1c1917;">
@@ -2055,187 +1941,69 @@
           <div><strong>Official Candidate ID:</strong> <span style="font-size:16px; font-weight:bold; color:#7f1d1d;">${cid}</span></div>
           <div><strong>Registered Mobile:</strong> ${cand.mobile}</div>
           <div><strong>Initial Password:</strong> <code style="font-size:14px; background:#f5f5f4; padding:2px 8px; border-radius:4px;">${cand.pass}</code></div>
-          <div><strong>Application Status:</strong> <span style="font-weight:bold;">${appStatusText}</span></div>
+          <div><strong>Application Status:</strong> <span style="font-weight:bold;">${appData ? appData.status : 'Not Applied'}</span></div>
         </div>
       `;
-
       document.getElementById('slipDate').innerText = new Date().toLocaleDateString('en-GB');
       window.print();
     }
 
-    function createNewAdministratorAccount() {
-      const name = document.getElementById('newAdminName').value.trim();
-      const mobile = document.getElementById('newAdminMobile').value.trim();
-      const id = document.getElementById('newAdminId').value.trim();
-      const pass = document.getElementById('newAdminPass').value.trim();
+    // Scrutiny Modal
+    function openScrutinyModal(index) {
+      selectedScrutinyIndex = index;
+      const app = applications[index];
+      document.getElementById('scrutinyAppInfo').innerHTML = `
+        <strong>Applicant:</strong> ${app.name} (${app.candidateId})<br>
+        <strong>Application No:</strong> ${app.appNo} | <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span>
+      `;
+      document.getElementById('modalStatusSelect').value = app.status;
+      document.getElementById('modalAdminRemarks').value = app.adminRemarks || '';
+      handleStatusSelectionChange();
+      document.getElementById('adminScrutinyModal').style.display = 'flex';
+    }
 
-      if (!name || mobile.length !== 10 || !id || !pass) {
-        alert('All Administrator fields are mandatory (including 10-digit mobile number)!');
+    function closeScrutinyModal() {
+      document.getElementById('adminScrutinyModal').style.display = 'none';
+      selectedScrutinyIndex = null;
+    }
+
+    function handleStatusSelectionChange() {
+      if (selectedScrutinyIndex === null) return;
+      const app = applications[selectedScrutinyIndex];
+      const select = document.getElementById('modalStatusSelect');
+      const notice = document.getElementById('sanctionLockNotice');
+      notice.style.display = (select.value === 'Sanctioned' && app.status !== 'Approved') ? 'block' : 'none';
+    }
+
+    function saveAdminStatusDecision() {
+      const app = applications[selectedScrutinyIndex];
+      const newStatus = document.getElementById('modalStatusSelect').value;
+      const remarks = document.getElementById('modalAdminRemarks').value.trim();
+
+      if (newStatus === 'Sanctioned' && app.status !== 'Approved') {
+        alert('Validation Error: Application must be Approved before Sanctioning!');
+        return;
+      }
+      if (newStatus === 'Returned for Correction' && !remarks) {
+        alert('Remarks are required when returning an application!');
         return;
       }
 
-      if (admins[id]) {
-        alert('This Administrator ID is already assigned. Please choose a different ID.');
-        return;
-      }
-
-      admins[id] = {
-        name: name,
-        mobile: mobile,
-        pass: pass,
-        email: 'admin@rkmm.org'
-      };
-
+      app.status = newStatus;
+      app.adminRemarks = remarks;
       saveState();
-      alert(`New Administrator Provisioned Successfully!\n\nName: ${name}\nAdmin ID: ${id}\nPassword: ${pass}`);
-
-      document.getElementById('newAdminName').value = '';
-      document.getElementById('newAdminMobile').value = '';
-      document.getElementById('newAdminId').value = '';
-      document.getElementById('newAdminPass').value = '';
-
-      renderAdminDropdown();
+      alert(`Status updated to: ${newStatus}`);
+      closeScrutinyModal();
+      refreshAdminDashboardPanels();
     }
 
-    function executeAdminDirectProfileUpdate() {
-      const newMobile = document.getElementById('updNewMobile').value.trim();
-      const newEmail = document.getElementById('updNewEmail').value.trim();
-
-      if (!newMobile && !newEmail) {
-        alert('Please provide a new Mobile Number or Email Address!');
-        return;
-      }
-
-      if (newMobile) {
-        if (newMobile.length !== 10) {
-          alert('Mobile Number must be exactly 10 digits!');
-          return;
-        }
-        admins[activeAdminId].mobile = newMobile;
-      }
-      if (newEmail) {
-        admins[activeAdminId].email = newEmail;
-      }
-
-      saveState();
-      alert('Administrator profile updated successfully!');
-      document.getElementById('activeAdminContact').innerText = `Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
-      document.getElementById('updNewMobile').value = '';
-      document.getElementById('updNewEmail').value = '';
-    }
-
-    function exportCandidatesRosterCSV() {
-      let csv = 'Candidate ID,Full Name,Phone Number,Portal Password,Application Submitted\n';
-      for (let cid in candidates) {
-        const cand = candidates[cid];
-        const isSubmitted = applications.some(a => a.candidateId === cid) ? 'Yes' : 'Pending';
-        csv += `"${cid}","${cand.name}","${cand.mobile}","${cand.pass}","${isSubmitted}"\n`;
-      }
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `RKMA_Registered_Candidates_Directory_${new Date().toISOString().slice(0,10)}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    // Document Validation & Base64 Storage
-    function validateAndPreviewFile(input, previewId, maxKb, allowedTypes, errSpanId) {
-      const errSpan = document.getElementById(errSpanId);
-      input.classList.remove('file-invalid');
-      if (errSpan) errSpan.style.display = 'none';
-
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const fileSizeKb = file.size / 1024;
-
-        if (!allowedTypes.includes(file.type)) {
-          input.classList.add('file-invalid');
-          if (errSpan) {
-            errSpan.innerText = 'Unsupported file format! Allowed: JPG, JPEG, PNG.';
-            errSpan.style.display = 'block';
-          }
-          alert('Upload Error: Unsupported format. Allowed file types are JPG, JPEG, PNG.');
-          input.value = '';
-          return;
-        }
-
-        if (fileSizeKb > maxKb) {
-          input.classList.add('file-invalid');
-          if (errSpan) {
-            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds limit of ${maxKb} KB!`;
-            errSpan.style.display = 'block';
-          }
-          alert(`Upload Error: File size exceeds the maximum limit of ${maxKb} KB.`);
-          input.value = '';
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const container = document.getElementById(previewId);
-          container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-          if (previewId === 'candPhotoPreview') currentUploadedPhotoBase64 = e.target.result;
-          if (previewId === 'candSignPreview') currentUploadedSignBase64 = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function storeAndValidateDoc(input, maxKb, errSpanId, docKey) {
-      const errSpan = document.getElementById(errSpanId);
-      input.classList.remove('file-invalid');
-      if (errSpan) errSpan.style.display = 'none';
-
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const fileSizeKb = file.size / 1024;
-        const validExtensions = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-
-        if (!validExtensions.includes(file.type)) {
-          input.classList.add('file-invalid');
-          if (errSpan) {
-            errSpan.innerText = 'Unsupported file format! Allowed: PDF, JPG, JPEG, PNG.';
-            errSpan.style.display = 'block';
-          }
-          alert('Upload Error: Unsupported format. Allowed: PDF, JPG, PNG.');
-          input.value = '';
-          return;
-        }
-
-        if (fileSizeKb > maxKb) {
-          input.classList.add('file-invalid');
-          if (errSpan) {
-            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds limit of ${maxKb} KB!`;
-            errSpan.style.display = 'block';
-          }
-          alert(`Upload Error: File size exceeds limit of ${maxKb} KB.`);
-          input.value = '';
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          currentUploadedDocs[docKey] = {
-            name: file.name,
-            type: file.type,
-            base64: e.target.result
-          };
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
+    // Application Form Logic
     function openApplicationForm() {
       const existing = applications.find(a => a.candidateId === activeCandidateId);
       if (existing && existing.status !== 'Returned for Correction') {
-        alert('You have already submitted an application (Status: ' + existing.status + '). Editing is locked unless returned for correction.');
+        alert('Application already submitted (' + existing.status + ')!');
         return;
       }
-
       const cand = candidates[activeCandidateId];
       document.getElementById('f_name').value = cand.name;
       document.getElementById('f_mobile').value = cand.mobile;
@@ -2244,70 +2012,31 @@
       navigateToAuth('applicationForm');
     }
 
-    function goToStep(stepNumber) {
+    function goToStep(s) {
       document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
-      document.querySelectorAll('.step-item').forEach((ind, idx) => {
+      document.querySelectorAll('.step-item').forEach((ind, i) => {
         ind.classList.remove('active');
-        if (idx + 1 < stepNumber) ind.classList.add('completed');
-        else ind.classList.remove('completed');
+        if (i + 1 < s) ind.classList.add('completed'); else ind.classList.remove('completed');
       });
-
-      document.getElementById('formStep' + stepNumber).classList.add('active');
-      document.getElementById('stepIndicator' + stepNumber).classList.add('active');
+      document.getElementById('formStep' + s).classList.add('active');
+      document.getElementById('stepIndicator' + s).classList.add('active');
       window.scrollTo(0, 100);
     }
 
     function calculatePercentage() {
       const full = parseFloat(document.getElementById('f_fullmarks').value);
       const obt = parseFloat(document.getElementById('f_marksobtained').value);
-      if (full > 0 && obt >= 0) {
-        const pct = ((obt / full) * 100).toFixed(2);
-        document.getElementById('f_percentage').value = pct + '%';
-      }
+      if (full > 0 && obt >= 0) document.getElementById('f_percentage').value = ((obt / full) * 100).toFixed(2) + '%';
     }
 
     function refreshCaptcha() {
-      const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
-      let result = '';
-      for (let i = 0; i < 4; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      currentGeneratedCaptcha = result;
-      document.getElementById('captchaDisplay').innerText = result;
-    }
-
-    function openPreviewModal() {
-      const body = document.getElementById('previewDetailsArea');
-      body.innerHTML = `
-        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-          <div>
-            <p><strong>1. Personal:</strong> Name: ${document.getElementById('f_name').value}, DOB: ${document.getElementById('f_dob').value}, Caste: ${document.getElementById('f_caste').value}, Gender: ${document.getElementById('f_gender').value}</p>
-          </div>
-          <div style="text-align:center;">
-            ${currentUploadedPhotoBase64 ? `<img src="${currentUploadedPhotoBase64}" style="width:70px; height:80px; object-fit:cover; border:1px solid #777;">` : '<span style="font-size:11px; color:#888;">No Photo</span>'}
-          </div>
-        </div>
-        <p><strong>2. Parents & Guardian:</strong> Father: ${document.getElementById('f_fname').value} (${document.getElementById('f_focc').value}), Mother: ${document.getElementById('f_mname').value} (${document.getElementById('f_mocc').value}), Guardian: ${document.getElementById('f_gname').value} (${document.getElementById('f_grel').value})</p>
-        <p><strong>3. Contact & Address:</strong> Mobile: ${document.getElementById('f_mobile').value}, WhatsApp: ${document.getElementById('f_whatsapp').value}, Email: ${document.getElementById('f_email').value}, Address: Vill: ${document.getElementById('f_vill').value}, P.O: ${document.getElementById('f_po').value}, P.S: ${document.getElementById('f_ps').value}, Dist: ${document.getElementById('f_dist').value}, PIN: ${document.getElementById('f_pin').value}</p>
-        <p><strong>4. Education & Income:</strong> Class: ${document.getElementById('f_currclass').value}, Stream: ${document.getElementById('f_stream').value}, Institution: ${document.getElementById('f_instname').value}, Last Exam: ${document.getElementById('f_lastexam').value}, Marks: ${document.getElementById('f_marksobtained').value}/${document.getElementById('f_fullmarks').value} (${document.getElementById('f_percentage').value}), Monthly Income: ₹${document.getElementById('f_income').value}</p>
-        <p><strong>5. Bank Details:</strong> A/C Holder: ${document.getElementById('f_acholder').value}, Bank: ${document.getElementById('f_bankname').value}, A/C No: ${document.getElementById('f_acno').value}, IFSC: ${document.getElementById('f_ifsc').value}</p>
-        <div style="margin-top:10px;">
-          <strong>Candidate Signature:</strong><br>
-          ${currentUploadedSignBase64 ? `<img src="${currentUploadedSignBase64}" style="width:140px; height:50px; object-fit:contain; border:1px solid #aaa; margin-top:4px;">` : '<span style="font-size:11px; color:#888;">No Signature Uploaded</span>'}
-        </div>
-      `;
-      document.getElementById('previewModal').style.display = 'flex';
-    }
-
-    function closePreviewModal() {
-      document.getElementById('previewModal').style.display = 'none';
+      currentGeneratedCaptcha = Math.random().toString(36).substring(2, 6).toUpperCase();
+      document.getElementById('captchaDisplay').innerText = currentGeneratedCaptcha;
     }
 
     function executeFinalApplicationSubmit() {
-      const captchaInput = document.getElementById('f_captchaInput').value.trim();
-
-      if (captchaInput.toUpperCase() !== currentGeneratedCaptcha) {
-        alert('Invalid Captcha code! Please enter the correct characters.');
+      if (document.getElementById('f_captchaInput').value.trim().toUpperCase() !== currentGeneratedCaptcha) {
+        alert('Invalid Captcha!');
         return;
       }
 
@@ -2351,433 +2080,153 @@
         ifsc: document.getElementById('f_ifsc').value,
         bankName: document.getElementById('f_bankname').value,
         status: 'Submitted',
-        adminRemarks: 'Application submitted successfully. Awaiting scrutiny.',
+        adminRemarks: 'Application submitted successfully.',
         submissionDate: new Date().toISOString().slice(0, 10)
       };
 
-      if (existingIndex >= 0) {
-        applications[existingIndex] = record;
-      } else {
-        applications.push(record);
-      }
-
+      if (existingIndex >= 0) applications[existingIndex] = record; else applications.push(record);
       saveState();
-      alert(`Application Submitted Successfully!\n\nApplication No: ${appNo}\nStatus: Submitted`);
+      alert(`Application Submitted! (App No: ${appNo})`);
       navigateToAuth('candidateDashboard');
     }
 
     function viewCandidateSubmittedApp() {
-      const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
-      if (existingIndex === -1) {
-        alert('No submitted application found for this account! Please complete and submit your application form first.');
-        return;
-      }
-      downloadApplicationPDF(existingIndex);
+      const idx = applications.findIndex(a => a.candidateId === activeCandidateId);
+      if (idx === -1) { alert('No submitted application found!'); return; }
+      downloadApplicationPDF(idx);
     }
 
     function openTrackStatus() {
-      const existing = applications.find(a => a.candidateId === activeCandidateId);
+      const app = applications.find(a => a.candidateId === activeCandidateId);
       const box = document.getElementById('trackTimelineBox');
-
-      if (!existing) {
-        box.innerHTML = `<div style="padding:14px; background:#fff7ed; border-radius:6px; font-size:13px; color:#c2410c;">You have not submitted an application yet. Click "Apply / Continue Application" to proceed.</div>`;
+      if (!app) {
+        box.innerHTML = '<div style="padding:10px; background:#fff7ed; color:#c2410c;">No application submitted yet.</div>';
       } else {
         box.innerHTML = `
           <div style="padding:12px; background:#f0f9ff; border-left:4px solid #0284c7; border-radius:6px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-weight:bold; font-size:14px;">Current Status: <span class="status-badge ${getStatusBadgeClass(existing.status)}">${existing.status}</span></span>
-              <span style="font-size:12px; color:#64748b;">Submitted: ${existing.submissionDate}</span>
-            </div>
-            <div style="font-size:13px; color:#334155; margin-top:8px;">
-              <strong>Official Scrutiny Remarks:</strong><br>
-              ${existing.adminRemarks || 'No remarks provided yet.'}
-            </div>
-          </div>
-
-          <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
-            <div style="padding:8px 12px; background:${existing.status !== 'Returned for Correction' ? '#dcfce7' : '#fee2e2'}; border-radius:4px; font-size:12px;">
-              <strong>Stage 1: Application Submission</strong> - Completed (App No: ${existing.appNo})
-            </div>
-            <div style="padding:8px 12px; background:${['Under Verification', 'Approved', 'Sanctioned'].includes(existing.status) ? '#dcfce7' : '#f5f5f4'}; border-radius:4px; font-size:12px;">
-              <strong>Stage 2: Official Scrutiny & Verification</strong> - ${existing.status === 'Under Verification' ? 'In Progress' : (['Approved', 'Sanctioned'].includes(existing.status) ? 'Verified' : 'Pending')}
-            </div>
-            <div style="padding:8px 12px; background:${['Approved', 'Sanctioned'].includes(existing.status) ? '#dcfce7' : '#f5f5f4'}; border-radius:4px; font-size:12px;">
-              <strong>Stage 3: Institutional Approval</strong> - ${['Approved', 'Sanctioned'].includes(existing.status) ? 'Approved by Authority' : 'Pending'}
-            </div>
-            <div style="padding:8px 12px; background:${existing.status === 'Sanctioned' ? '#dcfce7' : '#f5f5f4'}; border-radius:4px; font-size:12px;">
-              <strong>Stage 4: Fund Sanction & Disbursement</strong> - ${existing.status === 'Sanctioned' ? 'Sanctioned (Amount Disbursed)' : 'Pending'}
-            </div>
+            <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span><br>
+            <strong>Official Remarks:</strong> ${app.adminRemarks || 'Under standard scrutiny.'}
           </div>
         `;
       }
       navigateToAuth('trackStatus');
     }
 
-    function getStatusBadgeClass(status) {
-      if (status === 'Submitted') return 'st-submitted';
-      if (status === 'Under Verification') return 'st-under-verification';
-      if (status === 'Approved') return 'st-approved';
-      if (status === 'Sanctioned') return 'st-sanctioned';
-      if (status === 'Returned for Correction') return 'st-returned';
-      return 'st-submitted';
-    }
-
-    function renderAdminTable() {
-      const tbody = document.getElementById('adminAppTableBody');
-      tbody.innerHTML = '';
-
-      applications.forEach((app, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${app.appNo}</strong></td>
-          <td>
-            ${app.photoBase64 ? `<img src="${app.photoBase64}" style="width:36px; height:42px; object-fit:cover; border-radius:4px; border:1px solid #d6d3d1;">` : '<span style="color:#aaa; font-size:10px;">N/A</span>'}
-          </td>
-          <td>${app.name}<br><span style="color:#78716c; font-size:10px;">ID: ${app.candidateId}</span></td>
-          <td>${app.currClass} (${app.stream})<br><span style="color:#78716c; font-size:10px;">${app.institution}</span></td>
-          <td style="color:#15803d; font-weight:bold;">${app.marksPct}</td>
-          <td>₹${app.income}</td>
-          <td><span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span></td>
-          <td>
-            <div class="action-btn-group">
-              <button class="action-btn btn-manage" onclick="openScrutinyModal(${index})">Scrutiny</button>
-              <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
-              <button class="action-btn btn-word" onclick="downloadApplicationWord(${index})">Word</button>
-              <button class="action-btn btn-delete" onclick="deleteApplication(${index})">Delete</button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function openScrutinyModal(index) {
-      selectedScrutinyIndex = index;
-      const app = applications[index];
-
-      document.getElementById('scrutinyAppInfo').innerHTML = `
-        <strong>Applicant:</strong> ${app.name} (${app.candidateId})<br>
-        <strong>Application No:</strong> ${app.appNo} | <strong>Current Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span><br>
-        <strong>Course:</strong> ${app.currClass} (${app.institution})
-      `;
-
-      document.getElementById('modalStatusSelect').value = app.status;
-      document.getElementById('modalAdminRemarks').value = app.adminRemarks || '';
-
-      handleStatusSelectionChange();
-      document.getElementById('adminScrutinyModal').style.display = 'flex';
-    }
-
-    function closeScrutinyModal() {
-      document.getElementById('adminScrutinyModal').style.display = 'none';
-      selectedScrutinyIndex = null;
-    }
-
-    function handleStatusSelectionChange() {
-      if (selectedScrutinyIndex === null) return;
-      const app = applications[selectedScrutinyIndex];
-      const select = document.getElementById('modalStatusSelect');
-      const notice = document.getElementById('sanctionLockNotice');
-
-      if (select.value === 'Sanctioned' && app.status !== 'Approved') {
-        notice.style.display = 'block';
-      } else {
-        notice.style.display = 'none';
-      }
-    }
-
-    function saveAdminStatusDecision() {
-      if (selectedScrutinyIndex === null) return;
-      const app = applications[selectedScrutinyIndex];
-      const newStatus = document.getElementById('modalStatusSelect').value;
-      const remarks = document.getElementById('modalAdminRemarks').value.trim();
-
-      if (newStatus === 'Sanctioned' && app.status !== 'Approved') {
-        alert('Validation Error: You cannot sanction an application directly. Please update the status to "Approved" first, verify it, and then proceed to sanction.');
-        return;
-      }
-
-      if (newStatus === 'Returned for Correction' && !remarks) {
-        alert('Action Required: Please provide specific remarks explaining why the application is being returned for correction.');
-        return;
-      }
-
-      app.status = newStatus;
-      app.adminRemarks = remarks;
-      saveState();
-
-      alert(`Status updated successfully to: ${newStatus}`);
-      closeScrutinyModal();
-      refreshAdminDashboardPanels();
-    }
-
-    function deleteApplication(index) {
-      const item = applications[index];
-      if (confirm(`Are you sure you want to delete application "${item.appNo}" for ${item.name}? This action cannot be undone.`)) {
-        applications.splice(index, 1);
-        saveState();
-        refreshAdminDashboardPanels();
-        alert('Application deleted successfully.');
-      }
-    }
-
-    // Application PDF Generator with Automatic Document Attachment
+    // PDF / Word Printers
     function downloadApplicationPDF(index) {
       const app = applications[index];
-      const headerMeta = document.getElementById('pdfHeaderMeta');
-      const photoBox = document.getElementById('pdfPhotoBox');
-      const signBox = document.getElementById('pdfSignBox');
-      const body = document.getElementById('pdfContentBody');
-      const docSection = document.getElementById('pdfAttachedDocumentsSection');
-
-      headerMeta.innerHTML = `
-        <strong>Application Number:</strong> ${app.appNo}<br>
+      document.getElementById('pdfHeaderMeta').innerHTML = `
+        <strong>Application No:</strong> ${app.appNo}<br>
         <strong>Candidate ID:</strong> ${app.candidateId}<br>
-        <strong>Candidate Name:</strong> ${app.name}<br>
-        <strong>Current Status:</strong> ${app.status} | <strong>Submitted:</strong> ${app.submissionDate}
+        <strong>Name:</strong> ${app.name}<br>
+        <strong>Status:</strong> ${app.status}
       `;
+      document.getElementById('pdfPhotoBox').innerHTML = app.photoBase64 ? `<img src="${app.photoBase64}" style="width:100%; height:100%; object-fit:cover;">` : '';
+      document.getElementById('pdfSignBox').innerHTML = app.signBase64 ? `<img src="${app.signBase64}" style="max-height:45px; max-width:180px;">` : '';
 
-      if (app.photoBase64) {
-        photoBox.innerHTML = `<img src="${app.photoBase64}" style="width:100%; height:100%; object-fit:cover;">`;
-      } else {
-        photoBox.innerHTML = `<div style="padding-top:40px; font-size:11px; color:#999;">Photo</div>`;
-      }
-
-      if (app.signBase64) {
-        signBox.innerHTML = `<img src="${app.signBase64}" style="max-height:45px; max-width:180px; object-fit:contain;">`;
-      } else {
-        signBox.innerHTML = `<span style="font-size:11px; color:#999;">(Uploaded Signature)</span>`;
-      }
-
-      body.innerHTML = `
-        <table style="width:100%; border:1px solid #444; border-collapse:collapse; font-size:13px; margin-bottom:12px;">
-          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">1. Application & Personal Details</th></tr>
+      document.getElementById('pdfContentBody').innerHTML = `
+        <table style="width:100%; border:1px solid #444; border-collapse:collapse; font-size:13px;">
           <tr><td style="padding:5px; border:1px solid #444; width:35%;">Date of Birth / Gender / Caste</td><td style="padding:5px; border:1px solid #444;">${app.dob} | ${app.gender} | ${app.caste}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Aadhaar Verification</td><td style="padding:5px; border:1px solid #444;">[Aadhaar Redacted] (Submitted for Verification)</td></tr>
-
-          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">2. Parents & Guardian Details</th></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Father's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${app.father} (${app.fatherOcc})</td></tr>
           <tr><td style="padding:5px; border:1px solid #444;">Mother's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${app.mother} (${app.motherOcc})</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Guardian's Name & Relation</td><td style="padding:5px; border:1px solid #444;">${app.guardian} (${app.guardianRel})</td></tr>
-
-          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">3. Contact & Address Details</th></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Contact Numbers</td><td style="padding:5px; border:1px solid #444;">Mobile: ${app.mobile} | Alt: ${app.altMobile} | WA: ${app.whatsapp}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Email Address</td><td style="padding:5px; border:1px solid #444;">${app.email}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Full Address</td><td style="padding:5px; border:1px solid #444;">Vill: ${app.vill}, P.O: ${app.po}, P.S: ${app.ps}, Dist: ${app.dist}, PIN: ${app.pin}</td></tr>
-
-          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">4. Educational & Income Details</th></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Current Course & Institution</td><td style="padding:5px; border:1px solid #444;">${app.currClass} (${app.stream}) at ${app.institution}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Admission Date</td><td style="padding:5px; border:1px solid #444;">${app.admDate}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Last Qualifying Exam & Marks %</td><td style="padding:5px; border:1px solid #444;">${app.lastExam} (${app.marksPct})</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Family Monthly Income</td><td style="padding:5px; border:1px solid #444;">₹${app.income}</td></tr>
-
-          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">5. Bank DBT Details</th></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">A/C Holder Name</td><td style="padding:5px; border:1px solid #444;">${app.acHolder}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Bank Name & A/C No</td><td style="padding:5px; border:1px solid #444;">${app.bankName} (A/C: ${app.bankAcc})</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">IFSC Code</td><td style="padding:5px; border:1px solid #444;">${app.ifsc}</td></tr>
-
-          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">6. Official Verification Remarks</th></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Official Scrutiny Remarks</td><td style="padding:5px; border:1px solid #444;"><strong>${app.adminRemarks || 'Under scrutiny.'}</strong></td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Contact Numbers</td><td style="padding:5px; border:1px solid #444;">Phone: ${app.mobile} | WhatsApp: ${app.whatsapp}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Address</td><td style="padding:5px; border:1px solid #444;">${app.vill}, ${app.po}, ${app.ps}, ${app.dist} - ${app.pin}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Present Course & Institution</td><td style="padding:5px; border:1px solid #444;">${app.currClass} (${app.stream}) at ${app.institution}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Qualifying Exam & Marks</td><td style="padding:5px; border:1px solid #444;">${app.lastExam} (${app.marksPct})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Monthly Income</td><td style="padding:5px; border:1px solid #444;">₹${app.income}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Bank Details</td><td style="padding:5px; border:1px solid #444;">${app.bankName} (A/C: ${app.bankAcc}, IFSC: ${app.ifsc})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Scrutiny Remarks</td><td style="padding:5px; border:1px solid #444;">${app.adminRemarks || 'Under Scrutiny'}</td></tr>
         </table>
       `;
 
-      // Render Attached Documents Section
-      let docsHtml = `
-        <div style="border-top:2px solid #7f1d1d; padding-top:16px;">
-          <h3 style="color:#7f1d1d; margin-bottom:12px; text-decoration:underline;">ATTACHED VERIFICATION DOCUMENTS</h3>
-      `;
-
-      if (app.uploadedDocuments && Object.keys(app.uploadedDocuments).length > 0) {
-        for (let key in app.uploadedDocuments) {
-          const doc = app.uploadedDocuments[key];
-          docsHtml += `
-            <div style="margin-bottom:30px; page-break-inside:avoid;">
-              <h4 style="font-size:14px; margin-bottom:8px; color:#444;">Document: ${doc.name}</h4>
-              ${doc.type.includes('image') ? `<img src="${doc.base64}" style="max-width:100%; max-height:850px; border:1px solid #ccc; display:block;">` : `<div style="padding:15px; border:1px dashed #777; font-size:13px; color:#555;">[PDF Document Attached: ${doc.name}]</div>`}
-            </div>
-          `;
+      let docsHtml = `<div style="border-top:2px solid #7f1d1d; padding-top:16px;"><h3 style="color:#7f1d1d;">ATTACHED DOCUMENTS</h3>`;
+      if (app.uploadedDocuments) {
+        for (let k in app.uploadedDocuments) {
+          const doc = app.uploadedDocuments[k];
+          docsHtml += `<div style="margin-bottom:20px; page-break-inside:avoid;"><h4>${doc.name}</h4>${doc.type.includes('image') ? `<img src="${doc.base64}" style="max-width:100%; max-height:850px; border:1px solid #ccc;">` : `<div>[PDF Document: ${doc.name}]</div>`}</div>`;
         }
-      } else {
-        docsHtml += `<p style="font-size:12px; color:#777;">No additional documents attached.</p>`;
       }
       docsHtml += `</div>`;
-      docSection.innerHTML = docsHtml;
-
+      document.getElementById('pdfAttachedDocumentsSection').innerHTML = docsHtml;
       window.print();
     }
 
-    // Word Document Download (Only the Application Form)
     function downloadApplicationWord(index) {
       const app = applications[index];
       const htmlContent = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-        <head><title>Scholarship Application - ${app.appNo}</title>
-        <style>
-          body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; }
-          table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-          th, td { border: 1px solid #333; padding: 6px 8px; text-align: left; }
-          th { background-color: #f2f2f2; }
-          .header-box { text-align: center; border-bottom: 2px solid #800000; padding-bottom: 10px; margin-bottom: 15px; }
-        </style>
-        </head>
         <body>
-          <div class="header-box">
-            <h2 style="color: #800000; margin:0;">RAMAKRISHNA MISSION ASHRAMA</h2>
-            <p style="margin:4px 0;">Satyabanpally, Jhargram, West Bengal - 721507</p>
-            <h3 style="text-decoration: underline; margin:8px 0 0 0;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
-          </div>
-
-          <table>
-            <tr style="background:#eaeaea;"><th colspan="2">1. Application & Personal Details</th></tr>
-            <tr><td width="35%"><b>Application Number</b></td><td>${app.appNo}</td></tr>
-            <tr><td><b>Candidate ID</b></td><td>${app.candidateId}</td></tr>
-            <tr><td><b>Full Name</b></td><td>${app.name}</td></tr>
-            <tr><td><b>Current Status</b></td><td><b>${app.status}</b></td></tr>
-            <tr><td><b>Date of Birth / Gender / Caste</b></td><td>${app.dob} | ${app.gender} | ${app.caste}</td></tr>
-            <tr><td><b>Aadhaar Card Verification</b></td><td>[Aadhaar Redacted] (Submitted)</td></tr>
-
-            <tr style="background:#eaeaea;"><th colspan="2">2. Parents & Guardian Details</th></tr>
-            <tr><td><b>Father's Name & Occupation</b></td><td>${app.father} (${app.fatherOcc})</td></tr>
-            <tr><td><b>Mother's Name & Occupation</b></td><td>${app.mother} (${app.motherOcc})</td></tr>
-            <tr><td><b>Guardian's Name & Relation</b></td><td>${app.guardian} (${app.guardianRel})</td></tr>
-
-            <tr style="background:#eaeaea;"><th colspan="2">3. Contact & Address Details</th></tr>
-            <tr><td><b>Contact Details</b></td><td>Mobile: ${app.mobile} | Alt: ${app.altMobile} | WA: ${app.whatsapp}</td></tr>
-            <tr><td><b>Email Address</b></td><td>${app.email}</td></tr>
-            <tr><td><b>Full Address</b></td><td>Vill: ${app.vill}, P.O: ${app.po}, P.S: ${app.ps}, Dist: ${app.dist}, PIN: ${app.pin}</td></tr>
-
-            <tr style="background:#eaeaea;"><th colspan="2">4. Educational & Income Details</th></tr>
-            <tr><td><b>Current Course & Institution</b></td><td>${app.currClass} (${app.stream}) at ${app.institution}</td></tr>
-            <tr><td><b>Admission Date</b></td><td>${app.admDate}</td></tr>
-            <tr><td><b>Last Qualifying Exam & Marks %</b></td><td>${app.lastExam} (${app.marksPct})</td></tr>
-            <tr><td><b>Monthly Income</b></td><td>Rs. ${app.income}</td></tr>
-
-            <tr style="background:#eaeaea;"><th colspan="2">5. Bank DBT Details</th></tr>
-            <tr><td><b>A/C Holder Name</b></td><td>${app.acHolder}</td></tr>
-            <tr><td><b>Bank Name & A/C No</b></td><td>${app.bankName} (A/C: ${app.bankAcc})</td></tr>
-            <tr><td><b>IFSC Code</b></td><td>${app.ifsc}</td></tr>
-
-            <tr style="background:#eaeaea;"><th colspan="2">6. Verification & Status Remarks</th></tr>
-            <tr><td><b>Official Scrutiny Remarks</b></td><td>${app.adminRemarks || 'Scrutinized by RKMA Administration.'}</td></tr>
-            <tr><td><b>Submission Date</b></td><td>${app.submissionDate}</td></tr>
+          <h2 style="color:#800000; text-align:center;">RAMAKRISHNA MISSION ASHRAMA</h2>
+          <p style="text-align:center;">Satyabanpally, Jhargram, West Bengal - 721507</p>
+          <table border="1" cellpadding="6" style="width:100%; border-collapse:collapse;">
+            <tr><td><b>App No</b></td><td>${app.appNo}</td></tr>
+            <tr><td><b>Name</b></td><td>${app.name}</td></tr>
+            <tr><td><b>Status</b></td><td>${app.status}</td></tr>
+            <tr><td><b>Course</b></td><td>${app.currClass} (${app.institution})</td></tr>
+            <tr><td><b>Phone</b></td><td>${app.mobile}</td></tr>
+            <tr><td><b>Income</b></td><td>Rs. ${app.income}</td></tr>
+            <tr><td><b>Remarks</b></td><td>${app.adminRemarks || ''}</td></tr>
           </table>
-
-          <br><br><br>
-          <table style="border:none;">
-            <tr style="border:none;">
-              <td style="border:none; text-align:left;">___________________________<br>Candidate Signature</td>
-              <td style="border:none; text-align:right;">___________________________<br>Secretary / Competent Authority<br>RKMA Jhargram</td>
-            </tr>
-          </table>
-        </body>
-        </html>
+        </body></html>
       `;
-
       const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `Application_${app.appNo}_${app.name.replace(/\s+/g, '_')}.doc`;
-      document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
     }
 
     function exportApplicationsToCSV() {
-      if (applications.length === 0) {
-        alert('No applications found to export!');
-        return;
-      }
-
-      let csv = 'Application No,Candidate ID,Full Name,DOB,Caste,Gender,Father Name,Father Occ,Mother Name,Mobile,Email,Address,Class,Stream,Institution,Last Exam,Marks %,Income,Bank Name,Account No,IFSC,Status,Remarks,Date\n';
-
-      applications.forEach(app => {
-        csv += `"${app.appNo}","${app.candidateId}","${app.name}","${app.dob}","${app.caste}","${app.gender}","${app.father}","${app.fatherOcc}","${app.mother}","${app.mobile}","${app.email}","${app.vill}, ${app.dist}","${app.currClass}","${app.stream}","${app.institution}","${app.lastExam}","${app.marksPct}","${app.income}","${app.bankName}","${app.bankAcc}","${app.ifsc}","${app.status}","${(app.adminRemarks || '').replace(/"/g, '""')}","${app.submissionDate}"\n`;
+      let csv = 'App No,Candidate ID,Name,Course,Status,Marks %,Income,Remarks\n';
+      applications.forEach(a => {
+        csv += `"${a.appNo}","${a.candidateId}","${a.name}","${a.currClass}","${a.status}","${a.marksPct}","${a.income}","${a.adminRemarks || ''}"\n`;
       });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `RKMA_Scholarship_Applications_${new Date().toISOString().slice(0,10)}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const blob = new Blob([csv], { type: 'text/csv;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'RKMA_Applications.csv';
+      a.click();
     }
 
-    // Carousel Setup
+    function exportCandidatesRosterCSV() {
+      let csv = 'Candidate ID,Name,Mobile,Password\n';
+      for (let cid in candidates) {
+        csv += `"${cid}","${candidates[cid].name}","${candidates[cid].mobile}","${candidates[cid].pass}"\n`;
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;' }));
+      a.download = 'RKMA_Candidates_Roster.csv';
+      a.click();
+    }
+
+    function getStatusBadgeClass(s) {
+      if (s === 'Submitted') return 'st-submitted';
+      if (s === 'Under Verification') return 'st-under-verification';
+      if (s === 'Approved') return 'st-approved';
+      if (s === 'Sanctioned') return 'st-sanctioned';
+      return 'st-returned';
+    }
+
+    // Carousel
     let currentSlideIndex = 0;
     const totalSlides = 15;
-    let autoSlideInterval = null;
-
     function buildSliderDots() {
-      const dotsContainer = document.getElementById('sliderDots');
-      if (dotsContainer) {
-        dotsContainer.innerHTML = '';
-        for (let i = 0; i < totalSlides; i++) {
-          const dot = document.createElement('span');
-          dot.className = 'dot' + (i === 0 ? ' active' : '');
-          dot.onclick = () => currentSlide(i);
-          dotsContainer.appendChild(dot);
-        }
-      }
+      const c = document.getElementById('sliderDots');
+      if (c) c.innerHTML = Array.from({length: totalSlides}, (_, i) => `<span class="dot${i===0?' active':''}" onclick="currentSlide(${i})"></span>`).join('');
     }
-
     function updateCarousel() {
-      const wrapper = document.getElementById('carouselWrapper');
-      if (wrapper) wrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-      const dots = document.querySelectorAll('.dot');
-      dots.forEach((dot, idx) => {
-        if (idx === currentSlideIndex) dot.classList.add('active');
-        else dot.classList.remove('active');
-      });
+      const w = document.getElementById('carouselWrapper');
+      if (w) w.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlideIndex));
     }
-
-    function moveSlide(step) {
-      currentSlideIndex = (currentSlideIndex + step + totalSlides) % totalSlides;
-      updateCarousel();
-      resetAutoSlide();
-    }
-
-    function currentSlide(index) {
-      currentSlideIndex = index;
-      updateCarousel();
-      resetAutoSlide();
-    }
-
-    function startAutoSlide() {
-      autoSlideInterval = setInterval(() => {
-        currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
-        updateCarousel();
-      }, 3500);
-    }
-
-    function resetAutoSlide() {
-      clearInterval(autoSlideInterval);
-      startAutoSlide();
-    }
-
-    function submitContactForm() {
-      const name = document.getElementById('contactName').value.trim();
-      const phone = document.getElementById('contactPhone').value.trim();
-      const msg = document.getElementById('contactMessage').value.trim();
-
-      if (!name || !phone || !msg) {
-        alert('Please fill out your Name, Phone Number, and Message.');
-        return;
-      }
-
-      alert(`Thank you, ${name}! Your inquiry has been sent to rkma.jgm.scholarship@gmail.com.`);
-      document.getElementById('contactName').value = '';
-      document.getElementById('contactEmail').value = '';
-      document.getElementById('contactPhone').value = '';
-      document.getElementById('contactMessage').value = '';
-    }
+    function moveSlide(s) { currentSlideIndex = (currentSlideIndex + s + totalSlides) % totalSlides; updateCarousel(); }
+    function currentSlide(i) { currentSlideIndex = i; updateCarousel(); }
 
     window.addEventListener('load', () => {
-      renderAdminDropdown();
+      renderPublicSiteContent();
       buildSliderDots();
-      startAutoSlide();
+      setInterval(() => moveSlide(1), 3500);
     });
   </script>
 </body>
