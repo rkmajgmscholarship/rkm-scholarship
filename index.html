@@ -197,6 +197,31 @@
       cursor: pointer;
     }
 
+    /* Admin Window Switcher Tabs */
+    .admin-nav-tabs {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid #e7e5e4;
+      margin-bottom: 20px;
+    }
+    .admin-tab-btn {
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      background: transparent;
+      color: #78716c;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .admin-tab-btn.active {
+      color: #7f1d1d;
+      border-bottom: 3px solid #ea580c;
+      background: rgba(254, 215, 170, 0.2);
+      border-radius: 8px 8px 0 0;
+    }
+
     /* About Section */
     .about-section {
       line-height: 1.7;
@@ -500,7 +525,6 @@
       display: inline-block;
     }
 
-    /* Upload Instructions */
     .file-rule-hint {
       display: block;
       font-size: 11px;
@@ -562,7 +586,7 @@
       object-fit: contain;
     }
 
-    /* Table */
+    /* Tables */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -606,7 +630,6 @@
       cursor: pointer;
     }
 
-    /* Status Pills */
     .status-badge {
       display: inline-block;
       padding: 2px 8px;
@@ -632,7 +655,9 @@
     @media print {
       body * { visibility: hidden; }
       #printableApplication, #printableApplication * { visibility: visible; }
+      #printableSlip, #printableSlip * { visibility: visible; }
       #printableApplication { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+      #printableSlip { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
     }
   </style>
 </head>
@@ -687,6 +712,7 @@
         </div>
       </div>
 
+      <!-- Institutional Activities -->
       <div class="card about-section">
         <h3 style="color: #7f1d1d; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #fed7aa; padding-bottom: 6px;">
           About Ramakrishna Mission Ashrama, Jhargram
@@ -701,9 +727,9 @@
           <div class="activity-card">
             <h4>Educational</h4>
             <ul>
-              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> Residential School for Tribal students (460 students).</li>
+              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> A Co-Educational Higher Secondary Residential School for Tribal students (460 students).</li>
               <li><strong>6 Free Coaching Centers:</strong> 320 students receive free coaching, uniforms, and light tiffin.</li>
-              <li><strong>Scholarships:</strong> In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students.</li>
+              <li><strong>Scholarships:</strong> In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students of Jhargram district.</li>
             </ul>
           </div>
 
@@ -741,6 +767,7 @@
         </div>
       </div>
 
+      <!-- HOLY TRIO -->
       <div class="section-title-box">
         <h3>HOLY TRIO</h3>
       </div>
@@ -907,10 +934,7 @@
         <div class="form-group">
           <label>Select Authorized Officer</label>
           <select id="adminDropdown">
-            <option value="">-- Choose Profile --</option>
-            <option value="Secretary@RKMAJGM">Secretary Maharaj, RKMA Jhargram</option>
-            <option value="SBMaharaj@RKMAJGM">Swami Brahmeshwarananda, RKMA Jhargram</option>
-            <option value="DEO@RKMAJGM">Data Entry Operator, RKMA Jhargram</option>
+            <!-- Dynamically populated to include any newly created admins -->
           </select>
         </div>
 
@@ -1025,7 +1049,7 @@
                 <input type="text" id="f_aadhaar" placeholder="Enter Aadhaar Number" required>
               </div>
 
-              <!-- Photo Upload with strict validation -->
+              <!-- Photo Upload -->
               <div class="form-group">
                 <label>Candidate Passport Photo</label>
                 <input type="file" id="f_cand_photo" class="input-file-field" accept=".jpg,.jpeg,.png" onchange="validateAndPreviewFile(this, 'candPhotoPreview', 100, ['image/jpeg','image/jpg','image/png'], 'photoErr')">
@@ -1036,7 +1060,7 @@
                 </div>
               </div>
 
-              <!-- Signature Upload with strict validation -->
+              <!-- Signature Upload -->
               <div class="form-group">
                 <label>Candidate Specimen Signature</label>
                 <input type="file" id="f_cand_sign" class="input-file-field" accept=".jpg,.jpeg,.png" onchange="validateAndPreviewFile(this, 'candSignPreview', 50, ['image/jpeg','image/jpg','image/png'], 'signErr')">
@@ -1311,6 +1335,7 @@
 
     <!-- ================= AUTHENTICATED SECTION: ADMIN DASHBOARD ================= -->
     <section id="sec-adminDashboard" class="page-section">
+      <!-- Admin Workspace Greeting & Management -->
       <div class="card" style="border-left: 5px solid #7f1d1d; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
           <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL ADMINISTRATIVE PORTAL</span>
@@ -1319,101 +1344,169 @@
         </div>
       </div>
 
-      <!-- Update Admin Contact Records -->
-      <div class="card" style="border-left: 5px solid #0284c7;">
-        <h3 style="font-size:15px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
-        <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Update your official administrative contact records directly:</p>
-        
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:10px;">
-          <div>
-            <label>New Mobile Number</label>
-            <input type="tel" id="updNewMobile" placeholder="10-digit Mobile">
+      <!-- Navigation Tabs: Two Separate Windows (Applications vs Registration) -->
+      <div class="admin-nav-tabs">
+        <button class="admin-tab-btn active" id="tabBtnApplications" onclick="switchAdminWindow('applications')">
+          📋 Applications Window (<span id="appCountBadge">0</span>)
+        </button>
+        <button class="admin-tab-btn" id="tabBtnRegistration" onclick="switchAdminWindow('registration')">
+          👤 Registration Window (<span id="regCountBadge">0</span>)
+        </button>
+      </div>
+
+      <!-- WINDOW 1: APPLICATIONS WINDOW (Only candidates who submitted applications) -->
+      <div id="adminWindowApplications">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <div>
+              <h3 style="color:#7f1d1d;">Submitted Scholarship Applications</h3>
+              <p style="font-size:12px; color:#78716c;">Contains records of candidates who have actively applied for scholarship.</p>
+            </div>
+            <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export Filtered to Excel (CSV)</button>
           </div>
-          <div>
-            <label>New Email Address</label>
-            <input type="email" id="updNewEmail" placeholder="Official Email">
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>App No</th>
+                  <th>Photo</th>
+                  <th>Candidate Name</th>
+                  <th>Course</th>
+                  <th>Marks %</th>
+                  <th>Income (₹)</th>
+                  <th>Status</th>
+                  <th>Scrutiny & Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminAppTableBody"></tbody>
+            </table>
           </div>
-        </div>
-        <div style="margin-top:12px; display:flex; justify-content:flex-end;">
-          <button class="btn-primary" style="background:#0284c7;" onclick="executeAdminDirectProfileUpdate()">Save Changes</button>
         </div>
       </div>
 
-      <!-- NEW FEATURE: Bulk Candidate Credentials Upload via Excel/CSV -->
-      <div class="card" style="border-left: 5px solid #15803d;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-          <div>
-            <h3 style="font-size:15px; color:#15803d;">Bulk Create Candidate Credentials (Excel / CSV Upload)</h3>
-            <p style="font-size:12px; color:#78716c; margin-top:2px;">Upload an Excel (.xlsx/.xls) or CSV spreadsheet containing multiple candidate accounts at once.</p>
+      <!-- WINDOW 2: REGISTRATION WINDOW (All registered candidates + Bulk/Single Account Management) -->
+      <div id="adminWindowRegistration" style="display:none;">
+        <!-- Bulk Upload -->
+        <div class="card" style="border-left: 5px solid #15803d;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <div>
+              <h3 style="font-size:15px; color:#15803d;">Bulk Register Candidates (Excel / CSV Upload)</h3>
+              <p style="font-size:12px; color:#78716c; margin-top:2px;">Upload spreadsheet containing candidate accounts (Name, Phone, CandidateID, Password).</p>
+            </div>
+            <button type="button" class="action-btn btn-excel" onclick="downloadSampleCandidateTemplate()">
+              📄 Download Sample Excel Template
+            </button>
           </div>
-          <button type="button" class="action-btn btn-excel" onclick="downloadSampleCandidateTemplate()">
-            📄 Download Sample Excel Template
+
+          <div style="background:#fafaf9; border:1px dashed #d6d3d1; padding:16px; border-radius:8px;">
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <input type="file" id="bulkExcelFileInput" class="input-file-field" accept=".xlsx,.xls,.csv" style="max-width:380px;">
+              <button class="btn-primary" style="background:#15803d;" onclick="processBulkCandidateExcelUpload()">
+                🚀 Upload & Generate Accounts
+              </button>
+            </div>
+            <div id="bulkUploadReport" style="margin-top:10px; font-size:12px; display:none;"></div>
+          </div>
+        </div>
+
+        <!-- Single Candidate Registration -->
+        <div class="card" style="border-left: 5px solid #ea580c;">
+          <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Single Candidate Manual Registration</h3>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+            <div>
+              <label>Candidate Full Name</label>
+              <input type="text" id="genCandName" placeholder="Full Name">
+            </div>
+            <div>
+              <label>Candidate Mobile Number</label>
+              <input type="tel" id="genCandMobile" placeholder="10-digit Mobile">
+            </div>
+            <div>
+              <label>Assign Candidate ID</label>
+              <input type="text" id="genCandId" placeholder="e.g. RKM-2026-002">
+            </div>
+            <div>
+              <label>Assign Password</label>
+              <input type="text" id="genCandPass" placeholder="e.g. Student@2026">
+            </div>
+          </div>
+          <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+            <button class="btn-primary" onclick="adminCreateCustomCandidate()">Create Candidate Account</button>
+          </div>
+        </div>
+
+        <!-- Master Candidates Directory Table with Registration Slips -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <div>
+              <h3 style="color:#1c1917;">Registered Candidates Directory (Master Roster)</h3>
+              <p style="font-size:12px; color:#78716c;">All candidate accounts created in the system with printable registration cards.</p>
+            </div>
+            <button class="btn-excel" onclick="exportCandidatesRosterCSV()">📥 Export Candidates List (CSV)</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sl No</th>
+                  <th>Candidate ID</th>
+                  <th>Full Name</th>
+                  <th>Phone Number</th>
+                  <th>Portal Password</th>
+                  <th>App Submitted?</th>
+                  <th>Registration Card / Slip</th>
+                </tr>
+              </thead>
+              <tbody id="registeredCandidatesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Administrator Account Creation & Profile Updates (Bottom Panels) -->
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:16px;">
+        <!-- Create New Admin -->
+        <div class="card" style="border-left: 5px solid #4338ca;">
+          <h3 style="font-size:15px; margin-bottom:6px; color:#3730a3;">Create New Administrator Account</h3>
+          <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Existing admins can provision new administrator credentials:</p>
+          
+          <div class="form-group">
+            <label>Admin Full Name & Title</label>
+            <input type="text" id="newAdminName" placeholder="e.g. Swami X Maharaj / Office Incharge">
+          </div>
+          <div class="form-group">
+            <label>Admin Official Mobile</label>
+            <input type="tel" id="newAdminMobile" placeholder="10-digit Phone">
+          </div>
+          <div class="form-group">
+            <label>Admin ID</label>
+            <input type="text" id="newAdminId" placeholder="e.g. NewAdmin@RKMAJGM">
+          </div>
+          <div class="form-group">
+            <label>Admin Password</label>
+            <input type="text" id="newAdminPass" placeholder="Secret Password">
+          </div>
+          <button class="btn-primary" style="background:#4338ca; width:100%;" onclick="createNewAdministratorAccount()">
+            Provision Administrator
           </button>
         </div>
 
-        <div style="background:#fafaf9; border:1px dashed #d6d3d1; padding:16px; border-radius:8px;">
-          <label style="margin-bottom:6px;">Select Candidate Data Spreadsheet (.xlsx, .xls, .csv):</label>
-          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-            <input type="file" id="bulkExcelFileInput" class="input-file-field" accept=".xlsx,.xls,.csv" style="max-width:380px;">
-            <button class="btn-primary" style="background:#15803d;" onclick="processBulkCandidateExcelUpload()">
-              🚀 Upload & Generate Accounts
-            </button>
+        <!-- Update Active Admin Contact Records -->
+        <div class="card" style="border-left: 5px solid #0284c7;">
+          <h3 style="font-size:15px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
+          <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Update your own administrative contact records directly:</p>
+          
+          <div class="form-group">
+            <label>New Mobile Number</label>
+            <input type="tel" id="updNewMobile" placeholder="10-digit Mobile">
           </div>
-          <span class="file-rule-hint" style="margin-top:8px;">
-            Required Columns in File: <strong>Name</strong>, <strong>Phone</strong>, <strong>CandidateID</strong>, <strong>Password</strong>
-          </span>
-          <div id="bulkUploadReport" style="margin-top:10px; font-size:12px; display:none;"></div>
-        </div>
-      </div>
-
-      <!-- Single Candidate Provisioning -->
-      <div class="card" style="border-left: 5px solid #ea580c;">
-        <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Issue Single Candidate Credentials (Manual Entry)</h3>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
-          <div>
-            <label>Candidate Full Name</label>
-            <input type="text" id="genCandName" placeholder="Full Name">
+          <div class="form-group">
+            <label>New Email Address</label>
+            <input type="email" id="updNewEmail" placeholder="Official Email">
           </div>
-          <div>
-            <label>Candidate Mobile Number</label>
-            <input type="tel" id="genCandMobile" placeholder="10-digit Mobile">
-          </div>
-          <div>
-            <label>Assign Candidate ID</label>
-            <input type="text" id="genCandId" placeholder="e.g. RKM-2026-002">
-          </div>
-          <div>
-            <label>Assign Password</label>
-            <input type="text" id="genCandPass" placeholder="e.g. Student@2026">
-          </div>
-        </div>
-        <div style="margin-top:12px; display:flex; justify-content:flex-end;">
-          <button class="btn-primary" onclick="adminCreateCustomCandidate()">Create Candidate Account</button>
-        </div>
-      </div>
-
-      <!-- Applications Management Table -->
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-          <h3>Scholarship Applications (Session 2026-27)</h3>
-          <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export All to Excel (CSV)</button>
-        </div>
-        <div style="overflow-x:auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>App No</th>
-                <th>Photo</th>
-                <th>Candidate Name</th>
-                <th>Course</th>
-                <th>Marks %</th>
-                <th>Income (₹)</th>
-                <th>Status</th>
-                <th>Scrutiny & Actions</th>
-              </tr>
-            </thead>
-            <tbody id="adminAppTableBody"></tbody>
-          </table>
+          <button class="btn-primary" style="background:#0284c7; width:100%;" onclick="executeAdminDirectProfileUpdate()">
+            Save Profile Changes
+          </button>
         </div>
       </div>
     </section>
@@ -1473,7 +1566,7 @@
       </div>
     </div>
 
-    <!-- Printable Official Template -->
+    <!-- Printable Official Application (PDF) -->
     <div id="printableApplication" style="display:none; padding:30px; font-family:serif; background:#fff;">
       <div style="text-align:center; border-bottom:2px solid #7f1d1d; padding-bottom:12px; margin-bottom:20px;">
         <h2 style="color:#7f1d1d; margin-bottom:4px;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
@@ -1501,8 +1594,31 @@
         </div>
       </div>
     </div>
+
+    <!-- Printable Registration Slip / Card (PDF) -->
+    <div id="printableSlip" style="display:none; padding:40px; font-family:serif; background:#fff;">
+      <div style="border:3px double #7f1d1d; padding:24px; border-radius:10px; max-width:680px; margin:0 auto;">
+        <div style="text-align:center; border-bottom:2px solid #ea580c; padding-bottom:10px; margin-bottom:16px;">
+          <h2 style="color:#7f1d1d; margin:0;">RAMAKRISHNA MISSION ASHRAMA</h2>
+          <p style="margin:4px 0; font-size:13px;">Jhargram, West Bengal - 721507</p>
+          <div style="display:inline-block; background:#ffedd5; color:#9a3412; font-weight:bold; font-size:12px; padding:3px 12px; border-radius:15px; margin-top:6px;">
+            OFFICIAL CANDIDATE REGISTRATION CARD
+          </div>
+        </div>
+        <div id="slipBodyContent" style="font-size:14px; line-height:1.8;"></div>
+        <div style="margin-top:40px; display:flex; justify-content:space-between; font-size:12px;">
+          <div>Date of Issuance: <span id="slipDate"></span></div>
+          <div style="text-align:center;">
+            ___________________________<br>
+            Authorized Signatory / Secretary<br>
+            RKMA Jhargram
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
+  <!-- PUBLIC FOOTER -->
   <footer id="publicFooter">
     <strong>Ramakrishna Mission Ashrama, Jhargram</strong><br>
     P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India<br>
@@ -1552,6 +1668,18 @@
       localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
     }
 
+    // Populate the Admin Dropdown dynamically on startup
+    function renderAdminDropdown() {
+      const select = document.getElementById('adminDropdown');
+      select.innerHTML = '<option value="">-- Choose Profile --</option>';
+      for (let adminId in admins) {
+        const opt = document.createElement('option');
+        opt.value = adminId;
+        opt.textContent = `${admins[adminId].name} (${adminId})`;
+        select.appendChild(opt);
+      }
+    }
+
     function navigateToPublic(sectionId) {
       if (activeUserRole !== null) {
         alert('Active session detected. Please log out first.');
@@ -1593,6 +1721,7 @@
       document.getElementById('publicHeader').style.display = 'block';
       document.getElementById('publicFooter').style.display = 'block';
 
+      renderAdminDropdown();
       navigateToPublic('home');
     }
 
@@ -1643,7 +1772,7 @@
         document.getElementById('adminPassField').value = '';
 
         setAuthenticatedUI('admin', 'ADMINISTRATOR CONSOLE', admin.name);
-        renderAdminTable();
+        refreshAdminDashboardPanels();
         navigateToAuth('adminDashboard');
       } else {
         alert('Invalid Administrator Password! Please try again.');
@@ -1675,34 +1804,34 @@
       }
     }
 
-    function executeAdminDirectProfileUpdate() {
-      const newMobile = document.getElementById('updNewMobile').value.trim();
-      const newEmail = document.getElementById('updNewEmail').value.trim();
+    // Admin Window Switcher (Applications vs Registration)
+    function switchAdminWindow(windowType) {
+      const tabApps = document.getElementById('tabBtnApplications');
+      const tabReg = document.getElementById('tabBtnRegistration');
+      const winApps = document.getElementById('adminWindowApplications');
+      const winReg = document.getElementById('adminWindowRegistration');
 
-      if (!newMobile && !newEmail) {
-        alert('Please provide a new Mobile Number or Email Address!');
-        return;
+      if (windowType === 'applications') {
+        tabApps.classList.add('active');
+        tabReg.classList.remove('active');
+        winApps.style.display = 'block';
+        winReg.style.display = 'none';
+      } else {
+        tabReg.classList.add('active');
+        tabApps.classList.remove('active');
+        winReg.style.display = 'block';
+        winApps.style.display = 'none';
       }
-
-      if (newMobile) {
-        if (newMobile.length !== 10) {
-          alert('Mobile Number must be exactly 10 digits!');
-          return;
-        }
-        admins[activeAdminId].mobile = newMobile;
-      }
-      if (newEmail) {
-        admins[activeAdminId].email = newEmail;
-      }
-
-      saveState();
-      alert('Administrator profile updated successfully!');
-      document.getElementById('activeAdminContact').innerText = `Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
-      document.getElementById('updNewMobile').value = '';
-      document.getElementById('updNewEmail').value = '';
     }
 
-    // Single Candidate Account Creation
+    function refreshAdminDashboardPanels() {
+      renderAdminTable();
+      renderRegisteredCandidatesTable();
+      document.getElementById('appCountBadge').innerText = applications.length;
+      document.getElementById('regCountBadge').innerText = Object.keys(candidates).length;
+    }
+
+    // Single Candidate Registration
     function adminCreateCustomCandidate() {
       const name = document.getElementById('genCandName').value.trim();
       const mobile = document.getElementById('genCandMobile').value.trim();
@@ -1728,9 +1857,11 @@
       document.getElementById('genCandMobile').value = '';
       document.getElementById('genCandId').value = '';
       document.getElementById('genCandPass').value = '';
+
+      refreshAdminDashboardPanels();
     }
 
-    // NEW: Download Sample Excel Template for Bulk Upload
+    // Bulk Candidate Registration via Excel/CSV
     function downloadSampleCandidateTemplate() {
       const sampleData = [
         ["Name", "Phone", "CandidateID", "Password"],
@@ -1745,7 +1876,6 @@
       XLSX.writeFile(wb, "RKMA_Bulk_Candidates_Sample_Template.xlsx");
     }
 
-    // NEW: Process Bulk Candidate Excel/CSV File Upload
     function processBulkCandidateExcelUpload() {
       const fileInput = document.getElementById('bulkExcelFileInput');
       const reportBox = document.getElementById('bulkUploadReport');
@@ -1777,7 +1907,6 @@
           let errorMessages = [];
 
           jsonData.forEach((row, idx) => {
-            // Flexible matching for column names (handles casing or spaces)
             const name = (row['Name'] || row['name'] || row['Candidate Name'] || row['CandidateName'] || '').toString().trim();
             const phone = (row['Phone'] || row['phone'] || row['Mobile'] || row['mobile'] || '').toString().trim();
             const candId = (row['CandidateID'] || row['candidateid'] || row['Candidate ID'] || row['ID'] || row['id'] || '').toString().trim();
@@ -1795,7 +1924,6 @@
               return;
             }
 
-            // Clean 10-digit phone number validation
             const cleanPhone = phone.replace(/[^0-9]/g, '');
             if (cleanPhone.length < 10) {
               skippedCount++;
@@ -1803,7 +1931,6 @@
               return;
             }
 
-            // Add candidate account
             candidates[candId] = {
               name: name,
               mobile: cleanPhone.slice(-10),
@@ -1814,7 +1941,6 @@
 
           saveState();
 
-          // Display upload summary report
           reportBox.style.display = 'block';
           reportBox.innerHTML = `
             <div style="padding:10px; border-radius:6px; background:${addedCount > 0 ? '#dcfce7' : '#fee2e2'}; color:${addedCount > 0 ? '#15803d' : '#991b1b'}; font-weight:bold;">
@@ -1826,6 +1952,7 @@
 
           alert(`Bulk Upload Processed!\n\nSuccessfully Created: ${addedCount}\nSkipped: ${skippedCount}`);
           fileInput.value = '';
+          refreshAdminDashboardPanels();
 
         } catch (err) {
           console.error(err);
@@ -1836,7 +1963,155 @@
       reader.readAsArrayBuffer(file);
     }
 
-    // Client-side Strict File Validation & Alerts
+    // Render Registered Candidates Master Directory
+    function renderRegisteredCandidatesTable() {
+      const tbody = document.getElementById('registeredCandidatesTableBody');
+      tbody.innerHTML = '';
+      let sl = 1;
+
+      for (let cid in candidates) {
+        const cand = candidates[cid];
+        const isSubmitted = applications.some(a => a.candidateId === cid);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${sl++}</td>
+          <td><strong>${cid}</strong></td>
+          <td>${cand.name}</td>
+          <td>${cand.mobile}</td>
+          <td><code style="background:#f5f5f4; padding:2px 6px; border-radius:4px;">${cand.pass}</code></td>
+          <td>
+            <span style="font-weight:bold; color:${isSubmitted ? '#15803d' : '#dc2626'};">
+              ${isSubmitted ? '✅ Yes' : '⏳ Pending'}
+            </span>
+          </td>
+          <td>
+            <button class="action-btn btn-pdf" onclick="downloadCandidateRegistrationSlip('${cid}')">
+              🖨️ Download Slip
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    // Download/Print Official Registration Card / Slip
+    function downloadCandidateRegistrationSlip(cid) {
+      const cand = candidates[cid];
+      if (!cand) return;
+
+      const appData = applications.find(a => a.candidateId === cid);
+      const photoHtml = (appData && appData.photoBase64) 
+        ? `<img src="${appData.photoBase64}" style="width:100px; height:120px; object-fit:cover; border:1px solid #333;">`
+        : `<div style="width:100px; height:120px; border:1px dashed #777; display:flex; align-items:center; justify-content:center; font-size:10px; color:#777;">Affix Photo</div>`;
+
+      document.getElementById('slipBodyContent').innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+          <div>
+            <strong>Candidate Full Name:</strong> ${cand.name}<br>
+            <strong>Official Candidate ID:</strong> <span style="font-size:16px; color:#7f1d1d;">${cid}</span><br>
+            <strong>Registered Mobile:</strong> ${cand.mobile}<br>
+            <strong>Initial Password:</strong> ${cand.pass}<br>
+            <strong>Application Status:</strong> ${appData ? appData.status : 'Awaiting Application Submission'}
+          </div>
+          <div>${photoHtml}</div>
+        </div>
+        <div style="background:#fafaf9; border:1px solid #e7e5e4; padding:12px; border-radius:6px; font-size:12px; color:#57534e;">
+          <strong>Important Instructions for Candidate:</strong>
+          <ul style="margin:4px 0 0 16px; padding:0;">
+            <li>Keep this Registration Card and your login credentials strictly confidential.</li>
+            <li>Visit the RKMA Jhargram Scholarship Portal and login using your Candidate ID and Password to submit your scholarship application.</li>
+            <li>Upload genuine documents and complete all steps before final submission.</li>
+          </ul>
+        </div>
+      `;
+
+      document.getElementById('slipDate').innerText = new Date().toLocaleDateString('en-GB');
+      window.print();
+    }
+
+    // Provision New Administrator
+    function createNewAdministratorAccount() {
+      const name = document.getElementById('newAdminName').value.trim();
+      const mobile = document.getElementById('newAdminMobile').value.trim();
+      const id = document.getElementById('newAdminId').value.trim();
+      const pass = document.getElementById('newAdminPass').value.trim();
+
+      if (!name || mobile.length !== 10 || !id || !pass) {
+        alert('All Administrator provisioning fields are mandatory (including 10-digit mobile number)!');
+        return;
+      }
+
+      if (admins[id]) {
+        alert('This Administrator ID is already assigned. Please choose a different ID.');
+        return;
+      }
+
+      admins[id] = {
+        name: name,
+        mobile: mobile,
+        pass: pass,
+        email: 'admin@rkmm.org'
+      };
+
+      saveState();
+      alert(`New Administrator Provisioned Successfully!\n\nName: ${name}\nAdmin ID: ${id}\nPassword: ${pass}`);
+
+      document.getElementById('newAdminName').value = '';
+      document.getElementById('newAdminMobile').value = '';
+      document.getElementById('newAdminId').value = '';
+      document.getElementById('newAdminPass').value = '';
+
+      renderAdminDropdown();
+    }
+
+    function executeAdminDirectProfileUpdate() {
+      const newMobile = document.getElementById('updNewMobile').value.trim();
+      const newEmail = document.getElementById('updNewEmail').value.trim();
+
+      if (!newMobile && !newEmail) {
+        alert('Please provide a new Mobile Number or Email Address!');
+        return;
+      }
+
+      if (newMobile) {
+        if (newMobile.length !== 10) {
+          alert('Mobile Number must be exactly 10 digits!');
+          return;
+        }
+        admins[activeAdminId].mobile = newMobile;
+      }
+      if (newEmail) {
+        admins[activeAdminId].email = newEmail;
+      }
+
+      saveState();
+      alert('Administrator profile updated successfully!');
+      document.getElementById('activeAdminContact').innerText = `Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
+      document.getElementById('updNewMobile').value = '';
+      document.getElementById('updNewEmail').value = '';
+    }
+
+    // Export Registered Candidates Directory (CSV)
+    function exportCandidatesRosterCSV() {
+      let csv = 'Candidate ID,Full Name,Phone Number,Portal Password,Application Submitted\n';
+      for (let cid in candidates) {
+        const cand = candidates[cid];
+        const isSubmitted = applications.some(a => a.candidateId === cid) ? 'Yes' : 'Pending';
+        csv += `"${cid}","${cand.name}","${cand.mobile}","${cand.pass}","${isSubmitted}"\n`;
+      }
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `RKMA_Registered_Candidates_Directory_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // File Validation & Preview
     function validateAndPreviewFile(input, previewId, maxKb, allowedTypes, errSpanId) {
       const errSpan = document.getElementById(errSpanId);
       input.classList.remove('file-invalid');
@@ -1913,7 +2188,7 @@
       }
     }
 
-    // Candidate Form Steps
+    // Candidate Multi-step Form
     function openApplicationForm() {
       const existing = applications.find(a => a.candidateId === activeCandidateId);
       if (existing && existing.status !== 'Returned for Correction') {
@@ -2106,7 +2381,7 @@
       return 'st-submitted';
     }
 
-    // Admin Table & Scrutiny
+    // Render Admin Table (Applications Window)
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -2136,6 +2411,7 @@
       });
     }
 
+    // Scrutiny Modal
     function openScrutinyModal(index) {
       selectedScrutinyIndex = index;
       const app = applications[index];
@@ -2193,7 +2469,7 @@
 
       alert(`Status updated successfully to: ${newStatus}`);
       closeScrutinyModal();
-      renderAdminTable();
+      refreshAdminDashboardPanels();
     }
 
     function deleteApplication(index) {
@@ -2201,11 +2477,12 @@
       if (confirm(`Are you sure you want to delete application "${item.appNo}" for ${item.name}? This action cannot be undone.`)) {
         applications.splice(index, 1);
         saveState();
-        renderAdminTable();
+        refreshAdminDashboardPanels();
         alert('Application deleted successfully.');
       }
     }
 
+    // PDF & Word Printers
     function downloadApplicationPDF(index) {
       const app = applications[index];
       const headerMeta = document.getElementById('pdfHeaderMeta');
@@ -2359,8 +2636,8 @@
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `RKMA_Scholarship_All_Data_${new Date().toISOString().slice(0,10)}.csv`);
+      link.href = url;
+      link.download = `RKMA_Scholarship_All_Data_${new Date().toISOString().slice(0,10)}.csv`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -2436,6 +2713,7 @@
     }
 
     window.addEventListener('load', () => {
+      renderAdminDropdown();
       buildSliderDots();
       startAutoSlide();
     });
