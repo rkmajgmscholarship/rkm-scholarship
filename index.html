@@ -46,17 +46,13 @@
       gap: 10px;
       cursor: pointer;
     }
-    .om-badge {
-      width: 38px;
-      height: 38px;
+    .rkm-logo-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
       border-radius: 50%;
-      background: #fbbf24;
-      color: #7f1d1d;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 19px;
+      background: #ffffff;
+      padding: 2px;
     }
     .nav-btn {
       background: rgba(255,255,255,0.15);
@@ -669,10 +665,10 @@
   <header id="publicHeader">
     <div class="header-inner">
       <div class="brand" onclick="navigateToPublic('home')">
-        <div class="om-badge">ॐ</div>
+        <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" class="rkm-logo-img">
         <div>
           <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION ASHRAMA</div>
-          <div style="font-size:11px; color:#fed7aa;">Satyabanpally, Jhargram, 721507</div>
+          <div style="font-size:11px; color:#fed7aa;">Satyabanpally, Jhargram - 721507</div>
         </div>
       </div>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
@@ -688,7 +684,7 @@
   <div id="portalTopHeader">
     <div class="portal-header-inner">
       <div style="display:flex; align-items:center; gap:10px;">
-        <div class="om-badge" style="width:32px; height:32px; font-size:16px;">ॐ</div>
+        <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" class="rkm-logo-img" style="width:36px; height:36px;">
         <div>
           <div style="font-weight:bold; font-size:13px; letter-spacing:0.5px;" id="portalWorkspaceTitle">RKMA PORTAL WORKSPACE</div>
           <div style="font-size:11px; color:#fed7aa;" id="portalUserIdentity">Active Session</div>
@@ -849,7 +845,7 @@
               <div class="contact-icon">📍</div>
               <div style="font-size:13px; color:#44403c;">
                 <strong>Address:</strong><br>
-                At- Satyabanpally, P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India
+                Satyabanpally, P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India
               </div>
             </div>
             <div class="contact-item">
@@ -987,7 +983,7 @@
 
         <div class="card" style="border-top:4px solid #15803d; text-align:center;">
           <h3 style="margin-bottom:8px; color:#15803d;">2. View & Download Application</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Inspect your submitted application with photo & signature and print PDF.</p>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Inspect your submitted application with photo, signature & uploaded documents.</p>
           <button class="btn-view" style="background:#15803d;" onclick="viewCandidateSubmittedApp()">View / Download PDF</button>
         </div>
 
@@ -1256,42 +1252,42 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>a. Aadhaar Card</label>
-                <input type="file" id="f_doc_aadhaar" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errAadhaar')">
+                <input type="file" id="f_doc_aadhaar" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errAadhaar', 'docAadhaar')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errAadhaar">Exceeded 500 KB or invalid file type!</span>
               </div>
 
               <div class="form-group">
                 <label>b. Admission Receipt</label>
-                <input type="file" id="f_doc_adm" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errAdm')">
+                <input type="file" id="f_doc_adm" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errAdm', 'docAdm')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errAdm">Exceeded 500 KB or invalid file type!</span>
               </div>
 
               <div class="form-group">
                 <label>c. Qualifying Examination Marksheet</label>
-                <input type="file" id="f_doc_mark" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errMark')">
+                <input type="file" id="f_doc_mark" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errMark', 'docMark')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errMark">Exceeded 500 KB or invalid file type!</span>
               </div>
 
               <div class="form-group">
                 <label>d. Bank Passbook First Page</label>
-                <input type="file" id="f_doc_passbook" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errPassbook')">
+                <input type="file" id="f_doc_passbook" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errPassbook', 'docPassbook')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errPassbook">Exceeded 500 KB or invalid file type!</span>
               </div>
 
               <div class="form-group">
                 <label>e. Income Proof Certificate</label>
-                <input type="file" id="f_doc_income" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errIncome')">
+                <input type="file" id="f_doc_income" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errIncome', 'docIncome')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errIncome">Exceeded 500 KB or invalid file type!</span>
               </div>
 
               <div class="form-group">
                 <label>f. Application Prayer</label>
-                <input type="file" id="f_doc_prayer" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errPrayer')">
+                <input type="file" id="f_doc_prayer" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errPrayer', 'docPrayer')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errPrayer">Exceeded 500 KB or invalid file type!</span>
               </div>
@@ -1337,11 +1333,15 @@
 
     <!-- ================= AUTHENTICATED SECTION: ADMIN DASHBOARD ================= -->
     <section id="sec-adminDashboard" class="page-section">
+      <!-- Admin Workspace Greeting & Management -->
       <div class="card" style="border-left: 5px solid #7f1d1d; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-        <div>
-          <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL ADMINISTRATIVE PORTAL</span>
-          <h2 id="activeAdminTitle" style="font-size:16px; margin-top:4px;">Administrator Console</h2>
-          <p id="activeAdminContact" style="font-size:12px; color:#78716c;"></p>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" class="rkm-logo-img">
+          <div>
+            <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL ADMINISTRATIVE PORTAL</span>
+            <h2 id="activeAdminTitle" style="font-size:16px; margin-top:4px;">Administrator Console</h2>
+            <p id="activeAdminContact" style="font-size:12px; color:#78716c;"></p>
+          </div>
         </div>
       </div>
 
@@ -1369,7 +1369,7 @@
               <h3 style="color:#7f1d1d;">Submitted Scholarship Applications</h3>
               <p style="font-size:12px; color:#78716c;">Contains records of candidates who have actively submitted their scholarship applications.</p>
             </div>
-            <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export Filtered to Excel (CSV)</button>
+            <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export Applications to Excel (CSV)</button>
           </div>
           <div style="overflow-x:auto;">
             <table>
@@ -1578,12 +1578,13 @@
       </div>
     </div>
 
-    <!-- Printable Official Application (PDF) -->
+    <!-- Printable Official Application (PDF with Attached Docs) -->
     <div id="printableApplication" style="display:none; padding:30px; font-family:serif; background:#fff;">
       <div style="text-align:center; border-bottom:2px solid #7f1d1d; padding-bottom:12px; margin-bottom:20px;">
-        <h2 style="color:#7f1d1d; margin-bottom:4px;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
-        <p style="font-size:14px;">P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India</p>
-        <h3 style="margin-top:10px; text-decoration:underline;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
+        <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" style="width:65px; height:65px; margin-bottom:6px;">
+        <h2 style="color:#7f1d1d; margin:0;">RAMAKRISHNA MISSION ASHRAMA</h2>
+        <p style="font-size:14px; margin:4px 0;">Satyabanpally, Jhargram, West Bengal - 721507</p>
+        <h3 style="margin-top:8px; text-decoration:underline;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
       </div>
 
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
@@ -1593,7 +1594,7 @@
 
       <div id="pdfContentBody"></div>
 
-      <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
+      <div style="margin-top:40px; display:flex; justify-content:space-between; align-items:flex-end;">
         <div style="text-align:center; width:220px;">
           <div id="pdfSignBox" style="height:50px; margin-bottom:4px; display:flex; align-items:center; justify-content:center;"></div>
           <div style="border-top:1px solid #333; padding-top:4px; font-size:12px;">Candidate's Signature</div>
@@ -1605,26 +1606,45 @@
           </div>
         </div>
       </div>
+
+      <!-- Automatically Attached Uploaded Documents Section -->
+      <div id="pdfAttachedDocumentsSection" style="margin-top:50px; page-break-before:always;"></div>
     </div>
 
-    <!-- Printable Registration Slip / Card (PDF) -->
+    <!-- Official Candidate Registration Card (Exact Text & Rules, No Photo/Sign) -->
     <div id="printableSlip" style="display:none; padding:40px; font-family:serif; background:#fff;">
-      <div style="border:3px double #7f1d1d; padding:24px; border-radius:10px; max-width:680px; margin:0 auto;">
-        <div style="text-align:center; border-bottom:2px solid #ea580c; padding-bottom:10px; margin-bottom:16px;">
-          <h2 style="color:#7f1d1d; margin:0;">RAMAKRISHNA MISSION ASHRAMA</h2>
-          <p style="margin:4px 0; font-size:13px;">Jhargram, West Bengal - 721507</p>
-          <div style="display:inline-block; background:#ffedd5; color:#9a3412; font-weight:bold; font-size:12px; padding:3px 12px; border-radius:15px; margin-top:6px;">
+      <div style="border:3px double #7f1d1d; padding:26px; border-radius:10px; max-width:680px; margin:0 auto; line-height:1.7;">
+        
+        <!-- Logo & Header -->
+        <div style="text-align:center; border-bottom:2px solid #ea580c; padding-bottom:12px; margin-bottom:18px;">
+          <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" style="width:60px; height:60px; margin-bottom:6px;">
+          <h2 style="color:#7f1d1d; margin:0; font-size:22px; letter-spacing:0.5px;">RAMAKRISHNA MISSION ASHRAMA</h2>
+          <p style="margin:4px 0; font-size:14px; font-weight:bold; color:#444;">Satyabanpally, Jhargram, West Bengal-721507</p>
+          <div style="display:inline-block; background:#ffedd5; color:#9a3412; font-weight:bold; font-size:13px; padding:4px 14px; border-radius:15px; margin-top:8px;">
             OFFICIAL CANDIDATE REGISTRATION CARD
           </div>
         </div>
-        <div id="slipBodyContent" style="font-size:14px; line-height:1.8;"></div>
-        <div style="margin-top:40px; display:flex; justify-content:space-between; font-size:12px;">
-          <div>Date of Issuance: <span id="slipDate"></span></div>
-          <div style="text-align:center;">
-            ___________________________<br>
-            Authorized Signatory / Secretary<br>
-            RKMA Jhargram
-          </div>
+
+        <!-- Candidate Specific Information Body -->
+        <div id="slipBodyContent" style="font-size:14px; margin-bottom:20px;"></div>
+
+        <!-- Exact Important Instructions -->
+        <div style="background:#fafaf9; border:1px solid #e7e5e4; padding:14px; border-radius:6px; font-size:13px; color:#292524;">
+          <strong>Important Instructions for Candidate:</strong>
+          <ol style="margin:8px 0 0 20px; padding:0;">
+            <li style="margin-bottom:4px;">Keep this Registration Card and your login credentials strictly confidential..</li>
+            <li style="margin-bottom:4px;">Visit the RKMA Jhargram Scholarship Portal and login using your Candidate ID and Password to submit your scholarship application.</li>
+            <li>Upload genuine documents and complete all steps before final submission.</li>
+          </ol>
+        </div>
+
+        <!-- Footer Meta & Computer Generated Disclaimer -->
+        <div style="margin-top:28px; display:flex; justify-content:space-between; align-items:flex-end; font-size:13px;">
+          <div><strong>Date of Issuance:</strong> <span id="slipDate"></span></div>
+        </div>
+
+        <div style="margin-top:25px; text-align:center; border-top:1px dashed #a8a29e; padding-top:10px; font-size:12px; color:#57534e; font-style:italic;">
+          "This document is computer-generated, hence no physical signature is required."
         </div>
       </div>
     </div>
@@ -1633,7 +1653,7 @@
   <!-- PUBLIC FOOTER -->
   <footer id="publicFooter">
     <strong>Ramakrishna Mission Ashrama, Jhargram</strong><br>
-    P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India<br>
+    Satyabanpally, P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India<br>
     © 2026 Ramakrishna Mission Ashrama, Jhargram. All Rights Reserved.
   </footer>
 
@@ -1672,6 +1692,7 @@
 
     let currentUploadedPhotoBase64 = '';
     let currentUploadedSignBase64 = '';
+    let currentUploadedDocs = {}; // Stores base64 representations of uploaded documents
     let currentGeneratedCaptcha = '';
 
     function saveState() {
@@ -1680,7 +1701,6 @@
       localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
     }
 
-    // Populate the Admin Dropdown dynamically on startup
     function renderAdminDropdown() {
       const select = document.getElementById('adminDropdown');
       select.innerHTML = '<option value="">-- Choose Profile --</option>';
@@ -1817,7 +1837,7 @@
       }
     }
 
-    // Admin Window Switcher (4 Windows)
+    // Admin Window Switcher
     function switchAdminWindow(windowType) {
       const tabApps = document.getElementById('tabBtnApplications');
       const tabReg = document.getElementById('tabBtnRegistration');
@@ -1829,13 +1849,11 @@
       const winCreate = document.getElementById('adminWindowCreateAdmin');
       const winUpdate = document.getElementById('adminWindowUpdateProfile');
 
-      // Reset tabs
       tabApps.classList.remove('active');
       tabReg.classList.remove('active');
       tabCreate.classList.remove('active');
       tabUpdate.classList.remove('active');
 
-      // Reset windows
       winApps.style.display = 'none';
       winReg.style.display = 'none';
       winCreate.style.display = 'none';
@@ -1863,7 +1881,6 @@
       document.getElementById('regCountBadge').innerText = Object.keys(candidates).length;
     }
 
-    // Single Candidate Registration
     function adminCreateCustomCandidate() {
       const name = document.getElementById('genCandName').value.trim();
       const mobile = document.getElementById('genCandMobile').value.trim();
@@ -1893,13 +1910,11 @@
       refreshAdminDashboardPanels();
     }
 
-    // Bulk Candidate Registration via Excel/CSV
     function downloadSampleCandidateTemplate() {
       const sampleData = [
         ["Name", "Phone", "CandidateID", "Password"],
         ["Swapan Mahato", "9876543211", "RKM-2026-003", "Pass@1234"],
-        ["Raju Murmu", "9876543212", "RKM-2026-004", "Pass@5678"],
-        ["Subrata Singha", "9876543213", "RKM-2026-005", "Pass@9012"]
+        ["Raju Murmu", "9876543212", "RKM-2026-004", "Pass@5678"]
       ];
 
       const ws = XLSX.utils.aoa_to_sheet(sampleData);
@@ -1939,14 +1954,14 @@
           let errorMessages = [];
 
           jsonData.forEach((row, idx) => {
-            const name = (row['Name'] || row['name'] || row['Candidate Name'] || row['CandidateName'] || '').toString().trim();
-            const phone = (row['Phone'] || row['phone'] || row['Mobile'] || row['mobile'] || '').toString().trim();
-            const candId = (row['CandidateID'] || row['candidateid'] || row['Candidate ID'] || row['ID'] || row['id'] || '').toString().trim();
-            const pass = (row['Password'] || row['password'] || row['Pass'] || row['pass'] || '').toString().trim();
+            const name = (row['Name'] || row['name'] || '').toString().trim();
+            const phone = (row['Phone'] || row['phone'] || '').toString().trim();
+            const candId = (row['CandidateID'] || row['candidateid'] || '').toString().trim();
+            const pass = (row['Password'] || row['password'] || '').toString().trim();
 
             if (!name || !candId || !pass) {
               skippedCount++;
-              errorMessages.push(`Row ${idx + 2}: Missing required fields (Name, Candidate ID, or Password).`);
+              errorMessages.push(`Row ${idx + 2}: Missing required fields.`);
               return;
             }
 
@@ -1959,7 +1974,7 @@
             const cleanPhone = phone.replace(/[^0-9]/g, '');
             if (cleanPhone.length < 10) {
               skippedCount++;
-              errorMessages.push(`Row ${idx + 2}: Invalid mobile number for "${name}". Skipped.`);
+              errorMessages.push(`Row ${idx + 2}: Invalid mobile number for "${name}".`);
               return;
             }
 
@@ -1995,7 +2010,6 @@
       reader.readAsArrayBuffer(file);
     }
 
-    // Render Registered Candidates Master Directory
     function renderRegisteredCandidatesTable() {
       const tbody = document.getElementById('registeredCandidatesTableBody');
       tbody.innerHTML = '';
@@ -2027,34 +2041,21 @@
       }
     }
 
-    // Download/Print Official Registration Card / Slip
+    // Download/Print Official Registration Card (Exact Text - No Photo/Sign)
     function downloadCandidateRegistrationSlip(cid) {
       const cand = candidates[cid];
       if (!cand) return;
 
       const appData = applications.find(a => a.candidateId === cid);
-      const photoHtml = (appData && appData.photoBase64) 
-        ? `<img src="${appData.photoBase64}" style="width:100px; height:120px; object-fit:cover; border:1px solid #333;">`
-        : `<div style="width:100px; height:120px; border:1px dashed #777; display:flex; align-items:center; justify-content:center; font-size:10px; color:#777;">Affix Photo</div>`;
+      const appStatusText = appData ? appData.status : 'Not Applied';
 
       document.getElementById('slipBodyContent').innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
-          <div>
-            <strong>Candidate Full Name:</strong> ${cand.name}<br>
-            <strong>Official Candidate ID:</strong> <span style="font-size:16px; color:#7f1d1d;">${cid}</span><br>
-            <strong>Registered Mobile:</strong> ${cand.mobile}<br>
-            <strong>Initial Password:</strong> ${cand.pass}<br>
-            <strong>Application Status:</strong> ${appData ? appData.status : 'Awaiting Application Submission'}
-          </div>
-          <div>${photoHtml}</div>
-        </div>
-        <div style="background:#fafaf9; border:1px solid #e7e5e4; padding:12px; border-radius:6px; font-size:12px; color:#57534e;">
-          <strong>Important Instructions for Candidate:</strong>
-          <ul style="margin:4px 0 0 16px; padding:0;">
-            <li>Keep this Registration Card and your login credentials strictly confidential.</li>
-            <li>Visit the RKMA Jhargram Scholarship Portal and login using your Candidate ID and Password to submit your scholarship application.</li>
-            <li>Upload genuine documents and complete all steps before final submission.</li>
-          </ul>
+        <div style="font-size:14px; line-height:2.0; color:#1c1917;">
+          <div><strong>Candidate Full Name:</strong> ${cand.name}</div>
+          <div><strong>Official Candidate ID:</strong> <span style="font-size:16px; font-weight:bold; color:#7f1d1d;">${cid}</span></div>
+          <div><strong>Registered Mobile:</strong> ${cand.mobile}</div>
+          <div><strong>Initial Password:</strong> <code style="font-size:14px; background:#f5f5f4; padding:2px 8px; border-radius:4px;">${cand.pass}</code></div>
+          <div><strong>Application Status:</strong> <span style="font-weight:bold;">${appStatusText}</span></div>
         </div>
       `;
 
@@ -2062,7 +2063,6 @@
       window.print();
     }
 
-    // Provision New Administrator
     function createNewAdministratorAccount() {
       const name = document.getElementById('newAdminName').value.trim();
       const mobile = document.getElementById('newAdminMobile').value.trim();
@@ -2070,7 +2070,7 @@
       const pass = document.getElementById('newAdminPass').value.trim();
 
       if (!name || mobile.length !== 10 || !id || !pass) {
-        alert('All Administrator provisioning fields are mandatory (including 10-digit mobile number)!');
+        alert('All Administrator fields are mandatory (including 10-digit mobile number)!');
         return;
       }
 
@@ -2124,7 +2124,6 @@
       document.getElementById('updNewEmail').value = '';
     }
 
-    // Export Registered Candidates Directory (CSV)
     function exportCandidatesRosterCSV() {
       let csv = 'Candidate ID,Full Name,Phone Number,Portal Password,Application Submitted\n';
       for (let cid in candidates) {
@@ -2143,7 +2142,7 @@
       document.body.removeChild(link);
     }
 
-    // File Validation & Preview
+    // Document Validation & Base64 Storage
     function validateAndPreviewFile(input, previewId, maxKb, allowedTypes, errSpanId) {
       const errSpan = document.getElementById(errSpanId);
       input.classList.remove('file-invalid');
@@ -2167,7 +2166,7 @@
         if (fileSizeKb > maxKb) {
           input.classList.add('file-invalid');
           if (errSpan) {
-            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds permitted limit of ${maxKb} KB!`;
+            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds limit of ${maxKb} KB!`;
             errSpan.style.display = 'block';
           }
           alert(`Upload Error: File size exceeds the maximum limit of ${maxKb} KB.`);
@@ -2186,7 +2185,7 @@
       }
     }
 
-    function validateGeneralDocument(input, maxKb, errSpanId) {
+    function storeAndValidateDoc(input, maxKb, errSpanId, docKey) {
       const errSpan = document.getElementById(errSpanId);
       input.classList.remove('file-invalid');
       if (errSpan) errSpan.style.display = 'none';
@@ -2202,7 +2201,7 @@
             errSpan.innerText = 'Unsupported file format! Allowed: PDF, JPG, JPEG, PNG.';
             errSpan.style.display = 'block';
           }
-          alert('Upload Error: Unsupported document format. Please upload PDF, JPG, or PNG.');
+          alert('Upload Error: Unsupported format. Allowed: PDF, JPG, PNG.');
           input.value = '';
           return;
         }
@@ -2210,17 +2209,26 @@
         if (fileSizeKb > maxKb) {
           input.classList.add('file-invalid');
           if (errSpan) {
-            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds permitted limit of ${maxKb} KB!`;
+            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds limit of ${maxKb} KB!`;
             errSpan.style.display = 'block';
           }
-          alert(`Upload Error: File size exceeds the limit of ${maxKb} KB.`);
+          alert(`Upload Error: File size exceeds limit of ${maxKb} KB.`);
           input.value = '';
           return;
         }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          currentUploadedDocs[docKey] = {
+            name: file.name,
+            type: file.type,
+            base64: e.target.result
+          };
+        };
+        reader.readAsDataURL(file);
       }
     }
 
-    // Candidate Form Steps
     function openApplicationForm() {
       const existing = applications.find(a => a.candidateId === activeCandidateId);
       if (existing && existing.status !== 'Returned for Correction') {
@@ -2315,6 +2323,7 @@
         gender: document.getElementById('f_gender').value,
         photoBase64: currentUploadedPhotoBase64,
         signBase64: currentUploadedSignBase64,
+        uploadedDocuments: Object.assign({}, currentUploadedDocs),
         father: document.getElementById('f_fname').value,
         fatherOcc: document.getElementById('f_focc').value,
         mother: document.getElementById('f_mname').value,
@@ -2413,7 +2422,6 @@
       return 'st-submitted';
     }
 
-    // Render Admin Table (Applications Window)
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -2443,7 +2451,6 @@
       });
     }
 
-    // Scrutiny Modal
     function openScrutinyModal(index) {
       selectedScrutinyIndex = index;
       const app = applications[index];
@@ -2514,13 +2521,14 @@
       }
     }
 
-    // PDF & Word Printers
+    // Application PDF Generator with Automatic Document Attachment
     function downloadApplicationPDF(index) {
       const app = applications[index];
       const headerMeta = document.getElementById('pdfHeaderMeta');
       const photoBox = document.getElementById('pdfPhotoBox');
       const signBox = document.getElementById('pdfSignBox');
       const body = document.getElementById('pdfContentBody');
+      const docSection = document.getElementById('pdfAttachedDocumentsSection');
 
       headerMeta.innerHTML = `
         <strong>Application Number:</strong> ${app.appNo}<br>
@@ -2568,15 +2576,37 @@
           <tr><td style="padding:5px; border:1px solid #444;">Bank Name & A/C No</td><td style="padding:5px; border:1px solid #444;">${app.bankName} (A/C: ${app.bankAcc})</td></tr>
           <tr><td style="padding:5px; border:1px solid #444;">IFSC Code</td><td style="padding:5px; border:1px solid #444;">${app.ifsc}</td></tr>
 
-          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">6. Documents & Verification Remarks</th></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Uploaded Documents</td><td style="padding:5px; border:1px solid #444;">Aadhaar, Admission Receipt, Marksheet, Passbook, Income Proof, Prayer</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Official Authority Remarks</td><td style="padding:5px; border:1px solid #444;"><strong>${app.adminRemarks || 'Under standard institutional scrutiny.'}</strong></td></tr>
+          <tr style="background:#f5f5f4;"><th colspan="2" style="padding:6px; border:1px solid #444; text-align:left;">6. Official Verification Remarks</th></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Official Scrutiny Remarks</td><td style="padding:5px; border:1px solid #444;"><strong>${app.adminRemarks || 'Under scrutiny.'}</strong></td></tr>
         </table>
       `;
+
+      // Render Attached Documents Section
+      let docsHtml = `
+        <div style="border-top:2px solid #7f1d1d; padding-top:16px;">
+          <h3 style="color:#7f1d1d; margin-bottom:12px; text-decoration:underline;">ATTACHED VERIFICATION DOCUMENTS</h3>
+      `;
+
+      if (app.uploadedDocuments && Object.keys(app.uploadedDocuments).length > 0) {
+        for (let key in app.uploadedDocuments) {
+          const doc = app.uploadedDocuments[key];
+          docsHtml += `
+            <div style="margin-bottom:30px; page-break-inside:avoid;">
+              <h4 style="font-size:14px; margin-bottom:8px; color:#444;">Document: ${doc.name}</h4>
+              ${doc.type.includes('image') ? `<img src="${doc.base64}" style="max-width:100%; max-height:850px; border:1px solid #ccc; display:block;">` : `<div style="padding:15px; border:1px dashed #777; font-size:13px; color:#555;">[PDF Document Attached: ${doc.name}]</div>`}
+            </div>
+          `;
+        }
+      } else {
+        docsHtml += `<p style="font-size:12px; color:#777;">No additional documents attached.</p>`;
+      }
+      docsHtml += `</div>`;
+      docSection.innerHTML = docsHtml;
 
       window.print();
     }
 
+    // Word Document Download (Only the Application Form)
     function downloadApplicationWord(index) {
       const app = applications[index];
       const htmlContent = `
@@ -2592,8 +2622,8 @@
         </head>
         <body>
           <div class="header-box">
-            <h2 style="color: #800000; margin:0;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2>
-            <p style="margin:4px 0;">P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India</p>
+            <h2 style="color: #800000; margin:0;">RAMAKRISHNA MISSION ASHRAMA</h2>
+            <p style="margin:4px 0;">Satyabanpally, Jhargram, West Bengal - 721507</p>
             <h3 style="text-decoration: underline; margin:8px 0 0 0;">OFFICIAL SCHOLARSHIP APPLICATION</h3>
           </div>
 
@@ -2668,8 +2698,8 @@
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `RKMA_Scholarship_All_Data_${new Date().toISOString().slice(0,10)}.csv`);
+      link.href = url;
+      link.download = `RKMA_Scholarship_Applications_${new Date().toISOString().slice(0,10)}.csv`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
