@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scholarship Portal | Ramakrishna Mission Ashrama, Jhargram</title>
+  <!-- SheetJS Library for Parsing and Reading Excel Files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -72,7 +74,7 @@
       border: 1px solid #fde047;
     }
 
-    /* Isolated Portal Top Header (Shown Only Upon Login) */
+    /* Isolated Portal Top Header */
     #portalTopHeader {
       display: none;
       background: #1c1917;
@@ -115,7 +117,6 @@
       margin-bottom: 20px;
     }
 
-    /* Hero Card */
     .hero-card {
       text-align: center;
       border-top: 5px solid #ea580c;
@@ -499,7 +500,7 @@
       display: inline-block;
     }
 
-    /* Upload Instructions and Error State */
+    /* Upload Instructions */
     .file-rule-hint {
       display: block;
       font-size: 11px;
@@ -637,7 +638,7 @@
 </head>
 <body>
 
-  <!-- 1. PUBLIC HEADER (Hidden when user is logged in) -->
+  <!-- 1. PUBLIC HEADER -->
   <header id="publicHeader">
     <div class="header-inner">
       <div class="brand" onclick="navigateToPublic('home')">
@@ -656,7 +657,7 @@
     </div>
   </header>
 
-  <!-- 2. ISOLATED WORKSPACE TOP BAR (Visible only when logged in) -->
+  <!-- 2. ISOLATED WORKSPACE TOP BAR -->
   <div id="portalTopHeader">
     <div class="portal-header-inner">
       <div style="display:flex; align-items:center; gap:10px;">
@@ -686,7 +687,6 @@
         </div>
       </div>
 
-      <!-- Institutional Activities -->
       <div class="card about-section">
         <h3 style="color: #7f1d1d; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #fed7aa; padding-bottom: 6px;">
           About Ramakrishna Mission Ashrama, Jhargram
@@ -701,9 +701,9 @@
           <div class="activity-card">
             <h4>Educational</h4>
             <ul>
-              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> A Co-Educational Higher Secondary Residential School for Tribal students (460 students).</li>
+              <li><strong>Ramakrishna Mission Vidyamandira (EMRS), Jhargram:</strong> Residential School for Tribal students (460 students).</li>
               <li><strong>6 Free Coaching Centers:</strong> 320 students receive free coaching, uniforms, and light tiffin.</li>
-              <li><strong>Scholarships:</strong> In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students of Jhargram district.</li>
+              <li><strong>Scholarships:</strong> In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students.</li>
             </ul>
           </div>
 
@@ -741,7 +741,6 @@
         </div>
       </div>
 
-      <!-- HOLY TRIO -->
       <div class="section-title-box">
         <h3>HOLY TRIO</h3>
       </div>
@@ -1223,13 +1222,12 @@
             </div>
           </div>
 
-          <!-- STEP 6: Document Uploads with Strict Rules -->
+          <!-- STEP 6: Document Uploads -->
           <div class="form-step" id="formStep6">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Document Uploads</h4>
             <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Only files conforming to specified format and size will be accepted. Invalid uploads will turn red.</p>
             
             <div class="form-grid">
-              <!-- Doc 1 -->
               <div class="form-group">
                 <label>a. Aadhaar Card</label>
                 <input type="file" id="f_doc_aadhaar" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errAadhaar')">
@@ -1237,7 +1235,6 @@
                 <span class="file-error-msg" id="errAadhaar">Exceeded 500 KB or invalid file type!</span>
               </div>
 
-              <!-- Doc 2 -->
               <div class="form-group">
                 <label>b. Admission Receipt</label>
                 <input type="file" id="f_doc_adm" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errAdm')">
@@ -1245,7 +1242,6 @@
                 <span class="file-error-msg" id="errAdm">Exceeded 500 KB or invalid file type!</span>
               </div>
 
-              <!-- Doc 3 -->
               <div class="form-group">
                 <label>c. Qualifying Examination Marksheet</label>
                 <input type="file" id="f_doc_mark" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errMark')">
@@ -1253,7 +1249,6 @@
                 <span class="file-error-msg" id="errMark">Exceeded 500 KB or invalid file type!</span>
               </div>
 
-              <!-- Doc 4 -->
               <div class="form-group">
                 <label>d. Bank Passbook First Page</label>
                 <input type="file" id="f_doc_passbook" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errPassbook')">
@@ -1261,7 +1256,6 @@
                 <span class="file-error-msg" id="errPassbook">Exceeded 500 KB or invalid file type!</span>
               </div>
 
-              <!-- Doc 5 -->
               <div class="form-group">
                 <label>e. Income Proof Certificate</label>
                 <input type="file" id="f_doc_income" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errIncome')">
@@ -1269,7 +1263,6 @@
                 <span class="file-error-msg" id="errIncome">Exceeded 500 KB or invalid file type!</span>
               </div>
 
-              <!-- Doc 6 -->
               <div class="form-group">
                 <label>f. Application Prayer</label>
                 <input type="file" id="f_doc_prayer" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="validateGeneralDocument(this, 500, 'errPrayer')">
@@ -1318,7 +1311,6 @@
 
     <!-- ================= AUTHENTICATED SECTION: ADMIN DASHBOARD ================= -->
     <section id="sec-adminDashboard" class="page-section">
-      <!-- Admin Workspace Greeting -->
       <div class="card" style="border-left: 5px solid #7f1d1d; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
           <span style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">OFFICIAL ADMINISTRATIVE PORTAL</span>
@@ -1327,7 +1319,7 @@
         </div>
       </div>
 
-      <!-- Update Admin Contact Records directly -->
+      <!-- Update Admin Contact Records -->
       <div class="card" style="border-left: 5px solid #0284c7;">
         <h3 style="font-size:15px; margin-bottom:6px; color:#0369a1;">Update Administrator Mobile & Email</h3>
         <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Update your official administrative contact records directly:</p>
@@ -1347,9 +1339,36 @@
         </div>
       </div>
 
-      <!-- Candidate Provisioning -->
+      <!-- NEW FEATURE: Bulk Candidate Credentials Upload via Excel/CSV -->
+      <div class="card" style="border-left: 5px solid #15803d;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <div>
+            <h3 style="font-size:15px; color:#15803d;">Bulk Create Candidate Credentials (Excel / CSV Upload)</h3>
+            <p style="font-size:12px; color:#78716c; margin-top:2px;">Upload an Excel (.xlsx/.xls) or CSV spreadsheet containing multiple candidate accounts at once.</p>
+          </div>
+          <button type="button" class="action-btn btn-excel" onclick="downloadSampleCandidateTemplate()">
+            📄 Download Sample Excel Template
+          </button>
+        </div>
+
+        <div style="background:#fafaf9; border:1px dashed #d6d3d1; padding:16px; border-radius:8px;">
+          <label style="margin-bottom:6px;">Select Candidate Data Spreadsheet (.xlsx, .xls, .csv):</label>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <input type="file" id="bulkExcelFileInput" class="input-file-field" accept=".xlsx,.xls,.csv" style="max-width:380px;">
+            <button class="btn-primary" style="background:#15803d;" onclick="processBulkCandidateExcelUpload()">
+              🚀 Upload & Generate Accounts
+            </button>
+          </div>
+          <span class="file-rule-hint" style="margin-top:8px;">
+            Required Columns in File: <strong>Name</strong>, <strong>Phone</strong>, <strong>CandidateID</strong>, <strong>Password</strong>
+          </span>
+          <div id="bulkUploadReport" style="margin-top:10px; font-size:12px; display:none;"></div>
+        </div>
+      </div>
+
+      <!-- Single Candidate Provisioning -->
       <div class="card" style="border-left: 5px solid #ea580c;">
-        <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Issue Candidate Credentials</h3>
+        <h3 style="font-size:15px; margin-bottom:12px; color:#9a3412;">Issue Single Candidate Credentials (Manual Entry)</h3>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
           <div>
             <label>Candidate Full Name</label>
@@ -1432,7 +1451,7 @@
       </div>
     </div>
 
-    <!-- Candidate Profile Modal -->
+    <!-- User Profile Modal -->
     <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; padding:20px; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">User Account Profile</h3>
@@ -1484,7 +1503,6 @@
     </div>
   </main>
 
-  <!-- PUBLIC FOOTER (Hidden during logged-in sessions) -->
   <footer id="publicFooter">
     <strong>Ramakrishna Mission Ashrama, Jhargram</strong><br>
     P.O. & Dist. - Jhargram, PIN - 721507, West Bengal, India<br>
@@ -1519,8 +1537,7 @@
       }
     };
 
-    // Session State
-    let activeUserRole = null; // 'admin' | 'candidate' | null
+    let activeUserRole = null;
     let activeAdminId = null;
     let activeCandidateId = null;
     let selectedScrutinyIndex = null;
@@ -1535,10 +1552,9 @@
       localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
     }
 
-    // Navigation for Public Pages
     function navigateToPublic(sectionId) {
       if (activeUserRole !== null) {
-        alert('You are currently logged into an active session. Please logout first to browse public sections.');
+        alert('Active session detected. Please log out first.');
         return;
       }
       document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
@@ -1549,7 +1565,6 @@
       }
     }
 
-    // Navigation within Authenticated Workspace
     function navigateToAuth(sectionId) {
       document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('sec-' + sectionId);
@@ -1559,7 +1574,6 @@
       }
     }
 
-    // Session UI Switcher: Hides public header/footer and activates private workspace top bar
     function setAuthenticatedUI(role, title, identity) {
       activeUserRole = role;
       document.getElementById('publicHeader').style.display = 'none';
@@ -1570,7 +1584,6 @@
       document.getElementById('portalUserIdentity').innerText = identity;
     }
 
-    // Secure Logout: Restores public header/footer and redirects to Home
     function executeSecureLogout() {
       activeUserRole = null;
       activeAdminId = null;
@@ -1583,7 +1596,6 @@
       navigateToPublic('home');
     }
 
-    // View Profile Modal for Authenticated Users
     function openProfileModal() {
       const modal = document.getElementById('profileModal');
       const content = document.getElementById('profileModalContent');
@@ -1611,6 +1623,217 @@
 
     function closeProfileModal() {
       document.getElementById('profileModal').style.display = 'none';
+    }
+
+    // Direct Login Functions
+    function executeAdminDirectLogin() {
+      const selectedId = document.getElementById('adminDropdown').value;
+      const pass = document.getElementById('adminPassField').value.trim();
+
+      if (!selectedId || !pass) {
+        alert('Please select an Administrator profile and enter the password!');
+        return;
+      }
+
+      const admin = admins[selectedId];
+      if (admin && admin.pass === pass) {
+        activeAdminId = selectedId;
+        document.getElementById('activeAdminTitle').innerText = admin.name;
+        document.getElementById('activeAdminContact').innerText = `Mobile: ${admin.mobile} | Email: ${admin.email}`;
+        document.getElementById('adminPassField').value = '';
+
+        setAuthenticatedUI('admin', 'ADMINISTRATOR CONSOLE', admin.name);
+        renderAdminTable();
+        navigateToAuth('adminDashboard');
+      } else {
+        alert('Invalid Administrator Password! Please try again.');
+      }
+    }
+
+    function executeCandidateDirectLogin() {
+      const id = document.getElementById('candIdField').value.trim();
+      const pass = document.getElementById('candPassField').value.trim();
+
+      if (!id || !pass) {
+        alert('Please enter both Candidate ID and Password!');
+        return;
+      }
+
+      if (candidates[id] && candidates[id].pass === pass) {
+        activeCandidateId = id;
+        const cand = candidates[id];
+        document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
+        document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + id + ' | Mobile: ' + cand.mobile;
+
+        document.getElementById('candIdField').value = '';
+        document.getElementById('candPassField').value = '';
+
+        setAuthenticatedUI('candidate', 'CANDIDATE SCHOLARSHIP WORKSPACE', cand.name + ' (' + id + ')');
+        navigateToAuth('candidateDashboard');
+      } else {
+        alert('Invalid Candidate ID or Password!');
+      }
+    }
+
+    function executeAdminDirectProfileUpdate() {
+      const newMobile = document.getElementById('updNewMobile').value.trim();
+      const newEmail = document.getElementById('updNewEmail').value.trim();
+
+      if (!newMobile && !newEmail) {
+        alert('Please provide a new Mobile Number or Email Address!');
+        return;
+      }
+
+      if (newMobile) {
+        if (newMobile.length !== 10) {
+          alert('Mobile Number must be exactly 10 digits!');
+          return;
+        }
+        admins[activeAdminId].mobile = newMobile;
+      }
+      if (newEmail) {
+        admins[activeAdminId].email = newEmail;
+      }
+
+      saveState();
+      alert('Administrator profile updated successfully!');
+      document.getElementById('activeAdminContact').innerText = `Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
+      document.getElementById('updNewMobile').value = '';
+      document.getElementById('updNewEmail').value = '';
+    }
+
+    // Single Candidate Account Creation
+    function adminCreateCustomCandidate() {
+      const name = document.getElementById('genCandName').value.trim();
+      const mobile = document.getElementById('genCandMobile').value.trim();
+      const id = document.getElementById('genCandId').value.trim();
+      const pass = document.getElementById('genCandPass').value.trim();
+
+      if (!name || mobile.length !== 10 || !id || !pass) {
+        alert('All fields are mandatory (including a valid 10-digit mobile number)!');
+        return;
+      }
+
+      if (candidates[id]) {
+        alert('This Candidate ID is already assigned! Please provide a unique ID.');
+        return;
+      }
+
+      candidates[id] = { name: name, mobile: mobile, pass: pass };
+      saveState();
+
+      alert(`Candidate Account Created Successfully!\n\nCandidate Name: ${name}\nMobile: ${mobile}\nCandidate ID: ${id}\nPassword: ${pass}`);
+
+      document.getElementById('genCandName').value = '';
+      document.getElementById('genCandMobile').value = '';
+      document.getElementById('genCandId').value = '';
+      document.getElementById('genCandPass').value = '';
+    }
+
+    // NEW: Download Sample Excel Template for Bulk Upload
+    function downloadSampleCandidateTemplate() {
+      const sampleData = [
+        ["Name", "Phone", "CandidateID", "Password"],
+        ["Swapan Mahato", "9876543211", "RKM-2026-003", "Pass@1234"],
+        ["Raju Murmu", "9876543212", "RKM-2026-004", "Pass@5678"],
+        ["Subrata Singha", "9876543213", "RKM-2026-005", "Pass@9012"]
+      ];
+
+      const ws = XLSX.utils.aoa_to_sheet(sampleData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Candidates_Template");
+      XLSX.writeFile(wb, "RKMA_Bulk_Candidates_Sample_Template.xlsx");
+    }
+
+    // NEW: Process Bulk Candidate Excel/CSV File Upload
+    function processBulkCandidateExcelUpload() {
+      const fileInput = document.getElementById('bulkExcelFileInput');
+      const reportBox = document.getElementById('bulkUploadReport');
+      reportBox.style.display = 'none';
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Please choose an Excel (.xlsx / .xls) or CSV file first!');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+          if (!jsonData || jsonData.length === 0) {
+            alert('The uploaded file appears to be empty or has an invalid structure.');
+            return;
+          }
+
+          let addedCount = 0;
+          let skippedCount = 0;
+          let errorMessages = [];
+
+          jsonData.forEach((row, idx) => {
+            // Flexible matching for column names (handles casing or spaces)
+            const name = (row['Name'] || row['name'] || row['Candidate Name'] || row['CandidateName'] || '').toString().trim();
+            const phone = (row['Phone'] || row['phone'] || row['Mobile'] || row['mobile'] || '').toString().trim();
+            const candId = (row['CandidateID'] || row['candidateid'] || row['Candidate ID'] || row['ID'] || row['id'] || '').toString().trim();
+            const pass = (row['Password'] || row['password'] || row['Pass'] || row['pass'] || '').toString().trim();
+
+            if (!name || !candId || !pass) {
+              skippedCount++;
+              errorMessages.push(`Row ${idx + 2}: Missing required fields (Name, Candidate ID, or Password).`);
+              return;
+            }
+
+            if (candidates[candId]) {
+              skippedCount++;
+              errorMessages.push(`Row ${idx + 2}: Candidate ID "${candId}" already exists. Skipped.`);
+              return;
+            }
+
+            // Clean 10-digit phone number validation
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            if (cleanPhone.length < 10) {
+              skippedCount++;
+              errorMessages.push(`Row ${idx + 2}: Invalid mobile number for "${name}". Skipped.`);
+              return;
+            }
+
+            // Add candidate account
+            candidates[candId] = {
+              name: name,
+              mobile: cleanPhone.slice(-10),
+              pass: pass
+            };
+            addedCount++;
+          });
+
+          saveState();
+
+          // Display upload summary report
+          reportBox.style.display = 'block';
+          reportBox.innerHTML = `
+            <div style="padding:10px; border-radius:6px; background:${addedCount > 0 ? '#dcfce7' : '#fee2e2'}; color:${addedCount > 0 ? '#15803d' : '#991b1b'}; font-weight:bold;">
+              ✅ Successfully Imported: ${addedCount} candidate account(s).<br>
+              ⚠️ Skipped/Failed: ${skippedCount} record(s).
+            </div>
+            ${errorMessages.length > 0 ? `<div style="margin-top:6px; color:#dc2626; max-height:100px; overflow-y:auto; font-size:11px;">${errorMessages.join('<br>')}</div>` : ''}
+          `;
+
+          alert(`Bulk Upload Processed!\n\nSuccessfully Created: ${addedCount}\nSkipped: ${skippedCount}`);
+          fileInput.value = '';
+
+        } catch (err) {
+          console.error(err);
+          alert('Failed to parse file! Ensure the spreadsheet contains valid columns (Name, Phone, CandidateID, Password).');
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
     }
 
     // Client-side Strict File Validation & Alerts
@@ -1690,113 +1913,7 @@
       }
     }
 
-    // Direct Admin Login
-    function executeAdminDirectLogin() {
-      const selectedId = document.getElementById('adminDropdown').value;
-      const pass = document.getElementById('adminPassField').value.trim();
-
-      if (!selectedId || !pass) {
-        alert('Please select an Administrator profile and enter the password!');
-        return;
-      }
-
-      const admin = admins[selectedId];
-      if (admin && admin.pass === pass) {
-        activeAdminId = selectedId;
-        document.getElementById('activeAdminTitle').innerText = admin.name;
-        document.getElementById('activeAdminContact').innerText = `Mobile: ${admin.mobile} | Email: ${admin.email}`;
-        document.getElementById('adminPassField').value = '';
-
-        setAuthenticatedUI('admin', 'ADMINISTRATOR CONSOLE', admin.name);
-        renderAdminTable();
-        navigateToAuth('adminDashboard');
-      } else {
-        alert('Invalid Administrator Password! Please try again.');
-      }
-    }
-
-    // Direct Candidate Login
-    function executeCandidateDirectLogin() {
-      const id = document.getElementById('candIdField').value.trim();
-      const pass = document.getElementById('candPassField').value.trim();
-
-      if (!id || !pass) {
-        alert('Please enter both Candidate ID and Password!');
-        return;
-      }
-
-      if (candidates[id] && candidates[id].pass === pass) {
-        activeCandidateId = id;
-        const cand = candidates[id];
-        document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
-        document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + id + ' | Mobile: ' + cand.mobile;
-
-        document.getElementById('candIdField').value = '';
-        document.getElementById('candPassField').value = '';
-
-        setAuthenticatedUI('candidate', 'CANDIDATE SCHOLARSHIP WORKSPACE', cand.name + ' (' + id + ')');
-        navigateToAuth('candidateDashboard');
-      } else {
-        alert('Invalid Candidate ID or Password!');
-      }
-    }
-
-    // Admin: Create Candidate Account
-    function adminCreateCustomCandidate() {
-      const name = document.getElementById('genCandName').value.trim();
-      const mobile = document.getElementById('genCandMobile').value.trim();
-      const id = document.getElementById('genCandId').value.trim();
-      const pass = document.getElementById('genCandPass').value.trim();
-
-      if (!name || mobile.length !== 10 || !id || !pass) {
-        alert('All fields are mandatory (including a valid 10-digit mobile number)!');
-        return;
-      }
-
-      if (candidates[id]) {
-        alert('This Candidate ID is already assigned! Please provide a unique ID.');
-        return;
-      }
-
-      candidates[id] = { name: name, mobile: mobile, pass: pass };
-      saveState();
-
-      alert(`Candidate Account Created Successfully!\n\nCandidate Name: ${name}\nMobile: ${mobile}\nCandidate ID: ${id}\nPassword: ${pass}`);
-
-      document.getElementById('genCandName').value = '';
-      document.getElementById('genCandMobile').value = '';
-      document.getElementById('genCandId').value = '';
-      document.getElementById('genCandPass').value = '';
-    }
-
-    function executeAdminDirectProfileUpdate() {
-      const newMobile = document.getElementById('updNewMobile').value.trim();
-      const newEmail = document.getElementById('updNewEmail').value.trim();
-
-      if (!newMobile && !newEmail) {
-        alert('Please provide a new Mobile Number or Email Address!');
-        return;
-      }
-
-      if (newMobile) {
-        if (newMobile.length !== 10) {
-          alert('Mobile Number must be exactly 10 digits!');
-          return;
-        }
-        admins[activeAdminId].mobile = newMobile;
-      }
-      if (newEmail) {
-        admins[activeAdminId].email = newEmail;
-      }
-
-      saveState();
-      alert('Administrator profile updated successfully!');
-      document.getElementById('activeAdminContact').innerText = `Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
-      document.getElementById('updNewMobile').value = '';
-      document.getElementById('updNewEmail').value = '';
-    }
-
-    // Candidate Multi-step Form Handlers
+    // Candidate Form Steps
     function openApplicationForm() {
       const existing = applications.find(a => a.candidateId === activeCandidateId);
       if (existing && existing.status !== 'Returned for Correction') {
@@ -1933,7 +2050,6 @@
       navigateToAuth('candidateDashboard');
     }
 
-    // View Application Details & Download PDF by Candidate
     function viewCandidateSubmittedApp() {
       const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
       if (existingIndex === -1) {
@@ -1943,7 +2059,6 @@
       downloadApplicationPDF(existingIndex);
     }
 
-    // Candidate Scrutiny Tracking
     function openTrackStatus() {
       const existing = applications.find(a => a.candidateId === activeCandidateId);
       const box = document.getElementById('trackTimelineBox');
@@ -1991,7 +2106,7 @@
       return 'st-submitted';
     }
 
-    // Admin Table
+    // Admin Table & Scrutiny
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -2021,7 +2136,6 @@
       });
     }
 
-    // Scrutiny Modal Handlers
     function openScrutinyModal(index) {
       selectedScrutinyIndex = index;
       const app = applications[index];
@@ -2044,7 +2158,6 @@
       selectedScrutinyIndex = null;
     }
 
-    // Enforce approval before sanctioning rule
     function handleStatusSelectionChange() {
       if (selectedScrutinyIndex === null) return;
       const app = applications[selectedScrutinyIndex];
@@ -2064,13 +2177,11 @@
       const newStatus = document.getElementById('modalStatusSelect').value;
       const remarks = document.getElementById('modalAdminRemarks').value.trim();
 
-      // Rule: An application must be approved first before sanctioning
       if (newStatus === 'Sanctioned' && app.status !== 'Approved') {
         alert('Validation Error: You cannot sanction an application directly. Please update the status to "Approved" first, verify it, and then proceed to sanction.');
         return;
       }
 
-      // Rule: When returning application, remarks are mandatory
       if (newStatus === 'Returned for Correction' && !remarks) {
         alert('Action Required: Please provide specific remarks explaining why the application is being returned for correction.');
         return;
@@ -2095,7 +2206,6 @@
       }
     }
 
-    // Official PDF Print Generator
     function downloadApplicationPDF(index) {
       const app = applications[index];
       const headerMeta = document.getElementById('pdfHeaderMeta');
@@ -2158,7 +2268,6 @@
       window.print();
     }
 
-    // Word (.doc) Generator
     function downloadApplicationWord(index) {
       const app = applications[index];
       const htmlContent = `
@@ -2235,7 +2344,6 @@
       document.body.removeChild(a);
     }
 
-    // Export All to CSV
     function exportApplicationsToCSV() {
       if (applications.length === 0) {
         alert('No applications found to export!');
