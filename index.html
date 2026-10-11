@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scholarship Portal | Ramakrishna Mission Ashrama, Jhargram</title>
-  <!-- SheetJS Library for Excel Parsing -->
+  <!-- SheetJS Library for Parsing and Reading Excel Files -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     * {
@@ -296,7 +296,7 @@
       display: block;
     }
 
-    /* Image Slider */
+    /* 15 Image Slider */
     .slider-container {
       position: relative;
       max-width: 100%;
@@ -526,7 +526,7 @@
   <!-- 1. PUBLIC HEADER -->
   <header id="publicHeader">
     <div class="header-inner">
-      <div class="brand" onclick="navigateToPublic('home')">
+      <div class="brand" onclick="navigateTo('home')">
         <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" class="rkm-logo-img">
         <div>
           <div style="font-weight:bold; font-size:14px; letter-spacing:0.5px;">RAMAKRISHNA MISSION ASHRAMA</div>
@@ -534,11 +534,11 @@
         </div>
       </div>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
-        <button class="nav-btn" onclick="navigateToPublic('home')">Home</button>
-        <button class="nav-btn" onclick="navigateToPublic('notices')">Notice Board</button>
-        <button class="nav-btn" onclick="navigateToPublic('downloads')">Downloads</button>
-        <button class="nav-btn" onclick="navigateToPublic('candidateLogin')">Candidate Login</button>
-        <button class="nav-btn nav-btn-admin" onclick="navigateToPublic('adminLogin')">Admin Login</button>
+        <button class="nav-btn" onclick="navigateTo('home')">Home</button>
+        <button class="nav-btn" onclick="navigateTo('notices')">Notice Board</button>
+        <button class="nav-btn" onclick="navigateTo('downloads')">Downloads</button>
+        <button class="nav-btn" onclick="navigateTo('candidateLogin')">Candidate Login</button>
+        <button class="nav-btn nav-btn-admin" onclick="navigateTo('adminLogin')">Admin Login</button>
       </div>
     </div>
   </header>
@@ -568,8 +568,8 @@
         <h2>Ramakrishna Mission Ashrama, Jhargram</h2>
         <p>Scholarship Application & Management Portal<br>Empowering Students Through Education, Values and Service</p>
         <div class="btn-group">
-          <button class="btn-primary" onclick="navigateToPublic('candidateLogin')">Candidate Portal</button>
-          <button class="btn-secondary" onclick="navigateToPublic('adminLogin')">Admin Login</button>
+          <button class="btn-primary" onclick="navigateTo('candidateLogin')">Candidate Portal</button>
+          <button class="btn-secondary" onclick="navigateTo('adminLogin')">Admin Login</button>
         </div>
       </div>
 
@@ -577,7 +577,7 @@
       <div class="card" style="border-left:5px solid #ea580c;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <h3 style="color:#7f1d1d; font-size:16px;">📢 Latest Institutional Notices</h3>
-          <button class="nav-btn" style="background:#ea580c; border:none;" onclick="navigateToPublic('notices')">View All Notices &rarr;</button>
+          <button class="nav-btn" style="background:#ea580c; border:none;" onclick="navigateTo('notices')">View All Notices &rarr;</button>
         </div>
         <div id="homeNoticesList"></div>
       </div>
@@ -707,7 +707,7 @@
       <div class="card" style="border-left: 5px solid #ea580c;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
           <h3 style="color:#7f1d1d; font-size:18px;">Official Notice Board</h3>
-          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateToPublic('home')">Back to Home</button>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('home')">Back to Home</button>
         </div>
         <div id="fullNoticesList"></div>
       </div>
@@ -718,13 +718,13 @@
       <div class="card" style="border-left: 5px solid #0284c7;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
           <h3 style="color:#0369a1; font-size:18px;">Official Document Downloads</h3>
-          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateToPublic('home')">Back to Home</button>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('home')">Back to Home</button>
         </div>
         <div class="downloads-grid" id="publicDownloadsGrid"></div>
       </div>
     </section>
 
-    <!-- ================= PUBLIC SECTION 4: ADMIN LOGIN (MANUAL ID & PASS) ================= -->
+    <!-- ================= PUBLIC SECTION 4: ADMIN LOGIN ================= -->
     <section id="sec-adminLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:40px auto; border-top:5px solid #1c1917;">
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
@@ -799,7 +799,7 @@
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
           <h3>Scholarship Application Form (Session 2026-27)</h3>
-          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateToAuth('candidateDashboard')">Back to Workspace</button>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Workspace</button>
         </div>
 
         <div class="stepper">
@@ -994,7 +994,7 @@
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 id="trackHeading">Application Scrutiny & Status History</h3>
-          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateToAuth('candidateDashboard')">Back to Workspace</button>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Workspace</button>
         </div>
         <div id="trackTimelineBox" style="margin-top:14px; display:flex; flex-direction:column; gap:10px;"></div>
       </div>
@@ -1030,7 +1030,6 @@
         <button class="admin-tab-btn" id="tabBtnManageSite" onclick="switchAdminWindow('manageSite')">
           ✏️ Edit Website Content
         </button>
-        <!-- Visible Only to Super Admin -->
         <button class="admin-tab-btn" id="tabBtnSuperAdminOnly" style="display:none; color:#4338ca;" onclick="switchAdminWindow('superAdminManage')">
           👑 Manage Admins (Super Admin Only)
         </button>
@@ -1069,7 +1068,7 @@
         </div>
       </div>
 
-      <!-- WINDOW 2: REGISTRATION (With Candidate Delete Option) -->
+      <!-- WINDOW 2: REGISTRATION -->
       <div id="adminWindowRegistration" style="display:none;">
         <div class="card" style="border-left: 5px solid #15803d;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
@@ -1356,7 +1355,7 @@
       'RKM-2026-001': { name: 'Sourav Mahato', mobile: '9876543210', pass: 'RKMA@2026' }
     };
 
-    // Admins Roster (Secretary Maharaj is SUPER_ADMIN)
+    // Admins Roster
     let admins = JSON.parse(localStorage.getItem('rkm_admins_db') || 'null') || {
       'Secretary@RKMAJGM': {
         name: 'Secretary Maharaj, RKMA Jhargram',
@@ -1423,7 +1422,7 @@
       localStorage.setItem('rkm_site_content', JSON.stringify(siteContent));
     }
 
-    // Render Dynamic Content on Website
+    // Dynamic Content
     function renderPublicSiteContent() {
       document.getElementById('viewAboutIntro').innerText = siteContent.aboutIntro;
       document.getElementById('viewActEdu').innerText = siteContent.actEdu;
@@ -1431,7 +1430,7 @@
       document.getElementById('viewActYouth').innerText = siteContent.actYouth;
       document.getElementById('viewActSpiritual').innerText = siteContent.actSpiritual;
 
-      // Notices preview on Home
+      // Notices on Home
       const homeNotices = document.getElementById('homeNoticesList');
       homeNotices.innerHTML = notices.slice(0, 3).map(n => `
         <div class="notice-item">
@@ -1440,7 +1439,7 @@
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No current notices.</p>';
 
-      // Full Notices Page
+      // Notices Page
       const fullNotices = document.getElementById('fullNoticesList');
       fullNotices.innerHTML = notices.map(n => `
         <div class="notice-item">
@@ -1467,25 +1466,15 @@
       `).join('');
     }
 
-    // Navigation
-    function navigateToPublic(sectionId) {
-      if (activeUserRole !== null) {
-        alert('Active session detected. Please log out first.');
-        return;
-      }
+    // Unified Navigation with Refresh-Persistence Logic
+    function navigateTo(sectionId) {
       document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('sec-' + sectionId);
       if (target) {
         target.classList.add('active');
-        window.scrollTo(0, 0);
-      }
-    }
-
-    function navigateToAuth(sectionId) {
-      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-      const target = document.getElementById('sec-' + sectionId);
-      if (target) {
-        target.classList.add('active');
+        // Save current page state for page refresh
+        sessionStorage.setItem('rkm_current_page', sectionId);
+        window.location.hash = sectionId;
         window.scrollTo(0, 0);
       }
     }
@@ -1499,19 +1488,29 @@
       document.getElementById('portalUserIdentity').innerText = identity;
     }
 
+    function saveActiveSession(role, userId) {
+      sessionStorage.setItem('rkm_active_role', role);
+      sessionStorage.setItem('rkm_active_user_id', userId);
+    }
+
     function executeSecureLogout() {
       activeUserRole = null;
       activeAdminId = null;
       activeCandidateId = null;
 
+      sessionStorage.removeItem('rkm_current_page');
+      sessionStorage.removeItem('rkm_active_role');
+      sessionStorage.removeItem('rkm_active_user_id');
+
       document.getElementById('portalTopHeader').style.display = 'none';
       document.getElementById('publicHeader').style.display = 'block';
       document.getElementById('publicFooter').style.display = 'block';
 
-      navigateToPublic('home');
+      window.location.hash = 'home';
+      navigateTo('home');
     }
 
-    // Direct Login Functions
+    // Admin Direct Login
     function executeAdminDirectLogin() {
       const id = document.getElementById('manualAdminId').value.trim();
       const pass = document.getElementById('manualAdminPass').value.trim();
@@ -1531,19 +1530,19 @@
 
         const isSuperAdmin = (admin.role === 'SUPER_ADMIN');
         document.getElementById('adminRoleBadge').innerText = isSuperAdmin ? '👑 SUPER ADMIN CONSOLE' : 'ADMIN CONSOLE';
-        
-        // Show/Hide Super Admin Window Tab
         document.getElementById('tabBtnSuperAdminOnly').style.display = isSuperAdmin ? 'inline-block' : 'none';
 
+        saveActiveSession('admin', id);
         setAuthenticatedUI('admin', isSuperAdmin ? 'SUPER ADMIN WORKSPACE' : 'ADMINISTRATOR CONSOLE', admin.name);
         refreshAdminDashboardPanels();
         switchAdminWindow('applications');
-        navigateToAuth('adminDashboard');
+        navigateTo('adminDashboard');
       } else {
         alert('Invalid Administrator Credentials! Please verify ID and Password.');
       }
     }
 
+    // Candidate Direct Login
     function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -1562,14 +1561,15 @@
         document.getElementById('candIdField').value = '';
         document.getElementById('candPassField').value = '';
 
+        saveActiveSession('candidate', id);
         setAuthenticatedUI('candidate', 'CANDIDATE SCHOLARSHIP WORKSPACE', cand.name + ' (' + id + ')');
-        navigateToAuth('candidateDashboard');
+        navigateTo('candidateDashboard');
       } else {
         alert('Invalid Candidate ID or Password!');
       }
     }
 
-    // Admin Tabs Switcher
+    // Admin Window Switcher
     function switchAdminWindow(windowType) {
       const tabs = ['applications', 'registration', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'updateProfile'];
       tabs.forEach(t => {
@@ -1589,6 +1589,8 @@
       if (activeBtn) activeBtn.classList.add('active');
       if (activeWin) activeWin.style.display = 'block';
 
+      sessionStorage.setItem('rkm_current_admin_tab', windowType);
+
       if (windowType === 'manageSite') loadCMSInputs();
       if (windowType === 'manageNotices') renderAdminNoticesTable();
       if (windowType === 'manageDownloads') renderAdminDownloadsTable();
@@ -1602,7 +1604,7 @@
       document.getElementById('regCountBadge').innerText = Object.keys(candidates).length;
     }
 
-    // Applications Window & Candidate Delete Handlers
+    // Applications Window Handlers
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -1630,7 +1632,6 @@
       });
     }
 
-    // Delete Application only (From Application Window)
     function deleteApplicationOnly(index) {
       const item = applications[index];
       if (confirm(`Delete application "${item.appNo}" for ${item.name}? This removes the application submission but preserves candidate registration.`)) {
@@ -1641,7 +1642,7 @@
       }
     }
 
-    // Registration Window (With Full Candidate Delete Option)
+    // Registration Window Handlers
     function renderRegisteredCandidatesTable() {
       const tbody = document.getElementById('registeredCandidatesTableBody');
       tbody.innerHTML = '';
@@ -1666,7 +1667,6 @@
       }
     }
 
-    // Delete Entire Candidate Account (From Registration Window)
     function deleteEntireCandidateAccount(cid) {
       const cand = candidates[cid];
       if (confirm(`CRITICAL: Are you sure you want to permanently delete Candidate "${cand.name}" (${cid}) and all associated records?`)) {
@@ -1761,7 +1761,7 @@
       reader.readAsArrayBuffer(fileInput.files[0]);
     }
 
-    // Manage Notices (CMS)
+    // CMS Handlers
     function renderAdminNoticesTable() {
       const box = document.getElementById('adminNoticeList');
       box.innerHTML = notices.map((n, i) => `
@@ -1799,7 +1799,6 @@
       }
     }
 
-    // Manage Downloads (CMS)
     function renderAdminDownloadsTable() {
       const box = document.getElementById('adminDownloadList');
       box.innerHTML = downloads.map((d, i) => `
@@ -1838,7 +1837,6 @@
       }
     }
 
-    // Direct Website Content Editor (CMS)
     function loadCMSInputs() {
       document.getElementById('editAboutIntro').value = siteContent.aboutIntro;
       document.getElementById('editActEdu').value = siteContent.actEdu;
@@ -1859,7 +1857,7 @@
       alert('Website content updated live!');
     }
 
-    // Super Admin Exclusive Management
+    // Super Admin Exclusive Functions
     function renderSuperAdminTable() {
       const tbody = document.getElementById('superAdminTableBody');
       tbody.innerHTML = '';
@@ -1929,6 +1927,33 @@
       }
     }
 
+    function executeAdminDirectProfileUpdate() {
+      const newMobile = document.getElementById('updNewMobile').value.trim();
+      const newEmail = document.getElementById('updNewEmail').value.trim();
+
+      if (!newMobile && !newEmail) {
+        alert('Please provide a new Mobile Number or Email Address!');
+        return;
+      }
+
+      if (newMobile) {
+        if (newMobile.length !== 10) {
+          alert('Mobile Number must be exactly 10 digits!');
+          return;
+        }
+        admins[activeAdminId].mobile = newMobile;
+      }
+      if (newEmail) {
+        admins[activeAdminId].email = newEmail;
+      }
+
+      saveState();
+      alert('Profile updated successfully!');
+      document.getElementById('activeAdminContact').innerText = `Admin ID: ${activeAdminId} | Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
+      document.getElementById('updNewMobile').value = '';
+      document.getElementById('updNewEmail').value = '';
+    }
+
     // Registration Slip Download
     function downloadCandidateRegistrationSlip(cid) {
       const cand = candidates[cid];
@@ -1948,7 +1973,7 @@
       window.print();
     }
 
-    // Scrutiny Modal
+    // Scrutiny Modal Handlers
     function openScrutinyModal(index) {
       selectedScrutinyIndex = index;
       const app = applications[index];
@@ -1997,7 +2022,7 @@
       refreshAdminDashboardPanels();
     }
 
-    // Application Form Logic
+    // Candidate Form Logic
     function openApplicationForm() {
       const existing = applications.find(a => a.candidateId === activeCandidateId);
       if (existing && existing.status !== 'Returned for Correction') {
@@ -2009,7 +2034,7 @@
       document.getElementById('f_mobile').value = cand.mobile;
       refreshCaptcha();
       goToStep(1);
-      navigateToAuth('applicationForm');
+      navigateTo('applicationForm');
     }
 
     function goToStep(s) {
@@ -2087,7 +2112,7 @@
       if (existingIndex >= 0) applications[existingIndex] = record; else applications.push(record);
       saveState();
       alert(`Application Submitted! (App No: ${appNo})`);
-      navigateToAuth('candidateDashboard');
+      navigateTo('candidateDashboard');
     }
 
     function viewCandidateSubmittedApp() {
@@ -2109,7 +2134,93 @@
           </div>
         `;
       }
-      navigateToAuth('trackStatus');
+      navigateTo('trackStatus');
+    }
+
+    function validateAndPreviewFile(input, previewId, maxKb, allowedTypes, errSpanId) {
+      const errSpan = document.getElementById(errSpanId);
+      input.classList.remove('file-invalid');
+      if (errSpan) errSpan.style.display = 'none';
+
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileSizeKb = file.size / 1024;
+
+        if (!allowedTypes.includes(file.type)) {
+          input.classList.add('file-invalid');
+          if (errSpan) {
+            errSpan.innerText = 'Unsupported file format! Allowed: JPG, JPEG, PNG.';
+            errSpan.style.display = 'block';
+          }
+          alert('Upload Error: Unsupported format. Allowed: JPG, JPEG, PNG.');
+          input.value = '';
+          return;
+        }
+
+        if (fileSizeKb > maxKb) {
+          input.classList.add('file-invalid');
+          if (errSpan) {
+            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds limit of ${maxKb} KB!`;
+            errSpan.style.display = 'block';
+          }
+          alert(`Upload Error: File size exceeds ${maxKb} KB.`);
+          input.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const container = document.getElementById(previewId);
+          container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+          if (previewId === 'candPhotoPreview') currentUploadedPhotoBase64 = e.target.result;
+          if (previewId === 'candSignPreview') currentUploadedSignBase64 = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function storeAndValidateDoc(input, maxKb, errSpanId, docKey) {
+      const errSpan = document.getElementById(errSpanId);
+      input.classList.remove('file-invalid');
+      if (errSpan) errSpan.style.display = 'none';
+
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileSizeKb = file.size / 1024;
+        const validExtensions = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+
+        if (!validExtensions.includes(file.type)) {
+          input.classList.add('file-invalid');
+          if (errSpan) {
+            errSpan.innerText = 'Unsupported format! Allowed: PDF, JPG, PNG.';
+            errSpan.style.display = 'block';
+          }
+          alert('Upload Error: Unsupported format.');
+          input.value = '';
+          return;
+        }
+
+        if (fileSizeKb > maxKb) {
+          input.classList.add('file-invalid');
+          if (errSpan) {
+            errSpan.innerText = `File size exceeds ${maxKb} KB!`;
+            errSpan.style.display = 'block';
+          }
+          alert(`Upload Error: Exceeds ${maxKb} KB.`);
+          input.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          currentUploadedDocs[docKey] = {
+            name: file.name,
+            type: file.type,
+            base64: e.target.result
+          };
+        };
+        reader.readAsDataURL(file);
+      }
     }
 
     // PDF / Word Printers
@@ -2184,7 +2295,7 @@
       });
       const blob = new Blob([csv], { type: 'text/csv;' });
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
+      a.href = url = URL.createObjectURL(blob);
       a.download = 'RKMA_Applications.csv';
       a.click();
     }
@@ -2223,10 +2334,58 @@
     function moveSlide(s) { currentSlideIndex = (currentSlideIndex + s + totalSlides) % totalSlides; updateCarousel(); }
     function currentSlide(i) { currentSlideIndex = i; updateCarousel(); }
 
+    function submitContactForm() {
+      const name = document.getElementById('contactName').value.trim();
+      const phone = document.getElementById('contactPhone').value.trim();
+      const msg = document.getElementById('contactMessage').value.trim();
+      if (!name || !phone || !msg) { alert('Please fill in Name, Phone, and Message.'); return; }
+      alert(`Thank you, ${name}! Your inquiry has been sent to rkma.jgm.scholarship@gmail.com.`);
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactMessage').value = '';
+    }
+
+    // WINDOW REFRESH-STATE RESTORATION INITIALIZER
     window.addEventListener('load', () => {
       renderPublicSiteContent();
       buildSliderDots();
       setInterval(() => moveSlide(1), 3500);
+
+      // Session & State Persistence on Refresh
+      const savedRole = sessionStorage.getItem('rkm_active_role');
+      const savedUserId = sessionStorage.getItem('rkm_active_user_id');
+      const savedPage = sessionStorage.getItem('rkm_current_page') || window.location.hash.replace('#', '') || 'home';
+      const savedAdminTab = sessionStorage.getItem('rkm_current_admin_tab') || 'applications';
+
+      if (savedRole === 'admin' && savedUserId && admins[savedUserId]) {
+        activeAdminId = savedUserId;
+        const admin = admins[savedUserId];
+        document.getElementById('activeAdminTitle').innerText = admin.name;
+        document.getElementById('activeAdminContact').innerText = `Admin ID: ${savedUserId} | Mobile: ${admin.mobile} | Email: ${admin.email}`;
+        
+        const isSuperAdmin = (admin.role === 'SUPER_ADMIN');
+        document.getElementById('adminRoleBadge').innerText = isSuperAdmin ? '👑 SUPER ADMIN CONSOLE' : 'ADMIN CONSOLE';
+        document.getElementById('tabBtnSuperAdminOnly').style.display = isSuperAdmin ? 'inline-block' : 'none';
+
+        setAuthenticatedUI('admin', isSuperAdmin ? 'SUPER ADMIN WORKSPACE' : 'ADMINISTRATOR CONSOLE', admin.name);
+        refreshAdminDashboardPanels();
+        switchAdminWindow(savedAdminTab);
+        navigateTo('adminDashboard');
+
+      } else if (savedRole === 'candidate' && savedUserId && candidates[savedUserId]) {
+        activeCandidateId = savedUserId;
+        const cand = candidates[savedUserId];
+        document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
+        document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + savedUserId + ' | Mobile: ' + cand.mobile;
+
+        setAuthenticatedUI('candidate', 'CANDIDATE SCHOLARSHIP WORKSPACE', `${cand.name} (${savedUserId})`);
+        
+        const validCandPages = ['candidateDashboard', 'applicationForm', 'trackStatus'];
+        navigateTo(validCandPages.includes(savedPage) ? savedPage : 'candidateDashboard');
+
+      } else {
+        navigateTo(savedPage);
+      }
     });
   </script>
 </body>
