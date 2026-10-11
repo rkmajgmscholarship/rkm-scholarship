@@ -834,7 +834,7 @@
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
         <div class="card" style="border-top:4px solid #ea580c; text-align:center;">
           <h3 style="margin-bottom:8px; color:#ea580c;">1. Apply / Continue Application</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Choose your scholarship category (Belur Math / Other Schemes) and submit application.</p>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Choose your scholarship category and submit application.</p>
           <button class="btn-primary" onclick="openSchemeSelectionWindow()">Apply for Scholarship</button>
         </div>
 
@@ -862,8 +862,6 @@
           </div>
           <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Workspace</button>
         </div>
-
-        <!-- Dynamic Scholarship Scheme Options Cards -->
         <div class="scheme-select-grid" id="candidateSchemeSelectionGrid"></div>
       </div>
     </section>
@@ -1872,7 +1870,22 @@
       }
     }
 
-    // Single & Bulk Registration
+    // Helper function to check duplicate candidate by Name and Mobile
+    function isDuplicateCandidate(name, mobile) {
+      const cleanName = name.trim().toLowerCase();
+      const cleanMobile = mobile.trim().replace(/[^0-9]/g, '').slice(-10);
+      for (let id in candidates) {
+        const existing = candidates[id];
+        const exName = existing.name.trim().toLowerCase();
+        const exMobile = existing.mobile.trim().replace(/[^0-9]/g, '').slice(-10);
+        if (cleanName === exName && cleanMobile === exMobile) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Single & Bulk Registration with strict Duplicate Check
     function adminCreateCustomCandidate() {
       const name = document.getElementById('genCandName').value.trim();
       const mobile = document.getElementById('genCandMobile').value.trim();
@@ -1884,7 +1897,13 @@
         return;
       }
       if (candidates[id]) {
-        alert('Candidate ID already exists!');
+        alert('Candidate ID already exists! Please use a unique Candidate ID.');
+        return;
+      }
+
+      // Check if Name and Mobile match any existing registered candidate
+      if (isDuplicateCandidate(name, mobile)) {
+        alert(`Duplicate Entry Found: A candidate with Name "${name}" and Phone "${mobile}" is already registered! Registration skipped.`);
         return;
       }
 
@@ -1929,23 +1948,43 @@
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
           let added = 0, skipped = 0;
-          jsonData.forEach((row) => {
+          let skipReasons = [];
+
+          jsonData.forEach((row, idx) => {
             const name = (row['Name'] || row['name'] || '').toString().trim();
             const phone = (row['Phone'] || row['phone'] || '').toString().trim().replace(/[^0-9]/g, '');
             const cid = (row['CandidateID'] || row['candidateid'] || '').toString().trim();
             const pass = (row['Password'] || row['password'] || '').toString().trim();
 
-            if (!name || !cid || !pass || phone.length < 10 || candidates[cid]) {
+            if (!name || !cid || !pass || phone.length < 10) {
               skipped++;
+              skipReasons.push(`Row ${idx + 2}: Missing fields or invalid phone.`);
               return;
             }
-            candidates[cid] = { name: name, mobile: phone.slice(-10), pass: pass };
+            if (candidates[cid]) {
+              skipped++;
+              skipReasons.push(`Row ${idx + 2}: Candidate ID "${cid}" already exists.`);
+              return;
+            }
+            const cleanPhone = phone.slice(-10);
+            if (isDuplicateCandidate(name, cleanPhone)) {
+              skipped++;
+              skipReasons.push(`Row ${idx + 2}: Duplicate Name & Phone ("${name}", "${cleanPhone}"). Skipped.`);
+              return;
+            }
+
+            candidates[cid] = { name: name, mobile: cleanPhone, pass: pass };
             added++;
           });
 
           saveState();
           reportBox.style.display = 'block';
-          reportBox.innerHTML = `<div style="padding:10px; background:#dcfce7; color:#15803d; font-weight:bold;">✅ Imported: ${added} candidates | Skipped/Duplicate: ${skipped}</div>`;
+          reportBox.innerHTML = `
+            <div style="padding:10px; background:#dcfce7; color:#15803d; font-weight:bold; border-radius:4px;">
+              ✅ Imported: ${added} candidates | Skipped/Duplicates: ${skipped}
+            </div>
+            ${skipReasons.length > 0 ? `<div style="margin-top:6px; color:#dc2626; max-height:100px; overflow-y:auto; font-size:11px;">${skipReasons.join('<br>')}</div>` : ''}
+          `;
           fileInput.value = '';
           refreshAdminDashboardPanels();
         } catch (err) {
@@ -2645,7 +2684,7 @@
       document.getElementById('contactMessage').value = '';
     }
 
-    // WINDOW REFRESH-STATE RESTORATION INITIALIZER
+    // Window Refresh-State Restoration Initializer
     window.addEventListener('load', () => {
       renderPublicSiteContent();
       buildSliderDots();
