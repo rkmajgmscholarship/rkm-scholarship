@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scholarship Portal | Ramakrishna Mission Ashrama, Jhargram</title>
-  <!-- Supabase Client JS Library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- SheetJS Library for Excel Parsing -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- Supabase Client JS Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -248,6 +248,7 @@
       color: #ffffff;
     }
 
+    /* Category selection cards */
     .scheme-select-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1111,6 +1112,7 @@
         <button class="admin-tab-btn" id="tabBtnManageSite" onclick="switchAdminWindow('manageSite')">
           ✏️ Edit Website Content
         </button>
+        <!-- Visible Only to Super Admin -->
         <button class="admin-tab-btn" id="tabBtnSuperAdminOnly" style="display:none; color:#4338ca;" onclick="switchAdminWindow('superAdminManage')">
           👑 Manage Admins (Super Admin Only)
         </button>
@@ -1130,6 +1132,7 @@
             <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export to Excel</button>
           </div>
 
+          <!-- Dynamic Sub-Windows Tabs for Applications -->
           <div class="sub-tabs-container" id="adminAppSubTabsContainer"></div>
 
           <div style="overflow-x:auto;">
@@ -1211,11 +1214,11 @@
       <div id="adminWindowManageSchemes" style="display:none;">
         <div class="card" style="border-left:5px solid #7f1d1d;">
           <h3 style="color:#7f1d1d; margin-bottom:6px;">Create New Scholarship Scheme</h3>
-          <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Add a new category alongside Belur Math and Other Scholarships.</p>
+          <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Add a new category alongside existing scholarships.</p>
           <div class="form-grid">
             <div class="form-group">
               <label>Scholarship Name</label>
-              <input type="text" id="newSchemeName" placeholder="e.g. Higher Education Special Scholarship">
+              <input type="text" id="newSchemeName" placeholder="e.g. Special Merit Scholarship">
             </div>
             <div class="form-group">
               <label>Short Description</label>
@@ -1284,32 +1287,17 @@
         <div class="card" style="border-left:5px solid #16a34a;">
           <h3 style="color:#15803d; margin-bottom:12px;">Direct Website Content Manager</h3>
           
-          <div class="form-group">
-            <label>About Us Paragraph (Ashrama Overview)</label>
-            <textarea id="editAboutIntro" rows="4"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Educational Activities Details</label>
-            <textarea id="editActEdu" rows="4"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Welfare Activities Details</label>
-            <textarea id="editActWelfare" rows="4"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Youth Activities Details</label>
-            <textarea id="editActYouth" rows="4"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Spiritual Activities Details</label>
-            <textarea id="editActSpiritual" rows="4"></textarea>
-          </div>
+          <div class="form-group"><label>About Us Paragraph</label><textarea id="editAboutIntro" rows="4"></textarea></div>
+          <div class="form-group"><label>Educational Activities Details</label><textarea id="editActEdu" rows="4"></textarea></div>
+          <div class="form-group"><label>Welfare Activities Details</label><textarea id="editActWelfare" rows="4"></textarea></div>
+          <div class="form-group"><label>Youth Activities Details</label><textarea id="editActYouth" rows="4"></textarea></div>
+          <div class="form-group"><label>Spiritual Activities Details</label><textarea id="editActSpiritual" rows="4"></textarea></div>
 
           <button class="btn-primary" style="background:#15803d;" onclick="saveWebsiteContentChanges()">💾 Save Website Content</button>
         </div>
       </div>
 
-      <!-- WINDOW 7: SUPER ADMIN ONLY (MANAGE ADMINS) -->
+      <!-- WINDOW 7: SUPER ADMIN ONLY -->
       <div id="adminWindowSuperAdminManage" style="display:none;">
         <div class="card" style="border-left: 5px solid #4338ca;">
           <h3 style="font-size:16px; margin-bottom:6px; color:#3730a3;">👑 Provision New Administrator Account</h3>
@@ -1343,7 +1331,7 @@
         </div>
       </div>
 
-      <!-- WINDOW 8: UPDATE OWN ADMIN PROFILE -->
+      <!-- WINDOW 8: UPDATE OWN PROFILE -->
       <div id="adminWindowUpdateProfile" style="display:none;">
         <div class="card" style="border-left: 5px solid #0284c7; max-width:600px; margin:0 auto;">
           <h3 style="font-size:16px; margin-bottom:12px; color:#0369a1;">My Profile Settings</h3>
@@ -1355,6 +1343,7 @@
     </section>
 
     <!-- ================= MODALS ================= -->
+    <!-- Scrutiny Modal -->
     <div id="adminScrutinyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:550px; width:100%; padding:22px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:6px; margin-bottom:12px;">Application Scrutiny & Status Manager</h3>
@@ -1380,18 +1369,13 @@
       </div>
     </div>
 
+    <!-- Rename Scheme Modal -->
     <div id="renameSchemeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Modify Scholarship Scheme</h3>
         <input type="hidden" id="renameSchemeId">
-        <div class="form-group">
-          <label>Scholarship Name</label>
-          <input type="text" id="renameSchemeNameInput">
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <input type="text" id="renameSchemeDescInput">
-        </div>
+        <div class="form-group"><label>Scholarship Name</label><input type="text" id="renameSchemeNameInput"></div>
+        <div class="form-group"><label>Description</label><input type="text" id="renameSchemeDescInput"></div>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px;">
           <button type="button" class="btn-neutral" onclick="closeRenameSchemeModal()">Cancel</button>
           <button type="button" class="btn-primary" onclick="saveRenamedScheme()">Save Changes</button>
@@ -1399,6 +1383,7 @@
       </div>
     </div>
 
+    <!-- User Profile Modal -->
     <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:450px; width:100%; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">User Account Profile</h3>
@@ -1409,6 +1394,7 @@
       </div>
     </div>
 
+    <!-- Application Preview Modal -->
     <div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Preview Application</h3>
@@ -1482,33 +1468,21 @@
   </footer>
 
   <script>
-    // Supabase Backend Credentials & Initializer
+    // -------------------------------------------------------------
+    // SUPABASE DATABASE INITIALIZATION WITH USER CREDENTIALS
+    // -------------------------------------------------------------
     const SUPABASE_URL = "https://rynywytrxabaqdlbbyfw.supabase.co";
     const SUPABASE_ANON_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnl3eXRyeGFiYXFkbGJieWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4MjMyNTMsImV4cCI6MjEwNzM5OTI1M30.ugsXogfX_3_8WsHKK-g1ZD--5hsPghrwneoSQ8QVPtA";
+
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // In-memory data states
+    // In-memory data structures
     let applications = [];
     let candidates = {};
-    let admins = {
-      'Secretary@RKMAJGM': { name: 'Secretary Maharaj, RKMA Jhargram', mobile: '9007085285', pass: 'RKMA@jgm2026', email: 'jhargram@rkmm.org', role: 'SUPER_ADMIN' },
-      'SBMaharaj@RKMAJGM': { name: 'Swami Brahmeshwarananda, RKMA Jhargram', mobile: '8509317275', pass: 'RKMA@jgm2026', email: 'brahmeshwarananda@gmail.com', role: 'ADMIN' },
-      'DEO@RKMAJGM': { name: 'Data Entry Operator', mobile: '9339423401', pass: 'RKMA@jgm2026', email: 'rkma.jgm.scholarship@gmail.com', role: 'ADMIN' }
-    };
-    let scholarshipSchemes = [
-      { id: 'belur_math', name: 'Belur Math Scholarship', desc: 'Central scholarship program sanctioned through Belur Math Headquarters.' },
-      { id: 'other_scholarships', name: 'Other Scholarships', desc: 'General & institutional financial assistance schemes for deserving students.' }
-    ];
-    let notices = [
-      { id: 1, title: 'Scholarship Application Window Open for Session 2026-27', date: '2026-10-01', link: '#' },
-      { id: 2, title: 'Submission of Bonafide Certificates and Marksheets Instructions', date: '2026-10-05', link: '#' }
-    ];
-    let downloads = [
-      { id: 1, title: '1. Belur Math Application Prayer', desc: 'Official prayer format of Belur Math Headquarters.', link: 'https://drive.google.com/file/d/1OAOoBDEUNUjGMIzM_eJfZwqKKl3ir8c2/view?usp=drivesdk' },
-      { id: 2, title: '2. RKMA JGM Application Prayer', desc: 'Official scholarship prayer format of RKMA Jhargram.', link: 'https://drive.google.com/file/d/1Xkx7_5_eBTK0WDMprzcSBTV6gvKUUnkq/view?usp=drivesdk' },
-      { id: 3, title: '3. Income Certificate Format', desc: 'Prescribed family annual income certificate declaration format.', link: 'https://drive.google.com/file/d/1xfcT9sT9MvJ9XqR964lbM5UwdBP8wi1J/view?usp=drivesdk' },
-      { id: 4, title: '4. Bonafide Certificate Format', desc: 'Institution bonafide student endorsement certificate format.', link: 'https://drive.google.com/file/d/12iYWXTnUAfcY1KE-i8yX3H6Aq7jJr0sF/view?usp=drivesdk' }
-    ];
+    let admins = {};
+    let scholarshipSchemes = [];
+    let notices = [];
+    let downloads = [];
     let siteContent = {
       aboutIntro: 'Ramakrishna Mission Ashrama, Jhargram, a branch centre of the Ramakrishna Mission, Belur Math came into existence on 20th August 2017 on five acres of land obtained on lease from the Government of West Bengal. Srimat Swami Smarananandaji Maharaj, the 16th President of Ramakrishna Math and Ramakrishna Mission, Belur Math, inaugurated the newly constructed Assembly cum Prayer Hall in the Ashrama campus on 7th of December 2019.',
       actEdu: '• Ramakrishna Mission Vidyamandira (EMRS), Jhargram: Residential School for Tribal students (460 students).\n• 6 Free Coaching Centers: 320 students receive free coaching, uniforms, and light tiffin.\n• Scholarships: In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students.',
@@ -1521,6 +1495,7 @@
     let activeAdminId = null;
     let activeCandidateId = null;
     let selectedScrutinyIndex = null;
+
     let selectedScholarshipSchemeId = 'belur_math';
     let activeAdminAppFilterSchemeId = 'all';
 
@@ -1529,9 +1504,21 @@
     let currentUploadedDocs = {};
     let currentGeneratedCaptcha = '';
 
-    // Load data from Supabase backend
+    // -------------------------------------------------------------
+    // LOAD LIVE DATA FROM SUPABASE DATABASE
+    // -------------------------------------------------------------
     async function loadDataFromSupabase() {
       try {
+        // 1. Fetch Admins
+        const { data: admData } = await db.from('admins').select('*');
+        if (admData && admData.length > 0) {
+          admins = {};
+          admData.forEach(a => {
+            admins[a.admin_id] = { name: a.name, mobile: a.mobile, pass: a.pass, email: a.email, role: a.role };
+          });
+        }
+
+        // 2. Fetch Candidates
         const { data: candData } = await db.from('candidates').select('*');
         if (candData) {
           candidates = {};
@@ -1540,19 +1527,13 @@
           });
         }
 
-        const { data: adminData } = await db.from('admins').select('*');
-        if (adminData && adminData.length > 0) {
-          admins = {};
-          adminData.forEach(a => {
-            admins[a.admin_id] = { name: a.name, mobile: a.mobile, pass: a.pass, email: a.email, role: a.role };
-          });
-        }
-
+        // 3. Fetch Scholarship Schemes
         const { data: schemeData } = await db.from('scholarship_schemes').select('*');
         if (schemeData && schemeData.length > 0) {
-          scholarshipSchemes = schemeData;
+          scholarshipSchemes = schemeData.map(s => ({ id: s.id, name: s.name, desc: s.description }));
         }
 
+        // 4. Fetch Applications
         const { data: appData } = await db.from('applications').select('*');
         if (appData) {
           applications = appData.map(a => ({
@@ -1599,23 +1580,26 @@
           }));
         }
 
+        // 5. Fetch Notices
         const { data: noticeData } = await db.from('notices').select('*').order('notice_date', { ascending: false });
-        if (noticeData && noticeData.length > 0) {
+        if (noticeData) {
           notices = noticeData.map(n => ({ id: n.id, title: n.title, date: n.notice_date, link: n.link }));
         }
 
+        // 6. Fetch Downloads
         const { data: dlData } = await db.from('downloads').select('*');
-        if (dlData && dlData.length > 0) {
+        if (dlData) {
           downloads = dlData.map(d => ({ id: d.id, title: d.title, desc: d.description, link: d.link }));
         }
 
         renderPublicSiteContent();
         if (activeUserRole === 'admin') refreshAdminDashboardPanels();
       } catch (err) {
-        console.error('Supabase Sync Error:', err);
+        console.error("Error loading data from Supabase:", err);
       }
     }
 
+    // Dynamic Content
     function renderPublicSiteContent() {
       document.getElementById('viewAboutIntro').innerText = siteContent.aboutIntro;
       document.getElementById('viewActEdu').innerText = siteContent.actEdu;
@@ -1623,6 +1607,7 @@
       document.getElementById('viewActYouth').innerText = siteContent.actYouth;
       document.getElementById('viewActSpiritual').innerText = siteContent.actSpiritual;
 
+      // Notices on Home
       const homeNotices = document.getElementById('homeNoticesList');
       homeNotices.innerHTML = notices.slice(0, 3).map(n => `
         <div class="notice-item">
@@ -1631,10 +1616,13 @@
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No current notices.</p>';
 
+      // Notices Page
       const fullNotices = document.getElementById('fullNoticesList');
       fullNotices.innerHTML = notices.map(n => `
         <div class="notice-item">
-          <div><a href="${n.link}" target="_blank" style="color:#7f1d1d; text-decoration:none; font-weight:700; font-size:14px;">${n.title}</a></div>
+          <div>
+            <a href="${n.link}" target="_blank" style="color:#7f1d1d; text-decoration:none; font-weight:700; font-size:14px;">${n.title}</a>
+          </div>
           <div style="display:flex; align-items:center; gap:8px;">
             <span class="notice-date">${n.date}</span>
             <a href="${n.link}" target="_blank" class="action-btn btn-pdf" style="text-decoration:none;">View</a>
@@ -1642,6 +1630,7 @@
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No notices published yet.</p>';
 
+      // Downloads Page
       const dlGrid = document.getElementById('publicDownloadsGrid');
       dlGrid.innerHTML = downloads.map(d => `
         <div class="download-item">
@@ -1654,6 +1643,7 @@
       `).join('');
     }
 
+    // Unified Navigation with Refresh-Persistence Logic
     function navigateTo(sectionId) {
       document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('sec-' + sectionId);
@@ -1696,7 +1686,7 @@
       navigateTo('home');
     }
 
-    // Direct Login Functions
+    // Admin Direct Login
     async function executeAdminDirectLogin() {
       const id = document.getElementById('manualAdminId').value.trim();
       const pass = document.getElementById('manualAdminPass').value.trim();
@@ -1706,9 +1696,11 @@
         return;
       }
 
-      await loadDataFromSupabase();
-      const admin = admins[id];
-      if (admin && admin.pass === pass) {
+      // Check against live database
+      const { data: adminData } = await db.from('admins').select('*').eq('admin_id', id).eq('pass', pass);
+
+      if (adminData && adminData.length > 0) {
+        const admin = adminData[0];
         activeAdminId = id;
         document.getElementById('activeAdminTitle').innerText = admin.name;
         document.getElementById('activeAdminContact').innerText = `Admin ID: ${id} | Mobile: ${admin.mobile} | Email: ${admin.email}`;
@@ -1729,6 +1721,7 @@
       }
     }
 
+    // Candidate Direct Login
     async function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -1738,10 +1731,11 @@
         return;
       }
 
-      await loadDataFromSupabase();
-      if (candidates[id] && candidates[id].pass === pass) {
+      const { data: candData } = await db.from('candidates').select('*').eq('candidate_id', id).eq('pass', pass);
+
+      if (candData && candData.length > 0) {
+        const cand = candData[0];
         activeCandidateId = id;
-        const cand = candidates[id];
         document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
         document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + id + ' | Mobile: ' + cand.mobile;
 
@@ -1756,7 +1750,7 @@
       }
     }
 
-    // Admin Tabs Switcher
+    // Admin Window Switcher
     function switchAdminWindow(windowType) {
       const tabs = ['applications', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'updateProfile'];
       tabs.forEach(t => {
@@ -1766,7 +1760,7 @@
         if (win) win.style.display = 'none';
       });
 
-      if (windowType === 'superAdminManage' && admins[activeAdminId].role !== 'SUPER_ADMIN') {
+      if (windowType === 'superAdminManage' && admins[activeAdminId] && admins[activeAdminId].role !== 'SUPER_ADMIN') {
         alert('Unauthorized Access! Only Super Admin can access this window.');
         return;
       }
@@ -1794,6 +1788,7 @@
       document.getElementById('regCountBadge').innerText = Object.keys(candidates).length;
     }
 
+    // Sub-Tabs for Applications Window
     function renderAdminAppSubTabs() {
       const container = document.getElementById('adminAppSubTabsContainer');
       let html = `
@@ -1820,6 +1815,7 @@
       renderAdminTable();
     }
 
+    // Applications Window Handlers
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -1867,7 +1863,7 @@
       if (confirm(`Delete application "${item.appNo}" for ${item.name}? This removes the application submission but preserves candidate registration.`)) {
         const { error } = await db.from('applications').delete().eq('app_no', item.appNo);
         if (error) {
-          alert('Delete failed: ' + error.message);
+          alert('Failed to delete application from database: ' + error.message);
           return;
         }
         await loadDataFromSupabase();
@@ -1875,6 +1871,7 @@
       }
     }
 
+    // Registration Window Handlers
     function renderRegisteredCandidatesTable() {
       const tbody = document.getElementById('registeredCandidatesTableBody');
       tbody.innerHTML = '';
@@ -1904,7 +1901,7 @@
       if (confirm(`CRITICAL: Are you sure you want to permanently delete Candidate "${cand.name}" (${cid}) and all associated records?`)) {
         const { error } = await db.from('candidates').delete().eq('candidate_id', cid);
         if (error) {
-          alert('Delete failed: ' + error.message);
+          alert('Failed to delete candidate: ' + error.message);
           return;
         }
         await loadDataFromSupabase();
@@ -1926,6 +1923,7 @@
       return false;
     }
 
+    // Single Candidate Registration
     async function adminCreateCustomCandidate() {
       const name = document.getElementById('genCandName').value.trim();
       const mobile = document.getElementById('genCandMobile').value.trim();
@@ -1946,16 +1944,17 @@
         return;
       }
 
+      // Insert into Supabase
       const { error } = await db.from('candidates').insert([
         { candidate_id: id, name: name, mobile: mobile, pass: pass }
       ]);
 
       if (error) {
-        alert('Database insert error: ' + error.message);
+        alert('Database Insert Failed: ' + error.message);
         return;
       }
 
-      alert(`Candidate created successfully! (ID: ${id})`);
+      alert(`Candidate created successfully in database! (ID: ${id})`);
       document.getElementById('genCandName').value = '';
       document.getElementById('genCandMobile').value = '';
       document.getElementById('genCandId').value = '';
@@ -2026,7 +2025,7 @@
           if (rowsToInsert.length > 0) {
             const { error } = await db.from('candidates').insert(rowsToInsert);
             if (error) {
-              alert('Error inserting bulk candidates: ' + error.message);
+              alert('Database bulk insert failed: ' + error.message);
               return;
             }
           }
@@ -2034,7 +2033,7 @@
           reportBox.style.display = 'block';
           reportBox.innerHTML = `
             <div style="padding:10px; background:#dcfce7; color:#15803d; font-weight:bold; border-radius:4px;">
-              ✅ Imported: ${rowsToInsert.length} candidates | Skipped/Duplicates: ${skipped}
+              ✅ Imported to Cloud DB: ${rowsToInsert.length} candidates | Skipped/Duplicates: ${skipped}
             </div>
             ${skipReasons.length > 0 ? `<div style="margin-top:6px; color:#dc2626; max-height:100px; overflow-y:auto; font-size:11px;">${skipReasons.join('<br>')}</div>` : ''}
           `;
@@ -2054,7 +2053,7 @@
         <tr>
           <td><code>${s.id}</code></td>
           <td><strong>${s.name}</strong></td>
-          <td>${s.description || s.desc}</td>
+          <td>${s.desc}</td>
           <td>
             <button class="action-btn btn-pdf" onclick="openRenameSchemeModal('${s.id}')">✏️ Rename</button>
             ${s.id !== 'belur_math' && s.id !== 'other_scholarships' ? `<button class="action-btn btn-delete" onclick="deleteScholarshipScheme('${s.id}')">Delete</button>` : ''}
@@ -2073,12 +2072,9 @@
       }
 
       const id = 'scheme_' + Date.now();
-      const { error } = await db.from('scholarship_schemes').insert([
-        { id: id, name: name, description: desc }
-      ]);
-
+      const { error } = await db.from('scholarship_schemes').insert([{ id: id, name: name, description: desc }]);
       if (error) {
-        alert('Failed to add scheme: ' + error.message);
+        alert('Failed to save scheme: ' + error.message);
         return;
       }
 
@@ -2093,7 +2089,7 @@
       if (!scheme) return;
       document.getElementById('renameSchemeId').value = schemeId;
       document.getElementById('renameSchemeNameInput').value = scheme.name;
-      document.getElementById('renameSchemeDescInput').value = scheme.description || scheme.desc || '';
+      document.getElementById('renameSchemeDescInput').value = scheme.desc;
       document.getElementById('renameSchemeModal').style.display = 'flex';
     }
 
@@ -2111,12 +2107,9 @@
         return;
       }
 
-      const { error } = await db.from('scholarship_schemes')
-        .update({ name: newName, description: newDesc })
-        .eq('id', id);
-
+      const { error } = await db.from('scholarship_schemes').update({ name: newName, description: newDesc }).eq('id', id);
       if (error) {
-        alert('Update failed: ' + error.message);
+        alert('Failed to update scheme: ' + error.message);
         return;
       }
 
@@ -2129,7 +2122,7 @@
       if (confirm('Are you sure you want to delete this scholarship scheme?')) {
         const { error } = await db.from('scholarship_schemes').delete().eq('id', id);
         if (error) {
-          alert('Delete failed: ' + error.message);
+          alert('Failed to delete scheme: ' + error.message);
           return;
         }
         await loadDataFromSupabase();
@@ -2149,7 +2142,7 @@
         <div class="scheme-card">
           <div style="font-size:28px; margin-bottom:8px;">🎓</div>
           <h3>${s.name}</h3>
-          <p>${s.description || s.desc}</p>
+          <p>${s.desc}</p>
           <button class="btn-primary" onclick="proceedToApplicationFormWithScheme('${s.id}')">Apply for ${s.name} &rarr;</button>
         </div>
       `).join('');
@@ -2163,8 +2156,10 @@
       document.getElementById('activeFormSchemeBadge').innerText = 'Selected Scheme: ' + (scheme ? scheme.name : 'Scholarship');
 
       const cand = candidates[activeCandidateId];
-      document.getElementById('f_name').value = cand.name;
-      document.getElementById('f_mobile').value = cand.mobile;
+      if (cand) {
+        document.getElementById('f_name').value = cand.name;
+        document.getElementById('f_mobile').value = cand.mobile;
+      }
       refreshCaptcha();
       goToStep(1);
       navigateTo('applicationForm');
@@ -2191,10 +2186,7 @@
         return;
       }
 
-      const { error } = await db.from('notices').insert([
-        { title: title, notice_date: date, link: link }
-      ]);
-
+      const { error } = await db.from('notices').insert([{ title: title, notice_date: date, link: link }]);
       if (error) {
         alert('Failed to publish notice: ' + error.message);
         return;
@@ -2204,24 +2196,22 @@
       document.getElementById('noticeTitleInput').value = '';
       document.getElementById('noticeLinkInput').value = '';
       await loadDataFromSupabase();
-      renderAdminNoticesTable();
     }
 
-    async function deleteNotice(id) {
+    async function deleteNotice(noticeId) {
       if (confirm('Delete this notice?')) {
-        const { error } = await db.from('notices').delete().eq('id', id);
+        const { error } = await db.from('notices').delete().eq('id', noticeId);
         if (error) {
-          alert('Failed to delete notice: ' + error.message);
+          alert('Failed to delete: ' + error.message);
           return;
         }
         await loadDataFromSupabase();
-        renderAdminNoticesTable();
       }
     }
 
     function renderAdminDownloadsTable() {
       const box = document.getElementById('adminDownloadList');
-      box.innerHTML = downloads.map((d) => `
+      box.innerHTML = downloads.map((d, i) => `
         <div class="notice-item">
           <div><strong>${d.title}</strong> - <span style="font-size:12px; color:#666;">${d.desc}</span><br><a href="${d.link}" target="_blank" style="font-size:11px; color:#0284c7;">${d.link}</a></div>
           <button class="action-btn btn-delete" onclick="deleteDownload(${d.id})">Delete</button>
@@ -2239,10 +2229,7 @@
         return;
       }
 
-      const { error } = await db.from('downloads').insert([
-        { title: title, description: desc, link: link }
-      ]);
-
+      const { error } = await db.from('downloads').insert([{ title: title, description: desc, link: link }]);
       if (error) {
         alert('Failed to add document: ' + error.message);
         return;
@@ -2253,18 +2240,16 @@
       document.getElementById('dlDescInput').value = '';
       document.getElementById('dlLinkInput').value = '';
       await loadDataFromSupabase();
-      renderAdminDownloadsTable();
     }
 
-    async function deleteDownload(id) {
+    async function deleteDownload(downloadId) {
       if (confirm('Delete this downloadable document?')) {
-        const { error } = await db.from('downloads').delete().eq('id', id);
+        const { error } = await db.from('downloads').delete().eq('id', downloadId);
         if (error) {
           alert('Failed to delete document: ' + error.message);
           return;
         }
         await loadDataFromSupabase();
-        renderAdminDownloadsTable();
       }
     }
 
@@ -2288,7 +2273,7 @@
       alert('Website content updated live!');
     }
 
-    // Super Admin Functions
+    // Super Admin Exclusive Functions
     function renderSuperAdminTable() {
       const tbody = document.getElementById('superAdminTableBody');
       tbody.innerHTML = '';
@@ -2312,7 +2297,7 @@
     }
 
     async function superAdminCreateAdmin() {
-      if (admins[activeAdminId].role !== 'SUPER_ADMIN') {
+      if (admins[activeAdminId] && admins[activeAdminId].role !== 'SUPER_ADMIN') {
         alert('Permission Denied!');
         return;
       }
@@ -2336,7 +2321,7 @@
       ]);
 
       if (error) {
-        alert('Failed to create admin: ' + error.message);
+        alert('Failed to create admin in database: ' + error.message);
         return;
       }
 
@@ -2346,11 +2331,10 @@
       document.getElementById('newAdminId').value = '';
       document.getElementById('newAdminPass').value = '';
       await loadDataFromSupabase();
-      renderSuperAdminTable();
     }
 
     async function superAdminDeleteAdmin(aid) {
-      if (admins[activeAdminId].role !== 'SUPER_ADMIN') {
+      if (admins[activeAdminId] && admins[activeAdminId].role !== 'SUPER_ADMIN') {
         alert('Permission Denied!');
         return;
       }
@@ -2365,7 +2349,6 @@
           return;
         }
         await loadDataFromSupabase();
-        renderSuperAdminTable();
         alert('Administrator removed successfully.');
       }
     }
@@ -2379,21 +2362,21 @@
         return;
       }
 
-      let updatePayload = {};
+      let updates = {};
       if (newMobile) {
         if (newMobile.length !== 10) {
           alert('Mobile Number must be exactly 10 digits!');
           return;
         }
-        updatePayload.mobile = newMobile;
+        updates.mobile = newMobile;
       }
       if (newEmail) {
-        updatePayload.email = newEmail;
+        updates.email = newEmail;
       }
 
-      const { error } = await db.from('admins').update(updatePayload).eq('admin_id', activeAdminId);
+      const { error } = await db.from('admins').update(updates).eq('admin_id', activeAdminId);
       if (error) {
-        alert('Profile update failed: ' + error.message);
+        alert('Failed to update profile: ' + error.message);
         return;
       }
 
@@ -2401,7 +2384,6 @@
       document.getElementById('updNewMobile').value = '';
       document.getElementById('updNewEmail').value = '';
       await loadDataFromSupabase();
-      document.getElementById('activeAdminContact').innerText = `Admin ID: ${activeAdminId} | Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
     }
 
     // Registration Slip Download
@@ -2471,7 +2453,7 @@
       }).eq('app_no', app.appNo);
 
       if (error) {
-        alert('Failed to update status: ' + error.message);
+        alert('Failed to update status in database: ' + error.message);
         return;
       }
 
@@ -2480,6 +2462,7 @@
       await loadDataFromSupabase();
     }
 
+    // Candidate Form Logic
     function goToStep(s) {
       document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
       document.querySelectorAll('.step-item').forEach((ind, i) => {
@@ -2512,7 +2495,7 @@
       const appNo = existingIndex >= 0 ? applications[existingIndex].appNo : 'RKM-SCH-2026-' + String(applications.length + 1).padStart(3, '0');
       const schemeObj = scholarshipSchemes.find(s => s.id === selectedScholarshipSchemeId);
 
-      const recordPayload = {
+      const payload = {
         app_no: appNo,
         candidate_id: activeCandidateId,
         scheme_id: selectedScholarshipSchemeId,
@@ -2521,9 +2504,6 @@
         dob: document.getElementById('f_dob').value,
         caste: document.getElementById('f_caste').value,
         gender: document.getElementById('f_gender').value,
-        photo_base64: currentUploadedPhotoBase64,
-        sign_base64: currentUploadedSignBase64,
-        uploaded_documents: currentUploadedDocs,
         father: document.getElementById('f_fname').value,
         father_occ: document.getElementById('f_focc').value,
         mother: document.getElementById('f_mname').value,
@@ -2551,16 +2531,25 @@
         ifsc: document.getElementById('f_ifsc').value,
         bank_name: document.getElementById('f_bankname').value,
         status: 'Submitted',
-        admin_remarks: 'Application submitted successfully under ' + (schemeObj ? schemeObj.name : 'Scholarship Scheme') + '.'
+        admin_remarks: 'Application submitted successfully under ' + (schemeObj ? schemeObj.name : 'Scholarship Scheme') + '.',
+        photo_base64: currentUploadedPhotoBase64,
+        sign_base64: currentUploadedSignBase64,
+        uploaded_documents: currentUploadedDocs
       };
 
-      const { error } = await db.from('applications').upsert([recordPayload], { onConflict: 'app_no' });
-      if (error) {
-        alert('Application submission failed: ' + error.message);
+      let res;
+      if (existingIndex >= 0) {
+        res = await db.from('applications').update(payload).eq('app_no', appNo);
+      } else {
+        res = await db.from('applications').insert([payload]);
+      }
+
+      if (res.error) {
+        alert('Database submission failed: ' + res.error.message);
         return;
       }
 
-      alert(`Application Submitted Successfully under "${recordPayload.scheme_name}"! (App No: ${appNo})`);
+      alert(`Application Submitted Successfully under "${payload.scheme_name}"! (App No: ${appNo})`);
       await loadDataFromSupabase();
       navigateTo('candidateDashboard');
     }
@@ -2772,7 +2761,7 @@
       return 'st-returned';
     }
 
-    // Carousel Setup
+    // Carousel
     let currentSlideIndex = 0;
     const totalSlides = 15;
     function buildSliderDots() {
@@ -2798,12 +2787,12 @@
       document.getElementById('contactMessage').value = '';
     }
 
-    // Window Refresh and Initialization
+    // WINDOW REFRESH-STATE RESTORATION & CLOUD SYNC INITIALIZER
     window.addEventListener('load', async () => {
       buildSliderDots();
       setInterval(() => moveSlide(1), 3500);
 
-      // Fetch fresh data from Supabase Cloud
+      // Load live data from cloud database
       await loadDataFromSupabase();
 
       // Session & State Persistence on Refresh
