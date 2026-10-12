@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scholarship Portal | Ramakrishna Mission Ashrama, Jhargram</title>
-  <!-- Supabase JS Client Library -->
+  <!-- Supabase Client JS Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- SheetJS Library for Excel Parsing -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -221,7 +221,7 @@
       border-radius: 8px 8px 0 0;
     }
 
-    /* Sub-tabs */
+    /* Sub-tabs inside Windows */
     .sub-tabs-container {
       display: flex;
       gap: 8px;
@@ -1111,7 +1111,6 @@
         <button class="admin-tab-btn" id="tabBtnManageSite" onclick="switchAdminWindow('manageSite')">
           ✏️ Edit Website Content
         </button>
-        <!-- Visible Only to Super Admin -->
         <button class="admin-tab-btn" id="tabBtnSuperAdminOnly" style="display:none; color:#4338ca;" onclick="switchAdminWindow('superAdminManage')">
           👑 Manage Admins (Super Admin Only)
         </button>
@@ -1131,7 +1130,6 @@
             <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export to Excel</button>
           </div>
 
-          <!-- Dynamic Sub-Windows Tabs for Applications -->
           <div class="sub-tabs-container" id="adminAppSubTabsContainer"></div>
 
           <div style="overflow-x:auto;">
@@ -1357,7 +1355,6 @@
     </section>
 
     <!-- ================= MODALS ================= -->
-    <!-- Scrutiny Modal -->
     <div id="adminScrutinyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:550px; width:100%; padding:22px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:6px; margin-bottom:12px;">Application Scrutiny & Status Manager</h3>
@@ -1383,7 +1380,6 @@
       </div>
     </div>
 
-    <!-- Rename Scholarship Scheme Modal -->
     <div id="renameSchemeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Modify Scholarship Scheme</h3>
@@ -1403,7 +1399,6 @@
       </div>
     </div>
 
-    <!-- User Profile Modal -->
     <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:450px; width:100%; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">User Account Profile</h3>
@@ -1414,7 +1409,6 @@
       </div>
     </div>
 
-    <!-- Application Preview Modal -->
     <div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Preview Application</h3>
@@ -1488,22 +1482,34 @@
   </footer>
 
   <script>
-    // ----------------------------------------------------
-    // SUPABASE INITIALIZATION
-    // ----------------------------------------------------
+    // Supabase Backend Credentials & Initializer
     const SUPABASE_URL = "https://rynywytrxabaqdlbbyfw.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnl3eXRyeGFiYXFkbGJieWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4MjMyNTMsImV4cCI6MjEwNzM5OTI1M30.ugsXogfX_3_8WsHKK-g1ZD--5hsPghrwneoSQ8QVPtA";
-
+    const SUPABASE_ANON_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnl3eXRyeGFiYXFkbGJieWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4MjMyNTMsImV4cCI6MjEwNzM5OTI1M30.ugsXogfX_3_8WsHKK-g1ZD--5hsPghrwneoSQ8QVPtA";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // In-memory data states
     let applications = [];
     let candidates = {};
-    let admins = {};
-    let scholarshipSchemes = [];
-    let notices = [];
-    let downloads = [];
-    let siteContent = JSON.parse(localStorage.getItem('rkm_site_content') || 'null') || {
+    let admins = {
+      'Secretary@RKMAJGM': { name: 'Secretary Maharaj, RKMA Jhargram', mobile: '9007085285', pass: 'RKMA@jgm2026', email: 'jhargram@rkmm.org', role: 'SUPER_ADMIN' },
+      'SBMaharaj@RKMAJGM': { name: 'Swami Brahmeshwarananda, RKMA Jhargram', mobile: '8509317275', pass: 'RKMA@jgm2026', email: 'brahmeshwarananda@gmail.com', role: 'ADMIN' },
+      'DEO@RKMAJGM': { name: 'Data Entry Operator', mobile: '9339423401', pass: 'RKMA@jgm2026', email: 'rkma.jgm.scholarship@gmail.com', role: 'ADMIN' }
+    };
+    let scholarshipSchemes = [
+      { id: 'belur_math', name: 'Belur Math Scholarship', desc: 'Central scholarship program sanctioned through Belur Math Headquarters.' },
+      { id: 'other_scholarships', name: 'Other Scholarships', desc: 'General & institutional financial assistance schemes for deserving students.' }
+    ];
+    let notices = [
+      { id: 1, title: 'Scholarship Application Window Open for Session 2026-27', date: '2026-10-01', link: '#' },
+      { id: 2, title: 'Submission of Bonafide Certificates and Marksheets Instructions', date: '2026-10-05', link: '#' }
+    ];
+    let downloads = [
+      { id: 1, title: '1. Belur Math Application Prayer', desc: 'Official prayer format of Belur Math Headquarters.', link: 'https://drive.google.com/file/d/1OAOoBDEUNUjGMIzM_eJfZwqKKl3ir8c2/view?usp=drivesdk' },
+      { id: 2, title: '2. RKMA JGM Application Prayer', desc: 'Official scholarship prayer format of RKMA Jhargram.', link: 'https://drive.google.com/file/d/1Xkx7_5_eBTK0WDMprzcSBTV6gvKUUnkq/view?usp=drivesdk' },
+      { id: 3, title: '3. Income Certificate Format', desc: 'Prescribed family annual income certificate declaration format.', link: 'https://drive.google.com/file/d/1xfcT9sT9MvJ9XqR964lbM5UwdBP8wi1J/view?usp=drivesdk' },
+      { id: 4, title: '4. Bonafide Certificate Format', desc: 'Institution bonafide student endorsement certificate format.', link: 'https://drive.google.com/file/d/12iYWXTnUAfcY1KE-i8yX3H6Aq7jJr0sF/view?usp=drivesdk' }
+    ];
+    let siteContent = {
       aboutIntro: 'Ramakrishna Mission Ashrama, Jhargram, a branch centre of the Ramakrishna Mission, Belur Math came into existence on 20th August 2017 on five acres of land obtained on lease from the Government of West Bengal. Srimat Swami Smarananandaji Maharaj, the 16th President of Ramakrishna Math and Ramakrishna Mission, Belur Math, inaugurated the newly constructed Assembly cum Prayer Hall in the Ashrama campus on 7th of December 2019.',
       actEdu: '• Ramakrishna Mission Vidyamandira (EMRS), Jhargram: Residential School for Tribal students (460 students).\n• 6 Free Coaching Centers: 320 students receive free coaching, uniforms, and light tiffin.\n• Scholarships: In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students.',
       actWelfare: '• Distribution of clothes, relief assistance, and financial aid to underprivileged families.\n• Disaster relief and winter jacket/blanket distribution.\n• Monthly motivational programs at Jhargram Correctional Home.\n• Bi-monthly free homeopathic health camp by Dr. Ashoke Pradhan.\n• Annual blood donation drive with over 100 donors.\n• Swami Vivekananda Tree Plantation (16,000+ trees planted).\n• Monthly pension of Rs. 1,200 to 6 widows.',
@@ -1515,7 +1521,6 @@
     let activeAdminId = null;
     let activeCandidateId = null;
     let selectedScrutinyIndex = null;
-
     let selectedScholarshipSchemeId = 'belur_math';
     let activeAdminAppFilterSchemeId = 'all';
 
@@ -1524,44 +1529,33 @@
     let currentUploadedDocs = {};
     let currentGeneratedCaptcha = '';
 
-    // Save site content to localStorage for quick CMS rendering
-    function saveState() {
-      localStorage.setItem('rkm_site_content', JSON.stringify(siteContent));
-    }
-
-    // ----------------------------------------------------
-    // LOAD LIVE DATA FROM SUPABASE CLOUD
-    // ----------------------------------------------------
+    // Load data from Supabase backend
     async function loadDataFromSupabase() {
       try {
-        // 1. Fetch Admins
-        const { data: adminRows } = await db.from('admins').select('*');
-        if (adminRows && adminRows.length > 0) {
-          admins = {};
-          adminRows.forEach(a => {
-            admins[a.admin_id] = { name: a.name, mobile: a.mobile, pass: a.pass, email: a.email, role: a.role };
-          });
-        }
-
-        // 2. Fetch Candidates
-        const { data: candRows } = await db.from('candidates').select('*');
-        if (candRows) {
+        const { data: candData } = await db.from('candidates').select('*');
+        if (candData) {
           candidates = {};
-          candRows.forEach(c => {
+          candData.forEach(c => {
             candidates[c.candidate_id] = { name: c.name, mobile: c.mobile, pass: c.pass };
           });
         }
 
-        // 3. Fetch Schemes
-        const { data: schemeRows } = await db.from('scholarship_schemes').select('*');
-        if (schemeRows && schemeRows.length > 0) {
-          scholarshipSchemes = schemeRows;
+        const { data: adminData } = await db.from('admins').select('*');
+        if (adminData && adminData.length > 0) {
+          admins = {};
+          adminData.forEach(a => {
+            admins[a.admin_id] = { name: a.name, mobile: a.mobile, pass: a.pass, email: a.email, role: a.role };
+          });
         }
 
-        // 4. Fetch Applications
-        const { data: appRows } = await db.from('applications').select('*');
-        if (appRows) {
-          applications = appRows.map(a => ({
+        const { data: schemeData } = await db.from('scholarship_schemes').select('*');
+        if (schemeData && schemeData.length > 0) {
+          scholarshipSchemes = schemeData;
+        }
+
+        const { data: appData } = await db.from('applications').select('*');
+        if (appData) {
+          applications = appData.map(a => ({
             appNo: a.app_no,
             candidateId: a.candidate_id,
             schemeId: a.scheme_id,
@@ -1605,26 +1599,23 @@
           }));
         }
 
-        // 5. Fetch Notices
-        const { data: noticeRows } = await db.from('notices').select('*').order('notice_date', { ascending: false });
-        if (noticeRows) {
-          notices = noticeRows.map(n => ({ id: n.id, title: n.title, date: n.notice_date, link: n.link }));
+        const { data: noticeData } = await db.from('notices').select('*').order('notice_date', { ascending: false });
+        if (noticeData && noticeData.length > 0) {
+          notices = noticeData.map(n => ({ id: n.id, title: n.title, date: n.notice_date, link: n.link }));
         }
 
-        // 6. Fetch Downloads
-        const { data: dlRows } = await db.from('downloads').select('*');
-        if (dlRows) {
-          downloads = dlRows.map(d => ({ id: d.id, title: d.title, desc: d.description, link: d.link }));
+        const { data: dlData } = await db.from('downloads').select('*');
+        if (dlData && dlData.length > 0) {
+          downloads = dlData.map(d => ({ id: d.id, title: d.title, desc: d.description, link: d.link }));
         }
 
         renderPublicSiteContent();
-        refreshAdminDashboardPanels();
+        if (activeUserRole === 'admin') refreshAdminDashboardPanels();
       } catch (err) {
-        console.error('Error fetching Supabase cloud data:', err);
+        console.error('Supabase Sync Error:', err);
       }
     }
 
-    // Dynamic Content
     function renderPublicSiteContent() {
       document.getElementById('viewAboutIntro').innerText = siteContent.aboutIntro;
       document.getElementById('viewActEdu').innerText = siteContent.actEdu;
@@ -1632,7 +1623,6 @@
       document.getElementById('viewActYouth').innerText = siteContent.actYouth;
       document.getElementById('viewActSpiritual').innerText = siteContent.actSpiritual;
 
-      // Notices on Home
       const homeNotices = document.getElementById('homeNoticesList');
       homeNotices.innerHTML = notices.slice(0, 3).map(n => `
         <div class="notice-item">
@@ -1641,13 +1631,10 @@
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No current notices.</p>';
 
-      // Notices Page
       const fullNotices = document.getElementById('fullNoticesList');
       fullNotices.innerHTML = notices.map(n => `
         <div class="notice-item">
-          <div>
-            <a href="${n.link}" target="_blank" style="color:#7f1d1d; text-decoration:none; font-weight:700; font-size:14px;">${n.title}</a>
-          </div>
+          <div><a href="${n.link}" target="_blank" style="color:#7f1d1d; text-decoration:none; font-weight:700; font-size:14px;">${n.title}</a></div>
           <div style="display:flex; align-items:center; gap:8px;">
             <span class="notice-date">${n.date}</span>
             <a href="${n.link}" target="_blank" class="action-btn btn-pdf" style="text-decoration:none;">View</a>
@@ -1655,7 +1642,6 @@
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No notices published yet.</p>';
 
-      // Downloads Page
       const dlGrid = document.getElementById('publicDownloadsGrid');
       dlGrid.innerHTML = downloads.map(d => `
         <div class="download-item">
@@ -1668,7 +1654,6 @@
       `).join('');
     }
 
-    // Unified Navigation with Refresh-Persistence Logic
     function navigateTo(sectionId) {
       document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('sec-' + sectionId);
@@ -1711,7 +1696,7 @@
       navigateTo('home');
     }
 
-    // Admin Direct Login
+    // Direct Login Functions
     async function executeAdminDirectLogin() {
       const id = document.getElementById('manualAdminId').value.trim();
       const pass = document.getElementById('manualAdminPass').value.trim();
@@ -1721,11 +1706,9 @@
         return;
       }
 
-      // Query database
-      const { data: adminRows } = await db.from('admins').select('*').eq('admin_id', id).eq('pass', pass);
-      const admin = adminRows && adminRows[0];
-
-      if (admin) {
+      await loadDataFromSupabase();
+      const admin = admins[id];
+      if (admin && admin.pass === pass) {
         activeAdminId = id;
         document.getElementById('activeAdminTitle').innerText = admin.name;
         document.getElementById('activeAdminContact').innerText = `Admin ID: ${id} | Mobile: ${admin.mobile} | Email: ${admin.email}`;
@@ -1746,7 +1729,6 @@
       }
     }
 
-    // Candidate Direct Login
     async function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -1756,12 +1738,10 @@
         return;
       }
 
-      // Query database
-      const { data: candRows } = await db.from('candidates').select('*').eq('candidate_id', id).eq('pass', pass);
-      const cand = candRows && candRows[0];
-
-      if (cand) {
+      await loadDataFromSupabase();
+      if (candidates[id] && candidates[id].pass === pass) {
         activeCandidateId = id;
+        const cand = candidates[id];
         document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
         document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + id + ' | Mobile: ' + cand.mobile;
 
@@ -1776,7 +1756,7 @@
       }
     }
 
-    // Admin Window Switcher
+    // Admin Tabs Switcher
     function switchAdminWindow(windowType) {
       const tabs = ['applications', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'updateProfile'];
       tabs.forEach(t => {
@@ -1786,7 +1766,7 @@
         if (win) win.style.display = 'none';
       });
 
-      if (windowType === 'superAdminManage' && admins[activeAdminId] && admins[activeAdminId].role !== 'SUPER_ADMIN') {
+      if (windowType === 'superAdminManage' && admins[activeAdminId].role !== 'SUPER_ADMIN') {
         alert('Unauthorized Access! Only Super Admin can access this window.');
         return;
       }
@@ -1814,7 +1794,6 @@
       document.getElementById('regCountBadge').innerText = Object.keys(candidates).length;
     }
 
-    // Sub-Tabs for Applications Window
     function renderAdminAppSubTabs() {
       const container = document.getElementById('adminAppSubTabsContainer');
       let html = `
@@ -1841,7 +1820,6 @@
       renderAdminTable();
     }
 
-    // Applications Window Handlers
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -1876,7 +1854,7 @@
               <button class="action-btn btn-manage" onclick="openScrutinyModal(${index})">Scrutiny</button>
               <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
               <button class="action-btn btn-word" onclick="downloadApplicationWord(${index})">Word</button>
-              <button class="action-btn btn-delete" onclick="deleteApplicationOnly('${app.appNo}')">Delete App</button>
+              <button class="action-btn btn-delete" onclick="deleteApplicationOnly(${index})">Delete App</button>
             </div>
           </td>
         `;
@@ -1884,19 +1862,19 @@
       });
     }
 
-    async function deleteApplicationOnly(appNo) {
-      if (confirm(`Delete application "${appNo}"? This removes the application submission but preserves candidate registration.`)) {
-        const { error } = await db.from('applications').delete().eq('app_no', appNo);
+    async function deleteApplicationOnly(index) {
+      const item = applications[index];
+      if (confirm(`Delete application "${item.appNo}" for ${item.name}? This removes the application submission but preserves candidate registration.`)) {
+        const { error } = await db.from('applications').delete().eq('app_no', item.appNo);
         if (error) {
           alert('Delete failed: ' + error.message);
           return;
         }
         await loadDataFromSupabase();
-        alert('Application deleted successfully from database.');
+        alert('Application deleted successfully.');
       }
     }
 
-    // Registration Window Handlers
     function renderRegisteredCandidatesTable() {
       const tbody = document.getElementById('registeredCandidatesTableBody');
       tbody.innerHTML = '';
@@ -1923,7 +1901,7 @@
 
     async function deleteEntireCandidateAccount(cid) {
       const cand = candidates[cid];
-      if (confirm(`CRITICAL: Are you sure you want to permanently delete Candidate "${cand.name}" (${cid}) and all associated applications from the database?`)) {
+      if (confirm(`CRITICAL: Are you sure you want to permanently delete Candidate "${cand.name}" (${cid}) and all associated records?`)) {
         const { error } = await db.from('candidates').delete().eq('candidate_id', cid);
         if (error) {
           alert('Delete failed: ' + error.message);
@@ -1934,14 +1912,20 @@
       }
     }
 
-    // Helper: duplicate check via Supabase
-    async function checkDuplicateInCloud(name, mobile) {
+    function isDuplicateCandidate(name, mobile) {
+      const cleanName = name.trim().toLowerCase();
       const cleanMobile = mobile.trim().replace(/[^0-9]/g, '').slice(-10);
-      const { data } = await db.from('candidates').select('candidate_id, name, mobile').ilike('name', name.trim()).eq('mobile', cleanMobile);
-      return data && data.length > 0;
+      for (let id in candidates) {
+        const existing = candidates[id];
+        const exName = existing.name.trim().toLowerCase();
+        const exMobile = existing.mobile.trim().replace(/[^0-9]/g, '').slice(-10);
+        if (cleanName === exName && cleanMobile === exMobile) {
+          return true;
+        }
+      }
+      return false;
     }
 
-    // Single & Bulk Registration
     async function adminCreateCustomCandidate() {
       const name = document.getElementById('genCandName').value.trim();
       const mobile = document.getElementById('genCandMobile').value.trim();
@@ -1952,29 +1936,22 @@
         alert('All fields are mandatory (with a valid 10-digit mobile number)!');
         return;
       }
-
-      // Check ID conflict
-      const { data: existingId } = await db.from('candidates').select('candidate_id').eq('candidate_id', id);
-      if (existingId && existingId.length > 0) {
+      if (candidates[id]) {
         alert('Candidate ID already exists! Please use a unique Candidate ID.');
         return;
       }
 
-      // Check duplicate Name + Mobile
-      if (await checkDuplicateInCloud(name, mobile)) {
+      if (isDuplicateCandidate(name, mobile)) {
         alert(`Duplicate Entry Found: A candidate with Name "${name}" and Phone "${mobile}" is already registered! Registration skipped.`);
         return;
       }
 
-      const { error } = await db.from('candidates').insert([{
-        candidate_id: id,
-        name: name,
-        mobile: mobile,
-        pass: pass
-      }]);
+      const { error } = await db.from('candidates').insert([
+        { candidate_id: id, name: name, mobile: mobile, pass: pass }
+      ]);
 
       if (error) {
-        alert('Error saving candidate: ' + error.message);
+        alert('Database insert error: ' + error.message);
         return;
       }
 
@@ -1998,7 +1975,7 @@
       XLSX.writeFile(wb, "RKMA_Bulk_Candidates_Sample_Template.xlsx");
     }
 
-    async function processBulkCandidateExcelUpload() {
+    function processBulkCandidateExcelUpload() {
       const fileInput = document.getElementById('bulkExcelFileInput');
       const reportBox = document.getElementById('bulkUploadReport');
       reportBox.style.display = 'none';
@@ -2016,11 +1993,11 @@
           const worksheet = workbook.Sheets[workbook.SheetNames[0]];
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-          let added = 0, skipped = 0;
+          let rowsToInsert = [];
+          let skipped = 0;
           let skipReasons = [];
 
-          for (let idx = 0; idx < jsonData.length; idx++) {
-            const row = jsonData[idx];
+          jsonData.forEach((row, idx) => {
             const name = (row['Name'] || row['name'] || '').toString().trim();
             const phone = (row['Phone'] || row['phone'] || '').toString().trim().replace(/[^0-9]/g, '');
             const cid = (row['CandidateID'] || row['candidateid'] || '').toString().trim();
@@ -2029,37 +2006,35 @@
             if (!name || !cid || !pass || phone.length < 10) {
               skipped++;
               skipReasons.push(`Row ${idx + 2}: Missing fields or invalid phone.`);
-              continue;
+              return;
             }
-
+            if (candidates[cid]) {
+              skipped++;
+              skipReasons.push(`Row ${idx + 2}: Candidate ID "${cid}" already exists.`);
+              return;
+            }
             const cleanPhone = phone.slice(-10);
-
-            // Duplicate validation check
-            if (candidates[cid] || await checkDuplicateInCloud(name, cleanPhone)) {
+            if (isDuplicateCandidate(name, cleanPhone)) {
               skipped++;
-              skipReasons.push(`Row ${idx + 2}: Duplicate Entry (ID "${cid}" or Name & Phone "${name}"). Skipped.`);
-              continue;
+              skipReasons.push(`Row ${idx + 2}: Duplicate Name & Phone ("${name}", "${cleanPhone}"). Skipped.`);
+              return;
             }
 
-            const { error } = await db.from('candidates').insert([{
-              candidate_id: cid,
-              name: name,
-              mobile: cleanPhone,
-              pass: pass
-            }]);
+            rowsToInsert.push({ candidate_id: cid, name: name, mobile: cleanPhone, pass: pass });
+          });
 
-            if (!error) {
-              added++;
-              candidates[cid] = { name: name, mobile: cleanPhone, pass: pass };
-            } else {
-              skipped++;
+          if (rowsToInsert.length > 0) {
+            const { error } = await db.from('candidates').insert(rowsToInsert);
+            if (error) {
+              alert('Error inserting bulk candidates: ' + error.message);
+              return;
             }
           }
 
           reportBox.style.display = 'block';
           reportBox.innerHTML = `
             <div style="padding:10px; background:#dcfce7; color:#15803d; font-weight:bold; border-radius:4px;">
-              ✅ Imported: ${added} candidates | Skipped/Duplicates: ${skipped}
+              ✅ Imported: ${rowsToInsert.length} candidates | Skipped/Duplicates: ${skipped}
             </div>
             ${skipReasons.length > 0 ? `<div style="margin-top:6px; color:#dc2626; max-height:100px; overflow-y:auto; font-size:11px;">${skipReasons.join('<br>')}</div>` : ''}
           `;
@@ -2098,9 +2073,12 @@
       }
 
       const id = 'scheme_' + Date.now();
-      const { error } = await db.from('scholarship_schemes').insert([{ id: id, name: name, description: desc }]);
+      const { error } = await db.from('scholarship_schemes').insert([
+        { id: id, name: name, description: desc }
+      ]);
+
       if (error) {
-        alert('Error creating scheme: ' + error.message);
+        alert('Failed to add scheme: ' + error.message);
         return;
       }
 
@@ -2115,7 +2093,7 @@
       if (!scheme) return;
       document.getElementById('renameSchemeId').value = schemeId;
       document.getElementById('renameSchemeNameInput').value = scheme.name;
-      document.getElementById('renameSchemeDescInput').value = scheme.description || scheme.desc;
+      document.getElementById('renameSchemeDescInput').value = scheme.description || scheme.desc || '';
       document.getElementById('renameSchemeModal').style.display = 'flex';
     }
 
@@ -2133,7 +2111,10 @@
         return;
       }
 
-      const { error } = await db.from('scholarship_schemes').update({ name: newName, description: newDesc }).eq('id', id);
+      const { error } = await db.from('scholarship_schemes')
+        .update({ name: newName, description: newDesc })
+        .eq('id', id);
+
       if (error) {
         alert('Update failed: ' + error.message);
         return;
@@ -2182,8 +2163,8 @@
       document.getElementById('activeFormSchemeBadge').innerText = 'Selected Scheme: ' + (scheme ? scheme.name : 'Scholarship');
 
       const cand = candidates[activeCandidateId];
-      document.getElementById('f_name').value = cand ? cand.name : '';
-      document.getElementById('f_mobile').value = cand ? cand.mobile : '';
+      document.getElementById('f_name').value = cand.name;
+      document.getElementById('f_mobile').value = cand.mobile;
       refreshCaptcha();
       goToStep(1);
       navigateTo('applicationForm');
@@ -2192,7 +2173,7 @@
     // CMS Handlers
     function renderAdminNoticesTable() {
       const box = document.getElementById('adminNoticeList');
-      box.innerHTML = notices.map((n) => `
+      box.innerHTML = notices.map((n, i) => `
         <div class="notice-item">
           <div><strong>${n.title}</strong> (${n.date})<br><a href="${n.link}" target="_blank" style="font-size:11px; color:#0284c7;">${n.link}</a></div>
           <button class="action-btn btn-delete" onclick="deleteNotice(${n.id})">Delete</button>
@@ -2209,21 +2190,32 @@
         alert('Notice title and date are required!');
         return;
       }
-      const { error } = await db.from('notices').insert([{ title: title, notice_date: date, link: link }]);
+
+      const { error } = await db.from('notices').insert([
+        { title: title, notice_date: date, link: link }
+      ]);
+
       if (error) {
-        alert('Error publishing notice: ' + error.message);
+        alert('Failed to publish notice: ' + error.message);
         return;
       }
-      alert('Notice published live to database!');
+
+      alert('Notice published live!');
       document.getElementById('noticeTitleInput').value = '';
       document.getElementById('noticeLinkInput').value = '';
       await loadDataFromSupabase();
+      renderAdminNoticesTable();
     }
 
     async function deleteNotice(id) {
       if (confirm('Delete this notice?')) {
-        await db.from('notices').delete().eq('id', id);
+        const { error } = await db.from('notices').delete().eq('id', id);
+        if (error) {
+          alert('Failed to delete notice: ' + error.message);
+          return;
+        }
         await loadDataFromSupabase();
+        renderAdminNoticesTable();
       }
     }
 
@@ -2246,22 +2238,33 @@
         alert('Document title and link are required!');
         return;
       }
-      const { error } = await db.from('downloads').insert([{ title: title, description: desc, link: link }]);
+
+      const { error } = await db.from('downloads').insert([
+        { title: title, description: desc, link: link }
+      ]);
+
       if (error) {
-        alert('Error saving download: ' + error.message);
+        alert('Failed to add document: ' + error.message);
         return;
       }
+
       alert('Downloadable document added live!');
       document.getElementById('dlTitleInput').value = '';
       document.getElementById('dlDescInput').value = '';
       document.getElementById('dlLinkInput').value = '';
       await loadDataFromSupabase();
+      renderAdminDownloadsTable();
     }
 
     async function deleteDownload(id) {
       if (confirm('Delete this downloadable document?')) {
-        await db.from('downloads').delete().eq('id', id);
+        const { error } = await db.from('downloads').delete().eq('id', id);
+        if (error) {
+          alert('Failed to delete document: ' + error.message);
+          return;
+        }
         await loadDataFromSupabase();
+        renderAdminDownloadsTable();
       }
     }
 
@@ -2285,7 +2288,7 @@
       alert('Website content updated live!');
     }
 
-    // Super Admin Exclusive Functions
+    // Super Admin Functions
     function renderSuperAdminTable() {
       const tbody = document.getElementById('superAdminTableBody');
       tbody.innerHTML = '';
@@ -2309,7 +2312,7 @@
     }
 
     async function superAdminCreateAdmin() {
-      if (!admins[activeAdminId] || admins[activeAdminId].role !== 'SUPER_ADMIN') {
+      if (admins[activeAdminId].role !== 'SUPER_ADMIN') {
         alert('Permission Denied!');
         return;
       }
@@ -2323,18 +2326,17 @@
         alert('All fields required with valid 10-digit mobile!');
         return;
       }
+      if (admins[id]) {
+        alert('Admin ID already exists!');
+        return;
+      }
 
-      const { error } = await db.from('admins').insert([{
-        admin_id: id,
-        name: name,
-        mobile: mobile,
-        pass: pass,
-        email: 'admin@rkmm.org',
-        role: 'ADMIN'
-      }]);
+      const { error } = await db.from('admins').insert([
+        { admin_id: id, name: name, mobile: mobile, pass: pass, email: 'admin@rkmm.org', role: 'ADMIN' }
+      ]);
 
       if (error) {
-        alert('Admin creation failed: ' + error.message);
+        alert('Failed to create admin: ' + error.message);
         return;
       }
 
@@ -2344,10 +2346,11 @@
       document.getElementById('newAdminId').value = '';
       document.getElementById('newAdminPass').value = '';
       await loadDataFromSupabase();
+      renderSuperAdminTable();
     }
 
     async function superAdminDeleteAdmin(aid) {
-      if (!admins[activeAdminId] || admins[activeAdminId].role !== 'SUPER_ADMIN') {
+      if (admins[activeAdminId].role !== 'SUPER_ADMIN') {
         alert('Permission Denied!');
         return;
       }
@@ -2356,8 +2359,13 @@
         return;
       }
       if (confirm(`Remove administrator "${admins[aid].name}" (${aid})?`)) {
-        await db.from('admins').delete().eq('admin_id', aid);
+        const { error } = await db.from('admins').delete().eq('admin_id', aid);
+        if (error) {
+          alert('Failed to remove admin: ' + error.message);
+          return;
+        }
         await loadDataFromSupabase();
+        renderSuperAdminTable();
         alert('Administrator removed successfully.');
       }
     }
@@ -2371,19 +2379,21 @@
         return;
       }
 
-      const updates = {};
+      let updatePayload = {};
       if (newMobile) {
         if (newMobile.length !== 10) {
           alert('Mobile Number must be exactly 10 digits!');
           return;
         }
-        updates.mobile = newMobile;
+        updatePayload.mobile = newMobile;
       }
-      if (newEmail) updates.email = newEmail;
+      if (newEmail) {
+        updatePayload.email = newEmail;
+      }
 
-      const { error } = await db.from('admins').update(updates).eq('admin_id', activeAdminId);
+      const { error } = await db.from('admins').update(updatePayload).eq('admin_id', activeAdminId);
       if (error) {
-        alert('Update failed: ' + error.message);
+        alert('Profile update failed: ' + error.message);
         return;
       }
 
@@ -2391,6 +2401,7 @@
       document.getElementById('updNewMobile').value = '';
       document.getElementById('updNewEmail').value = '';
       await loadDataFromSupabase();
+      document.getElementById('activeAdminContact').innerText = `Admin ID: ${activeAdminId} | Mobile: ${admins[activeAdminId].mobile} | Email: ${admins[activeAdminId].email}`;
     }
 
     // Registration Slip Download
@@ -2460,7 +2471,7 @@
       }).eq('app_no', app.appNo);
 
       if (error) {
-        alert('Failed to update status in database: ' + error.message);
+        alert('Failed to update status: ' + error.message);
         return;
       }
 
@@ -2469,7 +2480,6 @@
       await loadDataFromSupabase();
     }
 
-    // Candidate Form Logic
     function goToStep(s) {
       document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
       document.querySelectorAll('.step-item').forEach((ind, i) => {
@@ -2498,11 +2508,11 @@
         return;
       }
 
-      const existing = applications.find(a => a.candidateId === activeCandidateId);
-      const appNo = existing ? existing.appNo : 'RKM-SCH-2026-' + String(applications.length + 1).padStart(3, '0');
+      const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
+      const appNo = existingIndex >= 0 ? applications[existingIndex].appNo : 'RKM-SCH-2026-' + String(applications.length + 1).padStart(3, '0');
       const schemeObj = scholarshipSchemes.find(s => s.id === selectedScholarshipSchemeId);
 
-      const payload = {
+      const recordPayload = {
         app_no: appNo,
         candidate_id: activeCandidateId,
         scheme_id: selectedScholarshipSchemeId,
@@ -2511,6 +2521,9 @@
         dob: document.getElementById('f_dob').value,
         caste: document.getElementById('f_caste').value,
         gender: document.getElementById('f_gender').value,
+        photo_base64: currentUploadedPhotoBase64,
+        sign_base64: currentUploadedSignBase64,
+        uploaded_documents: currentUploadedDocs,
         father: document.getElementById('f_fname').value,
         father_occ: document.getElementById('f_focc').value,
         mother: document.getElementById('f_mname').value,
@@ -2538,19 +2551,16 @@
         ifsc: document.getElementById('f_ifsc').value,
         bank_name: document.getElementById('f_bankname').value,
         status: 'Submitted',
-        admin_remarks: 'Application submitted successfully.',
-        photo_base64: currentUploadedPhotoBase64,
-        sign_base64: currentUploadedSignBase64,
-        uploaded_documents: currentUploadedDocs
+        admin_remarks: 'Application submitted successfully under ' + (schemeObj ? schemeObj.name : 'Scholarship Scheme') + '.'
       };
 
-      const { error } = await db.from('applications').upsert([payload]);
+      const { error } = await db.from('applications').upsert([recordPayload], { onConflict: 'app_no' });
       if (error) {
         alert('Application submission failed: ' + error.message);
         return;
       }
 
-      alert(`Application Submitted Successfully under "${payload.scheme_name}"! (App No: ${appNo})`);
+      alert(`Application Submitted Successfully under "${recordPayload.scheme_name}"! (App No: ${appNo})`);
       await loadDataFromSupabase();
       navigateTo('candidateDashboard');
     }
@@ -2696,7 +2706,7 @@
       if (app.uploadedDocuments) {
         for (let k in app.uploadedDocuments) {
           const doc = app.uploadedDocuments[k];
-          docsHtml += `<div style="margin-bottom:20px; page-break-inside:avoid;"><h4>${doc.name}</h4>${doc.type && doc.type.includes('image') ? `<img src="${doc.base64}" style="max-width:100%; max-height:850px; border:1px solid #ccc;">` : `<div>[PDF Document: ${doc.name}]</div>`}</div>`;
+          docsHtml += `<div style="margin-bottom:20px; page-break-inside:avoid;"><h4>${doc.name}</h4>${doc.type.includes('image') ? `<img src="${doc.base64}" style="max-width:100%; max-height:850px; border:1px solid #ccc;">` : `<div>[PDF Document: ${doc.name}]</div>`}</div>`;
         }
       }
       docsHtml += `</div>`;
@@ -2762,7 +2772,7 @@
       return 'st-returned';
     }
 
-    // Carousel
+    // Carousel Setup
     let currentSlideIndex = 0;
     const totalSlides = 15;
     function buildSliderDots() {
@@ -2788,12 +2798,12 @@
       document.getElementById('contactMessage').value = '';
     }
 
-    // WINDOW REFRESH-STATE RESTORATION & INITIALIZER
+    // Window Refresh and Initialization
     window.addEventListener('load', async () => {
       buildSliderDots();
       setInterval(() => moveSlide(1), 3500);
 
-      // Load data from live Supabase Cloud
+      // Fetch fresh data from Supabase Cloud
       await loadDataFromSupabase();
 
       // Session & State Persistence on Refresh
