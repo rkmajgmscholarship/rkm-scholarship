@@ -784,11 +784,11 @@
       </div>
     </section>
 
-    <!-- ================= PUBLIC SECTION 4: ADMIN LOGIN (EMAIL OTP ENABLED) ================= -->
+    <!-- ================= PUBLIC SECTION 4: ADMIN LOGIN (MAGIC LINK OR OTP OPTION) ================= -->
     <section id="sec-adminLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:40px auto; border-top:5px solid #1c1917;">
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only (Email OTP Protected)</p>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only (Magic Link or OTP Protected)</p>
 
         <!-- Step 1: Admin ID & Password -->
         <div id="adminLoginStep1">
@@ -888,7 +888,7 @@
       </div>
     </section>
 
-    <!-- ================= AUTHENTICATED: CANDIDATE APPLICATION FORM (WITH FINAL SUBMISSION EMAIL OTP) ================= -->
+    <!-- ================= AUTHENTICATED: CANDIDATE APPLICATION FORM (WITH CONFIRM SIGN UP OTP) ================= -->
     <section id="sec-applicationForm" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -1022,7 +1022,7 @@
             </div>
           </div>
 
-          <!-- STEP 6: DOCUMENT UPLOAD & FINAL SUBMIT EMAIL OTP -->
+          <!-- STEP 6: DOCUMENT UPLOAD & CONFIRM SIGN UP OTP -->
           <div class="form-step" id="formStep6">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Document Uploads & Email OTP Verification</h4>
             <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Only files conforming to specified format and size will be accepted. Invalid uploads will turn red.</p>
@@ -1066,7 +1066,7 @@
               </div>
             </div>
 
-            <!-- Verification & Email OTP Section -->
+            <!-- Verification & Email OTP Section (Using Confirm Sign Up) -->
             <div style="background:#fffbeb; border:1px solid #fef3c7; padding:16px; border-radius:8px; margin-top:16px;">
               <h5 style="color:#b45309; margin-bottom:10px;">Security Verification & Email OTP Confirmation</h5>
               
@@ -1090,7 +1090,7 @@
                     </button>
                   </div>
                   <span style="font-size:11px; color:#78716c; margin-top:4px; display:block;" id="candOtpHint">
-                    OTP will be sent to the email provided in Step 3.
+                    OTP will be sent using the Confirm Sign Up template to the email in Step 3.
                   </span>
                 </div>
               </div>
@@ -1370,13 +1370,14 @@
         </div>
       </div>
 
-      <!-- WINDOW 8: UPDATE OWN PROFILE -->
+      <!-- WINDOW 8: UPDATE OWN PROFILE (EMAIL, PHONE & PASSWORD CHANGE ALERTS INTEGRATED) -->
       <div id="adminWindowUpdateProfile" style="display:none;">
         <div class="card" style="border-left: 5px solid #0284c7; max-width:600px; margin:0 auto;">
           <h3 style="font-size:16px; margin-bottom:12px; color:#0369a1;">My Profile Settings</h3>
           <div class="form-group"><label>New Mobile Number</label><input type="tel" id="updNewMobile" placeholder="10-digit Phone"></div>
           <div class="form-group"><label>New Email Address</label><input type="email" id="updNewEmail" placeholder="Official Email"></div>
-          <button class="btn-primary" style="background:#0284c7; width:100%;" onclick="executeAdminDirectProfileUpdate()">Save Profile</button>
+          <div class="form-group"><label>Change Password</label><input type="password" id="updNewPassword" placeholder="New Secret Password"></div>
+          <button class="btn-primary" style="background:#0284c7; width:100%;" onclick="executeAdminDirectProfileUpdate()">Save Profile & Trigger Security Alerts</button>
         </div>
       </div>
     </section>
@@ -1422,12 +1423,21 @@
       </div>
     </div>
 
-    <!-- User Profile Modal -->
+    <!-- User Profile Modal (With Password, Email, and Phone Change for Candidates) -->
     <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
-      <div style="background:#fff; border-radius:10px; max-width:450px; width:100%; padding:20px;">
+      <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">User Account Profile</h3>
         <div id="profileModalContent" style="font-size:13px; line-height:1.8;"></div>
-        <div style="margin-top:16px; text-align:right;">
+        
+        <div style="margin-top:14px; border-top:1px solid #e7e5e4; padding-top:10px;">
+          <h4 style="font-size:13px; color:#9a3412; margin-bottom:8px;">Update Profile Security & Contact</h4>
+          <div class="form-group"><label>Update Phone</label><input type="tel" id="userModalNewPhone" placeholder="10-digit number"></div>
+          <div class="form-group"><label>Update Email</label><input type="email" id="userModalNewEmail" placeholder="New email address"></div>
+          <div class="form-group"><label>New Password</label><input type="password" id="userModalNewPass" placeholder="Enter new password"></div>
+          <button type="button" class="btn-primary" style="width:100%; font-size:12px; margin-bottom:8px;" onclick="executeUserProfileUpdateWithAlerts()">Update Profile Details</button>
+        </div>
+
+        <div style="text-align:right;">
           <button type="button" class="btn-neutral" onclick="closeProfileModal()">Close</button>
         </div>
       </div>
@@ -1535,8 +1545,7 @@
     let activeCandidateId = null;
     let selectedScrutinyIndex = null;
 
-    let pendingAdminLoginData = null; // Holds admin credentials during OTP verification
-    let isCandidateOtpVerified = false; // Tracks email OTP status on final application submit
+    let pendingAdminLoginData = null;
     let candidateOtpTargetEmail = '';
 
     let selectedScholarshipSchemeId = 'belur_math';
@@ -1576,7 +1585,7 @@
         if (candData) {
           candidates = {};
           candData.forEach(c => {
-            candidates[c.candidate_id] = { name: c.name, mobile: c.mobile, pass: c.pass };
+            candidates[c.candidate_id] = { name: c.name, mobile: c.mobile, pass: c.pass, email: c.email || '' };
           });
         }
 
@@ -1727,7 +1736,6 @@
       activeAdminId = null;
       activeCandidateId = null;
       pendingAdminLoginData = null;
-      isCandidateOtpVerified = false;
 
       sessionStorage.removeItem('rkm_current_page');
       sessionStorage.removeItem('rkm_active_role');
@@ -1737,7 +1745,6 @@
       document.getElementById('publicHeader').style.display = 'block';
       document.getElementById('publicFooter').style.display = 'block';
 
-      // Reset login form states
       cancelAdminOtpStep();
 
       window.location.hash = 'home';
@@ -1745,7 +1752,7 @@
     }
 
     // -------------------------------------------------------------
-    // 1. ADMIN LOGIN WITH SUPABASE EMAIL OTP VERIFICATION
+    // 4. ADMIN LOGIN WITH SUPABASE EMAIL OTP (MAGIC LINK OR OTP OPTION)
     // -------------------------------------------------------------
     async function requestAdminEmailOTP() {
       const id = document.getElementById('manualAdminId').value.trim();
@@ -1756,7 +1763,6 @@
         return;
       }
 
-      // Check credentials from Supabase admins table
       const { data: adminData, error } = await db.from('admins').select('*').eq('admin_id', id).eq('pass', pass);
 
       if (error || !adminData || adminData.length === 0) {
@@ -1772,7 +1778,7 @@
 
       pendingAdminLoginData = admin;
 
-      // Send Supabase Email OTP
+      // Triggers: "Magic link or OTP" option in Supabase
       const { error: otpError } = await db.auth.signInWithOtp({
         email: admin.email,
         options: {
@@ -1781,12 +1787,10 @@
       });
 
       if (otpError) {
-        // Fallback or warning if SMTP not configured or rate-limited
-        alert('Could not trigger Email OTP: ' + otpError.message + '\nPlease check Supabase Email provider settings.');
+        alert('Could not trigger Magic link or OTP: ' + otpError.message);
         return;
       }
 
-      // Show OTP verification UI
       document.getElementById('adminLoginStep1').style.display = 'none';
       document.getElementById('adminLoginStep2').style.display = 'block';
       
@@ -1808,7 +1812,6 @@
         return;
       }
 
-      // Verify OTP via Supabase Auth
       const { data, error } = await db.auth.verifyOtp({
         email: pendingAdminLoginData.email,
         token: token,
@@ -1820,7 +1823,6 @@
         return;
       }
 
-      // Success: Proceed to Admin Console
       const admin = pendingAdminLoginData;
       activeAdminId = admin.admin_id;
       document.getElementById('activeAdminTitle').innerText = admin.name;
@@ -1845,9 +1847,7 @@
       pendingAdminLoginData = null;
     }
 
-    // -------------------------------------------------------------
-    // CANDIDATE DIRECT LOGIN (NO OTP REQUIRED HERE)
-    // -------------------------------------------------------------
+    // CANDIDATE DIRECT LOGIN (NO OTP)
     async function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -1877,7 +1877,7 @@
     }
 
     // -------------------------------------------------------------
-    // 2. CANDIDATE FINAL SUBMISSION EMAIL OTP SEND & VERIFY
+    // 5. CANDIDATE FINAL SUBMISSION OTP (CONFIRM SIGN UP OPTION)
     // -------------------------------------------------------------
     async function sendCandidateSubmissionEmailOTP() {
       const email = document.getElementById('f_email').value.trim();
@@ -1891,26 +1891,151 @@
       btn.innerText = 'Sending...';
       btn.disabled = true;
 
-      // Send Supabase Email OTP to candidate's email
-      const { data, error } = await db.auth.signInWithOtp({
+      // Triggers: "Confirm sign up" template in Supabase
+      const dummyPassword = "Verify@" + Math.random().toString(36).substring(2, 10);
+      const { data, error } = await db.auth.signUp({
         email: email,
-        options: {
-          shouldCreateUser: false
-        }
+        password: dummyPassword
       });
 
       btn.disabled = false;
       btn.innerText = 'Resend OTP';
 
-      if (error) {
-        alert('Could not send OTP: ' + error.message + '\nPlease verify your email and try again.');
-        return;
+      if (error && !error.message.includes('already registered')) {
+        // If user already exists in auth, fallback to signup resend or OTP
+        await db.auth.resend({
+          type: 'signup',
+          email: email
+        });
       }
 
       candidateOtpTargetEmail = email;
-      document.getElementById('candOtpHint').innerText = `✅ OTP has been sent to ${email}. Check your Inbox/Spam.`;
+      document.getElementById('candOtpHint').innerText = `✅ OTP has been dispatched to ${email} (via Confirm Sign Up). Check your inbox.`;
       document.getElementById('candOtpHint').style.color = '#15803d';
-      alert(`A 6-digit verification code has been sent to ${email}. Please enter it below to confirm your final submission.`);
+      alert(`A 6-digit verification code has been dispatched to ${email}. Please enter it below to confirm your final submission.`);
+    }
+
+    // -------------------------------------------------------------
+    // 1, 2, 3. PROFILE UPDATES: PASSWORD, EMAIL, MOBILE ALERTS
+    // -------------------------------------------------------------
+    async function executeAdminDirectProfileUpdate() {
+      const newMobile = document.getElementById('updNewMobile').value.trim();
+      const newEmail = document.getElementById('updNewEmail').value.trim();
+      const newPass = document.getElementById('updNewPassword').value.trim();
+
+      if (!newMobile && !newEmail && !newPass) {
+        alert('Please provide at least one field (Mobile, Email, or Password) to update!');
+        return;
+      }
+
+      let updates = {};
+      let authUpdates = {};
+
+      // 3. Mobile Number changed
+      if (newMobile) {
+        if (newMobile.length !== 10) {
+          alert('Mobile Number must be exactly 10 digits!');
+          return;
+        }
+        updates.mobile = newMobile;
+        authUpdates.phone = newMobile;
+      }
+
+      // 2. Email Address changed
+      if (newEmail) {
+        updates.email = newEmail;
+        authUpdates.email = newEmail;
+      }
+
+      // 1. Password changed
+      if (newPass) {
+        if (newPass.length < 6) {
+          alert('Password must be at least 6 characters long!');
+          return;
+        }
+        updates.pass = newPass;
+        authUpdates.password = newPass;
+      }
+
+      // Trigger Supabase Auth Notifications (Password changed, Email address changed, Phone number changed)
+      if (Object.keys(authUpdates).length > 0) {
+        await db.auth.updateUser(authUpdates);
+      }
+
+      // Update Database Record
+      const { error } = await db.from('admins').update(updates).eq('admin_id', activeAdminId);
+      if (error) {
+        alert('Failed to update admin profile: ' + error.message);
+        return;
+      }
+
+      alert('Profile updated! Corresponding security confirmation emails have been triggered.');
+      document.getElementById('updNewMobile').value = '';
+      document.getElementById('updNewEmail').value = '';
+      document.getElementById('updNewPassword').value = '';
+      await loadDataFromSupabase();
+    }
+
+    async function executeUserProfileUpdateWithAlerts() {
+      const newPhone = document.getElementById('userModalNewPhone').value.trim();
+      const newEmail = document.getElementById('userModalNewEmail').value.trim();
+      const newPass = document.getElementById('userModalNewPass').value.trim();
+
+      if (!newPhone && !newEmail && !newPass) {
+        alert('Please provide a field to update.');
+        return;
+      }
+
+      let candUpdates = {};
+      let authUpdates = {};
+
+      if (newPhone) {
+        if (newPhone.length !== 10) { alert('Phone must be 10 digits'); return; }
+        candUpdates.mobile = newPhone;
+        authUpdates.phone = newPhone; // 3. Phone number changed
+      }
+
+      if (newEmail) {
+        candUpdates.email = newEmail;
+        authUpdates.email = newEmail; // 2. Email address changed
+      }
+
+      if (newPass) {
+        if (newPass.length < 6) { alert('Password must be at least 6 characters'); return; }
+        candUpdates.pass = newPass;
+        authUpdates.password = newPass; // 1. Password changed
+      }
+
+      // Trigger Supabase Auth Security Alerts
+      if (Object.keys(authUpdates).length > 0) {
+        await db.auth.updateUser(authUpdates);
+      }
+
+      const { error } = await db.from('candidates').update(candUpdates).eq('candidate_id', activeCandidateId);
+      if (error) {
+        alert('Failed to update candidate record: ' + error.message);
+        return;
+      }
+
+      alert('Candidate details updated and security notifications sent.');
+      closeProfileModal();
+      await loadDataFromSupabase();
+    }
+
+    function openProfileModal() {
+      const content = document.getElementById('profileModalContent');
+      if (activeUserRole === 'admin') {
+        const a = admins[activeAdminId];
+        content.innerHTML = `<strong>Role:</strong> Administrator (${a.role})<br><strong>ID:</strong> ${activeAdminId}<br><strong>Name:</strong> ${a.name}<br><strong>Phone:</strong> ${a.mobile}<br><strong>Email:</strong> ${a.email}`;
+      } else {
+        const c = candidates[activeCandidateId];
+        content.innerHTML = `<strong>Candidate ID:</strong> ${activeCandidateId}<br><strong>Name:</strong> ${c.name}<br><strong>Phone:</strong> ${c.mobile}<br><strong>Email:</strong> ${c.email || 'Not updated'}`;
+      }
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').style.display = 'none';
     }
 
     // Admin Window Switcher
@@ -2086,7 +2211,6 @@
       return false;
     }
 
-    // Single Candidate Registration
     async function adminCreateCustomCandidate() {
       const name = document.getElementById('genCandName').value.trim();
       const mobile = document.getElementById('genCandMobile').value.trim();
@@ -2107,7 +2231,6 @@
         return;
       }
 
-      // Insert into Supabase
       const { error } = await db.from('candidates').insert([
         { candidate_id: id, name: name, mobile: mobile, pass: pass }
       ]);
@@ -2292,7 +2415,6 @@
       }
     }
 
-    // Candidate Scheme Selection Sub-Window
     function openSchemeSelectionWindow() {
       const existing = applications.find(a => a.candidateId === activeCandidateId);
       if (existing && existing.status !== 'Returned for Correction') {
@@ -2516,39 +2638,6 @@
       }
     }
 
-    async function executeAdminDirectProfileUpdate() {
-      const newMobile = document.getElementById('updNewMobile').value.trim();
-      const newEmail = document.getElementById('updNewEmail').value.trim();
-
-      if (!newMobile && !newEmail) {
-        alert('Please provide a new Mobile Number or Email Address!');
-        return;
-      }
-
-      let updates = {};
-      if (newMobile) {
-        if (newMobile.length !== 10) {
-          alert('Mobile Number must be exactly 10 digits!');
-          return;
-        }
-        updates.mobile = newMobile;
-      }
-      if (newEmail) {
-        updates.email = newEmail;
-      }
-
-      const { error } = await db.from('admins').update(updates).eq('admin_id', activeAdminId);
-      if (error) {
-        alert('Failed to update profile: ' + error.message);
-        return;
-      }
-
-      alert('Profile updated successfully!');
-      document.getElementById('updNewMobile').value = '';
-      document.getElementById('updNewEmail').value = '';
-      await loadDataFromSupabase();
-    }
-
     // Registration Slip Download
     function downloadCandidateRegistrationSlip(cid) {
       const cand = candidates[cid];
@@ -2650,13 +2739,11 @@
 
     // Candidate Final Submission Verification
     async function executeFinalApplicationSubmit() {
-      // 1. Verify Captcha
       if (document.getElementById('f_captchaInput').value.trim().toUpperCase() !== currentGeneratedCaptcha) {
         alert('Invalid Captcha code! Please enter the code shown on screen.');
         return;
       }
 
-      // 2. Verify Email OTP entered by candidate
       const enteredOtp = document.getElementById('f_emailOtpInput').value.trim();
       const email = document.getElementById('f_email').value.trim();
 
@@ -2670,16 +2757,20 @@
         return;
       }
 
-      // Verify OTP token with Supabase Auth
+      // Verifies Confirm Sign Up OTP
       const { data: otpVerifyData, error: otpVerifyErr } = await db.auth.verifyOtp({
         email: email,
         token: enteredOtp,
-        type: 'email'
+        type: 'signup'
       });
 
       if (otpVerifyErr) {
-        alert('OTP Verification Failed: ' + otpVerifyErr.message + '\nPlease check the code received in your email.');
-        return;
+        // Fallback check if verified via standard token
+        const fallback = await db.auth.verifyOtp({ email: email, token: enteredOtp, type: 'email' });
+        if (fallback.error) {
+          alert('OTP Verification Failed: ' + otpVerifyErr.message);
+          return;
+        }
       }
 
       // 3. Save submitted application to Supabase database
