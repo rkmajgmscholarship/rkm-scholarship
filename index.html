@@ -279,187 +279,6 @@
       margin-bottom: 14px;
     }
 
-    /* About Section */
-    .about-section {
-      line-height: 1.7;
-      font-size: 14px;
-      color: #3f3f46;
-    }
-    .activities-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-    .activity-card {
-      background: #fafaf9;
-      border: 1px solid #e7e5e4;
-      border-radius: 8px;
-      padding: 16px;
-    }
-    .activity-card h4 {
-      font-size: 15px;
-      color: #7f1d1d;
-      margin-bottom: 8px;
-      border-bottom: 2px solid #fed7aa;
-      padding-bottom: 4px;
-    }
-    .activity-card div {
-      font-size: 13px;
-      line-height: 1.6;
-      white-space: pre-line;
-    }
-    .section-title-box {
-      text-align: center;
-      margin: 30px 0 16px;
-    }
-    .section-title-box h3 {
-      font-size: 20px;
-      font-weight: 800;
-      color: #7f1d1d;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      display: inline-block;
-      border-bottom: 3px solid #ea580c;
-      padding-bottom: 4px;
-    }
-
-    /* Holy Trio */
-    .pillar-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
-      margin-top: 10px;
-    }
-    .pillar-card {
-      background: #ffffff;
-      padding: 20px 16px;
-      border-radius: 12px;
-      border: 1px solid #e7e5e4;
-      text-align: center;
-    }
-    .pillar-img-frame {
-      width: 180px;
-      height: 220px;
-      margin: 0 auto 14px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 4px solid #ea580c;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-      background-color: #f5f5f4;
-    }
-    .pillar-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-    }
-
-    /* 15 Image Slider */
-    .slider-container {
-      position: relative;
-      max-width: 100%;
-      height: 420px;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      background-color: #1c1917;
-      margin-top: 10px;
-    }
-    .slide-wrapper {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.6s ease-in-out;
-    }
-    .slide-item {
-      min-width: 100%;
-      height: 100%;
-      position: relative;
-      background: #1c1917;
-    }
-    .slide-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-    .slide-caption {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.85));
-      color: #ffffff;
-      padding: 24px 16px 14px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .slider-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.6);
-      color: #ffffff;
-      border: none;
-      padding: 12px 16px;
-      border-radius: 50%;
-      font-size: 18px;
-      cursor: pointer;
-      z-index: 10;
-      transition: background 0.2s;
-    }
-    .slider-btn:hover { background: rgba(234, 88, 12, 0.95); }
-    .slider-btn.prev { left: 12px; }
-    .slider-btn.next { right: 12px; }
-    .slider-dots {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 5px;
-      z-index: 10;
-      flex-wrap: wrap;
-      max-width: 90%;
-      justify-content: center;
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.45);
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .dot.active {
-      background: #ea580c;
-      width: 18px;
-      border-radius: 10px;
-    }
-
-    /* Notice Board Items */
-    .notice-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px;
-      border-bottom: 1px dashed #d6d3d1;
-      gap: 10px;
-    }
-    .notice-item:last-child { border-bottom: none; }
-    .notice-date {
-      font-size: 11px;
-      color: #9a3412;
-      font-weight: bold;
-      background: #ffedd5;
-      padding: 2px 8px;
-      border-radius: 10px;
-      white-space: nowrap;
-    }
-
     /* Forms */
     .form-grid {
       display: grid;
@@ -633,7 +452,6 @@
         </div>
       </div>
 
-      <!-- Quick Notices Preview on Home -->
       <div class="card" style="border-left:5px solid #ea580c;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <h3 style="color:#7f1d1d; font-size:16px;">📢 Latest Institutional Notices</h3>
@@ -642,122 +460,17 @@
         <div id="homeNoticesList"></div>
       </div>
 
-      <!-- Institutional Activities (Managed via CMS) -->
       <div class="card about-section">
         <h3 style="color: #7f1d1d; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #fed7aa; padding-bottom: 6px;">
           About Ramakrishna Mission Ashrama, Jhargram
         </h3>
         <p class="about-intro" id="viewAboutIntro"></p>
-
         <p style="font-weight: 600; color: #1c1917; margin-bottom: 8px;">The following activities/projects are carried out by the Ashrama at present:</p>
-
         <div class="activities-grid">
-          <div class="activity-card">
-            <h4>Educational</h4>
-            <div id="viewActEdu"></div>
-          </div>
-          <div class="activity-card">
-            <h4>Welfare</h4>
-            <div id="viewActWelfare"></div>
-          </div>
-          <div class="activity-card">
-            <h4>Youth</h4>
-            <div id="viewActYouth"></div>
-          </div>
-          <div class="activity-card">
-            <h4>Spiritual</h4>
-            <div id="viewActSpiritual"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Holy Trio -->
-      <div class="section-title-box">
-        <h3>HOLY TRIO</h3>
-      </div>
-
-      <div class="pillar-grid">
-        <div class="pillar-card">
-          <div class="pillar-img-frame" style="border-color: #ea580c;">
-            <img src="https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS" alt="Sri Ramakrishna" class="pillar-img">
-          </div>
-          <strong style="font-size:16px; color:#1c1917; display:block;">Sri Ramakrishna Paramahamsa</strong>
-          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#78350f; line-height: 1.5;">
-            "As many faiths, so many paths to truth."
-          </p>
-        </div>
-
-        <div class="pillar-card">
-          <div class="pillar-img-frame" style="border-color: #b91c1c;">
-            <img src="https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE" alt="Sri Sarada Devi" class="pillar-img">
-          </div>
-          <strong style="font-size:16px; color:#1c1917; display:block;">Sri Sarada Devi (Holy Mother)</strong>
-          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#991b1b; line-height: 1.5;">
-            "If you want peace of mind, do not find fault with others. Learn to see your own faults."
-          </p>
-        </div>
-
-        <div class="pillar-card">
-          <div class="pillar-img-frame" style="border-color: #d97706;">
-            <img src="https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn" alt="Swami Vivekananda" class="pillar-img">
-          </div>
-          <strong style="font-size:16px; color:#1c1917; display:block;">Swami Vivekananda</strong>
-          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#92400e; line-height: 1.5;">
-            "Education is the manifestation of the perfection already in man."
-          </p>
-        </div>
-      </div>
-
-      <!-- 15 Images Slider -->
-      <div class="section-title-box">
-        <h3>GLIMPSES OF ASHRAMA ACTIVITIES</h3>
-      </div>
-
-      <div class="card" style="padding: 12px;">
-        <div class="slider-container">
-          <div class="slide-wrapper" id="carouselWrapper">
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1vqBJNgB72mfDmscTdjOuf9LN-dZ2aM8I" alt="Activity 1"><div class="slide-caption">Glimpses of Ashrama Activities - 1</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1OAmfCuUgSxExpW-ydCqNiMml91ge_2XE" alt="Activity 2"><div class="slide-caption">Glimpses of Ashrama Activities - 2</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1mfncSNTU7OOIvYjDNmC-kGMfvMInUF0w" alt="Activity 3"><div class="slide-caption">Glimpses of Ashrama Activities - 3</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1_4yGHmo_Zse35nuLvUpxrtMK8cfq-eVc" alt="Activity 4"><div class="slide-caption">Glimpses of Ashrama Activities - 4</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/143J157Z0hgyw3dqjP1qG9kbQL78Wada-" alt="Activity 5"><div class="slide-caption">Glimpses of Ashrama Activities - 5</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1m7-psF83cr7CHYYtg7a_bqh4VB1sbK5W" alt="Activity 6"><div class="slide-caption">Glimpses of Ashrama Activities - 6</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1nOrr-Bsu7yP4nAUuByxiI9uy5feZU2Am" alt="Activity 7"><div class="slide-caption">Glimpses of Ashrama Activities - 7</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1JuZ1xnlCAdAllJRaOqoJbKsThQiIlK75" alt="Activity 8"><div class="slide-caption">Glimpses of Ashrama Activities - 8</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1TEiBReJ5Bjb18KemNhK9uWebXcUxHt7-" alt="Activity 9"><div class="slide-caption">Glimpses of Ashrama Activities - 9</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/13RonHGvyYR8-WrECoA6MluL53W1V2o5S" alt="Activity 10"><div class="slide-caption">Glimpses of Ashrama Activities - 10</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1T9Y-Zdg2B68RERJyfSKzqe_NuD97n0J-" alt="Activity 11"><div class="slide-caption">Glimpses of Ashrama Activities - 11</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1kdyWabrOUIsY0Fc5W1bJUIjUthDORb8R" alt="Activity 12"><div class="slide-caption">Glimpses of Ashrama Activities - 12</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1nZ1qrNQ1KGs6J7chYzGNSCqyIZrvFC64" alt="Activity 13"><div class="slide-caption">Glimpses of Ashrama Activities - 13</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1GxfqbxroMc0cXcEpwB79spPqAkSE2MjC" alt="Activity 14"><div class="slide-caption">Glimpses of Ashrama Activities - 14</div></div>
-            <div class="slide-item"><img src="https://lh3.googleusercontent.com/d/1WdQhIl69O0q3BO1d7mJqbnr8FV56QrEt" alt="Activity 15"><div class="slide-caption">Glimpses of Ashrama Activities - 15</div></div>
-          </div>
-          <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
-          <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
-          <div class="slider-dots" id="sliderDots"></div>
-        </div>
-      </div>
-
-      <!-- CONTACT US -->
-      <div class="section-title-box">
-        <h3>CONTACT US</h3>
-      </div>
-
-      <div class="card" style="border-left: 5px solid #ea580c;">
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
-          <div>
-            <h4 style="color:#7f1d1d; margin-bottom:14px; font-size:16px;">Ramakrishna Mission Ashrama, Jhargram</h4>
-            <p style="font-size:13px; color:#444; margin-bottom:8px;">📍 <strong>Address:</strong> Satyabanpally, Jhargram, PIN - 721507, WB</p>
-            <p style="font-size:13px; color:#444; margin-bottom:8px;">📞 <strong>Phone:</strong> <a href="tel:9339423401" style="color:#c2410c; font-weight:bold;">9339423401</a></p>
-            <p style="font-size:13px; color:#444;">✉️ <strong>Email:</strong> <a href="mailto:rkma.jgm.scholarship@gmail.com" style="color:#c2410c; font-weight:bold;">rkma.jgm.scholarship@gmail.com</a></p>
-          </div>
-          <div>
-            <h4 style="color:#1c1917; margin-bottom:10px; font-size:15px;">Send Us an Inquiry</h4>
-            <input type="text" id="contactName" placeholder="Your Name" style="margin-bottom:8px;">
-            <input type="tel" id="contactPhone" placeholder="Your Phone Number" style="margin-bottom:8px;">
-            <textarea id="contactMessage" rows="2" placeholder="Your inquiry..."></textarea>
-            <button class="btn-primary" style="width:100%; margin-top:6px;" onclick="submitContactForm()">Send Message</button>
-          </div>
+          <div class="activity-card"><h4>Educational</h4><div id="viewActEdu"></div></div>
+          <div class="activity-card"><h4>Welfare</h4><div id="viewActWelfare"></div></div>
+          <div class="activity-card"><h4>Youth</h4><div id="viewActYouth"></div></div>
+          <div class="activity-card"><h4>Spiritual</h4><div id="viewActSpiritual"></div></div>
         </div>
       </div>
     </section>
@@ -784,33 +497,49 @@
       </div>
     </section>
 
-    <!-- ================= PUBLIC SECTION 4: ADMIN LOGIN ================= -->
+    <!-- ================= PUBLIC SECTION 4: ADMIN LOGIN (EMAIL OTP SECURED) ================= -->
     <section id="sec-adminLogin" class="page-section">
-      <div class="card" style="max-width:400px; margin:40px auto; border-top:5px solid #1c1917;">
+      <div class="card" style="max-width:420px; margin:40px auto; border-top:5px solid #1c1917;">
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Super Admins & Officials Only</p>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Secured with Supabase Email OTP</p>
 
-        <div class="form-group">
-          <label>Admin ID</label>
-          <input type="text" id="manualAdminId" placeholder="Enter Official Admin ID" autocomplete="off">
+        <!-- Step 1: Admin Credentials -->
+        <div id="adminStepCredBox">
+          <div class="form-group">
+            <label>Admin ID</label>
+            <input type="text" id="manualAdminId" placeholder="e.g. Secretary@RKMAJGM" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="manualAdminPass" placeholder="Enter Password" autocomplete="current-password">
+          </div>
+          <button class="submit-btn" style="background:#1c1917; color:#fde047; padding:10px 16px; border-radius:6px; border:none; font-weight:bold; width:100%; cursor:pointer;" onclick="requestAdminEmailOTP()">
+            Verify Credentials & Send OTP
+          </button>
         </div>
 
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="manualAdminPass" placeholder="Enter Secret Password" autocomplete="current-password">
+        <!-- Step 2: Email OTP Input (Appears only after verifying credentials) -->
+        <div id="adminStepOtpBox" style="display:none; margin-top:14px; border-top:1px dashed #d6d3d1; padding-top:14px;">
+          <p id="adminOtpNotice" style="font-size:12px; color:#15803d; font-weight:bold; margin-bottom:10px;"></p>
+          <div class="form-group">
+            <label>Enter 6-Digit Email OTP</label>
+            <input type="text" id="adminOtpInput" placeholder="Enter 6-digit Code" maxlength="8">
+          </div>
+          <button class="submit-btn" style="background:#15803d; color:#ffffff; padding:10px 16px; border-radius:6px; border:none; font-weight:bold; width:100%; cursor:pointer;" onclick="verifyAdminEmailOTP()">
+            Verify OTP & Login
+          </button>
+          <div style="text-align:center; margin-top:8px;">
+            <button type="button" style="background:transparent; border:none; color:#0284c7; cursor:pointer; font-size:11px;" onclick="cancelAdminOtpStep()">Cancel / Re-enter</button>
+          </div>
         </div>
-
-        <button class="submit-btn" style="background:#1c1917; color:#fde047; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="executeAdminDirectLogin()">
-          Login to Console
-        </button>
       </div>
     </section>
 
-    <!-- ================= PUBLIC SECTION 5: CANDIDATE LOGIN ================= -->
+    <!-- ================= PUBLIC SECTION 5: CANDIDATE LOGIN (NO OTP) ================= -->
     <section id="sec-candidateLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:40px auto; border-top:5px solid #ea580c;">
         <h2 style="text-align:center; font-size:18px;">Candidate Portal Login</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Sign in with your Candidate ID and Password</p>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Direct Login with Candidate ID and Password</p>
 
         <div class="form-group">
           <label>Candidate ID</label>
@@ -854,7 +583,7 @@
       </div>
     </section>
 
-    <!-- ================= AUTHENTICATED: SCHOLARSHIP SCHEME SELECTION SUB-WINDOW ================= -->
+    <!-- ================= AUTHENTICATED: SCHEME SELECTION ================= -->
     <section id="sec-schemeSelection" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -868,7 +597,7 @@
       </div>
     </section>
 
-    <!-- ================= AUTHENTICATED: CANDIDATE APPLICATION FORM ================= -->
+    <!-- ================= AUTHENTICATED: APPLICATION FORM ================= -->
     <section id="sec-applicationForm" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -887,7 +616,7 @@
           <div class="step-item" id="stepIndicator3">3. Contact</div>
           <div class="step-item" id="stepIndicator4">4. Education</div>
           <div class="step-item" id="stepIndicator5">5. Bank</div>
-          <div class="step-item" id="stepIndicator6">6. Documents</div>
+          <div class="step-item" id="stepIndicator6">6. Documents & OTP</div>
         </div>
 
         <form id="scholarshipMultiForm" onsubmit="return false;">
@@ -947,7 +676,7 @@
               <div class="form-group"><label>Mobile No.</label><input type="tel" id="f_mobile" required></div>
               <div class="form-group"><label>Alternative Mobile No.</label><input type="tel" id="f_altmobile"></div>
               <div class="form-group"><label>WhatsApp No.</label><input type="tel" id="f_whatsapp" required></div>
-              <div class="form-group"><label>Email</label><input type="email" id="f_email" required></div>
+              <div class="form-group"><label>Email (Mandatory for Submission OTP)</label><input type="email" id="f_email" required></div>
               <div class="form-group"><label>Village</label><input type="text" id="f_vill" required></div>
               <div class="form-group"><label>P.O.</label><input type="text" id="f_po" required></div>
               <div class="form-group"><label>P.S.</label><input type="text" id="f_ps" required></div>
@@ -1002,57 +731,74 @@
             </div>
           </div>
 
-          <!-- STEP 6 -->
+          <!-- STEP 6: DOCUMENTS & FINAL SUBMIT WITH EMAIL OTP -->
           <div class="form-step" id="formStep6">
-            <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Document Uploads</h4>
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Document Uploads & Email OTP Verification</h4>
             <div class="form-grid">
               <div class="form-group">
                 <label>a. Aadhaar Card</label>
                 <input type="file" id="f_doc_aadhaar" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errAadhaar', 'docAadhaar')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
-                <span class="file-error-msg" id="errAadhaar">Exceeded 500 KB or invalid file type!</span>
+                <span class="file-error-msg" id="errAadhaar">Exceeded 500 KB!</span>
               </div>
               <div class="form-group">
                 <label>b. Admission Receipt</label>
                 <input type="file" id="f_doc_adm" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errAdm', 'docAdm')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
-                <span class="file-error-msg" id="errAdm">Exceeded 500 KB or invalid file type!</span>
+                <span class="file-error-msg" id="errAdm">Exceeded 500 KB!</span>
               </div>
               <div class="form-group">
                 <label>c. Qualifying Exam Marksheet</label>
                 <input type="file" id="f_doc_mark" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errMark', 'docMark')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
-                <span class="file-error-msg" id="errMark">Exceeded 500 KB or invalid file type!</span>
+                <span class="file-error-msg" id="errMark">Exceeded 500 KB!</span>
               </div>
               <div class="form-group">
                 <label>d. Bank Passbook</label>
                 <input type="file" id="f_doc_passbook" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errPassbook', 'docPassbook')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
-                <span class="file-error-msg" id="errPassbook">Exceeded 500 KB or invalid file type!</span>
+                <span class="file-error-msg" id="errPassbook">Exceeded 500 KB!</span>
               </div>
               <div class="form-group">
                 <label>e. Income Proof</label>
                 <input type="file" id="f_doc_income" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errIncome', 'docIncome')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
-                <span class="file-error-msg" id="errIncome">Exceeded 500 KB or invalid file type!</span>
+                <span class="file-error-msg" id="errIncome">Exceeded 500 KB!</span>
               </div>
               <div class="form-group">
                 <label>f. Application Prayer</label>
                 <input type="file" id="f_doc_prayer" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errPrayer', 'docPrayer')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
-                <span class="file-error-msg" id="errPrayer">Exceeded 500 KB or invalid file type!</span>
+                <span class="file-error-msg" id="errPrayer">Exceeded 500 KB!</span>
               </div>
             </div>
 
-            <div style="background:#fffbeb; border:1px solid #fef3c7; padding:14px; border-radius:8px; margin-top:16px;">
-              <h5 style="color:#b45309; margin-bottom:8px;">Final Verification Check</h5>
+            <!-- Verification & Email OTP Box for Final Submission -->
+            <div style="background:#fffbeb; border:1px solid #fef3c7; padding:16px; border-radius:8px; margin-top:16px;">
+              <h5 style="color:#b45309; margin-bottom:8px;">Final Verification & Email OTP Authorization</h5>
+              <p style="font-size:12px; color:#57534e; margin-bottom:10px;">To finalize submission, request an OTP to your email provided in Step 3.</p>
+
               <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <div class="captcha-box" id="captchaDisplay">4A9X</div>
                 <button type="button" style="padding:4px 8px; font-size:11px;" onclick="refreshCaptcha()">Refresh Captcha</button>
               </div>
               <div class="form-group" style="max-width:300px;">
                 <label>Enter Captcha</label>
-                <input type="text" id="f_captchaInput" placeholder="Enter text shown above">
+                <input type="text" id="f_captchaInput" placeholder="Enter characters above">
+              </div>
+
+              <!-- Candidate OTP Trigger & Input Box -->
+              <div style="border-top:1px dashed #d6d3d1; padding-top:10px; margin-top:10px;">
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
+                  <button type="button" class="btn-primary" style="background:#0284c7; padding:8px 14px; font-size:12px;" onclick="requestCandidateSubmitEmailOTP()">
+                    ✉️ Send OTP to Candidate Email
+                  </button>
+                  <span id="candSubmitOtpStatus" style="font-size:12px; font-weight:bold; color:#15803d;"></span>
+                </div>
+                <div class="form-group" style="max-width:300px;">
+                  <label>Enter 6-Digit Email OTP</label>
+                  <input type="text" id="f_candSubmitOtpInput" placeholder="Enter OTP received in Email" maxlength="8">
+                </div>
               </div>
             </div>
 
@@ -1060,7 +806,7 @@
               <button type="button" class="btn-neutral" onclick="goToStep(5)">&larr; Back</button>
               <div style="display:flex; gap:8px;">
                 <button type="button" class="btn-secondary" onclick="openPreviewModal()">Preview Application</button>
-                <button type="button" class="btn-primary" onclick="executeFinalApplicationSubmit()">Submit Application</button>
+                <button type="button" class="btn-primary" onclick="verifyAndExecuteFinalApplicationSubmit()">Verify OTP & Final Submit</button>
               </div>
             </div>
           </div>
@@ -1131,10 +877,7 @@
             </div>
             <button class="btn-excel" onclick="exportApplicationsToCSV()">📥 Export to Excel</button>
           </div>
-
-          <!-- Dynamic Sub-Windows Tabs for Applications -->
           <div class="sub-tabs-container" id="adminAppSubTabsContainer"></div>
-
           <div style="overflow-x:auto;">
             <table>
               <thead>
@@ -1214,16 +957,9 @@
       <div id="adminWindowManageSchemes" style="display:none;">
         <div class="card" style="border-left:5px solid #7f1d1d;">
           <h3 style="color:#7f1d1d; margin-bottom:6px;">Create New Scholarship Scheme</h3>
-          <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Add a new category alongside existing scholarships.</p>
           <div class="form-grid">
-            <div class="form-group">
-              <label>Scholarship Name</label>
-              <input type="text" id="newSchemeName" placeholder="e.g. Special Merit Scholarship">
-            </div>
-            <div class="form-group">
-              <label>Short Description</label>
-              <input type="text" id="newSchemeDesc" placeholder="e.g. For professional degree students">
-            </div>
+            <div class="form-group"><label>Scholarship Name</label><input type="text" id="newSchemeName" placeholder="e.g. Special Merit Scholarship"></div>
+            <div class="form-group"><label>Short Description</label><input type="text" id="newSchemeDesc" placeholder="e.g. For professional degree students"></div>
           </div>
           <button class="btn-primary" onclick="addNewScholarshipScheme()">➕ Create Scholarship Scheme</button>
         </div>
@@ -1233,12 +969,7 @@
           <div style="overflow-x:auto;">
             <table>
               <thead>
-                <tr>
-                  <th>Scheme ID</th>
-                  <th>Scholarship Name</th>
-                  <th>Description</th>
-                  <th>Actions</th>
-                </tr>
+                <tr><th>Scheme ID</th><th>Scholarship Name</th><th>Description</th><th>Actions</th></tr>
               </thead>
               <tbody id="adminSchemesTableBody"></tbody>
             </table>
@@ -1251,48 +982,38 @@
         <div class="card" style="border-left:5px solid #ea580c;">
           <h3 style="color:#9a3412; margin-bottom:10px;">Publish New Official Notice</h3>
           <div class="form-grid">
-            <div class="form-group"><label>Notice Title</label><input type="text" id="noticeTitleInput" placeholder="e.g. Scholarship Application Extended"></div>
+            <div class="form-group"><label>Notice Title</label><input type="text" id="noticeTitleInput"></div>
             <div class="form-group"><label>Notice Date</label><input type="date" id="noticeDateInput"></div>
-            <div class="form-group"><label>Document Link (Google Drive / URL)</label><input type="url" id="noticeLinkInput" placeholder="https://drive.google.com/..."></div>
+            <div class="form-group"><label>Document Link</label><input type="url" id="noticeLinkInput" placeholder="https://..."></div>
           </div>
-          <button class="btn-primary" onclick="publishNewNotice()">📢 Publish Notice to Website</button>
+          <button class="btn-primary" onclick="publishNewNotice()">📢 Publish Notice</button>
         </div>
-
-        <div class="card">
-          <h3 style="color:#7f1d1d; margin-bottom:12px;">Active Website Notices</h3>
-          <div id="adminNoticeList"></div>
-        </div>
+        <div class="card"><h3 style="color:#7f1d1d; margin-bottom:12px;">Active Website Notices</h3><div id="adminNoticeList"></div></div>
       </div>
 
       <!-- WINDOW 5: MANAGE DOWNLOADS -->
       <div id="adminWindowManageDownloads" style="display:none;">
         <div class="card" style="border-left:5px solid #0284c7;">
-          <h3 style="color:#0369a1; margin-bottom:10px;">Add New Downloadable Form / Document</h3>
+          <h3 style="color:#0369a1; margin-bottom:10px;">Add New Downloadable Form</h3>
           <div class="form-grid">
-            <div class="form-group"><label>Document Title</label><input type="text" id="dlTitleInput" placeholder="e.g. Character Certificate Format"></div>
-            <div class="form-group"><label>Description</label><input type="text" id="dlDescInput" placeholder="Short description of document"></div>
-            <div class="form-group"><label>Document File URL</label><input type="url" id="dlLinkInput" placeholder="https://drive.google.com/..."></div>
+            <div class="form-group"><label>Document Title</label><input type="text" id="dlTitleInput"></div>
+            <div class="form-group"><label>Description</label><input type="text" id="dlDescInput"></div>
+            <div class="form-group"><label>File URL</label><input type="url" id="dlLinkInput"></div>
           </div>
           <button class="btn-primary" style="background:#0284c7;" onclick="addNewDownloadItem()">📥 Add Document</button>
         </div>
-
-        <div class="card">
-          <h3 style="color:#1c1917; margin-bottom:12px;">Active Downloadable Documents</h3>
-          <div id="adminDownloadList"></div>
-        </div>
+        <div class="card"><h3 style="color:#1c1917; margin-bottom:12px;">Active Downloadable Documents</h3><div id="adminDownloadList"></div></div>
       </div>
 
       <!-- WINDOW 6: EDIT WEBSITE CONTENT (CMS) -->
       <div id="adminWindowManageSite" style="display:none;">
         <div class="card" style="border-left:5px solid #16a34a;">
           <h3 style="color:#15803d; margin-bottom:12px;">Direct Website Content Manager</h3>
-          
           <div class="form-group"><label>About Us Paragraph</label><textarea id="editAboutIntro" rows="4"></textarea></div>
-          <div class="form-group"><label>Educational Activities Details</label><textarea id="editActEdu" rows="4"></textarea></div>
-          <div class="form-group"><label>Welfare Activities Details</label><textarea id="editActWelfare" rows="4"></textarea></div>
-          <div class="form-group"><label>Youth Activities Details</label><textarea id="editActYouth" rows="4"></textarea></div>
-          <div class="form-group"><label>Spiritual Activities Details</label><textarea id="editActSpiritual" rows="4"></textarea></div>
-
+          <div class="form-group"><label>Educational Activities</label><textarea id="editActEdu" rows="4"></textarea></div>
+          <div class="form-group"><label>Welfare Activities</label><textarea id="editActWelfare" rows="4"></textarea></div>
+          <div class="form-group"><label>Youth Activities</label><textarea id="editActYouth" rows="4"></textarea></div>
+          <div class="form-group"><label>Spiritual Activities</label><textarea id="editActSpiritual" rows="4"></textarea></div>
           <button class="btn-primary" style="background:#15803d;" onclick="saveWebsiteContentChanges()">💾 Save Website Content</button>
         </div>
       </div>
@@ -1301,33 +1022,17 @@
       <div id="adminWindowSuperAdminManage" style="display:none;">
         <div class="card" style="border-left: 5px solid #4338ca;">
           <h3 style="font-size:16px; margin-bottom:6px; color:#3730a3;">👑 Provision New Administrator Account</h3>
-          <p style="font-size:12px; color:#78716c; margin-bottom:14px;">Super Admin Authority: Only Secretary Maharaj can create or remove administrators.</p>
-          
           <div class="form-grid">
-            <div class="form-group"><label>Name & Designation</label><input type="text" id="newAdminName" placeholder="e.g. Swami X Maharaj"></div>
+            <div class="form-group"><label>Name & Title</label><input type="text" id="newAdminName" placeholder="Swami X Maharaj"></div>
             <div class="form-group"><label>Mobile</label><input type="tel" id="newAdminMobile" placeholder="10-digit Phone"></div>
             <div class="form-group"><label>Admin ID</label><input type="text" id="newAdminId" placeholder="e.g. SwamiX@RKMAJGM"></div>
             <div class="form-group"><label>Password</label><input type="text" id="newAdminPass" placeholder="Secret Password"></div>
           </div>
           <button class="btn-primary" style="background:#4338ca;" onclick="superAdminCreateAdmin()">Provision Administrator</button>
         </div>
-
         <div class="card">
           <h3 style="color:#1c1917; margin-bottom:12px;">Active Administrators Roster</h3>
-          <div style="overflow-x:auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Admin ID</th>
-                  <th>Full Name</th>
-                  <th>Mobile</th>
-                  <th>Role</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="superAdminTableBody"></tbody>
-            </table>
-          </div>
+          <div style="overflow-x:auto;"><table><thead><tr><th>Admin ID</th><th>Full Name</th><th>Mobile</th><th>Role</th><th>Actions</th></tr></thead><tbody id="superAdminTableBody"></tbody></table></div>
         </div>
       </div>
 
@@ -1335,15 +1040,14 @@
       <div id="adminWindowUpdateProfile" style="display:none;">
         <div class="card" style="border-left: 5px solid #0284c7; max-width:600px; margin:0 auto;">
           <h3 style="font-size:16px; margin-bottom:12px; color:#0369a1;">My Profile Settings</h3>
-          <div class="form-group"><label>New Mobile Number</label><input type="tel" id="updNewMobile" placeholder="10-digit Phone"></div>
-          <div class="form-group"><label>New Email Address</label><input type="email" id="updNewEmail" placeholder="Official Email"></div>
+          <div class="form-group"><label>New Mobile Number</label><input type="tel" id="updNewMobile"></div>
+          <div class="form-group"><label>New Email Address</label><input type="email" id="updNewEmail"></div>
           <button class="btn-primary" style="background:#0284c7; width:100%;" onclick="executeAdminDirectProfileUpdate()">Save Profile</button>
         </div>
       </div>
     </section>
 
-    <!-- ================= MODALS ================= -->
-    <!-- Scrutiny Modal -->
+    <!-- Modals -->
     <div id="adminScrutinyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:550px; width:100%; padding:22px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:6px; margin-bottom:12px;">Application Scrutiny & Status Manager</h3>
@@ -1358,10 +1062,7 @@
           </select>
           <span id="sanctionLockNotice" style="display:none; font-size:11px; color:#dc2626; margin-top:4px;">⚠️ Must be Approved before Sanctioned.</span>
         </div>
-        <div class="form-group">
-          <label>Official Remarks</label>
-          <textarea id="modalAdminRemarks" rows="3" placeholder="Enter remarks..."></textarea>
-        </div>
+        <div class="form-group"><label>Remarks</label><textarea id="modalAdminRemarks" rows="3"></textarea></div>
         <div style="display:flex; justify-content:flex-end; gap:8px;">
           <button type="button" class="btn-neutral" onclick="closeScrutinyModal()">Cancel</button>
           <button type="button" class="btn-primary" onclick="saveAdminStatusDecision()">Update Status</button>
@@ -1369,39 +1070,11 @@
       </div>
     </div>
 
-    <!-- Rename Scheme Modal -->
-    <div id="renameSchemeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
-      <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; padding:20px;">
-        <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Modify Scholarship Scheme</h3>
-        <input type="hidden" id="renameSchemeId">
-        <div class="form-group"><label>Scholarship Name</label><input type="text" id="renameSchemeNameInput"></div>
-        <div class="form-group"><label>Description</label><input type="text" id="renameSchemeDescInput"></div>
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px;">
-          <button type="button" class="btn-neutral" onclick="closeRenameSchemeModal()">Cancel</button>
-          <button type="button" class="btn-primary" onclick="saveRenamedScheme()">Save Changes</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- User Profile Modal -->
-    <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
-      <div style="background:#fff; border-radius:10px; max-width:450px; width:100%; padding:20px;">
-        <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">User Account Profile</h3>
-        <div id="profileModalContent" style="font-size:13px; line-height:1.8;"></div>
-        <div style="margin-top:16px; text-align:right;">
-          <button type="button" class="btn-neutral" onclick="closeProfileModal()">Close</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Application Preview Modal -->
     <div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">Preview Application</h3>
         <div id="previewDetailsArea" style="font-size:13px; line-height:1.6;"></div>
-        <div style="margin-top:16px; text-align:right;">
-          <button type="button" class="btn-neutral" onclick="closePreviewModal()">Close Preview</button>
-        </div>
+        <div style="margin-top:16px; text-align:right;"><button type="button" class="btn-neutral" onclick="closePreviewModal()">Close Preview</button></div>
       </div>
     </div>
 
@@ -1431,7 +1104,7 @@
       <div id="pdfAttachedDocumentsSection" style="margin-top:50px; page-break-before:always;"></div>
     </div>
 
-    <!-- Printable Registration Card -->
+    <!-- Printable Slip -->
     <div id="printableSlip" style="display:none; padding:40px; font-family:serif; background:#fff;">
       <div style="border:3px double #7f1d1d; padding:26px; border-radius:10px; max-width:680px; margin:0 auto; line-height:1.7;">
         <div style="text-align:center; border-bottom:2px solid #ea580c; padding-bottom:12px; margin-bottom:18px;">
@@ -1469,15 +1142,14 @@
 
   <script>
     // -------------------------------------------------------------
-    // SUPABASE DATABASE INITIALIZATION WITH USER CREDENTIALS
+    // SUPABASE DATABASE INITIALIZATION WITH LIVE CREDENTIALS
     // -------------------------------------------------------------
     const SUPABASE_URL = "https://rynywytrxabaqdlbbyfw.supabase.co";
-    // Exact valid JWT token starting with lowercase 'e'
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnl3eXRyeGFiYXFkbGJieWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4MjMyNTMsImV4cCI6MjEwNzM5OTI1M30.ugsXogfX_3_8WsHKK-g1ZD--5hsPghrwneoSQ8QVPtA";
 
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // In-memory data structures
+    // In-memory application structures
     let applications = [];
     let candidates = {};
     let admins = {};
@@ -1500,6 +1172,11 @@
     let selectedScholarshipSchemeId = 'belur_math';
     let activeAdminAppFilterSchemeId = 'all';
 
+    // Temporary variables for Email OTP state
+    let pendingAdminTempData = null; // Stores verified admin object waiting for OTP
+    let isCandidateEmailOtpVerified = false;
+    let candidateEmailSentTarget = '';
+
     let currentUploadedPhotoBase64 = '';
     let currentUploadedSignBase64 = '';
     let currentUploadedDocs = {};
@@ -1516,11 +1193,10 @@
     }
 
     // -------------------------------------------------------------
-    // LOAD LIVE DATA FROM SUPABASE DATABASE
+    // LOAD LIVE DATA FROM SUPABASE
     // -------------------------------------------------------------
     async function loadDataFromSupabase() {
       try {
-        // 1. Fetch Admins
         const { data: admData } = await db.from('admins').select('*');
         if (admData && admData.length > 0) {
           admins = {};
@@ -1529,7 +1205,6 @@
           });
         }
 
-        // 2. Fetch Candidates
         const { data: candData } = await db.from('candidates').select('*');
         if (candData) {
           candidates = {};
@@ -1538,13 +1213,11 @@
           });
         }
 
-        // 3. Fetch Scholarship Schemes
         const { data: schemeData } = await db.from('scholarship_schemes').select('*');
         if (schemeData && schemeData.length > 0) {
           scholarshipSchemes = schemeData.map(s => ({ id: s.id, name: s.name, desc: s.description }));
         }
 
-        // 4. Fetch Applications
         const { data: appData } = await db.from('applications').select('*');
         if (appData) {
           applications = appData.map(a => ({
@@ -1591,13 +1264,11 @@
           }));
         }
 
-        // 5. Fetch Notices
         const { data: noticeData } = await db.from('notices').select('*').order('notice_date', { ascending: false });
         if (noticeData) {
           notices = noticeData.map(n => ({ id: n.id, title: n.title, date: n.notice_date, link: n.link }));
         }
 
-        // 6. Fetch Downloads
         const { data: dlData } = await db.from('downloads').select('*');
         if (dlData) {
           downloads = dlData.map(d => ({ id: d.id, title: d.title, desc: d.description, link: d.link }));
@@ -1610,7 +1281,6 @@
       }
     }
 
-    // Dynamic Content
     function renderPublicSiteContent() {
       document.getElementById('viewAboutIntro').innerText = siteContent.aboutIntro;
       document.getElementById('viewActEdu').innerText = siteContent.actEdu;
@@ -1618,7 +1288,6 @@
       document.getElementById('viewActYouth').innerText = siteContent.actYouth;
       document.getElementById('viewActSpiritual').innerText = siteContent.actSpiritual;
 
-      // Notices on Home
       const homeNotices = document.getElementById('homeNoticesList');
       homeNotices.innerHTML = notices.slice(0, 3).map(n => `
         <div class="notice-item">
@@ -1627,7 +1296,6 @@
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No current notices.</p>';
 
-      // Notices Page
       const fullNotices = document.getElementById('fullNoticesList');
       fullNotices.innerHTML = notices.map(n => `
         <div class="notice-item">
@@ -1641,7 +1309,6 @@
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No notices published yet.</p>';
 
-      // Downloads Page
       const dlGrid = document.getElementById('publicDownloadsGrid');
       dlGrid.innerHTML = downloads.map(d => `
         <div class="download-item">
@@ -1654,7 +1321,6 @@
       `).join('');
     }
 
-    // Unified Navigation with Refresh-Persistence Logic
     function navigateTo(sectionId) {
       document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('sec-' + sectionId);
@@ -1693,12 +1359,15 @@
       document.getElementById('publicHeader').style.display = 'block';
       document.getElementById('publicFooter').style.display = 'block';
 
+      cancelAdminOtpStep();
       window.location.hash = 'home';
       navigateTo('home');
     }
 
-    // Admin Direct Login
-    async function executeAdminDirectLogin() {
+    // -------------------------------------------------------------
+    // ADMIN AUTH: EMAIL OTP WORKFLOW VIA SUPABASE AUTH
+    // -------------------------------------------------------------
+    async function requestAdminEmailOTP() {
       const id = document.getElementById('manualAdminId').value.trim();
       const pass = document.getElementById('manualAdminPass').value.trim();
 
@@ -1707,32 +1376,90 @@
         return;
       }
 
-      // Check against live database
+      // 1. Verify credentials from Database
       const { data: adminData } = await db.from('admins').select('*').eq('admin_id', id).eq('pass', pass);
 
-      if (adminData && adminData.length > 0) {
-        const admin = adminData[0];
-        activeAdminId = id;
-        document.getElementById('activeAdminTitle').innerText = admin.name;
-        document.getElementById('activeAdminContact').innerText = `Admin ID: ${id} | Mobile: ${admin.mobile} | Email: ${admin.email}`;
-        document.getElementById('manualAdminId').value = '';
-        document.getElementById('manualAdminPass').value = '';
-
-        const isSuperAdmin = (admin.role === 'SUPER_ADMIN');
-        document.getElementById('adminRoleBadge').innerText = isSuperAdmin ? '👑 SUPER ADMIN CONSOLE' : 'ADMIN CONSOLE';
-        document.getElementById('tabBtnSuperAdminOnly').style.display = isSuperAdmin ? 'inline-block' : 'none';
-
-        saveActiveSession('admin', id);
-        setAuthenticatedUI('admin', isSuperAdmin ? 'SUPER ADMIN WORKSPACE' : 'ADMINISTRATOR CONSOLE', admin.name);
-        refreshAdminDashboardPanels();
-        switchAdminWindow('applications');
-        navigateTo('adminDashboard');
-      } else {
-        alert('Invalid Administrator Credentials! Please verify ID and Password.');
+      if (!adminData || adminData.length === 0) {
+        alert('Invalid Administrator Credentials! Please check ID and Password.');
+        return;
       }
+
+      const admin = adminData[0];
+      pendingAdminTempData = admin;
+
+      // 2. Send Supabase Auth Email OTP to the Admin's Official Email
+      const { error } = await db.auth.signInWithOtp({
+        email: admin.email,
+        options: { shouldCreateUser: true }
+      });
+
+      if (error) {
+        alert('Supabase OTP Dispatch Error: ' + error.message);
+        return;
+      }
+
+      // 3. Switch UI to OTP input step
+      document.getElementById('adminStepCredBox').style.display = 'none';
+      document.getElementById('adminStepOtpBox').style.display = 'block';
+      const maskedEmail = admin.email.replace(/^(.)(.*)(@.*)$/, (_, a, b, c) => a + b.replace(/./g, '*') + c);
+      document.getElementById('adminOtpNotice').innerText = `6-Digit OTP sent to ${maskedEmail}. Please check your inbox.`;
     }
 
-    // Candidate Direct Login
+    async function verifyAdminEmailOTP() {
+      if (!pendingAdminTempData) {
+        alert('Session expired! Please login again.');
+        cancelAdminOtpStep();
+        return;
+      }
+
+      const token = document.getElementById('adminOtpInput').value.trim();
+      if (!token) {
+        alert('Please enter the 6-digit OTP code received in your email!');
+        return;
+      }
+
+      // Verify OTP token with Supabase Auth
+      const { data, error } = await db.auth.verifyOtp({
+        email: pendingAdminTempData.email,
+        token: token,
+        type: 'email'
+      });
+
+      if (error) {
+        alert('Invalid or expired OTP: ' + error.message);
+        return;
+      }
+
+      // Login Successful
+      const admin = pendingAdminTempData;
+      activeAdminId = admin.admin_id;
+      document.getElementById('activeAdminTitle').innerText = admin.name;
+      document.getElementById('activeAdminContact').innerText = `Admin ID: ${admin.admin_id} | Mobile: ${admin.mobile} | Email: ${admin.email}`;
+
+      const isSuperAdmin = (admin.role === 'SUPER_ADMIN');
+      document.getElementById('adminRoleBadge').innerText = isSuperAdmin ? '👑 SUPER ADMIN CONSOLE' : 'ADMIN CONSOLE';
+      document.getElementById('tabBtnSuperAdminOnly').style.display = isSuperAdmin ? 'inline-block' : 'none';
+
+      saveActiveSession('admin', admin.admin_id);
+      setAuthenticatedUI('admin', isSuperAdmin ? 'SUPER ADMIN WORKSPACE' : 'ADMINISTRATOR CONSOLE', admin.name);
+      
+      cancelAdminOtpStep();
+      refreshAdminDashboardPanels();
+      switchAdminWindow('applications');
+      navigateTo('adminDashboard');
+    }
+
+    function cancelAdminOtpStep() {
+      pendingAdminTempData = null;
+      document.getElementById('adminStepCredBox').style.display = 'block';
+      document.getElementById('adminStepOtpBox').style.display = 'none';
+      document.getElementById('adminOtpInput').value = '';
+      document.getElementById('manualAdminPass').value = '';
+    }
+
+    // -------------------------------------------------------------
+    // CANDIDATE AUTH: DIRECT LOGIN (NO OTP)
+    // -------------------------------------------------------------
     async function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -1761,7 +1488,136 @@
       }
     }
 
-    // Admin Window Switcher
+    // -------------------------------------------------------------
+    // APPLICATION SUBMISSION: EMAIL OTP WORKFLOW VIA SUPABASE AUTH
+    // -------------------------------------------------------------
+    async function requestCandidateSubmitEmailOTP() {
+      const email = document.getElementById('f_email').value.trim();
+      if (!email || !email.includes('@')) {
+        alert('Please provide a valid email address in Step 3 before requesting submission OTP!');
+        goToStep(3);
+        return;
+      }
+
+      const { error } = await db.auth.signInWithOtp({
+        email: email,
+        options: { shouldCreateUser: true }
+      });
+
+      if (error) {
+        alert('Failed to send OTP to email: ' + error.message);
+        return;
+      }
+
+      candidateEmailSentTarget = email;
+      isCandidateEmailOtpVerified = false;
+      document.getElementById('candSubmitOtpStatus').innerText = `✅ OTP sent to ${email}. Check inbox!`;
+      alert(`A 6-digit verification OTP has been sent to ${email}. Please enter it below.`);
+    }
+
+    async function verifyAndExecuteFinalApplicationSubmit() {
+      const enteredCaptcha = document.getElementById('f_captchaInput').value.trim().toUpperCase();
+      if (enteredCaptcha !== currentGeneratedCaptcha) {
+        alert('Invalid Captcha code! Please check and re-enter.');
+        return;
+      }
+
+      const otpToken = document.getElementById('f_candSubmitOtpInput').value.trim();
+      if (!otpToken) {
+        alert('Please enter the 6-digit Email OTP to authorize final submission!');
+        return;
+      }
+
+      const targetEmail = document.getElementById('f_email').value.trim();
+      if (!targetEmail) {
+        alert('Email address missing! Please enter your email in Step 3.');
+        goToStep(3);
+        return;
+      }
+
+      // Verify OTP token with Supabase Auth
+      const { data, error } = await db.auth.verifyOtp({
+        email: targetEmail,
+        token: otpToken,
+        type: 'email'
+      });
+
+      if (error) {
+        alert('Email OTP Verification Failed: ' + error.message);
+        return;
+      }
+
+      isCandidateEmailOtpVerified = true;
+
+      // Proceed to save application record in Supabase
+      const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
+      const appNo = existingIndex >= 0 ? applications[existingIndex].appNo : 'RKM-SCH-2026-' + String(applications.length + 1).padStart(3, '0');
+      const schemeObj = scholarshipSchemes.find(s => s.id === selectedScholarshipSchemeId);
+
+      const payload = {
+        app_no: appNo,
+        candidate_id: activeCandidateId,
+        scheme_id: selectedScholarshipSchemeId,
+        scheme_name: schemeObj ? schemeObj.name : 'Belur Math Scholarship',
+        name: document.getElementById('f_name').value,
+        dob: document.getElementById('f_dob').value,
+        caste: document.getElementById('f_caste').value,
+        gender: document.getElementById('f_gender').value,
+        father: document.getElementById('f_fname').value,
+        father_occ: document.getElementById('f_focc').value,
+        mother: document.getElementById('f_mname').value,
+        mother_occ: document.getElementById('f_mocc').value,
+        guardian: document.getElementById('f_gname').value,
+        guardian_rel: document.getElementById('f_grel').value,
+        mobile: document.getElementById('f_mobile').value,
+        alt_mobile: document.getElementById('f_altmobile').value,
+        whatsapp: document.getElementById('f_whatsapp').value,
+        email: targetEmail,
+        vill: document.getElementById('f_vill').value,
+        po: document.getElementById('f_po').value,
+        ps: document.getElementById('f_ps').value,
+        dist: document.getElementById('f_dist').value,
+        pin: document.getElementById('f_pin').value,
+        curr_class: document.getElementById('f_currclass').value,
+        adm_date: document.getElementById('f_admdate').value,
+        stream: document.getElementById('f_stream').value,
+        institution: document.getElementById('f_instname').value,
+        last_exam: document.getElementById('f_lastexam').value,
+        marks_pct: document.getElementById('f_percentage').value,
+        income: document.getElementById('f_income').value,
+        ac_holder: document.getElementById('f_acholder').value,
+        bank_acc: document.getElementById('f_acno').value,
+        ifsc: document.getElementById('f_ifsc').value,
+        bank_name: document.getElementById('f_bankname').value,
+        status: 'Submitted',
+        admin_remarks: 'Application verified via Supabase Email OTP and submitted successfully.',
+        photo_base64: currentUploadedPhotoBase64,
+        sign_base64: currentUploadedSignBase64,
+        uploaded_documents: currentUploadedDocs
+      };
+
+      let res;
+      if (existingIndex >= 0) {
+        res = await db.from('applications').update(payload).eq('app_no', appNo);
+      } else {
+        res = await db.from('applications').insert([payload]);
+      }
+
+      if (res.error) {
+        alert('Database submission failed: ' + res.error.message);
+        return;
+      }
+
+      alert(`OTP Verified! Application Submitted Successfully under "${payload.scheme_name}"! (App No: ${appNo})`);
+      document.getElementById('f_candSubmitOtpInput').value = '';
+      document.getElementById('candSubmitOtpStatus').innerText = '';
+      await loadDataFromSupabase();
+      navigateTo('candidateDashboard');
+    }
+
+    // -------------------------------------------------------------
+    // REGISTRATION, SCHEMES, AND DASHBOARD LOGIC
+    // -------------------------------------------------------------
     function switchAdminWindow(windowType) {
       const tabs = ['applications', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'updateProfile'];
       tabs.forEach(t => {
@@ -1799,7 +1655,6 @@
       document.getElementById('regCountBadge').innerText = Object.keys(candidates).length;
     }
 
-    // Sub-Tabs for Applications Window
     function renderAdminAppSubTabs() {
       const container = document.getElementById('adminAppSubTabsContainer');
       let html = `
@@ -1826,7 +1681,6 @@
       renderAdminTable();
     }
 
-    // Applications Window Handlers
     function renderAdminTable() {
       const tbody = document.getElementById('adminAppTableBody');
       tbody.innerHTML = '';
@@ -1874,7 +1728,7 @@
       if (confirm(`Delete application "${item.appNo}" for ${item.name}? This removes the application submission but preserves candidate registration.`)) {
         const { error } = await db.from('applications').delete().eq('app_no', item.appNo);
         if (error) {
-          alert('Failed to delete application from database: ' + error.message);
+          alert('Failed to delete application: ' + error.message);
           return;
         }
         await loadDataFromSupabase();
@@ -1882,7 +1736,6 @@
       }
     }
 
-    // Registration Window Handlers
     function renderRegisteredCandidatesTable() {
       const tbody = document.getElementById('registeredCandidatesTableBody');
       tbody.innerHTML = '';
@@ -1927,14 +1780,11 @@
         const existing = candidates[id];
         const exName = existing.name.trim().toLowerCase();
         const exMobile = existing.mobile.trim().replace(/[^0-9]/g, '').slice(-10);
-        if (cleanName === exName && cleanMobile === exMobile) {
-          return true;
-        }
+        if (cleanName === exName && cleanMobile === exMobile) return true;
       }
       return false;
     }
 
-    // Single Candidate Registration
     async function adminCreateCustomCandidate() {
       const name = document.getElementById('genCandName').value.trim();
       const mobile = document.getElementById('genCandMobile').value.trim();
@@ -1946,26 +1796,21 @@
         return;
       }
       if (candidates[id]) {
-        alert('Candidate ID already exists! Please use a unique Candidate ID.');
+        alert('Candidate ID already exists!');
         return;
       }
-
       if (isDuplicateCandidate(name, mobile)) {
-        alert(`Duplicate Entry Found: A candidate with Name "${name}" and Phone "${mobile}" is already registered! Registration skipped.`);
+        alert(`Duplicate Entry Found: A candidate with Name "${name}" and Phone "${mobile}" is already registered!`);
         return;
       }
 
-      // Insert into Supabase
-      const { error } = await db.from('candidates').insert([
-        { candidate_id: id, name: name, mobile: mobile, pass: pass }
-      ]);
-
+      const { error } = await db.from('candidates').insert([{ candidate_id: id, name: name, mobile: mobile, pass: pass }]);
       if (error) {
         alert('Database Insert Failed: ' + error.message);
         return;
       }
 
-      alert(`Candidate created successfully in database! (ID: ${id})`);
+      alert(`Candidate created successfully! (ID: ${id})`);
       document.getElementById('genCandName').value = '';
       document.getElementById('genCandMobile').value = '';
       document.getElementById('genCandId').value = '';
@@ -2057,7 +1902,6 @@
       reader.readAsArrayBuffer(fileInput.files[0]);
     }
 
-    // Dynamic Scholarship Schemes Management
     function renderAdminSchemesTable() {
       const tbody = document.getElementById('adminSchemesTableBody');
       tbody.innerHTML = scholarshipSchemes.map(s => `
@@ -2066,8 +1910,7 @@
           <td><strong>${s.name}</strong></td>
           <td>${s.desc}</td>
           <td>
-            <button class="action-btn btn-pdf" onclick="openRenameSchemeModal('${s.id}')">✏️ Rename</button>
-            ${s.id !== 'belur_math' && s.id !== 'other_scholarships' ? `<button class="action-btn btn-delete" onclick="deleteScholarshipScheme('${s.id}')">Delete</button>` : ''}
+            ${s.id !== 'belur_math' && s.id !== 'other_scholarships' ? `<button class="action-btn btn-delete" onclick="deleteScholarshipScheme('${s.id}')">Delete</button>` : '<span style="font-size:11px; color:#888;">Standard Scheme</span>'}
           </td>
         </tr>
       `).join('');
@@ -2095,40 +1938,6 @@
       await loadDataFromSupabase();
     }
 
-    function openRenameSchemeModal(schemeId) {
-      const scheme = scholarshipSchemes.find(s => s.id === schemeId);
-      if (!scheme) return;
-      document.getElementById('renameSchemeId').value = schemeId;
-      document.getElementById('renameSchemeNameInput').value = scheme.name;
-      document.getElementById('renameSchemeDescInput').value = scheme.desc;
-      document.getElementById('renameSchemeModal').style.display = 'flex';
-    }
-
-    function closeRenameSchemeModal() {
-      document.getElementById('renameSchemeModal').style.display = 'none';
-    }
-
-    async function saveRenamedScheme() {
-      const id = document.getElementById('renameSchemeId').value;
-      const newName = document.getElementById('renameSchemeNameInput').value.trim();
-      const newDesc = document.getElementById('renameSchemeDescInput').value.trim();
-
-      if (!newName) {
-        alert('Scholarship name cannot be empty!');
-        return;
-      }
-
-      const { error } = await db.from('scholarship_schemes').update({ name: newName, description: newDesc }).eq('id', id);
-      if (error) {
-        alert('Failed to update scheme: ' + error.message);
-        return;
-      }
-
-      alert('Scholarship scheme details updated successfully!');
-      closeRenameSchemeModal();
-      await loadDataFromSupabase();
-    }
-
     async function deleteScholarshipScheme(id) {
       if (confirm('Are you sure you want to delete this scholarship scheme?')) {
         const { error } = await db.from('scholarship_schemes').delete().eq('id', id);
@@ -2140,7 +1949,6 @@
       }
     }
 
-    // Candidate Scheme Selection Sub-Window
     function openSchemeSelectionWindow() {
       const existing = applications.find(a => a.candidateId === activeCandidateId);
       if (existing && existing.status !== 'Returned for Correction') {
@@ -2176,7 +1984,6 @@
       navigateTo('applicationForm');
     }
 
-    // CMS Handlers
     function renderAdminNoticesTable() {
       const box = document.getElementById('adminNoticeList');
       box.innerHTML = notices.map((n) => `
@@ -2284,7 +2091,6 @@
       alert('Website content updated live!');
     }
 
-    // Super Admin Exclusive Functions
     function renderSuperAdminTable() {
       const tbody = document.getElementById('superAdminTableBody');
       tbody.innerHTML = '';
@@ -2397,7 +2203,6 @@
       await loadDataFromSupabase();
     }
 
-    // Registration Slip Download
     function downloadCandidateRegistrationSlip(cid) {
       const cand = candidates[cid];
       if (!cand) return;
@@ -2416,7 +2221,6 @@
       window.print();
     }
 
-    // Scrutiny Modal Handlers
     function openScrutinyModal(index) {
       selectedScrutinyIndex = index;
       const app = applications[index];
@@ -2473,7 +2277,6 @@
       await loadDataFromSupabase();
     }
 
-    // Candidate Form Logic
     function goToStep(s) {
       document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
       document.querySelectorAll('.step-item').forEach((ind, i) => {
@@ -2494,75 +2297,6 @@
     function refreshCaptcha() {
       currentGeneratedCaptcha = Math.random().toString(36).substring(2, 6).toUpperCase();
       document.getElementById('captchaDisplay').innerText = currentGeneratedCaptcha;
-    }
-
-    async function executeFinalApplicationSubmit() {
-      if (document.getElementById('f_captchaInput').value.trim().toUpperCase() !== currentGeneratedCaptcha) {
-        alert('Invalid Captcha!');
-        return;
-      }
-
-      const existingIndex = applications.findIndex(a => a.candidateId === activeCandidateId);
-      const appNo = existingIndex >= 0 ? applications[existingIndex].appNo : 'RKM-SCH-2026-' + String(applications.length + 1).padStart(3, '0');
-      const schemeObj = scholarshipSchemes.find(s => s.id === selectedScholarshipSchemeId);
-
-      const payload = {
-        app_no: appNo,
-        candidate_id: activeCandidateId,
-        scheme_id: selectedScholarshipSchemeId,
-        scheme_name: schemeObj ? schemeObj.name : 'Belur Math Scholarship',
-        name: document.getElementById('f_name').value,
-        dob: document.getElementById('f_dob').value,
-        caste: document.getElementById('f_caste').value,
-        gender: document.getElementById('f_gender').value,
-        father: document.getElementById('f_fname').value,
-        father_occ: document.getElementById('f_focc').value,
-        mother: document.getElementById('f_mname').value,
-        mother_occ: document.getElementById('f_mocc').value,
-        guardian: document.getElementById('f_gname').value,
-        guardian_rel: document.getElementById('f_grel').value,
-        mobile: document.getElementById('f_mobile').value,
-        alt_mobile: document.getElementById('f_altmobile').value,
-        whatsapp: document.getElementById('f_whatsapp').value,
-        email: document.getElementById('f_email').value,
-        vill: document.getElementById('f_vill').value,
-        po: document.getElementById('f_po').value,
-        ps: document.getElementById('f_ps').value,
-        dist: document.getElementById('f_dist').value,
-        pin: document.getElementById('f_pin').value,
-        curr_class: document.getElementById('f_currclass').value,
-        adm_date: document.getElementById('f_admdate').value,
-        stream: document.getElementById('f_stream').value,
-        institution: document.getElementById('f_instname').value,
-        last_exam: document.getElementById('f_lastexam').value,
-        marks_pct: document.getElementById('f_percentage').value,
-        income: document.getElementById('f_income').value,
-        ac_holder: document.getElementById('f_acholder').value,
-        bank_acc: document.getElementById('f_acno').value,
-        ifsc: document.getElementById('f_ifsc').value,
-        bank_name: document.getElementById('f_bankname').value,
-        status: 'Submitted',
-        admin_remarks: 'Application submitted successfully under ' + (schemeObj ? schemeObj.name : 'Scholarship Scheme') + '.',
-        photo_base64: currentUploadedPhotoBase64,
-        sign_base64: currentUploadedSignBase64,
-        uploaded_documents: currentUploadedDocs
-      };
-
-      let res;
-      if (existingIndex >= 0) {
-        res = await db.from('applications').update(payload).eq('app_no', appNo);
-      } else {
-        res = await db.from('applications').insert([payload]);
-      }
-
-      if (res.error) {
-        alert('Database submission failed: ' + res.error.message);
-        return;
-      }
-
-      alert(`Application Submitted Successfully under "${payload.scheme_name}"! (App No: ${appNo})`);
-      await loadDataFromSupabase();
-      navigateTo('candidateDashboard');
     }
 
     function viewCandidateSubmittedApp() {
@@ -2674,7 +2408,6 @@
       }
     }
 
-    // PDF / Word Printers
     function downloadApplicationPDF(index) {
       const app = applications[index];
       document.getElementById('pdfHeaderMeta').innerHTML = `
@@ -2772,41 +2505,53 @@
       return 'st-returned';
     }
 
-    // Carousel
-    let currentSlideIndex = 0;
-    const totalSlides = 15;
-    function buildSliderDots() {
-      const c = document.getElementById('sliderDots');
-      if (c) c.innerHTML = Array.from({length: totalSlides}, (_, i) => `<span class="dot${i===0?' active':''}" onclick="currentSlide(${i})"></span>`).join('');
-    }
-    function updateCarousel() {
-      const w = document.getElementById('carouselWrapper');
-      if (w) w.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlideIndex));
-    }
-    function moveSlide(s) { currentSlideIndex = (currentSlideIndex + s + totalSlides) % totalSlides; updateCarousel(); }
-    function currentSlide(i) { currentSlideIndex = i; updateCarousel(); }
-
-    function submitContactForm() {
-      const name = document.getElementById('contactName').value.trim();
-      const phone = document.getElementById('contactPhone').value.trim();
-      const msg = document.getElementById('contactMessage').value.trim();
-      if (!name || !phone || !msg) { alert('Please fill in Name, Phone, and Message.'); return; }
-      alert(`Thank you, ${name}! Your inquiry has been sent to rkma.jgm.scholarship@gmail.com.`);
-      document.getElementById('contactName').value = '';
-      document.getElementById('contactPhone').value = '';
-      document.getElementById('contactMessage').value = '';
+    // Modal helpers
+    function openPreviewModal() {
+      const body = document.getElementById('previewDetailsArea');
+      body.innerHTML = `
+        <p><strong>Name:</strong> ${document.getElementById('f_name').value} | <strong>DOB:</strong> ${document.getElementById('f_dob').value}</p>
+        <p><strong>Father:</strong> ${document.getElementById('f_fname').value} | <strong>Mother:</strong> ${document.getElementById('f_mname').value}</p>
+        <p><strong>Mobile:</strong> ${document.getElementById('f_mobile').value} | <strong>Email:</strong> ${document.getElementById('f_email').value}</p>
+        <p><strong>Course:</strong> ${document.getElementById('f_currclass').value} at ${document.getElementById('f_instname').value}</p>
+      `;
+      document.getElementById('previewModal').style.display = 'flex';
     }
 
-    // WINDOW REFRESH-STATE RESTORATION & CLOUD SYNC INITIALIZER
+    function closePreviewModal() {
+      document.getElementById('previewModal').style.display = 'none';
+    }
+
+    function openProfileModal() {
+      const modal = document.getElementById('profileModal');
+      const content = document.getElementById('profileModalContent');
+
+      if (activeUserRole === 'admin' && activeAdminId) {
+        const a = admins[activeAdminId];
+        content.innerHTML = `
+          <strong>Designation:</strong> ${a.name}<br>
+          <strong>Admin ID:</strong> ${activeAdminId}<br>
+          <strong>Registered Email:</strong> ${a.email}<br>
+          <strong>Mobile:</strong> ${a.mobile}
+        `;
+      } else if (activeUserRole === 'candidate' && activeCandidateId) {
+        const c = candidates[activeCandidateId];
+        content.innerHTML = `
+          <strong>Candidate Name:</strong> ${c.name}<br>
+          <strong>Candidate ID:</strong> ${activeCandidateId}<br>
+          <strong>Mobile:</strong> ${c.mobile}
+        `;
+      }
+      modal.style.display = 'flex';
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
+    // INITIALIZATION
     window.addEventListener('load', async () => {
-      buildSliderDots();
-      setInterval(() => moveSlide(1), 3500);
-
-      // Load live data from Supabase
       await loadDataFromSupabase();
 
-      // Session & State Persistence on Refresh
       const savedRole = sessionStorage.getItem('rkm_active_role');
       const savedUserId = sessionStorage.getItem('rkm_active_user_id');
       const savedPage = sessionStorage.getItem('rkm_current_page') || window.location.hash.replace('#', '') || 'home';
