@@ -345,7 +345,7 @@
       border-radius: 8px;
       overflow: hidden;
       border: 4px solid #ea580c;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
       background-color: #f5f5f4;
     }
     .pillar-img {
@@ -363,7 +363,7 @@
       height: 420px;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       background-color: #1c1917;
       margin-top: 10px;
     }
@@ -390,7 +390,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
       color: #ffffff;
       padding: 24px 16px 14px;
       text-align: center;
@@ -401,7 +401,7 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(0,0,0,0.6);
+      background: rgba(0, 0, 0, 0.6);
       color: #ffffff;
       border: none;
       padding: 12px 16px;
@@ -430,7 +430,7 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.45);
+      background: rgba(255, 255, 255, 0.45);
       cursor: pointer;
       transition: all 0.3s;
     }
@@ -888,7 +888,7 @@
       </div>
     </section>
 
-    <!-- ================= AUTHENTICATED: CANDIDATE APPLICATION FORM (WITH CONFIRM SIGN UP OTP) ================= -->
+    <!-- ================= AUTHENTICATED: CANDIDATE APPLICATION FORM ================= -->
     <section id="sec-applicationForm" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -1213,7 +1213,7 @@
 
         <div class="card" style="border-left: 5px solid #ea580c;">
           <h3 style="font-size:15px; margin-bottom:10px; color:#9a3412;">Single Candidate Manual Registration</h3>
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+          <div style="display:grid; repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
             <div><label>Name</label><input type="text" id="genCandName" placeholder="Full Name"></div>
             <div><label>Mobile</label><input type="tel" id="genCandMobile" placeholder="10-digit Phone"></div>
             <div><label>Candidate ID</label><input type="text" id="genCandId" placeholder="e.g. RKM-2026-002"></div>
@@ -1370,7 +1370,7 @@
         </div>
       </div>
 
-      <!-- WINDOW 8: UPDATE OWN PROFILE (EMAIL, PHONE & PASSWORD CHANGE ALERTS INTEGRATED) -->
+      <!-- WINDOW 8: UPDATE OWN PROFILE -->
       <div id="adminWindowUpdateProfile" style="display:none;">
         <div class="card" style="border-left: 5px solid #0284c7; max-width:600px; margin:0 auto;">
           <h3 style="font-size:16px; margin-bottom:12px; color:#0369a1;">My Profile Settings</h3>
@@ -1423,7 +1423,7 @@
       </div>
     </div>
 
-    <!-- User Profile Modal (With Password, Email, and Phone Change for Candidates) -->
+    <!-- User Profile Modal -->
     <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; padding:20px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">User Account Profile</h3>
@@ -1752,7 +1752,8 @@
     }
 
     // -------------------------------------------------------------
-    // 4. ADMIN LOGIN WITH SUPABASE EMAIL OTP (MAGIC LINK OR OTP OPTION)
+    // 4. ADMIN LOGIN WITH SUPABASE EMAIL OTP (MAGIC LINK OR OTP)
+    // FIX: shouldCreateUser set to true to allow OTP sending freely
     // -------------------------------------------------------------
     async function requestAdminEmailOTP() {
       const id = document.getElementById('manualAdminId').value.trim();
@@ -1782,7 +1783,7 @@
       const { error: otpError } = await db.auth.signInWithOtp({
         email: admin.email,
         options: {
-          shouldCreateUser: false
+          shouldCreateUser: true
         }
       });
 
@@ -1902,7 +1903,6 @@
       btn.innerText = 'Resend OTP';
 
       if (error && !error.message.includes('already registered')) {
-        // If user already exists in auth, fallback to signup resend or OTP
         await db.auth.resend({
           type: 'signup',
           email: email
@@ -1931,7 +1931,6 @@
       let updates = {};
       let authUpdates = {};
 
-      // 3. Mobile Number changed
       if (newMobile) {
         if (newMobile.length !== 10) {
           alert('Mobile Number must be exactly 10 digits!');
@@ -1941,13 +1940,11 @@
         authUpdates.phone = newMobile;
       }
 
-      // 2. Email Address changed
       if (newEmail) {
         updates.email = newEmail;
         authUpdates.email = newEmail;
       }
 
-      // 1. Password changed
       if (newPass) {
         if (newPass.length < 6) {
           alert('Password must be at least 6 characters long!');
@@ -1957,12 +1954,10 @@
         authUpdates.password = newPass;
       }
 
-      // Trigger Supabase Auth Notifications (Password changed, Email address changed, Phone number changed)
       if (Object.keys(authUpdates).length > 0) {
         await db.auth.updateUser(authUpdates);
       }
 
-      // Update Database Record
       const { error } = await db.from('admins').update(updates).eq('admin_id', activeAdminId);
       if (error) {
         alert('Failed to update admin profile: ' + error.message);
@@ -1992,21 +1987,20 @@
       if (newPhone) {
         if (newPhone.length !== 10) { alert('Phone must be 10 digits'); return; }
         candUpdates.mobile = newPhone;
-        authUpdates.phone = newPhone; // 3. Phone number changed
+        authUpdates.phone = newPhone;
       }
 
       if (newEmail) {
         candUpdates.email = newEmail;
-        authUpdates.email = newEmail; // 2. Email address changed
+        authUpdates.email = newEmail;
       }
 
       if (newPass) {
         if (newPass.length < 6) { alert('Password must be at least 6 characters'); return; }
         candUpdates.pass = newPass;
-        authUpdates.password = newPass; // 1. Password changed
+        authUpdates.password = newPass;
       }
 
-      // Trigger Supabase Auth Security Alerts
       if (Object.keys(authUpdates).length > 0) {
         await db.auth.updateUser(authUpdates);
       }
@@ -2765,7 +2759,6 @@
       });
 
       if (otpVerifyErr) {
-        // Fallback check if verified via standard token
         const fallback = await db.auth.verifyOtp({ email: email, token: enteredOtp, type: 'email' });
         if (fallback.error) {
           alert('OTP Verification Failed: ' + otpVerifyErr.message);
