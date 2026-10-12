@@ -1472,7 +1472,8 @@
     // SUPABASE DATABASE INITIALIZATION WITH USER CREDENTIALS
     // -------------------------------------------------------------
     const SUPABASE_URL = "https://rynywytrxabaqdlbbyfw.supabase.co";
-    const SUPABASE_ANON_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnl3eXRyeGFiYXFkbGJieWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4MjMyNTMsImV4cCI6MjEwNzM5OTI1M30.ugsXogfX_3_8WsHKK-g1ZD--5hsPghrwneoSQ8QVPtA";
+    // Exact valid JWT token starting with lowercase 'e'
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnl3eXRyeGFiYXFkbGJieWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4MjMyNTMsImV4cCI6MjEwNzM5OTI1M30.ugsXogfX_3_8WsHKK-g1ZD--5hsPghrwneoSQ8QVPtA";
 
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -1503,6 +1504,16 @@
     let currentUploadedSignBase64 = '';
     let currentUploadedDocs = {};
     let currentGeneratedCaptcha = '';
+
+    function saveState() {
+      localStorage.setItem('rkm_apps', JSON.stringify(applications));
+      localStorage.setItem('rkm_cand_db', JSON.stringify(candidates));
+      localStorage.setItem('rkm_admins_db', JSON.stringify(admins));
+      localStorage.setItem('rkm_schemes', JSON.stringify(scholarshipSchemes));
+      localStorage.setItem('rkm_notices', JSON.stringify(notices));
+      localStorage.setItem('rkm_downloads', JSON.stringify(downloads));
+      localStorage.setItem('rkm_site_content', JSON.stringify(siteContent));
+    }
 
     // -------------------------------------------------------------
     // LOAD LIVE DATA FROM SUPABASE DATABASE
@@ -2168,7 +2179,7 @@
     // CMS Handlers
     function renderAdminNoticesTable() {
       const box = document.getElementById('adminNoticeList');
-      box.innerHTML = notices.map((n, i) => `
+      box.innerHTML = notices.map((n) => `
         <div class="notice-item">
           <div><strong>${n.title}</strong> (${n.date})<br><a href="${n.link}" target="_blank" style="font-size:11px; color:#0284c7;">${n.link}</a></div>
           <button class="action-btn btn-delete" onclick="deleteNotice(${n.id})">Delete</button>
@@ -2211,7 +2222,7 @@
 
     function renderAdminDownloadsTable() {
       const box = document.getElementById('adminDownloadList');
-      box.innerHTML = downloads.map((d, i) => `
+      box.innerHTML = downloads.map((d) => `
         <div class="notice-item">
           <div><strong>${d.title}</strong> - <span style="font-size:12px; color:#666;">${d.desc}</span><br><a href="${d.link}" target="_blank" style="font-size:11px; color:#0284c7;">${d.link}</a></div>
           <button class="action-btn btn-delete" onclick="deleteDownload(${d.id})">Delete</button>
@@ -2334,7 +2345,7 @@
     }
 
     async function superAdminDeleteAdmin(aid) {
-      if (admins[activeAdminId] && admins[activeAdminId].role !== 'SUPER_ADMIN') {
+      if (admins[activeAdminId].role !== 'SUPER_ADMIN') {
         alert('Permission Denied!');
         return;
       }
@@ -2792,7 +2803,7 @@
       buildSliderDots();
       setInterval(() => moveSlide(1), 3500);
 
-      // Load live data from cloud database
+      // Load live data from Supabase
       await loadDataFromSupabase();
 
       // Session & State Persistence on Refresh
