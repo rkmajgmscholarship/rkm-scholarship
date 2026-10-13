@@ -2087,7 +2087,6 @@
         return;
       }
 
-      // Check in local cache or supabase
       let matchedCandidate = null;
       for (let cid in candidates) {
         if (cid.toLowerCase() === query.toLowerCase() || (candidates[cid].email && candidates[cid].email.toLowerCase() === query.toLowerCase())) {
@@ -2116,7 +2115,6 @@
       pendingCandResetId = matchedCandidate.id;
       pendingCandResetEmail = matchedCandidate.email;
 
-      // Dispatch OTP via Supabase Auth
       const { error: otpError } = await db.auth.signInWithOtp({
         email: matchedCandidate.email,
         options: { shouldCreateUser: true }
@@ -2151,7 +2149,6 @@
         return;
       }
 
-      // Verify OTP
       const { error: verifyErr } = await db.auth.verifyOtp({
         email: pendingCandResetEmail,
         token: token,
@@ -2163,7 +2160,6 @@
         return;
       }
 
-      // Update candidate table in Supabase
       const { error: dbErr } = await db.from('candidates').update({ pass: newPass }).eq('candidate_id', pendingCandResetId);
       if (dbErr) {
         alert('Failed to update password in database: ' + dbErr.message);
@@ -2278,7 +2274,7 @@
     }
 
     // -------------------------------------------------------------
-    // CANDIDATE DIRECT LOGIN & SINGLE-POPUP STATUS CHECK
+    // CANDIDATE DIRECT LOGIN & FIXED PROFILE STATUS CHECK
     // -------------------------------------------------------------
     async function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
@@ -2326,7 +2322,7 @@
 
       // If incomplete, show warning banner and open modal automatically once
       if (alertBox) alertBox.style.display = 'block';
-      setTimeout(() => openCandidateProfileModal(true), 350);
+      setTimeout(() => openCandidateProfileModal(true), 300);
     }
 
     // -------------------------------------------------------------
@@ -2336,11 +2332,9 @@
       if (!activeCandidateId || !candidates[activeCandidateId]) return;
       const c = candidates[activeCandidateId];
 
-      // Auto-populate locked registered fields
       document.getElementById('prof_name').value = c.name || '';
       document.getElementById('prof_mobile').value = c.mobile || '';
 
-      // Populate basic details
       document.getElementById('prof_dob').value = c.dob || '';
       document.getElementById('prof_email').value = c.email || '';
       document.getElementById('prof_vill').value = c.vill || '';
@@ -2367,7 +2361,7 @@
       document.getElementById('candidateProfileModal').style.display = 'none';
     }
 
-    // SINGLE-CLICK PERMANENT PROFILE SAVE
+    // REVISED ONE-CLICK PERMANENT PROFILE SAVE
     async function saveCandidateFullProfile() {
       if (!activeCandidateId) return;
 
@@ -2422,11 +2416,11 @@
       // 1. Update Candidate in Supabase Database
       const { error } = await db.from('candidates').update(payload).eq('candidate_id', activeCandidateId);
       if (error) {
-        alert('Failed to update profile: ' + error.message);
+        alert('Database save failed: ' + error.message + '\nPlease verify your Supabase database columns.');
         return;
       }
 
-      // 2. Immediately update in-memory state so message never appears again
+      // 2. Immediately update in-memory state
       candidates[activeCandidateId] = {
         ...candidates[activeCandidateId],
         ...payload,
@@ -2440,7 +2434,7 @@
       const alertBox = document.getElementById('profileCompletionAlert');
       if (alertBox) alertBox.style.display = 'none';
 
-      // 4. Trigger Auth changes if email/pass updated
+      // 4. Update Auth if email/pass updated
       let authUpdates = {};
       if (email) authUpdates.email = email;
       if (newPass) authUpdates.password = newPass;
