@@ -1408,28 +1408,28 @@
     </section>
 
     <!-- ================= MODALS ================= -->
-    <!-- CANDIDATE FORGOT PASSWORD MODAL -->
+    <!-- CANDIDATE FORGOT PASSWORD MODAL (SUPABASE RESET PASSWORD SEQUENCE) -->
     <div id="candidateForgotModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:12px; max-width:440px; width:100%; padding:22px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #ea580c; padding-bottom:6px; margin-bottom:12px;">Candidate Password Recovery</h3>
         
         <!-- Step 1: Find Account -->
         <div id="candForgotStep1">
-          <p style="font-size:12px; color:#57534e; margin-bottom:12px;">Enter your Candidate ID or registered email address to receive a verification OTP.</p>
+          <p style="font-size:12px; color:#57534e; margin-bottom:12px;">Enter your Candidate ID or registered email address to trigger a password recovery code.</p>
           <div class="form-group">
             <label>Candidate ID or Email</label>
             <input type="text" id="candForgotQueryInput" placeholder="e.g. RKM-2026-001 or student@example.com">
           </div>
-          <button class="btn-primary" style="width:100%; margin-top:8px;" onclick="requestCandidatePasswordResetOTP()">Search & Send OTP</button>
+          <button class="btn-primary" style="width:100%; margin-top:8px;" onclick="requestCandidatePasswordResetOTP()">Send Recovery Email</button>
         </div>
 
-        <!-- Step 2: Verify OTP & Set New Password -->
+        <!-- Step 2: Verify Recovery Code & Set New Password -->
         <div id="candForgotStep2" style="display:none;">
           <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:10px; border-radius:6px; font-size:12px; color:#1e40af; margin-bottom:12px;" id="candForgotNoticeText">
-            An OTP has been sent to your registered email address.
+            A password recovery code has been dispatched to your email.
           </div>
           <div class="form-group">
-            <label>6-Digit Email OTP</label>
+            <label>6-Digit Password Reset OTP</label>
             <input type="text" id="candForgotOtpInput" placeholder="Enter 6-digit OTP" maxlength="6" style="text-align:center; font-weight:bold; letter-spacing:4px;">
           </div>
           <div class="form-group">
@@ -1440,7 +1440,7 @@
             <label>Confirm New Password</label>
             <input type="password" id="candForgotConfPass" placeholder="Retype new password">
           </div>
-          <button class="btn-primary" style="width:100%; margin-top:8px;" onclick="verifyCandidatePasswordResetOTP()">Reset Password & Update</button>
+          <button class="btn-primary" style="width:100%; margin-top:8px;" onclick="verifyCandidatePasswordResetOTP()">Reset Password</button>
         </div>
 
         <div style="text-align:right; margin-top:14px;">
@@ -1449,26 +1449,26 @@
       </div>
     </div>
 
-    <!-- ADMIN FORGOT PASSWORD MODAL -->
+    <!-- ADMIN FORGOT PASSWORD MODAL (SUPABASE RESET PASSWORD SEQUENCE) -->
     <div id="adminForgotModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:12px; max-width:440px; width:100%; padding:22px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
         <h3 style="color:#1c1917; border-bottom:2px solid #fde047; padding-bottom:6px; margin-bottom:12px;">Admin Password Recovery</h3>
         
         <div id="adminForgotStep1">
-          <p style="font-size:12px; color:#57534e; margin-bottom:12px;">Enter your Admin ID to send a recovery OTP to your official email.</p>
+          <p style="font-size:12px; color:#57534e; margin-bottom:12px;">Enter your Admin ID to trigger a recovery code to your registered official email.</p>
           <div class="form-group">
             <label>Official Admin ID</label>
             <input type="text" id="adminForgotIdInput" placeholder="e.g. Secretary@RKMAJGM">
           </div>
-          <button class="btn-primary" style="background:#1c1917; color:#fde047; width:100%; margin-top:8px;" onclick="requestAdminPasswordResetOTP()">Send Recovery OTP</button>
+          <button class="btn-primary" style="background:#1c1917; color:#fde047; width:100%; margin-top:8px;" onclick="requestAdminPasswordResetOTP()">Send Recovery Email</button>
         </div>
 
         <div id="adminForgotStep2" style="display:none;">
           <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:10px; border-radius:6px; font-size:12px; color:#1e40af; margin-bottom:12px;" id="adminForgotNoticeText">
-            An OTP has been sent to your official administrative email address.
+            A password recovery code has been sent to your administrative email.
           </div>
           <div class="form-group">
-            <label>6-Digit Email OTP</label>
+            <label>6-Digit Password Reset OTP</label>
             <input type="text" id="adminForgotOtpInput" placeholder="Enter 6-digit OTP" maxlength="6" style="text-align:center; font-weight:bold; letter-spacing:4px;">
           </div>
           <div class="form-group">
@@ -1479,7 +1479,7 @@
             <label>Confirm New Password</label>
             <input type="password" id="adminForgotConfPass" placeholder="Retype new password">
           </div>
-          <button class="btn-primary" style="background:#15803d; width:100%; margin-top:8px;" onclick="verifyAdminPasswordResetOTP()">Reset Admin Password</button>
+          <button class="btn-primary" style="background:#15803d; width:100%; margin-top:8px;" onclick="verifyAdminPasswordResetOTP()">Confirm Password Reset</button>
         </div>
 
         <div style="text-align:right; margin-top:14px;">
@@ -2062,7 +2062,7 @@
     }
 
     // -------------------------------------------------------------
-    // FORGOT PASSWORD LOGIC (CANDIDATE & ADMIN)
+    // FORGOT PASSWORD LOGIC (SUPABASE RESET PASSWORD SEQUENCE)
     // -------------------------------------------------------------
     function openCandidateForgotPasswordModal() {
       document.getElementById('candForgotStep1').style.display = 'block';
@@ -2115,18 +2115,16 @@
       pendingCandResetId = matchedCandidate.id;
       pendingCandResetEmail = matchedCandidate.email;
 
-      const { error: otpError } = await db.auth.signInWithOtp({
-        email: matchedCandidate.email,
-        options: { shouldCreateUser: true }
-      });
+      // Triggers: Supabase "Reset password" email template
+      const { error: resetErr } = await db.auth.resetPasswordForEmail(matchedCandidate.email);
 
-      if (otpError) {
-        alert('Failed to dispatch recovery OTP: ' + otpError.message);
+      if (resetErr) {
+        alert('Failed to dispatch recovery code: ' + resetErr.message);
         return;
       }
 
       const masked = matchedCandidate.email.replace(/^(.)(.*)(@.*)$/, (_, a, b, c) => a + b.replace(/./g, '*') + c);
-      document.getElementById('candForgotNoticeText').innerText = `Recovery code sent to: ${masked}`;
+      document.getElementById('candForgotNoticeText').innerText = `Recovery code sent to: ${masked} (via Reset Password template)`;
       document.getElementById('candForgotStep1').style.display = 'none';
       document.getElementById('candForgotStep2').style.display = 'block';
     }
@@ -2137,7 +2135,7 @@
       const confPass = document.getElementById('candForgotConfPass').value.trim();
 
       if (!token || token.length < 6) {
-        alert('Please enter the 6-digit OTP code.');
+        alert('Please enter the 6-digit recovery OTP code.');
         return;
       }
       if (!newPass || newPass.length < 6) {
@@ -2149,17 +2147,19 @@
         return;
       }
 
+      // Verifies recovery token from the Reset Password email template
       const { error: verifyErr } = await db.auth.verifyOtp({
         email: pendingCandResetEmail,
         token: token,
-        type: 'email'
+        type: 'recovery'
       });
 
       if (verifyErr) {
-        alert('Invalid or expired OTP: ' + verifyErr.message);
+        alert('Invalid or expired recovery code: ' + verifyErr.message);
         return;
       }
 
+      // Update candidate password in database
       const { error: dbErr } = await db.from('candidates').update({ pass: newPass }).eq('candidate_id', pendingCandResetId);
       if (dbErr) {
         alert('Failed to update password in database: ' + dbErr.message);
@@ -2170,7 +2170,7 @@
         candidates[pendingCandResetId].pass = newPass;
       }
 
-      alert('Password reset successful! You can now log in with your new password.');
+      alert('Password reset successful! You can now log in with your updated password.');
       closeCandidateForgotModal();
       await loadDataFromSupabase();
     }
@@ -2213,18 +2213,16 @@
       pendingAdminResetId = admin.admin_id;
       pendingAdminResetEmail = admin.email;
 
-      const { error: otpError } = await db.auth.signInWithOtp({
-        email: admin.email,
-        options: { shouldCreateUser: true }
-      });
+      // Triggers: Supabase "Reset password" email template
+      const { error: resetErr } = await db.auth.resetPasswordForEmail(admin.email);
 
-      if (otpError) {
-        alert('Failed to send recovery OTP: ' + otpError.message);
+      if (resetErr) {
+        alert('Failed to send recovery code: ' + resetErr.message);
         return;
       }
 
       const masked = admin.email.replace(/^(.)(.*)(@.*)$/, (_, a, b, c) => a + b.replace(/./g, '*') + c);
-      document.getElementById('adminForgotNoticeText').innerText = `Recovery OTP sent to official email: ${masked}`;
+      document.getElementById('adminForgotNoticeText').innerText = `Recovery code sent to official email: ${masked} (via Reset Password template)`;
       document.getElementById('adminForgotStep1').style.display = 'none';
       document.getElementById('adminForgotStep2').style.display = 'block';
     }
@@ -2235,7 +2233,7 @@
       const confPass = document.getElementById('adminForgotConfPass').value.trim();
 
       if (!token || token.length < 6) {
-        alert('Please enter the 6-digit OTP code.');
+        alert('Please enter the 6-digit recovery OTP code.');
         return;
       }
       if (!newPass || newPass.length < 6) {
@@ -2247,14 +2245,15 @@
         return;
       }
 
+      // Verifies recovery token from the Reset Password email template
       const { error: verifyErr } = await db.auth.verifyOtp({
         email: pendingAdminResetEmail,
         token: token,
-        type: 'email'
+        type: 'recovery'
       });
 
       if (verifyErr) {
-        alert('Invalid or expired OTP: ' + verifyErr.message);
+        alert('Invalid or expired recovery code: ' + verifyErr.message);
         return;
       }
 
@@ -2274,7 +2273,7 @@
     }
 
     // -------------------------------------------------------------
-    // CANDIDATE DIRECT LOGIN & FIXED PROFILE STATUS CHECK
+    // CANDIDATE DIRECT LOGIN & PROFILE STATUS CHECK
     // -------------------------------------------------------------
     async function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
@@ -2302,7 +2301,6 @@
         await loadDataFromSupabase();
         navigateTo('candidateDashboard');
 
-        // Check profile status
         checkCandidateProfileStatus();
       } else {
         alert('Invalid Candidate ID or Password!');
@@ -2314,13 +2312,11 @@
       const cand = candidates[activeCandidateId];
       const alertBox = document.getElementById('profileCompletionAlert');
       
-      // If profile is already complete, never show popup or warning banner again
       if (cand.isProfileComplete) {
         if (alertBox) alertBox.style.display = 'none';
         return;
       }
 
-      // If incomplete, show warning banner and open modal automatically once
       if (alertBox) alertBox.style.display = 'block';
       setTimeout(() => openCandidateProfileModal(true), 300);
     }
@@ -2361,7 +2357,6 @@
       document.getElementById('candidateProfileModal').style.display = 'none';
     }
 
-    // REVISED ONE-CLICK PERMANENT PROFILE SAVE
     async function saveCandidateFullProfile() {
       if (!activeCandidateId) return;
 
@@ -2430,7 +2425,7 @@
         isProfileComplete: true
       };
 
-      // 3. Immediately hide warning banners
+      // 3. Immediately hide warning banner
       const alertBox = document.getElementById('profileCompletionAlert');
       if (alertBox) alertBox.style.display = 'none';
 
@@ -2448,7 +2443,6 @@
       await loadDataFromSupabase();
     }
 
-    // Auto-populate Application Form from Saved Candidate Profile
     function autoPopulateApplicationWindowFromProfile() {
       if (!activeCandidateId || !candidates[activeCandidateId]) return;
       const c = candidates[activeCandidateId];
