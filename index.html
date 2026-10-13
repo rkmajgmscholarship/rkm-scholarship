@@ -576,10 +576,8 @@
       body * { visibility: hidden; }
       #printableApplication, #printableApplication * { visibility: visible; }
       #printableSlip, #printableSlip * { visibility: visible; }
-      #printableProfileCard, #printableProfileCard * { visibility: visible; }
       #printableApplication { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
       #printableSlip { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
-      #printableProfileCard { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
     }
   </style>
 </head>
@@ -616,7 +614,7 @@
         </div>
       </div>
       <div style="display:flex; gap:8px;">
-        <button class="nav-btn" style="background:#ea580c; border-color:#f97316;" id="topBtnMyProfile" onclick="openCandidateProfileSettings()">My Profile & Card</button>
+        <button class="nav-btn" style="background:#44403c;" onclick="openProfileModal()">My Profile</button>
         <button class="nav-btn" style="background:#dc2626; border-color:#ef4444;" onclick="executeSecureLogout()">Logout</button>
       </div>
     </div>
@@ -786,12 +784,13 @@
       </div>
     </section>
 
-    <!-- ================= PUBLIC SECTION 4: ADMIN LOGIN (MAGIC LINK OR OTP OPTION) ================= -->
+    <!-- ================= PUBLIC SECTION 4: ADMIN LOGIN ================= -->
     <section id="sec-adminLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:40px auto; border-top:5px solid #1c1917;">
         <h2 style="text-align:center; font-size:18px;">Administrator Login</h2>
         <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Authorized Personnel Only (Magic Link or OTP Protected)</p>
 
+        <!-- Step 1: Admin ID & Password -->
         <div id="adminLoginStep1">
           <div class="form-group">
             <label>Admin ID</label>
@@ -808,6 +807,7 @@
           </button>
         </div>
 
+        <!-- Step 2: Supabase Email OTP Input -->
         <div id="adminLoginStep2" style="display:none; margin-top:10px;">
           <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:10px; border-radius:6px; font-size:12px; color:#1e40af; margin-bottom:12px;" id="adminOtpNoticeText">
             A 6-digit OTP has been sent to your registered official email address.
@@ -826,7 +826,7 @@
       </div>
     </section>
 
-    <!-- ================= PUBLIC SECTION 5: CANDIDATE LOGIN (DIRECT LOGIN - NO OTP) ================= -->
+    <!-- ================= PUBLIC SECTION 5: CANDIDATE LOGIN ================= -->
     <section id="sec-candidateLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:40px auto; border-top:5px solid #ea580c;">
         <h2 style="text-align:center; font-size:18px;">Candidate Portal Login</h2>
@@ -849,97 +849,38 @@
     <!-- ================= AUTHENTICATED: CANDIDATE DASHBOARD ================= -->
     <section id="sec-candidateDashboard" class="page-section">
       <div class="card" style="border-left: 5px solid #ea580c;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <div>
-            <h2 id="candWelcomeName" style="font-size:18px; color:#1c1917;">Welcome, Candidate</h2>
-            <p id="candWelcomeId" style="font-size:12px; color:#78716c; margin-top:2px;"></p>
-          </div>
-          <div id="profileStatusBadgeContainer">
-            <span style="font-size:12px; padding:4px 10px; border-radius:12px; font-weight:bold; background:#fee2e2; color:#dc2626;" id="profileStatusBadge">⚠️ Profile Incomplete</span>
-          </div>
+        <h2 id="candWelcomeName" style="font-size:18px; color:#1c1917;">Welcome, Candidate</h2>
+        <p id="candWelcomeId" style="font-size:12px; color:#78716c; margin-top:2px;"></p>
+        <div id="profileCompletionAlert" style="display:none; margin-top:10px; background:#fff7ed; border:1px solid #fed7aa; padding:10px 14px; border-radius:6px; font-size:13px; color:#9a3412;">
+          ⚠️ <strong>Basic Profile Incomplete:</strong> You must update your Basic Details before proceeding to apply. 
+          <button class="action-btn btn-manage" style="margin-left:8px; font-size:12px;" onclick="openCandidateProfileModal()">Update Profile Now &rarr;</button>
         </div>
       </div>
 
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
         <div class="card" style="border-top:4px solid #ea580c; text-align:center;">
           <h3 style="margin-bottom:8px; color:#ea580c;">1. Apply for Scholarship</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Complete your basic profile first, then choose your scholarship category to apply.</p>
-          <button class="btn-primary" onclick="attemptOpenScholarshipSelection()">Apply for Scholarship</button>
-        </div>
-
-        <div class="card" style="border-top:4px solid #4338ca; text-align:center;">
-          <h3 style="margin-bottom:8px; color:#4338ca;">2. My Profile & Credentials</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Update basic details, change password, and download your Official Profile Card.</p>
-          <button class="btn-primary" style="background:#4338ca;" onclick="openCandidateProfileSettings()">Manage Profile & Download Card</button>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Choose your scholarship category and complete application form.</p>
+          <button class="btn-primary" onclick="openSchemeSelectionWindow()">Apply Now</button>
         </div>
 
         <div class="card" style="border-top:4px solid #15803d; text-align:center;">
-          <h3 style="margin-bottom:8px; color:#15803d;">3. View Submitted Application</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Inspect your submitted application with photo, signature & uploaded documents.</p>
-          <button class="btn-view" style="background:#15803d;" onclick="viewCandidateSubmittedApp()">View / Download PDF</button>
+          <h3 style="margin-bottom:8px; color:#15803d;">2. View Application & Profile Card</h3>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">View submitted PDF, manage basic info or download Candidate Profile Card.</p>
+          <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+            <button class="btn-view" style="background:#15803d;" onclick="viewCandidateSubmittedApp()">Application PDF</button>
+            <button class="btn-view" style="background:#0284c7;" onclick="downloadCandidateProfileCard(activeCandidateId)">Profile Card</button>
+          </div>
         </div>
 
         <div class="card" style="border-top:4px solid #0284c7; text-align:center;">
-          <h3 style="margin-bottom:8px; color:#0284c7;">4. Track Scrutiny Status</h3>
-          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Monitor status changes (Submitted, Verified, Approved, Sanctioned, or Returned).</p>
-          <button class="btn-primary" style="background:#0284c7;" onclick="openTrackStatus()">Track Application</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= AUTHENTICATED: CANDIDATE BASIC PROFILE & PASSWORD MANAGER ================= -->
-    <section id="sec-candidateProfileSetup" class="page-section">
-      <div class="card" style="border-left: 5px solid #4338ca;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
-          <div>
-            <h3 style="color:#3730a3; font-size:18px;">Candidate Basic Profile & Security Settings</h3>
-            <p style="font-size:12px; color:#78716c;">You must update all basic details below before applying for scholarships. These details will automatically auto-fill your application form.</p>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button class="nav-btn" style="background:#15803d;" onclick="downloadCandidateProfileCard()">🖨️ Download Profile Card</button>
-            <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Workspace</button>
+          <h3 style="margin-bottom:8px; color:#0284c7;">3. Account Security & Tracking</h3>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Change your password, update contact details and track scrutiny status.</p>
+          <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+            <button class="btn-neutral" onclick="openCandidateProfileModal()">Change Password</button>
+            <button class="btn-primary" style="background:#0284c7;" onclick="openTrackStatus()">Track Status</button>
           </div>
         </div>
-
-        <form id="candidateProfileForm" onsubmit="return false;">
-          <h4 style="color:#7f1d1d; margin-bottom:10px; border-bottom:2px solid #fed7aa; padding-bottom:4px; font-size:14px;">1. Personal & Contact Information</h4>
-          <div class="form-grid">
-            <div class="form-group"><label>Name (Auto-filled)</label><input type="text" id="prof_name" readonly style="background:#f5f5f4; font-weight:bold;"></div>
-            <div class="form-group"><label>Contact No (Auto-filled)</label><input type="tel" id="prof_mobile" readonly style="background:#f5f5f4; font-weight:bold;"></div>
-            <div class="form-group"><label>Date of Birth (DOB) *</label><input type="date" id="prof_dob" required></div>
-            <div class="form-group"><label>Email Address *</label><input type="email" id="prof_email" placeholder="example@gmail.com" required></div>
-            <div class="form-group"><label>Village (Vil) *</label><input type="text" id="prof_vill" placeholder="Village name" required></div>
-            <div class="form-group"><label>Post Office (P.O) *</label><input type="text" id="prof_po" placeholder="P.O." required></div>
-            <div class="form-group"><label>Police Station (P.S) *</label><input type="text" id="prof_ps" placeholder="P.S." required></div>
-            <div class="form-group"><label>District (Dist.) *</label><input type="text" id="prof_dist" placeholder="District" required></div>
-            <div class="form-group"><label>PIN Code *</label><input type="text" id="prof_pin" placeholder="6-digit PIN" required></div>
-            <div class="form-group"><label>State *</label><input type="text" id="prof_state" value="West Bengal" required></div>
-          </div>
-
-          <h4 style="color:#7f1d1d; margin:18px 0 10px; border-bottom:2px solid #fed7aa; padding-bottom:4px; font-size:14px;">2. Present Educational Information</h4>
-          <div class="form-grid">
-            <div class="form-group"><label>Present Class of Study *</label><input type="text" id="prof_currclass" placeholder="e.g. B.A. 1st Year / Class XI" required></div>
-            <div class="form-group"><label>Subject or Stream *</label><input type="text" id="prof_stream" placeholder="e.g. Science / Arts / Commerce" required></div>
-            <div class="form-group"><label>Date of Admission *</label><input type="date" id="prof_admdate" required></div>
-            <div class="form-group"><label>Institution Name *</label><input type="text" id="prof_instname" placeholder="Full College / School Name" required></div>
-          </div>
-
-          <h4 style="color:#7f1d1d; margin:18px 0 10px; border-bottom:2px solid #fed7aa; padding-bottom:4px; font-size:14px;">3. Security & Password Change</h4>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Current / Default Password</label>
-              <input type="text" id="prof_current_pass" readonly style="background:#f5f5f4; font-family:monospace; font-weight:bold;">
-            </div>
-            <div class="form-group">
-              <label>Set New Password (Leave blank to keep current)</label>
-              <input type="text" id="prof_new_pass" placeholder="Enter new custom password">
-            </div>
-          </div>
-
-          <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
-            <button type="button" class="btn-primary" style="background:#4338ca;" onclick="saveCandidateProfileSettings()">💾 Save & Update Profile</button>
-          </div>
-        </form>
       </div>
     </section>
 
@@ -957,7 +898,7 @@
       </div>
     </section>
 
-    <!-- ================= AUTHENTICATED: CANDIDATE APPLICATION FORM (WITH AUTO-SYNCED PROFILE) ================= -->
+    <!-- ================= AUTHENTICATED: CANDIDATE APPLICATION FORM ================= -->
     <section id="sec-applicationForm" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -984,11 +925,11 @@
           <div class="form-step active" id="formStep1">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 1: Personal Details & Photographs</h4>
             <div class="form-grid">
-              <div class="form-group"><label>Applicant Full Name (Synced)</label><input type="text" id="f_name" required></div>
-              <div class="form-group"><label>Date of Birth (Synced)</label><input type="date" id="f_dob" required></div>
+              <div class="form-group"><label>Applicant Full Name</label><input type="text" id="f_name" required readonly style="background:#f5f5f4;"></div>
+              <div class="form-group"><label>Date of Birth</label><input type="date" id="f_dob" required></div>
               <div class="form-group"><label>Caste</label><select id="f_caste" required><option value="General">General</option><option value="SC">SC</option><option value="ST">ST</option><option value="OBC">OBC</option></select></div>
               <div class="form-group"><label>Gender</label><select id="f_gender" required><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
-              <div class="form-group"><label>Aadhaar No.</label><input type="text" id="f_aadhaar" placeholder="Enter Aadhaar Number" required></div>
+              <div class="form-group"><label>Government ID (Aadhaar / School ID)</label><input type="text" id="f_aadhaar" placeholder="Enter ID Number" required></div>
 
               <div class="form-group">
                 <label>Candidate Passport Photo</label>
@@ -1031,17 +972,18 @@
 
           <!-- STEP 3 -->
           <div class="form-step" id="formStep3">
-            <h4 style="margin-bottom:12px; color:#9a3412;">Step 3: Contact & Address Details (Synced from Profile)</h4>
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 3: Contact & Address Details (Auto-filled from Profile)</h4>
             <div class="form-grid">
-              <div class="form-group"><label>Mobile No. (Synced)</label><input type="tel" id="f_mobile" required></div>
+              <div class="form-group"><label>Mobile No.</label><input type="tel" id="f_mobile" required readonly style="background:#f5f5f4;"></div>
               <div class="form-group"><label>Alternative Mobile No.</label><input type="tel" id="f_altmobile"></div>
               <div class="form-group"><label>WhatsApp No.</label><input type="tel" id="f_whatsapp" required></div>
-              <div class="form-group"><label>Email (Synced)</label><input type="email" id="f_email" required></div>
-              <div class="form-group"><label>Village (Synced)</label><input type="text" id="f_vill" required></div>
-              <div class="form-group"><label>P.O. (Synced)</label><input type="text" id="f_po" required></div>
-              <div class="form-group"><label>P.S. (Synced)</label><input type="text" id="f_ps" required></div>
-              <div class="form-group"><label>District (Synced)</label><input type="text" id="f_dist" required></div>
-              <div class="form-group"><label>PIN Code (Synced)</label><input type="text" id="f_pin" required></div>
+              <div class="form-group"><label>Email (OTP will be sent here)</label><input type="email" id="f_email" required></div>
+              <div class="form-group"><label>Village</label><input type="text" id="f_vill" required></div>
+              <div class="form-group"><label>P.O.</label><input type="text" id="f_po" required></div>
+              <div class="form-group"><label>P.S.</label><input type="text" id="f_ps" required></div>
+              <div class="form-group"><label>District</label><input type="text" id="f_dist" required></div>
+              <div class="form-group"><label>State</label><input type="text" id="f_state" value="West Bengal" required></div>
+              <div class="form-group"><label>PIN Code</label><input type="text" id="f_pin" required></div>
             </div>
             <div class="step-btn-container">
               <button type="button" class="btn-neutral" onclick="goToStep(2)">&larr; Back</button>
@@ -1051,13 +993,13 @@
 
           <!-- STEP 4 -->
           <div class="form-step" id="formStep4">
-            <h4 style="margin-bottom:12px; color:#9a3412;">Step 4: Educational & Income Details</h4>
-            <h5 style="font-size:13px; color:#44403c; margin-bottom:8px;">A. Present Course Details (Synced)</h5>
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 4: Educational & Income Details (Auto-filled from Profile)</h4>
+            <h5 style="font-size:13px; color:#44403c; margin-bottom:8px;">A. Present Course Details</h5>
             <div class="form-grid">
-              <div class="form-group"><label>Present Class of Study (Synced)</label><input type="text" id="f_currclass" required></div>
-              <div class="form-group"><label>Admission Date (Synced)</label><input type="date" id="f_admdate" required></div>
-              <div class="form-group"><label>Department / Stream Name (Synced)</label><input type="text" id="f_stream" required></div>
-              <div class="form-group"><label>Institution Name (Synced)</label><input type="text" id="f_instname" required></div>
+              <div class="form-group"><label>Present Class of Study</label><input type="text" id="f_currclass" required></div>
+              <div class="form-group"><label>Admission Date</label><input type="date" id="f_admdate" required></div>
+              <div class="form-group"><label>Department / Stream Name</label><input type="text" id="f_stream" required></div>
+              <div class="form-group"><label>Institution Name</label><input type="text" id="f_instname" required></div>
             </div>
             <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">B. Qualifying Course Details</h5>
             <div class="form-grid">
@@ -1091,12 +1033,14 @@
             </div>
           </div>
 
-          <!-- STEP 6: DOCUMENT UPLOAD & CONFIRM SIGN UP OTP -->
+          <!-- STEP 6 -->
           <div class="form-step" id="formStep6">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Document Uploads & Email OTP Verification</h4>
+            <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Only files conforming to specified format and size will be accepted. Invalid uploads will turn red.</p>
+            
             <div class="form-grid">
               <div class="form-group">
-                <label>a. Aadhaar Card</label>
+                <label>a. Identification Document (PDF/JPG)</label>
                 <input type="file" id="f_doc_aadhaar" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errAadhaar', 'docAadhaar')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errAadhaar">Exceeded 500 KB or invalid file type!</span>
@@ -1133,8 +1077,10 @@
               </div>
             </div>
 
+            <!-- Verification & Email OTP Section -->
             <div style="background:#fffbeb; border:1px solid #fef3c7; padding:16px; border-radius:8px; margin-top:16px;">
               <h5 style="color:#b45309; margin-bottom:10px;">Security Verification & Email OTP Confirmation</h5>
+              
               <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
                 <div class="captcha-box" id="captchaDisplay">4A9X</div>
                 <button type="button" style="padding:4px 8px; font-size:11px;" onclick="refreshCaptcha()">Refresh Captcha</button>
@@ -1155,7 +1101,7 @@
                     </button>
                   </div>
                   <span style="font-size:11px; color:#78716c; margin-top:4px; display:block;" id="candOtpHint">
-                    OTP will be sent to the verified email address.
+                    OTP will be sent using the Confirm Sign Up template to the email in Step 3.
                   </span>
                 </div>
               </div>
@@ -1302,8 +1248,9 @@
                   <th>Full Name</th>
                   <th>Phone Number</th>
                   <th>Password</th>
+                  <th>Profile Ready?</th>
                   <th>Applied?</th>
-                  <th>Profile Slip</th>
+                  <th>Profile Card</th>
                   <th>Delete Candidate</th>
                 </tr>
               </thead>
@@ -1317,9 +1264,16 @@
       <div id="adminWindowManageSchemes" style="display:none;">
         <div class="card" style="border-left:5px solid #7f1d1d;">
           <h3 style="color:#7f1d1d; margin-bottom:6px;">Create New Scholarship Scheme</h3>
+          <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Add a new category alongside existing scholarships.</p>
           <div class="form-grid">
-            <div class="form-group"><label>Scholarship Name</label><input type="text" id="newSchemeName" placeholder="e.g. Special Merit Scholarship"></div>
-            <div class="form-group"><label>Short Description</label><input type="text" id="newSchemeDesc" placeholder="e.g. For professional degree students"></div>
+            <div class="form-group">
+              <label>Scholarship Name</label>
+              <input type="text" id="newSchemeName" placeholder="e.g. Special Merit Scholarship">
+            </div>
+            <div class="form-group">
+              <label>Short Description</label>
+              <input type="text" id="newSchemeDesc" placeholder="e.g. For professional degree students">
+            </div>
           </div>
           <button class="btn-primary" onclick="addNewScholarshipScheme()">➕ Create Scholarship Scheme</button>
         </div>
@@ -1329,7 +1283,12 @@
           <div style="overflow-x:auto;">
             <table>
               <thead>
-                <tr><th>Scheme ID</th><th>Scholarship Name</th><th>Description</th><th>Actions</th></tr>
+                <tr>
+                  <th>Scheme ID</th>
+                  <th>Scholarship Name</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                </tr>
               </thead>
               <tbody id="adminSchemesTableBody"></tbody>
             </table>
@@ -1344,7 +1303,7 @@
           <div class="form-grid">
             <div class="form-group"><label>Notice Title</label><input type="text" id="noticeTitleInput" placeholder="e.g. Scholarship Application Extended"></div>
             <div class="form-group"><label>Notice Date</label><input type="date" id="noticeDateInput"></div>
-            <div class="form-group"><label>Document Link (URL)</label><input type="url" id="noticeLinkInput" placeholder="https://drive.google.com/..."></div>
+            <div class="form-group"><label>Document Link (Google Drive / URL)</label><input type="url" id="noticeLinkInput" placeholder="https://drive.google.com/..."></div>
           </div>
           <button class="btn-primary" onclick="publishNewNotice()">📢 Publish Notice to Website</button>
         </div>
@@ -1377,11 +1336,13 @@
       <div id="adminWindowManageSite" style="display:none;">
         <div class="card" style="border-left:5px solid #16a34a;">
           <h3 style="color:#15803d; margin-bottom:12px;">Direct Website Content Manager</h3>
+          
           <div class="form-group"><label>About Us Paragraph</label><textarea id="editAboutIntro" rows="4"></textarea></div>
           <div class="form-group"><label>Educational Activities Details</label><textarea id="editActEdu" rows="4"></textarea></div>
           <div class="form-group"><label>Welfare Activities Details</label><textarea id="editActWelfare" rows="4"></textarea></div>
           <div class="form-group"><label>Youth Activities Details</label><textarea id="editActYouth" rows="4"></textarea></div>
           <div class="form-group"><label>Spiritual Activities Details</label><textarea id="editActSpiritual" rows="4"></textarea></div>
+
           <button class="btn-primary" style="background:#15803d;" onclick="saveWebsiteContentChanges()">💾 Save Website Content</button>
         </div>
       </div>
@@ -1390,6 +1351,8 @@
       <div id="adminWindowSuperAdminManage" style="display:none;">
         <div class="card" style="border-left: 5px solid #4338ca;">
           <h3 style="font-size:16px; margin-bottom:6px; color:#3730a3;">👑 Provision New Administrator Account</h3>
+          <p style="font-size:12px; color:#78716c; margin-bottom:14px;">Super Admin Authority: Only Secretary Maharaj can create or remove administrators.</p>
+          
           <div class="form-grid">
             <div class="form-group"><label>Name & Designation</label><input type="text" id="newAdminName" placeholder="e.g. Swami X Maharaj"></div>
             <div class="form-group"><label>Mobile</label><input type="tel" id="newAdminMobile" placeholder="10-digit Phone"></div>
@@ -1403,7 +1366,15 @@
           <h3 style="color:#1c1917; margin-bottom:12px;">Active Administrators Roster</h3>
           <div style="overflow-x:auto;">
             <table>
-              <thead><tr><th>Admin ID</th><th>Full Name</th><th>Mobile</th><th>Role</th><th>Actions</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Admin ID</th>
+                  <th>Full Name</th>
+                  <th>Mobile</th>
+                  <th>Role</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
               <tbody id="superAdminTableBody"></tbody>
             </table>
           </div>
@@ -1423,6 +1394,104 @@
     </section>
 
     <!-- ================= MODALS ================= -->
+    <!-- CANDIDATE FULL PROFILE & PASSWORD UPDATE MODAL -->
+    <div id="candidateProfileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:300; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:12px; max-width:640px; width:100%; max-height:92vh; overflow-y:auto; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #ea580c; padding-bottom:8px; margin-bottom:14px;">
+          <div>
+            <h3 style="color:#7f1d1d; margin:0;">Candidate Basic Profile & Security</h3>
+            <span style="font-size:11px; color:#78716c;">Complete this mandatory section to enable scholarship applications</span>
+          </div>
+          <button type="button" class="action-btn btn-delete" onclick="closeCandidateProfileModal()">✖ Close</button>
+        </div>
+
+        <!-- Basic Details Form -->
+        <h4 style="font-size:13px; color:#9a3412; margin-bottom:8px;">1. Basic Demographic & Academic Details</h4>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Name (Auto-filled)</label>
+            <input type="text" id="prof_name" readonly style="background:#f5f5f4; font-weight:bold;">
+          </div>
+          <div class="form-group">
+            <label>Contact No (Auto-filled)</label>
+            <input type="tel" id="prof_mobile" readonly style="background:#f5f5f4; font-weight:bold;">
+          </div>
+          <div class="form-group">
+            <label>Date of Birth *</label>
+            <input type="date" id="prof_dob" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="prof_email" placeholder="student@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>Village *</label>
+            <input type="text" id="prof_vill" placeholder="Village name" required>
+          </div>
+          <div class="form-group">
+            <label>P.O. (Post Office) *</label>
+            <input type="text" id="prof_po" placeholder="Post Office" required>
+          </div>
+          <div class="form-group">
+            <label>P.S. (Police Station) *</label>
+            <input type="text" id="prof_ps" placeholder="Police Station" required>
+          </div>
+          <div class="form-group">
+            <label>District *</label>
+            <input type="text" id="prof_dist" placeholder="District" required>
+          </div>
+          <div class="form-group">
+            <label>PIN Code *</label>
+            <input type="text" id="prof_pin" placeholder="6-digit PIN" required>
+          </div>
+          <div class="form-group">
+            <label>State *</label>
+            <input type="text" id="prof_state" value="West Bengal" required>
+          </div>
+          <div class="form-group">
+            <label>Present Class of Study *</label>
+            <input type="text" id="prof_currclass" placeholder="e.g. Class XI / B.Sc 1st Year" required>
+          </div>
+          <div class="form-group">
+            <label>Subject / Stream *</label>
+            <input type="text" id="prof_stream" placeholder="e.g. Science / Arts / Law" required>
+          </div>
+          <div class="form-group">
+            <label>Date of Admission *</label>
+            <input type="date" id="prof_admdate" required>
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Institution Name *</label>
+            <input type="text" id="prof_instname" placeholder="Full name of College / School / University" required>
+          </div>
+        </div>
+
+        <!-- Password Change Section -->
+        <div style="background:#fafaf9; border:1px solid #e7e5e4; border-radius:8px; padding:12px; margin-top:10px;">
+          <h4 style="font-size:13px; color:#1c1917; margin-bottom:6px;">2. Change Portal Password (Optional)</h4>
+          <p style="font-size:11px; color:#78716c; margin-bottom:8px;">You can set your own secret password. Profile card will show your active updated password.</p>
+          <div class="form-grid">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>New Password</label>
+              <input type="password" id="prof_newpass" placeholder="Leave blank to keep unchanged">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Confirm Password</label>
+              <input type="password" id="prof_confpass" placeholder="Retype new password">
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <button type="button" class="action-btn btn-pdf" style="padding:8px 14px; font-size:12px;" onclick="downloadCandidateProfileCard(activeCandidateId)">🖨️ Download Profile Card</button>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn-neutral" style="padding:8px 16px; font-size:13px;" onclick="closeCandidateProfileModal()">Cancel</button>
+            <button type="button" class="btn-primary" style="padding:8px 18px; font-size:13px;" onclick="saveCandidateFullProfile()">💾 Save & Update Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Scrutiny Modal -->
     <div id="adminScrutinyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:550px; width:100%; padding:22px;">
@@ -1459,6 +1528,17 @@
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px;">
           <button type="button" class="btn-neutral" onclick="closeRenameSchemeModal()">Cancel</button>
           <button type="button" class="btn-primary" onclick="saveRenamedScheme()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Profile Modal -->
+    <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; padding:20px;">
+        <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:14px;">User Account Profile</h3>
+        <div id="profileModalContent" style="font-size:13px; line-height:1.8;"></div>
+        <div style="text-align:right; margin-top:16px;">
+          <button type="button" class="btn-neutral" onclick="closeProfileModal()">Close</button>
         </div>
       </div>
     </div>
@@ -1500,28 +1580,7 @@
       <div id="pdfAttachedDocumentsSection" style="margin-top:50px; page-break-before:always;"></div>
     </div>
 
-    <!-- Printable Official Candidate Profile Card -->
-    <div id="printableProfileCard" style="display:none; padding:40px; font-family:serif; background:#fff;">
-      <div style="border:3px double #7f1d1d; padding:26px; border-radius:10px; max-width:680px; margin:0 auto; line-height:1.7;">
-        <div style="text-align:center; border-bottom:2px solid #ea580c; padding-bottom:12px; margin-bottom:18px;">
-          <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" style="width:60px; height:60px; margin-bottom:6px;">
-          <h2 style="color:#7f1d1d; margin:0; font-size:22px;">RAMAKRISHNA MISSION ASHRAMA</h2>
-          <p style="margin:4px 0; font-size:14px; font-weight:bold; color:#444;">Satyabanpally, Jhargram, West Bengal - 721507</p>
-          <div style="display:inline-block; background:#ffedd5; color:#9a3412; font-weight:bold; font-size:13px; padding:4px 14px; border-radius:15px; margin-top:8px;">
-            OFFICIAL CANDIDATE PROFILE & CREDENTIAL CARD
-          </div>
-        </div>
-        <div id="profileCardPrintContent" style="font-size:13px; margin-bottom:20px;"></div>
-        <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:flex-end; font-size:13px;">
-          <div><strong>Generated On:</strong> <span id="profileCardPrintDate"></span></div>
-        </div>
-        <div style="margin-top:20px; text-align:center; border-top:1px dashed #a8a29e; padding-top:8px; font-size:11px; color:#57534e; font-style:italic;">
-          "This document is system-generated and reflects real-time database credentials."
-        </div>
-      </div>
-    </div>
-
-    <!-- Printable Registration Slip -->
+    <!-- Printable Candidate Profile Card (Includes ID, Active Password & Basic Details) -->
     <div id="printableSlip" style="display:none; padding:40px; font-family:serif; background:#fff;">
       <div style="border:3px double #7f1d1d; padding:26px; border-radius:10px; max-width:680px; margin:0 auto; line-height:1.7;">
         <div style="text-align:center; border-bottom:2px solid #ea580c; padding-bottom:12px; margin-bottom:18px;">
@@ -1529,10 +1588,21 @@
           <h2 style="color:#7f1d1d; margin:0; font-size:22px;">RAMAKRISHNA MISSION ASHRAMA</h2>
           <p style="margin:4px 0; font-size:14px; font-weight:bold; color:#444;">Satyabanpally, Jhargram, West Bengal-721507</p>
           <div style="display:inline-block; background:#ffedd5; color:#9a3412; font-weight:bold; font-size:13px; padding:4px 14px; border-radius:15px; margin-top:8px;">
-            OFFICIAL CANDIDATE REGISTRATION CARD
+            OFFICIAL CANDIDATE PROFILE & IDENTITY CARD
           </div>
         </div>
         <div id="slipBodyContent" style="font-size:14px; margin-bottom:20px;"></div>
+        <div style="background:#fafaf9; border:1px solid #e7e5e4; padding:14px; border-radius:6px; font-size:13px; color:#292524;">
+          <strong>Important Instructions for Candidate:</strong>
+          <ol style="margin:8px 0 0 20px; padding:0;">
+            <li style="margin-bottom:4px;">Keep your Candidate ID and active Password strictly confidential.</li>
+            <li style="margin-bottom:4px;">Whenever you update your password, your newly generated Profile Card will reflect the active credentials.</li>
+            <li>All official notifications and correspondence will be linked to the contact details shown in this profile.</li>
+          </ol>
+        </div>
+        <div style="margin-top:28px; display:flex; justify-content:space-between; align-items:flex-end; font-size:13px;">
+          <div><strong>Date of Issuance / Update:</strong> <span id="slipDate"></span></div>
+        </div>
         <div style="margin-top:25px; text-align:center; border-top:1px dashed #a8a29e; padding-top:10px; font-size:12px; color:#57534e; font-style:italic;">
           "This document is computer-generated, hence no physical signature is required."
         </div>
@@ -1563,11 +1633,11 @@
     let notices = [];
     let downloads = [];
     let siteContent = {
-      aboutIntro: 'Ramakrishna Mission Ashrama, Jhargram, a branch centre of the Ramakrishna Mission, Belur Math came into existence on 20th August 2017 on five acres of land obtained on lease from the Government of West Bengal.',
-      actEdu: '• Ramakrishna Mission Vidyamandira (EMRS), Jhargram: Residential School for Tribal students.\n• Free Coaching Centers and Scholarships.',
-      actWelfare: '• Distribution of clothes, relief assistance, and medical clinics.',
-      actYouth: '• Value education and sports tournaments.',
-      actSpiritual: '• Birth anniversary celebrations and daily prayer discourses.'
+      aboutIntro: 'Ramakrishna Mission Ashrama, Jhargram, a branch centre of the Ramakrishna Mission, Belur Math came into existence on 20th August 2017 on five acres of land obtained on lease from the Government of West Bengal. Srimat Swami Smarananandaji Maharaj, the 16th President of Ramakrishna Math and Ramakrishna Mission, Belur Math, inaugurated the newly constructed Assembly cum Prayer Hall in the Ashrama campus on 7th of December 2019.',
+      actEdu: '• Ramakrishna Mission Vidyamandira (EMRS), Jhargram: Residential School for Tribal students (460 students).\n• 6 Free Coaching Centers: 320 students receive free coaching, uniforms, and light tiffin.\n• Scholarships: In 2023-24, scholarships worth 13.41 lakhs were awarded to 152 deserving students.',
+      actWelfare: '• Distribution of clothes, relief assistance, and financial aid to underprivileged families.\n• Disaster relief and winter jacket/blanket distribution.\n• Monthly motivational programs at Jhargram Correctional Home.\n• Bi-monthly free homeopathic health camp by Dr. Ashoke Pradhan.\n• Annual blood donation drive with over 100 donors.\n• Swami Vivekananda Tree Plantation (16,000+ trees planted).\n• Monthly pension of Rs. 1,200 to 6 widows.',
+      actYouth: '• ‘Arise, Awake’: Value education across 32 institutions covering 8,000 students and 400 teachers.\n• Annual district football tournament, yoga, and cultural competitions.\n• Vivekananda study circles at 12 centers.\n• National Youth Day celebrations and Sunday moral classes.',
+      actSpiritual: '• Birth anniversary celebrations of Sri Ramakrishna, Sri Sarada Devi, and Swami Vivekananda.\n• Daily evening prayer, religious discourses, and Ekadashi Ramnam Sankirtan.\n• Spiritual retreats and distribution of Vedanta literature.'
     };
 
     let activeUserRole = null;
@@ -1610,15 +1680,15 @@
           });
         }
 
-        // 2. Fetch Candidates with Basic Profile Information
+        // 2. Fetch Candidates with Basic Profile Fields
         const { data: candData } = await db.from('candidates').select('*');
         if (candData) {
           candidates = {};
           candData.forEach(c => {
-            candidates[c.candidate_id] = {
-              name: c.name,
-              mobile: c.mobile,
-              pass: c.pass,
+            candidates[c.candidate_id] = { 
+              name: c.name, 
+              mobile: c.mobile, 
+              pass: c.pass, 
               dob: c.dob || '',
               email: c.email || '',
               vill: c.vill || '',
@@ -1631,7 +1701,7 @@
               stream: c.stream || '',
               admDate: c.adm_date || '',
               institution: c.institution || '',
-              isProfileCompleted: c.is_profile_completed || false
+              isProfileComplete: !!(c.dob && c.email && c.vill && c.po && c.ps && c.dist && c.pin && c.currClass && c.institution)
             };
           });
         }
@@ -1703,13 +1773,13 @@
 
         renderPublicSiteContent();
         if (activeUserRole === 'admin') refreshAdminDashboardPanels();
-        if (activeUserRole === 'candidate') syncCandidateProfileUI();
+        if (activeUserRole === 'candidate') checkCandidateProfileStatus();
       } catch (err) {
         console.error("Error loading data from Supabase:", err);
       }
     }
 
-    // Dynamic Public Content
+    // Dynamic Content
     function renderPublicSiteContent() {
       document.getElementById('viewAboutIntro').innerText = siteContent.aboutIntro;
       document.getElementById('viewActEdu').innerText = siteContent.actEdu;
@@ -1717,6 +1787,7 @@
       document.getElementById('viewActYouth').innerText = siteContent.actYouth;
       document.getElementById('viewActSpiritual').innerText = siteContent.actSpiritual;
 
+      // Notices on Home
       const homeNotices = document.getElementById('homeNoticesList');
       homeNotices.innerHTML = notices.slice(0, 3).map(n => `
         <div class="notice-item">
@@ -1725,10 +1796,13 @@
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No current notices.</p>';
 
+      // Notices Page
       const fullNotices = document.getElementById('fullNoticesList');
       fullNotices.innerHTML = notices.map(n => `
         <div class="notice-item">
-          <div><a href="${n.link}" target="_blank" style="color:#7f1d1d; text-decoration:none; font-weight:700; font-size:14px;">${n.title}</a></div>
+          <div>
+            <a href="${n.link}" target="_blank" style="color:#7f1d1d; text-decoration:none; font-weight:700; font-size:14px;">${n.title}</a>
+          </div>
           <div style="display:flex; align-items:center; gap:8px;">
             <span class="notice-date">${n.date}</span>
             <a href="${n.link}" target="_blank" class="action-btn btn-pdf" style="text-decoration:none;">View</a>
@@ -1736,10 +1810,14 @@
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No notices published yet.</p>';
 
+      // Downloads Page
       const dlGrid = document.getElementById('publicDownloadsGrid');
       dlGrid.innerHTML = downloads.map(d => `
         <div class="download-item">
-          <div><h4>${d.title}</h4><p style="font-size:11px; color:#78716c;">${d.desc}</p></div>
+          <div>
+            <h4>${d.title}</h4>
+            <p style="font-size:11px; color:#78716c;">${d.desc}</p>
+          </div>
           <a href="${d.link}" target="_blank" class="download-link">📥 Download Document</a>
         </div>
       `).join('');
@@ -1763,7 +1841,6 @@
       document.getElementById('portalTopHeader').style.display = 'block';
       document.getElementById('portalWorkspaceTitle').innerText = title;
       document.getElementById('portalUserIdentity').innerText = identity;
-      document.getElementById('topBtnMyProfile').style.display = (role === 'candidate') ? 'inline-block' : 'none';
     }
 
     function saveActiveSession(role, userId) {
@@ -1791,7 +1868,7 @@
     }
 
     // -------------------------------------------------------------
-    // ADMIN LOGIN: MAGIC LINK / OTP
+    // ADMIN LOGIN
     // -------------------------------------------------------------
     async function requestAdminEmailOTP() {
       const id = document.getElementById('manualAdminId').value.trim();
@@ -1803,6 +1880,7 @@
       }
 
       const { data: adminData, error } = await db.from('admins').select('*').eq('admin_id', id).eq('pass', pass);
+
       if (error || !adminData || adminData.length === 0) {
         alert('Invalid Administrator Credentials! Please verify ID and Password.');
         return;
@@ -1828,14 +1906,22 @@
 
       document.getElementById('adminLoginStep1').style.display = 'none';
       document.getElementById('adminLoginStep2').style.display = 'block';
+      
       const maskedEmail = admin.email.replace(/^(.)(.*)(@.*)$/, (_, a, b, c) => a + b.replace(/./g, '*') + c);
       document.getElementById('adminOtpNoticeText').innerText = `Verification code sent to official email: ${maskedEmail}`;
     }
 
     async function verifyAdminEmailOTP() {
       const token = document.getElementById('adminOtpCodeInput').value.trim();
+
       if (!token || token.length < 6) {
         alert('Please enter the valid 6-digit OTP received in your email!');
+        return;
+      }
+
+      if (!pendingAdminLoginData) {
+        alert('Session expired. Please enter your password again.');
+        cancelAdminOtpStep();
         return;
       }
 
@@ -1875,7 +1961,7 @@
     }
 
     // -------------------------------------------------------------
-    // CANDIDATE DIRECT LOGIN
+    // CANDIDATE DIRECT LOGIN & PROFILE STATUS CHECK
     // -------------------------------------------------------------
     async function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
@@ -1899,80 +1985,72 @@
 
         saveActiveSession('candidate', id);
         setAuthenticatedUI('candidate', 'CANDIDATE SCHOLARSHIP WORKSPACE', cand.name + ' (' + id + ')');
+        
+        await loadDataFromSupabase();
+        navigateTo('candidateDashboard');
 
-        syncCandidateProfileUI();
-
-        // If profile is not completed yet, take them directly to profile setup
-        if (!cand.is_profile_completed) {
-          alert('Welcome! Please complete your Basic Profile details and update your password before proceeding to apply.');
-          openCandidateProfileSettings();
-        } else {
-          navigateTo('candidateDashboard');
-        }
+        // Check First Login / Profile Status
+        checkCandidateProfileStatus();
       } else {
         alert('Invalid Candidate ID or Password!');
       }
     }
 
-    // -------------------------------------------------------------
-    // CANDIDATE PROFILE MANAGEMENT & AUTO-SYNC LOGIC
-    // -------------------------------------------------------------
-    function syncCandidateProfileUI() {
+    function checkCandidateProfileStatus() {
+      if (!activeCandidateId || !candidates[activeCandidateId]) return;
       const cand = candidates[activeCandidateId];
-      if (!cand) return;
-
-      const badge = document.getElementById('profileStatusBadge');
-      if (cand.isProfileCompleted) {
-        badge.innerText = '✅ Profile Complete';
-        badge.style.background = '#dcfce7';
-        badge.style.color = '#15803d';
+      const alertBox = document.getElementById('profileCompletionAlert');
+      
+      if (!cand.isProfileComplete) {
+        alertBox.style.display = 'block';
+        // Auto trigger update profile modal on first login
+        setTimeout(() => openCandidateProfileModal(true), 400);
       } else {
-        badge.innerText = '⚠️ Profile Incomplete';
-        badge.style.background = '#fee2e2';
-        badge.style.color = '#dc2626';
+        alertBox.style.display = 'none';
       }
-
-      // Populate profile setup window fields
-      document.getElementById('prof_name').value = cand.name;
-      document.getElementById('prof_mobile').value = cand.mobile;
-      document.getElementById('prof_dob').value = cand.dob;
-      document.getElementById('prof_email').value = cand.email;
-      document.getElementById('prof_vill').value = cand.vill;
-      document.getElementById('prof_po').value = cand.po;
-      document.getElementById('prof_ps').value = cand.ps;
-      document.getElementById('prof_dist').value = cand.dist;
-      document.getElementById('prof_pin').value = cand.pin;
-      document.getElementById('prof_state').value = cand.state || 'West Bengal';
-      document.getElementById('prof_currclass').value = cand.currClass;
-      document.getElementById('prof_stream').value = cand.stream;
-      document.getElementById('prof_admdate').value = cand.admDate;
-      document.getElementById('prof_instname').value = cand.institution;
-      document.getElementById('prof_current_pass').value = cand.pass;
-      document.getElementById('prof_new_pass').value = '';
-
-      // Auto-fill into the Application Form fields as well
-      document.getElementById('f_name').value = cand.name;
-      document.getElementById('f_mobile').value = cand.mobile;
-      document.getElementById('f_dob').value = cand.dob;
-      document.getElementById('f_email').value = cand.email;
-      document.getElementById('f_vill').value = cand.vill;
-      document.getElementById('f_po').value = cand.po;
-      document.getElementById('f_ps').value = cand.ps;
-      document.getElementById('f_dist').value = cand.dist;
-      document.getElementById('f_pin').value = cand.pin;
-      document.getElementById('f_currclass').value = cand.currClass;
-      document.getElementById('f_stream').value = cand.stream;
-      document.getElementById('f_admdate').value = cand.admDate;
-      document.getElementById('f_instname').value = cand.institution;
     }
 
-    function openCandidateProfileSettings() {
-      syncCandidateProfileUI();
-      navigateTo('candidateProfileSetup');
+    // -------------------------------------------------------------
+    // CANDIDATE PROFILE MODAL & AUTO-SYNC FUNCTIONS
+    // -------------------------------------------------------------
+    function openCandidateProfileModal(isForced = false) {
+      if (!activeCandidateId || !candidates[activeCandidateId]) return;
+      const c = candidates[activeCandidateId];
+
+      // Auto-populate fixed registered fields
+      document.getElementById('prof_name').value = c.name || '';
+      document.getElementById('prof_mobile').value = c.mobile || '';
+
+      // Populate basic details
+      document.getElementById('prof_dob').value = c.dob || '';
+      document.getElementById('prof_email').value = c.email || '';
+      document.getElementById('prof_vill').value = c.vill || '';
+      document.getElementById('prof_po').value = c.po || '';
+      document.getElementById('prof_ps').value = c.ps || '';
+      document.getElementById('prof_dist').value = c.dist || '';
+      document.getElementById('prof_pin').value = c.pin || '';
+      document.getElementById('prof_state').value = c.state || 'West Bengal';
+      document.getElementById('prof_currclass').value = c.currClass || '';
+      document.getElementById('prof_stream').value = c.stream || '';
+      document.getElementById('prof_admdate').value = c.admDate || '';
+      document.getElementById('prof_instname').value = c.institution || '';
+
+      document.getElementById('prof_newpass').value = '';
+      document.getElementById('prof_confpass').value = '';
+
+      document.getElementById('candidateProfileModal').style.display = 'flex';
+      if (isForced) {
+        alert('Welcome! Please complete your Basic Profile details first to unlock scholarship application.');
+      }
     }
 
-    async function saveCandidateProfileSettings() {
-      const cand = candidates[activeCandidateId];
+    function closeCandidateProfileModal() {
+      document.getElementById('candidateProfileModal').style.display = 'none';
+    }
+
+    async function saveCandidateFullProfile() {
+      if (!activeCandidateId) return;
+
       const dob = document.getElementById('prof_dob').value.trim();
       const email = document.getElementById('prof_email').value.trim();
       const vill = document.getElementById('prof_vill').value.trim();
@@ -1980,42 +2058,21 @@
       const ps = document.getElementById('prof_ps').value.trim();
       const dist = document.getElementById('prof_dist').value.trim();
       const pin = document.getElementById('prof_pin').value.trim();
-      const state = document.getElementById('prof_state').value.trim();
-      const currclass = document.getElementById('prof_currclass').value.trim();
+      const state = document.getElementById('prof_state').value.trim() || 'West Bengal';
+      const currClass = document.getElementById('prof_currclass').value.trim();
       const stream = document.getElementById('prof_stream').value.trim();
-      const admdate = document.getElementById('prof_admdate').value.trim();
-      const instname = document.getElementById('prof_instname').value.trim();
-      const newPass = document.getElementById('prof_new_pass').value.trim();
+      const admDate = document.getElementById('prof_admdate').value.trim();
+      const instName = document.getElementById('prof_instname').value.trim();
 
-      if (!dob || !email || !vill || !po || !ps || !dist || !pin || !currclass || !stream || !admdate || !instname) {
-        alert('Please fill out all mandatory profile fields (*)!');
+      const newPass = document.getElementById('prof_newpass').value.trim();
+      const confPass = document.getElementById('prof_confpass').value.trim();
+
+      if (!dob || !email || !vill || !po || !ps || !dist || !pin || !currClass || !stream || !admDate || !instName) {
+        alert('All basic profile fields marked with (*) are required!');
         return;
       }
 
-      let authUpdates = {};
-      let updatedPass = cand.pass;
-
-      // Handle Password Change
-      if (newPass) {
-        if (newPass.length < 6) {
-          alert('New Password must be at least 6 characters long!');
-          return;
-        }
-        updatedPass = newPass;
-        authUpdates.password = newPass; // Triggers Password changed email in Supabase
-      }
-
-      // Handle Email Update Alert
-      if (email !== cand.email) {
-        authUpdates.email = email; // Triggers Email address changed email in Supabase
-      }
-
-      if (Object.keys(authUpdates).length > 0) {
-        await db.auth.updateUser(authUpdates);
-      }
-
-      // Update Supabase candidates table
-      const { error } = await db.from('candidates').update({
+      let payload = {
         dob: dob,
         email: email,
         vill: vill,
@@ -2024,66 +2081,200 @@
         dist: dist,
         pin: pin,
         state: state,
-        curr_class: currclass,
+        curr_class: currClass,
         stream: stream,
-        adm_date: admdate,
-        institution: instname,
-        pass: updatedPass,
-        is_profile_completed: true
-      }).eq('candidate_id', activeCandidateId);
+        adm_date: admDate,
+        institution: instName
+      };
 
+      // Password change verification
+      if (newPass) {
+        if (newPass.length < 6) {
+          alert('New Password must be at least 6 characters long!');
+          return;
+        }
+        if (newPass !== confPass) {
+          alert('New Password and Confirm Password do not match!');
+          return;
+        }
+        payload.pass = newPass;
+      }
+
+      // 1. Update Candidate Table in Supabase
+      const { error } = await db.from('candidates').update(payload).eq('candidate_id', activeCandidateId);
       if (error) {
-        alert('Failed to update profile: ' + error.message);
+        alert('Failed to update profile in database: ' + error.message);
         return;
       }
 
-      alert('Profile details and credentials updated successfully!');
+      // 2. Trigger Supabase Security alerts if email or password changed
+      let authUpdates = {};
+      if (email) authUpdates.email = email;
+      if (newPass) authUpdates.password = newPass;
+      if (Object.keys(authUpdates).length > 0) {
+        try { await db.auth.updateUser(authUpdates); } catch (e) { console.log(e); }
+      }
+
+      alert('Profile details updated successfully! Your information has been synced.');
+      closeCandidateProfileModal();
       await loadDataFromSupabase();
-      navigateTo('candidateDashboard');
+
+      // Automatically auto-fill the application window fields
+      autoPopulateApplicationWindowFromProfile();
     }
 
-    function attemptOpenScholarshipSelection() {
-      const cand = candidates[activeCandidateId];
-      if (!cand || !cand.isProfileCompleted) {
-        alert('Notice: You must update your Basic Profile details and set your password before applying for scholarships.');
-        openCandidateProfileSettings();
+    // Auto-populate Application Form from Saved Candidate Profile
+    function autoPopulateApplicationWindowFromProfile() {
+      if (!activeCandidateId || !candidates[activeCandidateId]) return;
+      const c = candidates[activeCandidateId];
+
+      // Step 1: Personal
+      if (document.getElementById('f_name')) document.getElementById('f_name').value = c.name || '';
+      if (document.getElementById('f_dob') && c.dob) document.getElementById('f_dob').value = c.dob;
+
+      // Step 3: Contact & Address
+      if (document.getElementById('f_mobile')) document.getElementById('f_mobile').value = c.mobile || '';
+      if (document.getElementById('f_email') && c.email) document.getElementById('f_email').value = c.email;
+      if (document.getElementById('f_vill') && c.vill) document.getElementById('f_vill').value = c.vill;
+      if (document.getElementById('f_po') && c.po) document.getElementById('f_po').value = c.po;
+      if (document.getElementById('f_ps') && c.ps) document.getElementById('f_ps').value = c.ps;
+      if (document.getElementById('f_dist') && c.dist) document.getElementById('f_dist').value = c.dist;
+      if (document.getElementById('f_state') && c.state) document.getElementById('f_state').value = c.state;
+      if (document.getElementById('f_pin') && c.pin) document.getElementById('f_pin').value = c.pin;
+
+      // Step 4: Education
+      if (document.getElementById('f_currclass') && c.currClass) document.getElementById('f_currclass').value = c.currClass;
+      if (document.getElementById('f_stream') && c.stream) document.getElementById('f_stream').value = c.stream;
+      if (document.getElementById('f_admdate') && c.admDate) document.getElementById('f_admdate').value = c.admDate;
+      if (document.getElementById('f_instname') && c.institution) document.getElementById('f_instname').value = c.institution;
+    }
+
+    // -------------------------------------------------------------
+    // PROFILE / IDENTITY CARD DOWNLOAD (INCLUDES ID, ACTIVE PASSWORD & DETAILS)
+    // -------------------------------------------------------------
+    function downloadCandidateProfileCard(cid) {
+      const cand = candidates[cid];
+      if (!cand) {
+        alert('Candidate record not found!');
         return;
       }
-      openSchemeSelectionWindow();
-    }
+      const appData = applications.find(a => a.candidateId === cid);
 
-    // Printable Profile Card
-    function downloadCandidateProfileCard() {
-      const cand = candidates[activeCandidateId];
-      if (!cand) return;
-
-      document.getElementById('profileCardPrintContent').innerHTML = `
-        <div style="line-height:2.0; color:#1c1917;">
-          <table style="width:100%; border-collapse:collapse; margin-bottom:12px;">
-            <tr><td style="width:40%;"><strong>Candidate ID:</strong></td><td><span style="font-size:16px; font-weight:bold; color:#7f1d1d;">${activeCandidateId}</span></td></tr>
-            <tr><td><strong>Full Name:</strong></td><td>${cand.name}</td></tr>
-            <tr><td><strong>Current Password:</strong></td><td><code style="font-size:14px; background:#f5f5f4; padding:2px 8px; border-radius:4px; font-weight:bold;">${cand.pass}</code></td></tr>
-            <tr><td><strong>Contact No:</strong></td><td>${cand.mobile}</td></tr>
-            <tr><td><strong>Email Address:</strong></td><td>${cand.email || 'N/A'}</td></tr>
-            <tr><td><strong>Date of Birth (DOB):</strong></td><td>${cand.dob || 'N/A'}</td></tr>
-            <tr><td><strong>Address:</strong></td><td>Vill: ${cand.vill || 'N/A'}, P.O: ${cand.po || 'N/A'}, P.S: ${cand.ps || 'N/A'}, Dist: ${cand.dist || 'N/A'}, PIN: ${cand.pin || 'N/A'}, State: ${cand.state}</td></tr>
-            <tr><td><strong>Present Course:</strong></td><td>${cand.currClass || 'N/A'} (${cand.stream || 'N/A'})</td></tr>
-            <tr><td><strong>Institution Name:</strong></td><td>${cand.institution || 'N/A'}</td></tr>
-            <tr><td><strong>Admission Date:</strong></td><td>${cand.admDate || 'N/A'}</td></tr>
-          </table>
-        </div>
+      document.getElementById('slipBodyContent').innerHTML = `
+        <table style="width:100%; border-collapse:collapse; font-size:13px; line-height:1.9;">
+          <tr>
+            <td style="width:40%; font-weight:bold; color:#7f1d1d;">Candidate ID:</td>
+            <td style="font-size:15px; font-weight:bold; color:#7f1d1d;">${cid}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;">Active Password:</td>
+            <td><code style="font-size:14px; background:#f5f5f4; padding:2px 8px; border-radius:4px; font-weight:bold; color:#b91c1c;">${cand.pass}</code></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;">Applicant Full Name:</td>
+            <td>${cand.name}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;">Date of Birth:</td>
+            <td>${cand.dob || 'Not updated yet'}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;">Contact Mobile:</td>
+            <td>${cand.mobile}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;">Email Address:</td>
+            <td>${cand.email || 'Not updated yet'}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;">Residential Address:</td>
+            <td>${cand.vill ? `${cand.vill}, P.O: ${cand.po}, P.S: ${cand.ps}, Dist: ${cand.dist} - ${cand.pin}, ${cand.state}` : 'Not updated yet'}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;">Present Class & Stream:</td>
+            <td>${cand.currClass ? `${cand.currClass} (${cand.stream})` : 'Not updated yet'}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;">Institution Name:</td>
+            <td>${cand.institution || 'Not updated yet'}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold;">Application Submission:</td>
+            <td><span style="font-weight:bold; color:${appData ? '#15803d' : '#ea580c'};">${appData ? `${appData.status} (${appData.schemeName || 'Applied'})` : 'Pending Submission'}</span></td>
+          </tr>
+        </table>
       `;
-      document.getElementById('profileCardPrintDate').innerText = new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString('en-GB');
+      document.getElementById('slipDate').innerText = new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
       window.print();
     }
 
+    // Check scheme selection permission (Requires Profile Completion)
+    function openSchemeSelectionWindow() {
+      if (!activeCandidateId || !candidates[activeCandidateId]) return;
+      const cand = candidates[activeCandidateId];
+
+      if (!cand.isProfileComplete) {
+        alert('Notice: Please complete your Basic Profile details before applying for scholarships!');
+        openCandidateProfileModal(true);
+        return;
+      }
+
+      const existing = applications.find(a => a.candidateId === activeCandidateId);
+      if (existing && existing.status !== 'Returned for Correction') {
+        alert(`You have already submitted an application (${existing.status}) under ${existing.schemeName || 'Scholarship'}.`);
+        return;
+      }
+
+      const grid = document.getElementById('candidateSchemeSelectionGrid');
+      grid.innerHTML = scholarshipSchemes.map(s => `
+        <div class="scheme-card">
+          <div style="font-size:28px; margin-bottom:8px;">🎓</div>
+          <h3>${s.name}</h3>
+          <p>${s.desc}</p>
+          <button class="btn-primary" onclick="proceedToApplicationFormWithScheme('${s.id}')">Apply for ${s.name} &rarr;</button>
+        </div>
+      `).join('');
+
+      navigateTo('schemeSelection');
+    }
+
+    function proceedToApplicationFormWithScheme(schemeId) {
+      selectedScholarshipSchemeId = schemeId;
+      const scheme = scholarshipSchemes.find(s => s.id === schemeId);
+      document.getElementById('activeFormSchemeBadge').innerText = 'Selected Scheme: ' + (scheme ? scheme.name : 'Scholarship');
+
+      // Auto-populate from Profile details
+      autoPopulateApplicationWindowFromProfile();
+
+      refreshCaptcha();
+      goToStep(1);
+      navigateTo('applicationForm');
+    }
+
+    // Profile Modal Router (Navigates based on role)
+    function openProfileModal() {
+      if (activeUserRole === 'candidate') {
+        openCandidateProfileModal();
+      } else {
+        const content = document.getElementById('profileModalContent');
+        const a = admins[activeAdminId];
+        content.innerHTML = `<strong>Role:</strong> Administrator (${a.role})<br><strong>ID:</strong> ${activeAdminId}<br><strong>Name:</strong> ${a.name}<br><strong>Phone:</strong> ${a.mobile}<br><strong>Email:</strong> ${a.email}`;
+        document.getElementById('profileModal').style.display = 'flex';
+      }
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
     // -------------------------------------------------------------
-    // FINAL SUBMISSION OTP (CONFIRM SIGN UP OPTION)
+    // CANDIDATE FINAL SUBMISSION OTP (CONFIRM SIGN UP OPTION)
     // -------------------------------------------------------------
     async function sendCandidateSubmissionEmailOTP() {
       const email = document.getElementById('f_email').value.trim();
+
       if (!email || !email.includes('@')) {
-        alert('Please make sure you have a valid email in your profile before requesting OTP!');
+        alert('Please enter a valid email address in Step 3 before requesting OTP!');
         return;
       }
 
@@ -2101,162 +2292,19 @@
       btn.innerText = 'Resend OTP';
 
       if (error && !error.message.includes('already registered')) {
-        await db.auth.resend({ type: 'signup', email: email });
+        await db.auth.resend({
+          type: 'signup',
+          email: email
+        });
       }
 
       candidateOtpTargetEmail = email;
-      document.getElementById('candOtpHint').innerText = `✅ Verification OTP sent to ${email}.`;
+      document.getElementById('candOtpHint').innerText = `✅ OTP has been dispatched to ${email} (via Confirm Sign Up). Check your inbox.`;
       document.getElementById('candOtpHint').style.color = '#15803d';
-      alert(`A 6-digit verification code has been dispatched to ${email}.`);
+      alert(`A 6-digit verification code has been dispatched to ${email}. Please enter it below to confirm your final submission.`);
     }
 
-    // -------------------------------------------------------------
-    // ADMIN PROFILE SECURITY UPDATES
-    // -------------------------------------------------------------
-    async function executeAdminDirectProfileUpdate() {
-      const newMobile = document.getElementById('updNewMobile').value.trim();
-      const newEmail = document.getElementById('updNewEmail').value.trim();
-      const newPass = document.getElementById('updNewPassword').value.trim();
-
-      if (!newMobile && !newEmail && !newPass) {
-        alert('Please provide at least one field to update!');
-        return;
-      }
-
-      let updates = {};
-      let authUpdates = {};
-
-      if (newMobile) {
-        if (newMobile.length !== 10) { alert('Mobile must be 10 digits!'); return; }
-        updates.mobile = newMobile;
-        authUpdates.phone = newMobile; // Phone number changed alert
-      }
-      if (newEmail) {
-        updates.email = newEmail;
-        authUpdates.email = newEmail; // Email address changed alert
-      }
-      if (newPass) {
-        if (newPass.length < 6) { alert('Password must be 6+ chars!'); return; }
-        updates.pass = newPass;
-        authUpdates.password = newPass; // Password changed alert
-      }
-
-      if (Object.keys(authUpdates).length > 0) {
-        await db.auth.updateUser(authUpdates);
-      }
-
-      const { error } = await db.from('admins').update(updates).eq('admin_id', activeAdminId);
-      if (error) {
-        alert('Failed to update admin profile: ' + error.message);
-        return;
-      }
-
-      alert('Profile updated and security alerts dispatched.');
-      document.getElementById('updNewMobile').value = '';
-      document.getElementById('updNewEmail').value = '';
-      document.getElementById('updNewPassword').value = '';
-      await loadDataFromSupabase();
-    }
-
-    // Registration Slip Download
-    function downloadCandidateRegistrationSlip(cid) {
-      const cand = candidates[cid];
-      if (!cand) return;
-      const appData = applications.find(a => a.candidateId === cid);
-
-      document.getElementById('slipBodyContent').innerHTML = `
-        <div style="font-size:14px; line-height:2.0; color:#1c1917;">
-          <div><strong>Candidate Full Name:</strong> ${cand.name}</div>
-          <div><strong>Official Candidate ID:</strong> <span style="font-size:16px; font-weight:bold; color:#7f1d1d;">${cid}</span></div>
-          <div><strong>Registered Mobile:</strong> ${cand.mobile}</div>
-          <div><strong>Current Password:</strong> <code style="font-size:14px; background:#f5f5f4; padding:2px 8px; border-radius:4px;">${cand.pass}</code></div>
-          <div><strong>Profile Status:</strong> <span style="font-weight:bold;">${cand.isProfileCompleted ? '✅ Profile Completed' : '⚠️ Profile Pending'}</span></div>
-          <div><strong>Application Status:</strong> <span style="font-weight:bold;">${appData ? appData.status + ' (' + (appData.schemeName || 'Applied') + ')' : 'Not Applied'}</span></div>
-        </div>
-      `;
-      window.print();
-    }
-
-    // Scrutiny Modal Handlers
-    function openScrutinyModal(index) {
-      selectedScrutinyIndex = index;
-      const app = applications[index];
-      document.getElementById('scrutinyAppInfo').innerHTML = `
-        <strong>Applicant:</strong> ${app.name} (${app.candidateId})<br>
-        <strong>Scheme:</strong> <span style="color:#7f1d1d; font-weight:bold;">${app.schemeName || 'Scholarship'}</span><br>
-        <strong>Application No:</strong> ${app.appNo} | <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span>
-      `;
-      document.getElementById('modalStatusSelect').value = app.status;
-      document.getElementById('modalAdminRemarks').value = app.adminRemarks || '';
-      handleStatusSelectionChange();
-      document.getElementById('adminScrutinyModal').style.display = 'flex';
-    }
-
-    function closeScrutinyModal() {
-      document.getElementById('adminScrutinyModal').style.display = 'none';
-      selectedScrutinyIndex = null;
-    }
-
-    function handleStatusSelectionChange() {
-      if (selectedScrutinyIndex === null) return;
-      const app = applications[selectedScrutinyIndex];
-      const select = document.getElementById('modalStatusSelect');
-      const notice = document.getElementById('sanctionLockNotice');
-      notice.style.display = (select.value === 'Sanctioned' && app.status !== 'Approved') ? 'block' : 'none';
-    }
-
-    async function saveAdminStatusDecision() {
-      const app = applications[selectedScrutinyIndex];
-      const newStatus = document.getElementById('modalStatusSelect').value;
-      const remarks = document.getElementById('modalAdminRemarks').value.trim();
-
-      if (newStatus === 'Sanctioned' && app.status !== 'Approved') {
-        alert('Validation Error: Application must be Approved before Sanctioning!');
-        return;
-      }
-      if (newStatus === 'Returned for Correction' && !remarks) {
-        alert('Remarks are required when returning an application!');
-        return;
-      }
-
-      const { error } = await db.from('applications').update({
-        status: newStatus,
-        admin_remarks: remarks
-      }).eq('app_no', app.appNo);
-
-      if (error) {
-        alert('Failed to update status in database: ' + error.message);
-        return;
-      }
-
-      alert(`Status updated to: ${newStatus}`);
-      closeScrutinyModal();
-      await loadDataFromSupabase();
-    }
-
-    // Candidate Form Logic
-    function goToStep(s) {
-      document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
-      document.querySelectorAll('.step-item').forEach((ind, i) => {
-        ind.classList.remove('active');
-        if (i + 1 < s) ind.classList.add('completed'); else ind.classList.remove('completed');
-      });
-      document.getElementById('formStep' + s).classList.add('active');
-      document.getElementById('stepIndicator' + s).classList.add('active');
-      window.scrollTo(0, 100);
-    }
-
-    function calculatePercentage() {
-      const full = parseFloat(document.getElementById('f_fullmarks').value);
-      const obt = parseFloat(document.getElementById('f_marksobtained').value);
-      if (full > 0 && obt >= 0) document.getElementById('f_percentage').value = ((obt / full) * 100).toFixed(2) + '%';
-    }
-
-    function refreshCaptcha() {
-      currentGeneratedCaptcha = Math.random().toString(36).substring(2, 6).toUpperCase();
-      document.getElementById('captchaDisplay').innerText = currentGeneratedCaptcha;
-    }
-
+    // Final Application Submission
     async function executeFinalApplicationSubmit() {
       if (document.getElementById('f_captchaInput').value.trim().toUpperCase() !== currentGeneratedCaptcha) {
         alert('Invalid Captcha code! Please enter the code shown on screen.');
@@ -2268,6 +2316,11 @@
 
       if (!enteredOtp || enteredOtp.length < 6) {
         alert('Please click "Send OTP", retrieve the 6-digit code from your email, and enter it before submitting!');
+        return;
+      }
+
+      if (!candidateOtpTargetEmail || candidateOtpTargetEmail !== email) {
+        alert('Email address was changed or OTP was not requested yet. Please click "Send OTP" to receive the code.');
         return;
       }
 
@@ -2349,6 +2402,695 @@
       document.getElementById('f_emailOtpInput').value = '';
       await loadDataFromSupabase();
       navigateTo('candidateDashboard');
+    }
+
+    // Admin Profile Update
+    async function executeAdminDirectProfileUpdate() {
+      const newMobile = document.getElementById('updNewMobile').value.trim();
+      const newEmail = document.getElementById('updNewEmail').value.trim();
+      const newPass = document.getElementById('updNewPassword').value.trim();
+
+      if (!newMobile && !newEmail && !newPass) {
+        alert('Please provide at least one field to update!');
+        return;
+      }
+
+      let updates = {};
+      let authUpdates = {};
+
+      if (newMobile) {
+        if (newMobile.length !== 10) { alert('Mobile must be 10 digits!'); return; }
+        updates.mobile = newMobile;
+        authUpdates.phone = newMobile;
+      }
+      if (newEmail) {
+        updates.email = newEmail;
+        authUpdates.email = newEmail;
+      }
+      if (newPass) {
+        if (newPass.length < 6) { alert('Password must be 6+ characters!'); return; }
+        updates.pass = newPass;
+        authUpdates.password = newPass;
+      }
+
+      if (Object.keys(authUpdates).length > 0) {
+        try { await db.auth.updateUser(authUpdates); } catch (e) { console.log(e); }
+      }
+
+      const { error } = await db.from('admins').update(updates).eq('admin_id', activeAdminId);
+      if (error) {
+        alert('Failed to update admin profile: ' + error.message);
+        return;
+      }
+
+      alert('Profile updated! Corresponding security confirmation emails triggered.');
+      document.getElementById('updNewMobile').value = '';
+      document.getElementById('updNewEmail').value = '';
+      document.getElementById('updNewPassword').value = '';
+      await loadDataFromSupabase();
+    }
+
+    // Admin Windows Switcher
+    function switchAdminWindow(windowType) {
+      const tabs = ['applications', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'updateProfile'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+        const win = document.getElementById('adminWindow' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (btn) btn.classList.remove('active');
+        if (win) win.style.display = 'none';
+      });
+
+      if (windowType === 'superAdminManage' && admins[activeAdminId] && admins[activeAdminId].role !== 'SUPER_ADMIN') {
+        alert('Unauthorized Access! Only Super Admin can access this window.');
+        return;
+      }
+
+      const activeBtn = document.getElementById('tabBtn' + windowType.charAt(0).toUpperCase() + windowType.slice(1));
+      const activeWin = document.getElementById('adminWindow' + windowType.charAt(0).toUpperCase() + windowType.slice(1));
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activeWin) activeWin.style.display = 'block';
+
+      sessionStorage.setItem('rkm_current_admin_tab', windowType);
+
+      if (windowType === 'applications') renderAdminAppSubTabs();
+      if (windowType === 'manageSchemes') renderAdminSchemesTable();
+      if (windowType === 'manageSite') loadCMSInputs();
+      if (windowType === 'manageNotices') renderAdminNoticesTable();
+      if (windowType === 'manageDownloads') renderAdminDownloadsTable();
+      if (windowType === 'superAdminManage') renderSuperAdminTable();
+    }
+
+    function refreshAdminDashboardPanels() {
+      renderAdminAppSubTabs();
+      renderAdminTable();
+      renderRegisteredCandidatesTable();
+      document.getElementById('appCountBadge').innerText = applications.length;
+      document.getElementById('regCountBadge').innerText = Object.keys(candidates).length;
+    }
+
+    function renderAdminAppSubTabs() {
+      const container = document.getElementById('adminAppSubTabsContainer');
+      let html = `
+        <button class="sub-tab-btn ${activeAdminAppFilterSchemeId === 'all' ? 'active' : ''}" onclick="filterAdminApplicationsByScheme('all')">
+          All Applications (${applications.length})
+        </button>
+      `;
+
+      scholarshipSchemes.forEach(sc => {
+        const count = applications.filter(a => a.schemeId === sc.id).length;
+        html += `
+          <button class="sub-tab-btn ${activeAdminAppFilterSchemeId === sc.id ? 'active' : ''}" onclick="filterAdminApplicationsByScheme('${sc.id}')">
+            ${sc.name} (${count})
+          </button>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function filterAdminApplicationsByScheme(schemeId) {
+      activeAdminAppFilterSchemeId = schemeId;
+      renderAdminAppSubTabs();
+      renderAdminTable();
+    }
+
+    function renderAdminTable() {
+      const tbody = document.getElementById('adminAppTableBody');
+      tbody.innerHTML = '';
+
+      let filteredApps = applications;
+      if (activeAdminAppFilterSchemeId !== 'all') {
+        filteredApps = applications.filter(a => a.schemeId === activeAdminAppFilterSchemeId);
+      }
+
+      if (filteredApps.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:16px; color:#888;">No applications found in this scholarship category.</td></tr>';
+        return;
+      }
+
+      filteredApps.forEach((app) => {
+        const index = applications.findIndex(a => a.appNo === app.appNo);
+        const schemeObj = scholarshipSchemes.find(s => s.id === app.schemeId);
+        const schemeTitle = schemeObj ? schemeObj.name : (app.schemeName || 'General');
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${app.appNo}</strong></td>
+          <td><span style="font-size:11px; font-weight:bold; color:#7f1d1d; background:#ffedd5; padding:2px 6px; border-radius:4px;">${schemeTitle}</span></td>
+          <td>${app.photoBase64 ? `<img src="${app.photoBase64}" style="width:36px; height:42px; object-fit:cover; border-radius:4px;">` : '<span style="color:#aaa; font-size:10px;">N/A</span>'}</td>
+          <td>${app.name}<br><span style="color:#78716c; font-size:10px;">ID: ${app.candidateId}</span></td>
+          <td>${app.currClass} (${app.stream})<br><span style="color:#78716c; font-size:10px;">${app.institution}</span></td>
+          <td style="color:#15803d; font-weight:bold;">${app.marksPct}</td>
+          <td>₹${app.income}</td>
+          <td><span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span></td>
+          <td>
+            <div class="action-btn-group">
+              <button class="action-btn btn-manage" onclick="openScrutinyModal(${index})">Scrutiny</button>
+              <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
+              <button class="action-btn btn-word" onclick="downloadApplicationWord(${index})">Word</button>
+              <button class="action-btn btn-delete" onclick="deleteApplicationOnly(${index})">Delete App</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function deleteApplicationOnly(index) {
+      const item = applications[index];
+      if (confirm(`Delete application "${item.appNo}" for ${item.name}? This removes the submission but preserves candidate registration.`)) {
+        const { error } = await db.from('applications').delete().eq('app_no', item.appNo);
+        if (error) {
+          alert('Failed to delete application from database: ' + error.message);
+          return;
+        }
+        await loadDataFromSupabase();
+        alert('Application deleted successfully.');
+      }
+    }
+
+    // Registered Candidates Directory (Reflects Profile Ready Status & Active Password)
+    function renderRegisteredCandidatesTable() {
+      const tbody = document.getElementById('registeredCandidatesTableBody');
+      tbody.innerHTML = '';
+      let sl = 1;
+
+      for (let cid in candidates) {
+        const cand = candidates[cid];
+        const isSubmitted = applications.some(a => a.candidateId === cid);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${sl++}</td>
+          <td><strong>${cid}</strong></td>
+          <td>${cand.name}</td>
+          <td>${cand.mobile}</td>
+          <td><code style="background:#f5f5f4; padding:2px 6px; border-radius:4px; font-weight:bold;">${cand.pass}</code></td>
+          <td><span style="font-weight:bold; color:${cand.isProfileComplete ? '#15803d' : '#ea580c'};">${cand.isProfileComplete ? '✅ Complete' : '⚠️ Incomplete'}</span></td>
+          <td><span style="font-weight:bold; color:${isSubmitted ? '#15803d' : '#dc2626'};">${isSubmitted ? '✅ Yes' : '⏳ Pending'}</span></td>
+          <td><button class="action-btn btn-pdf" onclick="downloadCandidateProfileCard('${cid}')">🖨️ Profile Card</button></td>
+          <td><button class="action-btn btn-delete" onclick="deleteEntireCandidateAccount('${cid}')">❌ Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    async function deleteEntireCandidateAccount(cid) {
+      const cand = candidates[cid];
+      if (confirm(`CRITICAL: Are you sure you want to permanently delete Candidate "${cand.name}" (${cid}) and all associated records?`)) {
+        const { error } = await db.from('candidates').delete().eq('candidate_id', cid);
+        if (error) {
+          alert('Failed to delete candidate: ' + error.message);
+          return;
+        }
+        await loadDataFromSupabase();
+        alert(`Candidate ${cid} deleted successfully.`);
+      }
+    }
+
+    function isDuplicateCandidate(name, mobile) {
+      const cleanName = name.trim().toLowerCase();
+      const cleanMobile = mobile.trim().replace(/[^0-9]/g, '').slice(-10);
+      for (let id in candidates) {
+        const existing = candidates[id];
+        const exName = existing.name.trim().toLowerCase();
+        const exMobile = existing.mobile.trim().replace(/[^0-9]/g, '').slice(-10);
+        if (cleanName === exName && cleanMobile === exMobile) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    async function adminCreateCustomCandidate() {
+      const name = document.getElementById('genCandName').value.trim();
+      const mobile = document.getElementById('genCandMobile').value.trim();
+      const id = document.getElementById('genCandId').value.trim();
+      const pass = document.getElementById('genCandPass').value.trim();
+
+      if (!name || mobile.length !== 10 || !id || !pass) {
+        alert('All fields are mandatory (with a valid 10-digit mobile number)!');
+        return;
+      }
+      if (candidates[id]) {
+        alert('Candidate ID already exists! Please use a unique Candidate ID.');
+        return;
+      }
+
+      if (isDuplicateCandidate(name, mobile)) {
+        alert(`Duplicate Entry: A candidate with Name "${name}" and Phone "${mobile}" is already registered!`);
+        return;
+      }
+
+      const { error } = await db.from('candidates').insert([
+        { candidate_id: id, name: name, mobile: mobile, pass: pass }
+      ]);
+
+      if (error) {
+        alert('Database Insert Failed: ' + error.message);
+        return;
+      }
+
+      alert(`Candidate created successfully in database! (ID: ${id})`);
+      document.getElementById('genCandName').value = '';
+      document.getElementById('genCandMobile').value = '';
+      document.getElementById('genCandId').value = '';
+      document.getElementById('genCandPass').value = '';
+      await loadDataFromSupabase();
+    }
+
+    function downloadSampleCandidateTemplate() {
+      const sampleData = [
+        ["Name", "Phone", "CandidateID", "Password"],
+        ["Swapan Mahato", "9876543211", "RKM-2026-003", "Pass@1234"],
+        ["Raju Murmu", "9876543212", "RKM-2026-004", "Pass@5678"]
+      ];
+      const ws = XLSX.utils.aoa_to_sheet(sampleData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Candidates_Template");
+      XLSX.writeFile(wb, "RKMA_Bulk_Candidates_Sample_Template.xlsx");
+    }
+
+    function processBulkCandidateExcelUpload() {
+      const fileInput = document.getElementById('bulkExcelFileInput');
+      const reportBox = document.getElementById('bulkUploadReport');
+      reportBox.style.display = 'none';
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Please choose an Excel file first!');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+          let rowsToInsert = [];
+          let skipped = 0;
+          let skipReasons = [];
+
+          jsonData.forEach((row, idx) => {
+            const name = (row['Name'] || row['name'] || '').toString().trim();
+            const phone = (row['Phone'] || row['phone'] || '').toString().trim().replace(/[^0-9]/g, '');
+            const cid = (row['CandidateID'] || row['candidateid'] || '').toString().trim();
+            const pass = (row['Password'] || row['password'] || '').toString().trim();
+
+            if (!name || !cid || !pass || phone.length < 10) {
+              skipped++;
+              skipReasons.push(`Row ${idx + 2}: Missing fields or invalid phone.`);
+              return;
+            }
+            if (candidates[cid]) {
+              skipped++;
+              skipReasons.push(`Row ${idx + 2}: Candidate ID "${cid}" already exists.`);
+              return;
+            }
+            const cleanPhone = phone.slice(-10);
+            if (isDuplicateCandidate(name, cleanPhone)) {
+              skipped++;
+              skipReasons.push(`Row ${idx + 2}: Duplicate Name & Phone ("${name}", "${cleanPhone}"). Skipped.`);
+              return;
+            }
+
+            rowsToInsert.push({ candidate_id: cid, name: name, mobile: cleanPhone, pass: pass });
+          });
+
+          if (rowsToInsert.length > 0) {
+            const { error } = await db.from('candidates').insert(rowsToInsert);
+            if (error) {
+              alert('Database bulk insert failed: ' + error.message);
+              return;
+            }
+          }
+
+          reportBox.style.display = 'block';
+          reportBox.innerHTML = `
+            <div style="padding:10px; background:#dcfce7; color:#15803d; font-weight:bold; border-radius:4px;">
+              ✅ Imported to Cloud DB: ${rowsToInsert.length} candidates | Skipped/Duplicates: ${skipped}
+            </div>
+            ${skipReasons.length > 0 ? `<div style="margin-top:6px; color:#dc2626; max-height:100px; overflow-y:auto; font-size:11px;">${skipReasons.join('<br>')}</div>` : ''}
+          `;
+          fileInput.value = '';
+          await loadDataFromSupabase();
+        } catch (err) {
+          alert('Error parsing Excel file!');
+        }
+      };
+      reader.readAsArrayBuffer(fileInput.files[0]);
+    }
+
+    // Dynamic Schemes Management
+    function renderAdminSchemesTable() {
+      const tbody = document.getElementById('adminSchemesTableBody');
+      tbody.innerHTML = scholarshipSchemes.map(s => `
+        <tr>
+          <td><code>${s.id}</code></td>
+          <td><strong>${s.name}</strong></td>
+          <td>${s.desc}</td>
+          <td>
+            <button class="action-btn btn-pdf" onclick="openRenameSchemeModal('${s.id}')">✏️ Rename</button>
+            ${s.id !== 'belur_math' && s.id !== 'other_scholarships' ? `<button class="action-btn btn-delete" onclick="deleteScholarshipScheme('${s.id}')">Delete</button>` : ''}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function addNewScholarshipScheme() {
+      const name = document.getElementById('newSchemeName').value.trim();
+      const desc = document.getElementById('newSchemeDesc').value.trim() || 'Institutional scholarship program.';
+
+      if (!name) {
+        alert('Please enter a scholarship scheme name!');
+        return;
+      }
+
+      const id = 'scheme_' + Date.now();
+      const { error } = await db.from('scholarship_schemes').insert([{ id: id, name: name, description: desc }]);
+      if (error) {
+        alert('Failed to save scheme: ' + error.message);
+        return;
+      }
+
+      alert(`New Scholarship Scheme "${name}" created successfully!`);
+      document.getElementById('newSchemeName').value = '';
+      document.getElementById('newSchemeDesc').value = '';
+      await loadDataFromSupabase();
+    }
+
+    function openRenameSchemeModal(schemeId) {
+      const scheme = scholarshipSchemes.find(s => s.id === schemeId);
+      if (!scheme) return;
+      document.getElementById('renameSchemeId').value = schemeId;
+      document.getElementById('renameSchemeNameInput').value = scheme.name;
+      document.getElementById('renameSchemeDescInput').value = scheme.desc;
+      document.getElementById('renameSchemeModal').style.display = 'flex';
+    }
+
+    function closeRenameSchemeModal() {
+      document.getElementById('renameSchemeModal').style.display = 'none';
+    }
+
+    async function saveRenamedScheme() {
+      const id = document.getElementById('renameSchemeId').value;
+      const newName = document.getElementById('renameSchemeNameInput').value.trim();
+      const newDesc = document.getElementById('renameSchemeDescInput').value.trim();
+
+      if (!newName) {
+        alert('Scholarship name cannot be empty!');
+        return;
+      }
+
+      const { error } = await db.from('scholarship_schemes').update({ name: newName, description: newDesc }).eq('id', id);
+      if (error) {
+        alert('Failed to update scheme: ' + error.message);
+        return;
+      }
+
+      alert('Scholarship scheme details updated successfully!');
+      closeRenameSchemeModal();
+      await loadDataFromSupabase();
+    }
+
+    async function deleteScholarshipScheme(id) {
+      if (confirm('Are you sure you want to delete this scholarship scheme?')) {
+        const { error } = await db.from('scholarship_schemes').delete().eq('id', id);
+        if (error) {
+          alert('Failed to delete scheme: ' + error.message);
+          return;
+        }
+        await loadDataFromSupabase();
+      }
+    }
+
+    // CMS Handlers
+    function renderAdminNoticesTable() {
+      const box = document.getElementById('adminNoticeList');
+      box.innerHTML = notices.map((n) => `
+        <div class="notice-item">
+          <div><strong>${n.title}</strong> (${n.date})<br><a href="${n.link}" target="_blank" style="font-size:11px; color:#0284c7;">${n.link}</a></div>
+          <button class="action-btn btn-delete" onclick="deleteNotice(${n.id})">Delete</button>
+        </div>
+      `).join('') || '<p style="font-size:12px; color:#888;">No notices.</p>';
+    }
+
+    async function publishNewNotice() {
+      const title = document.getElementById('noticeTitleInput').value.trim();
+      const date = document.getElementById('noticeDateInput').value;
+      const link = document.getElementById('noticeLinkInput').value.trim() || '#';
+
+      if (!title || !date) {
+        alert('Notice title and date are required!');
+        return;
+      }
+
+      const { error } = await db.from('notices').insert([{ title: title, notice_date: date, link: link }]);
+      if (error) {
+        alert('Failed to publish notice: ' + error.message);
+        return;
+      }
+
+      alert('Notice published live!');
+      document.getElementById('noticeTitleInput').value = '';
+      document.getElementById('noticeLinkInput').value = '';
+      await loadDataFromSupabase();
+    }
+
+    async function deleteNotice(noticeId) {
+      if (confirm('Delete this notice?')) {
+        const { error } = await db.from('notices').delete().eq('id', noticeId);
+        if (error) {
+          alert('Failed to delete: ' + error.message);
+          return;
+        }
+        await loadDataFromSupabase();
+      }
+    }
+
+    function renderAdminDownloadsTable() {
+      const box = document.getElementById('adminDownloadList');
+      box.innerHTML = downloads.map((d) => `
+        <div class="notice-item">
+          <div><strong>${d.title}</strong> - <span style="font-size:12px; color:#666;">${d.desc}</span><br><a href="${d.link}" target="_blank" style="font-size:11px; color:#0284c7;">${d.link}</a></div>
+          <button class="action-btn btn-delete" onclick="deleteDownload(${d.id})">Delete</button>
+        </div>
+      `).join('') || '<p style="font-size:12px; color:#888;">No downloads.</p>';
+    }
+
+    async function addNewDownloadItem() {
+      const title = document.getElementById('dlTitleInput').value.trim();
+      const desc = document.getElementById('dlDescInput').value.trim();
+      const link = document.getElementById('dlLinkInput').value.trim();
+
+      if (!title || !link) {
+        alert('Document title and link are required!');
+        return;
+      }
+
+      const { error } = await db.from('downloads').insert([{ title: title, description: desc, link: link }]);
+      if (error) {
+        alert('Failed to add document: ' + error.message);
+        return;
+      }
+
+      alert('Downloadable document added live!');
+      document.getElementById('dlTitleInput').value = '';
+      document.getElementById('dlDescInput').value = '';
+      document.getElementById('dlLinkInput').value = '';
+      await loadDataFromSupabase();
+    }
+
+    async function deleteDownload(downloadId) {
+      if (confirm('Delete this downloadable document?')) {
+        const { error } = await db.from('downloads').delete().eq('id', downloadId);
+        if (error) {
+          alert('Failed to delete document: ' + error.message);
+          return;
+        }
+        await loadDataFromSupabase();
+      }
+    }
+
+    function loadCMSInputs() {
+      document.getElementById('editAboutIntro').value = siteContent.aboutIntro;
+      document.getElementById('editActEdu').value = siteContent.actEdu;
+      document.getElementById('editActWelfare').value = siteContent.actWelfare;
+      document.getElementById('editActYouth').value = siteContent.actYouth;
+      document.getElementById('editActSpiritual').value = siteContent.actSpiritual;
+    }
+
+    function saveWebsiteContentChanges() {
+      siteContent.aboutIntro = document.getElementById('editAboutIntro').value.trim();
+      siteContent.actEdu = document.getElementById('editActEdu').value.trim();
+      siteContent.actWelfare = document.getElementById('editActWelfare').value.trim();
+      siteContent.actYouth = document.getElementById('editActYouth').value.trim();
+      siteContent.actSpiritual = document.getElementById('editActSpiritual').value.trim();
+
+      saveState();
+      renderPublicSiteContent();
+      alert('Website content updated live!');
+    }
+
+    // Super Admin Roster
+    function renderSuperAdminTable() {
+      const tbody = document.getElementById('superAdminTableBody');
+      tbody.innerHTML = '';
+
+      for (let aid in admins) {
+        const a = admins[aid];
+        const isSuper = (a.role === 'SUPER_ADMIN');
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${aid}</strong></td>
+          <td>${a.name}</td>
+          <td>${a.mobile}</td>
+          <td><span class="status-badge ${isSuper ? 'st-sanctioned' : 'st-submitted'}">${a.role}</span></td>
+          <td>
+            ${isSuper ? '<span style="font-size:11px; color:#888;">Permanent Super Admin</span>' : `<button class="action-btn btn-delete" onclick="superAdminDeleteAdmin('${aid}')">Remove Admin</button>`}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    async function superAdminCreateAdmin() {
+      if (admins[activeAdminId] && admins[activeAdminId].role !== 'SUPER_ADMIN') {
+        alert('Permission Denied!');
+        return;
+      }
+
+      const name = document.getElementById('newAdminName').value.trim();
+      const mobile = document.getElementById('newAdminMobile').value.trim();
+      const id = document.getElementById('newAdminId').value.trim();
+      const pass = document.getElementById('newAdminPass').value.trim();
+
+      if (!name || mobile.length !== 10 || !id || !pass) {
+        alert('All fields required with valid 10-digit mobile!');
+        return;
+      }
+      if (admins[id]) {
+        alert('Admin ID already exists!');
+        return;
+      }
+
+      const { error } = await db.from('admins').insert([
+        { admin_id: id, name: name, mobile: mobile, pass: pass, email: 'admin@rkmm.org', role: 'ADMIN' }
+      ]);
+
+      if (error) {
+        alert('Failed to create admin in database: ' + error.message);
+        return;
+      }
+
+      alert(`Admin account created for ${name}!`);
+      document.getElementById('newAdminName').value = '';
+      document.getElementById('newAdminMobile').value = '';
+      document.getElementById('newAdminId').value = '';
+      document.getElementById('newAdminPass').value = '';
+      await loadDataFromSupabase();
+    }
+
+    async function superAdminDeleteAdmin(aid) {
+      if (admins[activeAdminId].role !== 'SUPER_ADMIN') {
+        alert('Permission Denied!');
+        return;
+      }
+      if (aid === 'Secretary@RKMAJGM') {
+        alert('Cannot delete the primary Super Administrator!');
+        return;
+      }
+      if (confirm(`Remove administrator "${admins[aid].name}" (${aid})?`)) {
+        const { error } = await db.from('admins').delete().eq('admin_id', aid);
+        if (error) {
+          alert('Failed to remove admin: ' + error.message);
+          return;
+        }
+        await loadDataFromSupabase();
+        alert('Administrator removed successfully.');
+      }
+    }
+
+    // Scrutiny Modal Handlers
+    function openScrutinyModal(index) {
+      selectedScrutinyIndex = index;
+      const app = applications[index];
+      document.getElementById('scrutinyAppInfo').innerHTML = `
+        <strong>Applicant:</strong> ${app.name} (${app.candidateId})<br>
+        <strong>Scheme:</strong> <span style="color:#7f1d1d; font-weight:bold;">${app.schemeName || 'Scholarship'}</span><br>
+        <strong>Application No:</strong> ${app.appNo} | <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span>
+      `;
+      document.getElementById('modalStatusSelect').value = app.status;
+      document.getElementById('modalAdminRemarks').value = app.adminRemarks || '';
+      handleStatusSelectionChange();
+      document.getElementById('adminScrutinyModal').style.display = 'flex';
+    }
+
+    function closeScrutinyModal() {
+      document.getElementById('adminScrutinyModal').style.display = 'none';
+      selectedScrutinyIndex = null;
+    }
+
+    function handleStatusSelectionChange() {
+      if (selectedScrutinyIndex === null) return;
+      const app = applications[selectedScrutinyIndex];
+      const select = document.getElementById('modalStatusSelect');
+      const notice = document.getElementById('sanctionLockNotice');
+      notice.style.display = (select.value === 'Sanctioned' && app.status !== 'Approved') ? 'block' : 'none';
+    }
+
+    async function saveAdminStatusDecision() {
+      const app = applications[selectedScrutinyIndex];
+      const newStatus = document.getElementById('modalStatusSelect').value;
+      const remarks = document.getElementById('modalAdminRemarks').value.trim();
+
+      if (newStatus === 'Sanctioned' && app.status !== 'Approved') {
+        alert('Validation Error: Application must be Approved before Sanctioning!');
+        return;
+      }
+      if (newStatus === 'Returned for Correction' && !remarks) {
+        alert('Remarks are required when returning an application!');
+        return;
+      }
+
+      const { error } = await db.from('applications').update({
+        status: newStatus,
+        admin_remarks: remarks
+      }).eq('app_no', app.appNo);
+
+      if (error) {
+        alert('Failed to update status in database: ' + error.message);
+        return;
+      }
+
+      alert(`Status updated to: ${newStatus}`);
+      closeScrutinyModal();
+      await loadDataFromSupabase();
+    }
+
+    // Candidate Form Logic
+    function goToStep(s) {
+      document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+      document.querySelectorAll('.step-item').forEach((ind, i) => {
+        ind.classList.remove('active');
+        if (i + 1 < s) ind.classList.add('completed'); else ind.classList.remove('completed');
+      });
+      document.getElementById('formStep' + s).classList.add('active');
+      document.getElementById('stepIndicator' + s).classList.add('active');
+      window.scrollTo(0, 100);
+    }
+
+    function calculatePercentage() {
+      const full = parseFloat(document.getElementById('f_fullmarks').value);
+      const obt = parseFloat(document.getElementById('f_marksobtained').value);
+      if (full > 0 && obt >= 0) document.getElementById('f_percentage').value = ((obt / full) * 100).toFixed(2) + '%';
+    }
+
+    function refreshCaptcha() {
+      currentGeneratedCaptcha = Math.random().toString(36).substring(2, 6).toUpperCase();
+      document.getElementById('captchaDisplay').innerText = currentGeneratedCaptcha;
     }
 
     function viewCandidateSubmittedApp() {
@@ -2460,7 +3202,7 @@
       }
     }
 
-    // PDF Printers
+    // PDF / Word Printers
     function downloadApplicationPDF(index) {
       const app = applications[index];
       document.getElementById('pdfHeaderMeta').innerHTML = `
@@ -2500,6 +3242,33 @@
       window.print();
     }
 
+    function downloadApplicationWord(index) {
+      const app = applications[index];
+      const htmlContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <body>
+          <h2 style="color:#800000; text-align:center;">RAMAKRISHNA MISSION ASHRAMA</h2>
+          <p style="text-align:center;">Satyabanpally, Jhargram, West Bengal - 721507</p>
+          <table border="1" cellpadding="6" style="width:100%; border-collapse:collapse;">
+            <tr><td><b>App No</b></td><td>${app.appNo}</td></tr>
+            <tr><td><b>Category/Scheme</b></td><td>${app.schemeName || 'Scholarship Scheme'}</td></tr>
+            <tr><td><b>Name</b></td><td>${app.name}</td></tr>
+            <tr><td><b>Status</b></td><td>${app.status}</td></tr>
+            <tr><td><b>Course</b></td><td>${app.currClass} (${app.institution})</td></tr>
+            <tr><td><b>Phone</b></td><td>${app.mobile}</td></tr>
+            <tr><td><b>Income</b></td><td>Rs. ${app.income}</td></tr>
+            <tr><td><b>Remarks</b></td><td>${app.adminRemarks || ''}</td></tr>
+          </table>
+        </body></html>
+      `;
+      const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Application_${app.appNo}_${app.name.replace(/\s+/g, '_')}.doc`;
+      a.click();
+    }
+
     function exportApplicationsToCSV() {
       let csv = 'App No,Scheme Name,Candidate ID,Name,Course,Status,Marks %,Income,Remarks\n';
       applications.forEach(a => {
@@ -2513,9 +3282,10 @@
     }
 
     function exportCandidatesRosterCSV() {
-      let csv = 'Candidate ID,Name,Mobile,Password,Profile Completed?\n';
+      let csv = 'Candidate ID,Name,Mobile,Password,Profile Complete,Email,Institution\n';
       for (let cid in candidates) {
-        csv += `"${cid}","${candidates[cid].name}","${candidates[cid].mobile}","${candidates[cid].pass}","${candidates[cid].isProfileCompleted ? 'YES' : 'NO'}"\n`;
+        const c = candidates[cid];
+        csv += `"${cid}","${c.name}","${c.mobile}","${c.pass}","${c.isProfileComplete ? 'YES' : 'NO'}","${c.email || ''}","${c.institution || ''}"\n`;
       }
       const a = document.createElement('a');
       a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;' }));
@@ -2562,8 +3332,10 @@
       buildSliderDots();
       setInterval(() => moveSlide(1), 3500);
 
+      // Load live data from Supabase
       await loadDataFromSupabase();
 
+      // Session & State Persistence on Refresh
       const savedRole = sessionStorage.getItem('rkm_active_role');
       const savedUserId = sessionStorage.getItem('rkm_active_user_id');
       const savedPage = sessionStorage.getItem('rkm_current_page') || window.location.hash.replace('#', '') || 'home';
@@ -2591,11 +3363,11 @@
         document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + savedUserId + ' | Mobile: ' + cand.mobile;
 
         setAuthenticatedUI('candidate', 'CANDIDATE SCHOLARSHIP WORKSPACE', `${cand.name} (${savedUserId})`);
-        syncCandidateProfileUI();
-
-        const validCandPages = ['candidateDashboard', 'candidateProfileSetup', 'schemeSelection', 'applicationForm', 'trackStatus'];
+        
+        const validCandPages = ['candidateDashboard', 'schemeSelection', 'applicationForm', 'trackStatus'];
         navigateTo(validCandPages.includes(savedPage) ? savedPage : 'candidateDashboard');
 
+        checkCandidateProfileStatus();
       } else {
         navigateTo(savedPage);
       }
