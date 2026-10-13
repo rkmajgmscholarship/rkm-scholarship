@@ -570,6 +570,16 @@
     .st-sanctioned { background: #f3e8ff; color: #6b21a8; }
     .st-returned { background: #fee2e2; color: #991b1b; }
 
+    .forgot-link {
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #9a3412;
+      text-decoration: underline;
+      cursor: pointer;
+      text-align: right;
+    }
+
     #publicFooter { background: #1c1917; color: #a8a29e; padding: 18px 16px; text-align: center; font-size: 12px; margin-top: auto; }
 
     @media print {
@@ -805,6 +815,8 @@
           <button class="submit-btn" style="background:#1c1917; color:#fde047; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="requestAdminEmailOTP()">
             Verify Credentials & Send OTP
           </button>
+          
+          <span class="forgot-link" onclick="openAdminForgotPasswordModal()">Forgot Password?</span>
         </div>
 
         <!-- Step 2: Supabase Email OTP Input -->
@@ -843,6 +855,8 @@
         <button class="submit-btn" style="background:#ea580c; color:#ffffff; padding: 10px 16px; border-radius: 6px; border: none; font-weight: bold; width: 100%; cursor: pointer;" onclick="executeCandidateDirectLogin()">
           Login
         </button>
+
+        <span class="forgot-link" onclick="openCandidateForgotPasswordModal()">Forgot Password?</span>
       </div>
     </section>
 
@@ -852,8 +866,8 @@
         <h2 id="candWelcomeName" style="font-size:18px; color:#1c1917;">Welcome, Candidate</h2>
         <p id="candWelcomeId" style="font-size:12px; color:#78716c; margin-top:2px;"></p>
         <div id="profileCompletionAlert" style="display:none; margin-top:10px; background:#fff7ed; border:1px solid #fed7aa; padding:10px 14px; border-radius:6px; font-size:13px; color:#9a3412;">
-          ⚠️ <strong>Basic Profile Incomplete:</strong> You must update your Basic Details before proceeding to apply. 
-          <button class="action-btn btn-manage" style="margin-left:8px; font-size:12px;" onclick="openCandidateProfileModal()">Update Profile Now &rarr;</button>
+          ⚠️ <strong>Basic Profile Incomplete:</strong> Please complete your profile details before applying.
+          <button class="action-btn btn-manage" style="margin-left:8px; font-size:12px;" onclick="openCandidateProfileModal(true)">Update Profile Now &rarr;</button>
         </div>
       </div>
 
@@ -877,7 +891,7 @@
           <h3 style="margin-bottom:8px; color:#0284c7;">3. Account Security & Tracking</h3>
           <p style="font-size:13px; color:#57534e; margin-bottom:16px;">Change your password, update contact details and track scrutiny status.</p>
           <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
-            <button class="btn-neutral" onclick="openCandidateProfileModal()">Change Password</button>
+            <button class="btn-neutral" onclick="openCandidateProfileModal(false)">Change Password</button>
             <button class="btn-primary" style="background:#0284c7;" onclick="openTrackStatus()">Track Status</button>
           </div>
         </div>
@@ -929,7 +943,7 @@
               <div class="form-group"><label>Date of Birth</label><input type="date" id="f_dob" required></div>
               <div class="form-group"><label>Caste</label><select id="f_caste" required><option value="General">General</option><option value="SC">SC</option><option value="ST">ST</option><option value="OBC">OBC</option></select></div>
               <div class="form-group"><label>Gender</label><select id="f_gender" required><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
-              <div class="form-group"><label>Government ID (Aadhaar / School ID)</label><input type="text" id="f_aadhaar" placeholder="Enter ID Number" required></div>
+              <div class="form-group"><label>Government ID Number</label><input type="text" id="f_aadhaar" placeholder="Enter Identity Number" required></div>
 
               <div class="form-group">
                 <label>Candidate Passport Photo</label>
@@ -1040,7 +1054,7 @@
             
             <div class="form-grid">
               <div class="form-group">
-                <label>a. Identification Document (PDF/JPG)</label>
+                <label>a. Identity Proof Document (PDF/JPG)</label>
                 <input type="file" id="f_doc_aadhaar" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errAadhaar', 'docAadhaar')">
                 <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
                 <span class="file-error-msg" id="errAadhaar">Exceeded 500 KB or invalid file type!</span>
@@ -1394,6 +1408,86 @@
     </section>
 
     <!-- ================= MODALS ================= -->
+    <!-- CANDIDATE FORGOT PASSWORD MODAL -->
+    <div id="candidateForgotModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:300; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:12px; max-width:440px; width:100%; padding:22px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        <h3 style="color:#7f1d1d; border-bottom:2px solid #ea580c; padding-bottom:6px; margin-bottom:12px;">Candidate Password Recovery</h3>
+        
+        <!-- Step 1: Find Account -->
+        <div id="candForgotStep1">
+          <p style="font-size:12px; color:#57534e; margin-bottom:12px;">Enter your Candidate ID or registered email address to receive a verification OTP.</p>
+          <div class="form-group">
+            <label>Candidate ID or Email</label>
+            <input type="text" id="candForgotQueryInput" placeholder="e.g. RKM-2026-001 or student@example.com">
+          </div>
+          <button class="btn-primary" style="width:100%; margin-top:8px;" onclick="requestCandidatePasswordResetOTP()">Search & Send OTP</button>
+        </div>
+
+        <!-- Step 2: Verify OTP & Set New Password -->
+        <div id="candForgotStep2" style="display:none;">
+          <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:10px; border-radius:6px; font-size:12px; color:#1e40af; margin-bottom:12px;" id="candForgotNoticeText">
+            An OTP has been sent to your registered email address.
+          </div>
+          <div class="form-group">
+            <label>6-Digit Email OTP</label>
+            <input type="text" id="candForgotOtpInput" placeholder="Enter 6-digit OTP" maxlength="6" style="text-align:center; font-weight:bold; letter-spacing:4px;">
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="candForgotNewPass" placeholder="Enter at least 6 characters">
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="candForgotConfPass" placeholder="Retype new password">
+          </div>
+          <button class="btn-primary" style="width:100%; margin-top:8px;" onclick="verifyCandidatePasswordResetOTP()">Reset Password & Update</button>
+        </div>
+
+        <div style="text-align:right; margin-top:14px;">
+          <button type="button" class="btn-neutral" style="padding:6px 14px; font-size:12px;" onclick="closeCandidateForgotModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN FORGOT PASSWORD MODAL -->
+    <div id="adminForgotModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:300; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:12px; max-width:440px; width:100%; padding:22px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        <h3 style="color:#1c1917; border-bottom:2px solid #fde047; padding-bottom:6px; margin-bottom:12px;">Admin Password Recovery</h3>
+        
+        <div id="adminForgotStep1">
+          <p style="font-size:12px; color:#57534e; margin-bottom:12px;">Enter your Admin ID to send a recovery OTP to your official email.</p>
+          <div class="form-group">
+            <label>Official Admin ID</label>
+            <input type="text" id="adminForgotIdInput" placeholder="e.g. Secretary@RKMAJGM">
+          </div>
+          <button class="btn-primary" style="background:#1c1917; color:#fde047; width:100%; margin-top:8px;" onclick="requestAdminPasswordResetOTP()">Send Recovery OTP</button>
+        </div>
+
+        <div id="adminForgotStep2" style="display:none;">
+          <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:10px; border-radius:6px; font-size:12px; color:#1e40af; margin-bottom:12px;" id="adminForgotNoticeText">
+            An OTP has been sent to your official administrative email address.
+          </div>
+          <div class="form-group">
+            <label>6-Digit Email OTP</label>
+            <input type="text" id="adminForgotOtpInput" placeholder="Enter 6-digit OTP" maxlength="6" style="text-align:center; font-weight:bold; letter-spacing:4px;">
+          </div>
+          <div class="form-group">
+            <label>New Secret Password</label>
+            <input type="password" id="adminForgotNewPass" placeholder="Enter at least 6 characters">
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="adminForgotConfPass" placeholder="Retype new password">
+          </div>
+          <button class="btn-primary" style="background:#15803d; width:100%; margin-top:8px;" onclick="verifyAdminPasswordResetOTP()">Reset Admin Password</button>
+        </div>
+
+        <div style="text-align:right; margin-top:14px;">
+          <button type="button" class="btn-neutral" style="padding:6px 14px; font-size:12px;" onclick="closeAdminForgotModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
     <!-- CANDIDATE FULL PROFILE & PASSWORD UPDATE MODAL -->
     <div id="candidateProfileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:12px; max-width:640px; width:100%; max-height:92vh; overflow-y:auto; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
@@ -1648,6 +1742,12 @@
     let pendingAdminLoginData = null;
     let candidateOtpTargetEmail = '';
 
+    // Password Reset Recovery State
+    let pendingCandResetId = null;
+    let pendingCandResetEmail = null;
+    let pendingAdminResetId = null;
+    let pendingAdminResetEmail = null;
+
     let selectedScholarshipSchemeId = 'belur_math';
     let activeAdminAppFilterSchemeId = 'all';
 
@@ -1680,11 +1780,12 @@
           });
         }
 
-        // 2. Fetch Candidates with Basic Profile Fields
+        // 2. Fetch Candidates with Complete Profile Verification
         const { data: candData } = await db.from('candidates').select('*');
         if (candData) {
           candidates = {};
           candData.forEach(c => {
+            const hasRequiredFields = !!(c.dob && c.email && c.vill && c.po && c.ps && c.dist && c.pin && c.curr_class && c.institution);
             candidates[c.candidate_id] = { 
               name: c.name, 
               mobile: c.mobile, 
@@ -1701,7 +1802,7 @@
               stream: c.stream || '',
               admDate: c.adm_date || '',
               institution: c.institution || '',
-              isProfileComplete: !!(c.dob && c.email && c.vill && c.po && c.ps && c.dist && c.pin && c.currClass && c.institution)
+              isProfileComplete: hasRequiredFields
             };
           });
         }
@@ -1961,7 +2062,223 @@
     }
 
     // -------------------------------------------------------------
-    // CANDIDATE DIRECT LOGIN & PROFILE STATUS CHECK
+    // FORGOT PASSWORD LOGIC (CANDIDATE & ADMIN)
+    // -------------------------------------------------------------
+    function openCandidateForgotPasswordModal() {
+      document.getElementById('candForgotStep1').style.display = 'block';
+      document.getElementById('candForgotStep2').style.display = 'none';
+      document.getElementById('candForgotQueryInput').value = '';
+      document.getElementById('candForgotOtpInput').value = '';
+      document.getElementById('candForgotNewPass').value = '';
+      document.getElementById('candForgotConfPass').value = '';
+      document.getElementById('candidateForgotModal').style.display = 'flex';
+    }
+
+    function closeCandidateForgotModal() {
+      document.getElementById('candidateForgotModal').style.display = 'none';
+      pendingCandResetId = null;
+      pendingCandResetEmail = null;
+    }
+
+    async function requestCandidatePasswordResetOTP() {
+      const query = document.getElementById('candForgotQueryInput').value.trim();
+      if (!query) {
+        alert('Please enter your Candidate ID or Registered Email Address.');
+        return;
+      }
+
+      // Check in local cache or supabase
+      let matchedCandidate = null;
+      for (let cid in candidates) {
+        if (cid.toLowerCase() === query.toLowerCase() || (candidates[cid].email && candidates[cid].email.toLowerCase() === query.toLowerCase())) {
+          matchedCandidate = { id: cid, ...candidates[cid] };
+          break;
+        }
+      }
+
+      if (!matchedCandidate) {
+        const { data, error } = await db.from('candidates').select('*').or(`candidate_id.eq.${query},email.eq.${query}`);
+        if (data && data.length > 0) {
+          matchedCandidate = { id: data[0].candidate_id, ...data[0] };
+        }
+      }
+
+      if (!matchedCandidate) {
+        alert('No registered candidate found with this ID or Email.');
+        return;
+      }
+
+      if (!matchedCandidate.email) {
+        alert(`Candidate ${matchedCandidate.id} has no registered email on file yet.\nPlease contact the Ashrama administration to retrieve or reset your initial credentials.`);
+        return;
+      }
+
+      pendingCandResetId = matchedCandidate.id;
+      pendingCandResetEmail = matchedCandidate.email;
+
+      // Dispatch OTP via Supabase Auth
+      const { error: otpError } = await db.auth.signInWithOtp({
+        email: matchedCandidate.email,
+        options: { shouldCreateUser: true }
+      });
+
+      if (otpError) {
+        alert('Failed to dispatch recovery OTP: ' + otpError.message);
+        return;
+      }
+
+      const masked = matchedCandidate.email.replace(/^(.)(.*)(@.*)$/, (_, a, b, c) => a + b.replace(/./g, '*') + c);
+      document.getElementById('candForgotNoticeText').innerText = `Recovery code sent to: ${masked}`;
+      document.getElementById('candForgotStep1').style.display = 'none';
+      document.getElementById('candForgotStep2').style.display = 'block';
+    }
+
+    async function verifyCandidatePasswordResetOTP() {
+      const token = document.getElementById('candForgotOtpInput').value.trim();
+      const newPass = document.getElementById('candForgotNewPass').value.trim();
+      const confPass = document.getElementById('candForgotConfPass').value.trim();
+
+      if (!token || token.length < 6) {
+        alert('Please enter the 6-digit OTP code.');
+        return;
+      }
+      if (!newPass || newPass.length < 6) {
+        alert('Password must be at least 6 characters long.');
+        return;
+      }
+      if (newPass !== confPass) {
+        alert('New Password and Confirm Password do not match.');
+        return;
+      }
+
+      // Verify OTP
+      const { error: verifyErr } = await db.auth.verifyOtp({
+        email: pendingCandResetEmail,
+        token: token,
+        type: 'email'
+      });
+
+      if (verifyErr) {
+        alert('Invalid or expired OTP: ' + verifyErr.message);
+        return;
+      }
+
+      // Update candidate table in Supabase
+      const { error: dbErr } = await db.from('candidates').update({ pass: newPass }).eq('candidate_id', pendingCandResetId);
+      if (dbErr) {
+        alert('Failed to update password in database: ' + dbErr.message);
+        return;
+      }
+
+      if (candidates[pendingCandResetId]) {
+        candidates[pendingCandResetId].pass = newPass;
+      }
+
+      alert('Password reset successful! You can now log in with your new password.');
+      closeCandidateForgotModal();
+      await loadDataFromSupabase();
+    }
+
+    function openAdminForgotPasswordModal() {
+      document.getElementById('adminForgotStep1').style.display = 'block';
+      document.getElementById('adminForgotStep2').style.display = 'none';
+      document.getElementById('adminForgotIdInput').value = '';
+      document.getElementById('adminForgotOtpInput').value = '';
+      document.getElementById('adminForgotNewPass').value = '';
+      document.getElementById('adminForgotConfPass').value = '';
+      document.getElementById('adminForgotModal').style.display = 'flex';
+    }
+
+    function closeAdminForgotModal() {
+      document.getElementById('adminForgotModal').style.display = 'none';
+      pendingAdminResetId = null;
+      pendingAdminResetEmail = null;
+    }
+
+    async function requestAdminPasswordResetOTP() {
+      const aid = document.getElementById('adminForgotIdInput').value.trim();
+      if (!aid) {
+        alert('Please enter your Admin ID.');
+        return;
+      }
+
+      const { data, error } = await db.from('admins').select('*').eq('admin_id', aid);
+      if (error || !data || data.length === 0) {
+        alert('No registered administrator account found with this ID.');
+        return;
+      }
+
+      const admin = data[0];
+      if (!admin.email) {
+        alert('No official recovery email linked with this administrator ID.');
+        return;
+      }
+
+      pendingAdminResetId = admin.admin_id;
+      pendingAdminResetEmail = admin.email;
+
+      const { error: otpError } = await db.auth.signInWithOtp({
+        email: admin.email,
+        options: { shouldCreateUser: true }
+      });
+
+      if (otpError) {
+        alert('Failed to send recovery OTP: ' + otpError.message);
+        return;
+      }
+
+      const masked = admin.email.replace(/^(.)(.*)(@.*)$/, (_, a, b, c) => a + b.replace(/./g, '*') + c);
+      document.getElementById('adminForgotNoticeText').innerText = `Recovery OTP sent to official email: ${masked}`;
+      document.getElementById('adminForgotStep1').style.display = 'none';
+      document.getElementById('adminForgotStep2').style.display = 'block';
+    }
+
+    async function verifyAdminPasswordResetOTP() {
+      const token = document.getElementById('adminForgotOtpInput').value.trim();
+      const newPass = document.getElementById('adminForgotNewPass').value.trim();
+      const confPass = document.getElementById('adminForgotConfPass').value.trim();
+
+      if (!token || token.length < 6) {
+        alert('Please enter the 6-digit OTP code.');
+        return;
+      }
+      if (!newPass || newPass.length < 6) {
+        alert('Password must be at least 6 characters.');
+        return;
+      }
+      if (newPass !== confPass) {
+        alert('New Password and Confirm Password do not match.');
+        return;
+      }
+
+      const { error: verifyErr } = await db.auth.verifyOtp({
+        email: pendingAdminResetEmail,
+        token: token,
+        type: 'email'
+      });
+
+      if (verifyErr) {
+        alert('Invalid or expired OTP: ' + verifyErr.message);
+        return;
+      }
+
+      const { error: dbErr } = await db.from('admins').update({ pass: newPass }).eq('admin_id', pendingAdminResetId);
+      if (dbErr) {
+        alert('Failed to update admin password: ' + dbErr.message);
+        return;
+      }
+
+      if (admins[pendingAdminResetId]) {
+        admins[pendingAdminResetId].pass = newPass;
+      }
+
+      alert('Admin password updated successfully! Please log in with your updated credentials.');
+      closeAdminForgotModal();
+      await loadDataFromSupabase();
+    }
+
+    // -------------------------------------------------------------
+    // CANDIDATE DIRECT LOGIN & SINGLE-POPUP STATUS CHECK
     // -------------------------------------------------------------
     async function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
@@ -1989,7 +2306,7 @@
         await loadDataFromSupabase();
         navigateTo('candidateDashboard');
 
-        // Check First Login / Profile Status
+        // Check profile status
         checkCandidateProfileStatus();
       } else {
         alert('Invalid Candidate ID or Password!');
@@ -2001,13 +2318,15 @@
       const cand = candidates[activeCandidateId];
       const alertBox = document.getElementById('profileCompletionAlert');
       
-      if (!cand.isProfileComplete) {
-        alertBox.style.display = 'block';
-        // Auto trigger update profile modal on first login
-        setTimeout(() => openCandidateProfileModal(true), 400);
-      } else {
-        alertBox.style.display = 'none';
+      // If profile is already complete, never show popup or warning banner again
+      if (cand.isProfileComplete) {
+        if (alertBox) alertBox.style.display = 'none';
+        return;
       }
+
+      // If incomplete, show warning banner and open modal automatically once
+      if (alertBox) alertBox.style.display = 'block';
+      setTimeout(() => openCandidateProfileModal(true), 350);
     }
 
     // -------------------------------------------------------------
@@ -2017,7 +2336,7 @@
       if (!activeCandidateId || !candidates[activeCandidateId]) return;
       const c = candidates[activeCandidateId];
 
-      // Auto-populate fixed registered fields
+      // Auto-populate locked registered fields
       document.getElementById('prof_name').value = c.name || '';
       document.getElementById('prof_mobile').value = c.mobile || '';
 
@@ -2040,7 +2359,7 @@
 
       document.getElementById('candidateProfileModal').style.display = 'flex';
       if (isForced) {
-        alert('Welcome! Please complete your Basic Profile details first to unlock scholarship application.');
+        alert('Welcome! Please complete your Basic Profile details once to proceed.');
       }
     }
 
@@ -2048,6 +2367,7 @@
       document.getElementById('candidateProfileModal').style.display = 'none';
     }
 
+    // SINGLE-CLICK PERMANENT PROFILE SAVE
     async function saveCandidateFullProfile() {
       if (!activeCandidateId) return;
 
@@ -2068,7 +2388,7 @@
       const confPass = document.getElementById('prof_confpass').value.trim();
 
       if (!dob || !email || !vill || !po || !ps || !dist || !pin || !currClass || !stream || !admDate || !instName) {
-        alert('All basic profile fields marked with (*) are required!');
+        alert('Please fill all mandatory profile fields marked with (*)!');
         return;
       }
 
@@ -2087,7 +2407,6 @@
         institution: instName
       };
 
-      // Password change verification
       if (newPass) {
         if (newPass.length < 6) {
           alert('New Password must be at least 6 characters long!');
@@ -2100,14 +2419,28 @@
         payload.pass = newPass;
       }
 
-      // 1. Update Candidate Table in Supabase
+      // 1. Update Candidate in Supabase Database
       const { error } = await db.from('candidates').update(payload).eq('candidate_id', activeCandidateId);
       if (error) {
-        alert('Failed to update profile in database: ' + error.message);
+        alert('Failed to update profile: ' + error.message);
         return;
       }
 
-      // 2. Trigger Supabase Security alerts if email or password changed
+      // 2. Immediately update in-memory state so message never appears again
+      candidates[activeCandidateId] = {
+        ...candidates[activeCandidateId],
+        ...payload,
+        currClass: currClass,
+        admDate: admDate,
+        institution: instName,
+        isProfileComplete: true
+      };
+
+      // 3. Immediately hide warning banners
+      const alertBox = document.getElementById('profileCompletionAlert');
+      if (alertBox) alertBox.style.display = 'none';
+
+      // 4. Trigger Auth changes if email/pass updated
       let authUpdates = {};
       if (email) authUpdates.email = email;
       if (newPass) authUpdates.password = newPass;
@@ -2115,12 +2448,10 @@
         try { await db.auth.updateUser(authUpdates); } catch (e) { console.log(e); }
       }
 
-      alert('Profile details updated successfully! Your information has been synced.');
+      alert('Profile successfully updated! Information has been permanently saved.');
       closeCandidateProfileModal();
-      await loadDataFromSupabase();
-
-      // Automatically auto-fill the application window fields
       autoPopulateApplicationWindowFromProfile();
+      await loadDataFromSupabase();
     }
 
     // Auto-populate Application Form from Saved Candidate Profile
@@ -2128,11 +2459,9 @@
       if (!activeCandidateId || !candidates[activeCandidateId]) return;
       const c = candidates[activeCandidateId];
 
-      // Step 1: Personal
       if (document.getElementById('f_name')) document.getElementById('f_name').value = c.name || '';
       if (document.getElementById('f_dob') && c.dob) document.getElementById('f_dob').value = c.dob;
 
-      // Step 3: Contact & Address
       if (document.getElementById('f_mobile')) document.getElementById('f_mobile').value = c.mobile || '';
       if (document.getElementById('f_email') && c.email) document.getElementById('f_email').value = c.email;
       if (document.getElementById('f_vill') && c.vill) document.getElementById('f_vill').value = c.vill;
@@ -2142,7 +2471,6 @@
       if (document.getElementById('f_state') && c.state) document.getElementById('f_state').value = c.state;
       if (document.getElementById('f_pin') && c.pin) document.getElementById('f_pin').value = c.pin;
 
-      // Step 4: Education
       if (document.getElementById('f_currclass') && c.currClass) document.getElementById('f_currclass').value = c.currClass;
       if (document.getElementById('f_stream') && c.stream) document.getElementById('f_stream').value = c.stream;
       if (document.getElementById('f_admdate') && c.admDate) document.getElementById('f_admdate').value = c.admDate;
@@ -2150,7 +2478,7 @@
     }
 
     // -------------------------------------------------------------
-    // PROFILE / IDENTITY CARD DOWNLOAD (INCLUDES ID, ACTIVE PASSWORD & DETAILS)
+    // PROFILE CARD DOWNLOAD
     // -------------------------------------------------------------
     function downloadCandidateProfileCard(cid) {
       const cand = candidates[cid];
@@ -2176,7 +2504,7 @@
           </tr>
           <tr>
             <td style="font-weight:bold;">Date of Birth:</td>
-            <td>${cand.dob || 'Not updated yet'}</td>
+            <td>${cand.dob || 'Not updated'}</td>
           </tr>
           <tr>
             <td style="font-weight:bold;">Contact Mobile:</td>
@@ -2184,19 +2512,19 @@
           </tr>
           <tr>
             <td style="font-weight:bold;">Email Address:</td>
-            <td>${cand.email || 'Not updated yet'}</td>
+            <td>${cand.email || 'Not updated'}</td>
           </tr>
           <tr>
             <td style="font-weight:bold;">Residential Address:</td>
-            <td>${cand.vill ? `${cand.vill}, P.O: ${cand.po}, P.S: ${cand.ps}, Dist: ${cand.dist} - ${cand.pin}, ${cand.state}` : 'Not updated yet'}</td>
+            <td>${cand.vill ? `${cand.vill}, P.O: ${cand.po}, P.S: ${cand.ps}, Dist: ${cand.dist} - ${cand.pin}, ${cand.state}` : 'Not updated'}</td>
           </tr>
           <tr>
             <td style="font-weight:bold;">Present Class & Stream:</td>
-            <td>${cand.currClass ? `${cand.currClass} (${cand.stream})` : 'Not updated yet'}</td>
+            <td>${cand.currClass ? `${cand.currClass} (${cand.stream})` : 'Not updated'}</td>
           </tr>
           <tr>
             <td style="font-weight:bold;">Institution Name:</td>
-            <td>${cand.institution || 'Not updated yet'}</td>
+            <td>${cand.institution || 'Not updated'}</td>
           </tr>
           <tr>
             <td style="font-weight:bold;">Application Submission:</td>
@@ -2208,13 +2536,12 @@
       window.print();
     }
 
-    // Check scheme selection permission (Requires Profile Completion)
     function openSchemeSelectionWindow() {
       if (!activeCandidateId || !candidates[activeCandidateId]) return;
       const cand = candidates[activeCandidateId];
 
       if (!cand.isProfileComplete) {
-        alert('Notice: Please complete your Basic Profile details before applying for scholarships!');
+        alert('Notice: Please complete your Basic Profile details before applying!');
         openCandidateProfileModal(true);
         return;
       }
@@ -2243,7 +2570,6 @@
       const scheme = scholarshipSchemes.find(s => s.id === schemeId);
       document.getElementById('activeFormSchemeBadge').innerText = 'Selected Scheme: ' + (scheme ? scheme.name : 'Scholarship');
 
-      // Auto-populate from Profile details
       autoPopulateApplicationWindowFromProfile();
 
       refreshCaptcha();
@@ -2251,10 +2577,9 @@
       navigateTo('applicationForm');
     }
 
-    // Profile Modal Router (Navigates based on role)
     function openProfileModal() {
       if (activeUserRole === 'candidate') {
-        openCandidateProfileModal();
+        openCandidateProfileModal(false);
       } else {
         const content = document.getElementById('profileModalContent');
         const a = admins[activeAdminId];
@@ -2304,7 +2629,6 @@
       alert(`A 6-digit verification code has been dispatched to ${email}. Please enter it below to confirm your final submission.`);
     }
 
-    // Final Application Submission
     async function executeFinalApplicationSubmit() {
       if (document.getElementById('f_captchaInput').value.trim().toUpperCase() !== currentGeneratedCaptcha) {
         alert('Invalid Captcha code! Please enter the code shown on screen.');
@@ -2324,7 +2648,6 @@
         return;
       }
 
-      // Verifies Confirm Sign Up OTP
       const { data: otpVerifyData, error: otpVerifyErr } = await db.auth.verifyOtp({
         email: email,
         token: enteredOtp,
@@ -2443,14 +2766,13 @@
         return;
       }
 
-      alert('Profile updated! Corresponding security confirmation emails triggered.');
+      alert('Profile updated! Security confirmation triggered.');
       document.getElementById('updNewMobile').value = '';
       document.getElementById('updNewEmail').value = '';
       document.getElementById('updNewPassword').value = '';
       await loadDataFromSupabase();
     }
 
-    // Admin Windows Switcher
     function switchAdminWindow(windowType) {
       const tabs = ['applications', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'updateProfile'];
       tabs.forEach(t => {
@@ -2568,7 +2890,6 @@
       }
     }
 
-    // Registered Candidates Directory (Reflects Profile Ready Status & Active Password)
     function renderRegisteredCandidatesTable() {
       const tbody = document.getElementById('registeredCandidatesTableBody');
       tbody.innerHTML = '';
