@@ -8,6 +8,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <!-- Supabase Client JS Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- jsPDF & JSZip for Bulk PDF Zip Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -721,7 +724,7 @@
         </div>
       </div>
 
-            <!-- REVERED MONKS' MESSAGES & BENEDICTIONS -->
+      <!-- REVERED MONKS' MESSAGES & BENEDICTIONS -->
       <div class="section-title-box">
         <h3>REVERED MONKS' BLESSINGS & MESSAGES</h3>
       </div>
@@ -1278,7 +1281,10 @@
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <h3 style="color:#1c1917;">Registered Candidates Directory</h3>
-            <button class="btn-excel" onclick="exportCandidatesRosterCSV()">📥 Export Candidates List</button>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn-excel" onclick="exportCandidatesRosterCSV()">📥 Export Candidates List</button>
+              <button class="btn-primary" style="background:#7f1d1d;" onclick="downloadAllCandidateProfileCardsZIP()">📦 Download All Profile Cards (ZIP)</button>
+            </div>
           </div>
           <div style="overflow-x:auto;">
             <table>
@@ -2723,6 +2729,139 @@
       `;
       document.getElementById('slipDate').innerText = new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
       window.print();
+    }
+
+    // -------------------------------------------------------------
+    // BULK PROFILE CARDS DOWNLOAD AS ZIP (WITH INDIVIDUAL PDFs)
+    // -------------------------------------------------------------
+    async function downloadAllCandidateProfileCardsZIP() {
+      const candidateKeys = Object.keys(candidates);
+      if (candidateKeys.length === 0) {
+        alert('No registered candidates found to download profile cards.');
+        return;
+      }
+
+      if (!confirm(`Generate and download ZIP containing ${candidateKeys.length} candidate profile cards as individual PDFs?`)) {
+        return;
+      }
+
+      if (!window.jspdf || !window.JSZip) {
+        alert('Error: Required PDF/ZIP libraries are not loaded. Please verify your internet connection.');
+        return;
+      }
+
+      const zip = new JSZip();
+      const { jsPDF } = window.jspdf;
+
+      for (let i = 0; i < candidateKeys.length; i++) {
+        const cid = candidateKeys[i];
+        const cand = candidates[cid];
+        const appData = applications.find(a => a.candidateId === cid);
+
+        const doc = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        // Double Border
+        doc.setDrawColor(127, 29, 29);
+        doc.setLineWidth(1);
+        doc.rect(10, 10, 190, 277);
+        doc.rect(12, 12, 186, 273);
+
+        // Header Title
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(127, 29, 29);
+        doc.text("RAMAKRISHNA MISSION ASHRAMA", 105, 25, { align: "center" });
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        doc.text("Satyabanpally, Jhargram, West Bengal - 721507", 105, 31, { align: "center" });
+
+        // Badge
+        doc.setFillColor(255, 237, 213);
+        doc.roundedRect(42, 36, 126, 9, 3, 3, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(154, 52, 18);
+        doc.text("OFFICIAL CANDIDATE PROFILE & IDENTITY CARD", 105, 42, { align: "center" });
+
+        // Details Section
+        const startY = 55;
+        const lineHeight = 10;
+        const details = [
+          ["Candidate ID:", cid, true],
+          ["Active Password:", cand.pass || "N/A", true],
+          ["Applicant Full Name:", cand.name || "N/A", false],
+          ["Date of Birth:", cand.dob || "Not updated", false],
+          ["Contact Mobile:", cand.mobile || "N/A", false],
+          ["Email Address:", cand.email || "Not updated", false],
+          ["Residential Address:", cand.vill ? `${cand.vill}, P.O: ${cand.po}, P.S: ${cand.ps}, Dist: ${cand.dist} - ${cand.pin}, ${cand.state}` : "Not updated", false],
+          ["Present Class & Stream:", cand.currClass ? `${cand.currClass} (${cand.stream})` : "Not updated", false],
+          ["Institution Name:", cand.institution || "Not updated", false],
+          ["Application Submission:", appData ? `${appData.status} (${appData.schemeName || 'Applied'})` : "Pending Submission", false]
+        ];
+
+        let currentY = startY;
+        details.forEach(([label, value, isHighlight]) => {
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(60, 60, 60);
+          doc.text(label, 20, currentY);
+
+          doc.setFont("helvetica", isHighlight ? "bold" : "normal");
+          if (isHighlight) {
+            doc.setTextColor(127, 29, 29);
+          } else {
+            doc.setTextColor(20, 20, 20);
+          }
+
+          const splitVal = doc.splitTextToSize(String(value), 115);
+          doc.text(splitVal, 75, currentY);
+          currentY += Math.max(lineHeight, splitVal.length * 5 + 3);
+        });
+
+        // Instructions Box
+        currentY = Math.max(currentY + 6, 185);
+        doc.setFillColor(250, 250, 249);
+        doc.setDrawColor(214, 211, 209);
+        doc.roundedRect(20, currentY, 170, 46, 2, 2, "FD");
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.setTextColor(30, 30, 30);
+        doc.text("Important Instructions for Candidate:", 24, currentY + 7);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8.5);
+        doc.setTextColor(70, 70, 70);
+        doc.text("1. Keep your Candidate ID and active Password strictly confidential.", 26, currentY + 15);
+        doc.text("2. Whenever you update your password, your newly generated Profile Card reflects it.", 26, currentY + 22);
+        doc.text("3. All official notifications and correspondence will be linked to this profile.", 26, currentY + 29);
+        doc.text("4. Log in to the scholarship portal to complete and track scholarship applications.", 26, currentY + 36);
+
+        // Footer Timestamp
+        const nowStr = new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "italic");
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Date of Issuance / Update: ${nowStr}`, 20, 250);
+        doc.text('"This document is computer-generated, hence no physical signature is required."', 105, 260, { align: "center" });
+
+        const pdfBlob = doc.output("blob");
+        const safeName = (cand.name || "Candidate").replace(/[^a-zA-Z0-9_\u0980-\u09FF]/g, "_");
+        const filename = `${safeName}_${cid}_Profile_Card.pdf`;
+        zip.file(filename, pdfBlob);
+      }
+
+      // Generate ZIP and trigger browser download
+      const zipContent = await zip.generateAsync({ type: "blob" });
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(zipContent);
+      downloadLink.download = `RKMA_Candidate_Profile_Cards_${new Date().toISOString().slice(0, 10)}.zip`;
+      downloadLink.click();
     }
 
     function openSchemeSelectionWindow() {
