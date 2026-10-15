@@ -8,6 +8,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <!-- Supabase Client JS Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Client-side PDF & ZIP Generation Libraries for Bulk Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -684,44 +688,7 @@
       <!-- Custom Dynamic CMS Content Blocks -->
       <div id="customContentBlocksContainer"></div>
 
-      <!-- Holy Trio -->
-      <div class="section-title-box">
-        <h3>HOLY TRIO</h3>
-      </div>
-
-      <div class="pillar-grid">
-        <div class="pillar-card">
-          <div class="pillar-img-frame" style="border-color: #ea580c;">
-            <img src="https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS" alt="Sri Ramakrishna" class="pillar-img">
-          </div>
-          <strong style="font-size:16px; color:#1c1917; display:block;">Sri Ramakrishna Paramahamsa</strong>
-          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#78350f; line-height: 1.5;">
-            "As many faiths, so many paths to truth."
-          </p>
-        </div>
-
-        <div class="pillar-card">
-          <div class="pillar-img-frame" style="border-color: #b91c1c;">
-            <img src="https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE" alt="Sri Sarada Devi" class="pillar-img">
-          </div>
-          <strong style="font-size:16px; color:#1c1917; display:block;">Sri Sarada Devi (Holy Mother)</strong>
-          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#991b1b; line-height: 1.5;">
-            "If you want peace of mind, do not find fault with others. Learn to see your own faults."
-          </p>
-        </div>
-
-        <div class="pillar-card">
-          <div class="pillar-img-frame" style="border-color: #d97706;">
-            <img src="https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn" alt="Swami Vivekananda" class="pillar-img">
-          </div>
-          <strong style="font-size:16px; color:#1c1917; display:block;">Swami Vivekananda</strong>
-          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#92400e; line-height: 1.5;">
-            "Education is the manifestation of the perfection already in man."
-          </p>
-        </div>
-      </div>
-
-            <!-- REVERED MONKS' MESSAGES & BENEDICTIONS -->
+      <!-- REVERED MONKS' MESSAGES & BENEDICTIONS -->
       <div class="section-title-box">
         <h3>REVERED MONKS' BLESSINGS & MESSAGES</h3>
       </div>
@@ -760,7 +727,44 @@
           </p>
         </div>
       </div>
-      
+
+      <!-- Holy Trio -->
+      <div class="section-title-box">
+        <h3>HOLY TRIO</h3>
+      </div>
+
+      <div class="pillar-grid">
+        <div class="pillar-card">
+          <div class="pillar-img-frame" style="border-color: #ea580c;">
+            <img src="https://lh3.googleusercontent.com/d/1CMMvU_vxAPERD_E6DcbCCEkLiO5ye5gS" alt="Sri Ramakrishna" class="pillar-img">
+          </div>
+          <strong style="font-size:16px; color:#1c1917; display:block;">Sri Ramakrishna Paramahamsa</strong>
+          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#78350f; line-height: 1.5;">
+            "As many faiths, so many paths to truth."
+          </p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-img-frame" style="border-color: #b91c1c;">
+            <img src="https://lh3.googleusercontent.com/d/1vGLtAKY62Kql_EC792wLs6KtRsK2cDtE" alt="Sri Sarada Devi" class="pillar-img">
+          </div>
+          <strong style="font-size:16px; color:#1c1917; display:block;">Sri Sarada Devi (Holy Mother)</strong>
+          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#991b1b; line-height: 1.5;">
+            "If you want peace of mind, do not find fault with others. Learn to see your own faults."
+          </p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-img-frame" style="border-color: #d97706;">
+            <img src="https://lh3.googleusercontent.com/d/1QpbTuJS4xqpI-8iaHXPDXgczIu_2OXWn" alt="Swami Vivekananda" class="pillar-img">
+          </div>
+          <strong style="font-size:16px; color:#1c1917; display:block;">Swami Vivekananda</strong>
+          <p style="font-size:13px; margin-top:8px; font-style:italic; color:#92400e; line-height: 1.5;">
+            "Education is the manifestation of the perfection already in man."
+          </p>
+        </div>
+      </div>
+
       <!-- Image Slider (Dynamic 15+ Slides) -->
       <div class="section-title-box">
         <h3>GLIMPSES OF ASHRAMA ACTIVITIES</h3>
@@ -1277,8 +1281,17 @@
 
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-            <h3 style="color:#1c1917;">Registered Candidates Directory</h3>
-            <button class="btn-excel" onclick="exportCandidatesRosterCSV()">📥 Export Candidates List</button>
+            <div>
+              <h3 style="color:#1c1917;">Registered Candidates Directory</h3>
+              <p style="font-size:12px; color:#78716c;">Manage candidates, individual profile cards, or download all in ZIP format.</p>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn-excel" style="background:#0369a1;" onclick="executeBulkProfileCardsZipDownload()">📦 Bulk Download Profile Cards (ZIP)</button>
+              <button class="btn-excel" onclick="exportCandidatesRosterCSV()">📥 Export Candidates List</button>
+            </div>
+          </div>
+          <div id="bulkCardZipProgress" style="display:none; margin-bottom:12px; padding:10px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; font-size:12px; color:#1e40af; font-weight:bold;">
+            Processing Profile Cards: <span id="bulkCardZipCount">0/0</span>. Please wait while the ZIP file is being compiled...
           </div>
           <div style="overflow-x:auto;">
             <table>
@@ -1817,6 +1830,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Hidden Off-Screen Container for Rendering Bulk PDF Profile Cards -->
+    <div id="bulkPdfOffscreenContainer" style="position:fixed; left:-9999px; top:-9999px; width:750px; background:#ffffff; z-index:-10;"></div>
   </main>
 
   <footer id="publicFooter">
@@ -2667,8 +2683,79 @@
     }
 
     // -------------------------------------------------------------
-    // PROFILE CARD DOWNLOAD
+    // PROFILE CARD DOWNLOAD (INDIVIDUAL & BULK ZIP ARCHIVE)
     // -------------------------------------------------------------
+    function generateProfileCardHtml(cand, cid, appData, dateStr) {
+      return `
+        <div style="border:3px double #7f1d1d; padding:26px; border-radius:10px; max-width:680px; margin:0 auto; line-height:1.7; background:#ffffff; font-family:serif;">
+          <div style="text-align:center; border-bottom:2px solid #ea580c; padding-bottom:12px; margin-bottom:18px;">
+            <img src="https://lh3.googleusercontent.com/d/1diFzXz11bF9W5P9qMwsoI49VtlGmjgwZ" alt="RKMA Logo" style="width:60px; height:60px; margin-bottom:6px;">
+            <h2 style="color:#7f1d1d; margin:0; font-size:22px;">RAMAKRISHNA MISSION ASHRAMA</h2>
+            <p style="margin:4px 0; font-size:14px; font-weight:bold; color:#444;">Satyabanpally, Jhargram, West Bengal-721507</p>
+            <div style="display:inline-block; background:#ffedd5; color:#9a3412; font-weight:bold; font-size:13px; padding:4px 14px; border-radius:15px; margin-top:8px;">
+              OFFICIAL CANDIDATE PROFILE & IDENTITY CARD
+            </div>
+          </div>
+          <table style="width:100%; border-collapse:collapse; font-size:13px; line-height:1.9; margin-bottom:20px;">
+            <tr>
+              <td style="width:40%; font-weight:bold; color:#7f1d1d;">Candidate ID:</td>
+              <td style="font-size:15px; font-weight:bold; color:#7f1d1d;">${cid}</td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;">Active Password:</td>
+              <td><code style="font-size:14px; background:#f5f5f4; padding:2px 8px; border-radius:4px; font-weight:bold; color:#b91c1c;">${cand.pass}</code></td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;">Applicant Full Name:</td>
+              <td>${cand.name}</td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;">Date of Birth:</td>
+              <td>${cand.dob || 'Not updated'}</td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;">Contact Mobile:</td>
+              <td>${cand.mobile}</td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;">Email Address:</td>
+              <td>${cand.email || 'Not updated'}</td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;">Residential Address:</td>
+              <td>${cand.vill ? `${cand.vill}, P.O: ${cand.po}, P.S: ${cand.ps}, Dist: ${cand.dist} - ${cand.pin}, ${cand.state}` : 'Not updated'}</td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;">Present Class & Stream:</td>
+              <td>${cand.currClass ? `${cand.currClass} (${cand.stream})` : 'Not updated'}</td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;">Institution Name:</td>
+              <td>${cand.institution || 'Not updated'}</td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;">Application Submission:</td>
+              <td><span style="font-weight:bold; color:${appData ? '#15803d' : '#ea580c'};">${appData ? `${appData.status} (${appData.schemeName || 'Applied'})` : 'Pending Submission'}</span></td>
+            </tr>
+          </table>
+          <div style="background:#fafaf9; border:1px solid #e7e5e4; padding:14px; border-radius:6px; font-size:13px; color:#292524;">
+            <strong>Important Instructions for Candidate:</strong>
+            <ol style="margin:8px 0 0 20px; padding:0;">
+              <li style="margin-bottom:4px;">Keep your Candidate ID and active Password strictly confidential.</li>
+              <li style="margin-bottom:4px;">Whenever you update your password, your newly generated Profile Card will reflect the active credentials.</li>
+              <li>All official notifications and correspondence will be linked to the contact details shown in this profile.</li>
+            </ol>
+          </div>
+          <div style="margin-top:28px; display:flex; justify-content:space-between; align-items:flex-end; font-size:13px;">
+            <div><strong>Date of Issuance / Update:</strong> <span>${dateStr}</span></div>
+          </div>
+          <div style="margin-top:25px; text-align:center; border-top:1px dashed #a8a29e; padding-top:10px; font-size:12px; color:#57534e; font-style:italic;">
+            "This document is computer-generated, hence no physical signature is required."
+          </div>
+        </div>
+      `;
+    }
+
     function downloadCandidateProfileCard(cid) {
       const cand = candidates[cid];
       if (!cand) {
@@ -2676,6 +2763,7 @@
         return;
       }
       const appData = applications.find(a => a.candidateId === cid);
+      const dateStr = new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
       document.getElementById('slipBodyContent').innerHTML = `
         <table style="width:100%; border-collapse:collapse; font-size:13px; line-height:1.9;">
@@ -2721,8 +2809,74 @@
           </tr>
         </table>
       `;
-      document.getElementById('slipDate').innerText = new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('slipDate').innerText = dateStr;
       window.print();
+    }
+
+    // BULK DOWNLOAD PROFILE CARDS IN ZIP FORMAT
+    async function executeBulkProfileCardsZipDownload() {
+      const candIds = Object.keys(candidates);
+      if (candIds.length === 0) {
+        alert('No registered candidates found to download.');
+        return;
+      }
+
+      const progressBox = document.getElementById('bulkCardZipProgress');
+      const progressCount = document.getElementById('bulkCardZipCount');
+      const offscreen = document.getElementById('bulkPdfOffscreenContainer');
+
+      progressBox.style.display = 'block';
+      const zip = new JSZip();
+      const dateStr = new Date().toLocaleDateString('en-GB');
+
+      const { jsPDF } = window.jspdf;
+
+      for (let i = 0; i < candIds.length; i++) {
+        const cid = candIds[i];
+        const cand = candidates[cid];
+        const appData = applications.find(a => a.candidateId === cid);
+
+        progressCount.innerText = `${i + 1}/${candIds.length} (${cand.name})`;
+
+        // Render card offscreen
+        offscreen.innerHTML = generateProfileCardHtml(cand, cid, appData, dateStr);
+
+        try {
+          const canvas = await html2canvas(offscreen.firstElementChild, {
+            scale: 2,
+            useCORS: true,
+            logging: false
+          });
+
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          const pdf = new jsPDF('p', 'pt', 'a4');
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+          pdf.addImage(imgData, 'JPEG', 0, 20, pdfWidth, pdfHeight);
+          const pdfBlob = pdf.output('blob');
+
+          // Clean up safe filename: Profile_Card_<CandidateID>_<Name>.pdf
+          const safeName = (cand.name || 'Candidate').replace(/[^a-zA-Z0-9_-]/g, '_');
+          const fileName = `Profile_Card_${cid}_${safeName}.pdf`;
+
+          zip.file(fileName, pdfBlob);
+        } catch (err) {
+          console.error(`Error generating PDF for candidate ${cid}:`, err);
+        }
+      }
+
+      // Generate & trigger zip download
+      progressCount.innerText = 'Compressing into ZIP file...';
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(zipBlob);
+      downloadLink.download = `RKMA_Candidate_Profile_Cards_${new Date().toISOString().split('T')[0]}.zip`;
+      downloadLink.click();
+
+      offscreen.innerHTML = '';
+      progressBox.style.display = 'none';
+      alert(`Bulk download completed! ${candIds.length} candidate profile cards archived into ZIP.`);
     }
 
     function openSchemeSelectionWindow() {
@@ -4011,6 +4165,21 @@
       return 'st-returned';
     }
 
+    // Carousel
+    let currentSlideIndex = 0;
+    const totalSlides = 15;
+    function buildSliderDots() {
+      const c = document.getElementById('sliderDots');
+      if (c) c.innerHTML = Array.from({length: totalSlides}, (_, i) => `<span class="dot${i===0?' active':''}" onclick="currentSlide(${i})"></span>`).join('');
+    }
+    function updateCarousel() {
+      const w = document.getElementById('carouselWrapper');
+      if (w) w.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlideIndex));
+    }
+    function moveSlide(s) { currentSlideIndex = (currentSlideIndex + s + totalSlides) % totalSlides; updateCarousel(); }
+    function currentSlide(i) { currentSlideIndex = i; updateCarousel(); }
+
     function submitContactForm() {
       const name = document.getElementById('contactName').value.trim();
       const phone = document.getElementById('contactPhone').value.trim();
@@ -4024,10 +4193,11 @@
 
     // WINDOW REFRESH-STATE RESTORATION & CLOUD SYNC INITIALIZER
     window.addEventListener('load', async () => {
-      // Load live data from Supabase and CMS
-      await loadDataFromSupabase();
-
+      buildSliderDots();
       setInterval(() => moveSlide(1), 3500);
+
+      // Load live data from Supabase
+      await loadDataFromSupabase();
 
       // Session & State Persistence on Refresh
       const savedRole = sessionStorage.getItem('rkm_active_role');
