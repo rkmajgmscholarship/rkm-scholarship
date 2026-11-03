@@ -4774,7 +4774,16 @@
         body:{admin_id:id,password:password}
       });
       if (error || !result || !result.session) {
-        alert('Administrator authentication failed.');
+        console.error('Administrator authentication failed:', error || result);
+        let detail = result && result.error ? String(result.error) : (error && error.message ? error.message : 'The administrator account may not be linked to Supabase Auth yet.');
+        // Supabase FunctionsHttpError exposes the Edge Function response as context.
+        try {
+          if (error && error.context && typeof error.context.json === 'function') {
+            const serverBody = await error.context.json();
+            if (serverBody && serverBody.error) detail = String(serverBody.error);
+          }
+        } catch (readError) { console.warn('Could not read authentication error response:', readError); }
+        alert('Administrator authentication failed.\n\n' + detail + '\n\nCheck the Admin ID, password, registered email and auth_user_id mapping.');
         return;
       }
       const {error:sessionError} = await db.auth.setSession({
@@ -5553,37 +5562,48 @@
     }
 
     async function requestAdminPasswordResetOTP() {
-      const adminId = rkmaValue('adminForgotQueryInput');
-      if (!adminId) { alert('Enter your Admin ID.'); return; }
-      const {data,error} = await db.functions.invoke('admin-password-reset-request',{body:{admin_id:adminId}});
-      if (error || !data || !data.success) {
-        alert('Password recovery could not be started. Contact the system administrator.');
-        return;
+      // IMPORTANT: This is the actual ID of the Admin ID input in the HTML modal.
+      const adminId = rkmaValue('adminForgotIdInput');
+      if (!adminId) { alert('Please enter your Admin ID.'); return; }
+      const button = document.querySelector('#adminForgotStep1 button');
+      if (button) { button.disabled = true; button.textContent = 'Sending recovery code...'; }
+      try {
+        const {data,error} = await db.functions.invoke('admin-password-reset-request',{body:{admin_id:adminId}});
+        if (error || !data || !data.success) {
+          console.error('Admin recovery request failed:', error || data);
+          alert('Password recovery could not be started. Please check that the admin-password-reset-request Edge Function is deployed and that this Admin ID has a linked Auth account and official email.');
+          return;
+        }
+        pendingAdminResetId = adminId;
+        pendingAdminResetEmail = null; // Email is resolved securely inside the Edge Function.
+        document.getElementById('adminForgotStep1').style.display = 'none';
+        document.getElementById('adminForgotStep2').style.display = 'block';
+        document.getElementById('adminForgotNoticeText').textContent = 'A six-digit recovery code has been sent to the registered administrator email address.';
+      } finally {
+        if (button) { button.disabled = false; button.textContent = 'Send Recovery Email'; }
       }
-      pendingAdminResetEmail = data.email;
-      pendingAdminResetId = adminId;
-      document.getElementById('adminForgotStep1').style.display = 'none';
-      document.getElementById('adminForgotStep2').style.display = 'block';
-      document.getElementById('adminForgotNoticeText').textContent = 'A recovery code has been sent to your registered administrator email.';
     }
 
     async function verifyAdminPasswordResetOTP() {
       const token = rkmaValue('adminForgotOtpInput');
       const password = rkmaValue('adminForgotNewPass');
       const confirmation = rkmaValue('adminForgotConfPass');
-      if (!pendingAdminResetEmail || token.length !== 6 || password.length < 10 || password !== confirmation) {
-        alert('Enter the valid six-digit code and matching password (10+ characters).');
+      if (!pendingAdminResetId) { alert('Please restart password recovery and enter your Admin ID.'); return; }
+      if (!/^\d{6}$/.test(token) || password.length < 10 || password !== confirmation) {
+        alert('Enter the six-digit recovery code and matching password (minimum 10 characters).');
         return;
       }
-      const {error:verifyError} = await db.auth.verifyOtp({
-        email:pendingAdminResetEmail,token:token,type:'recovery'
+      const {data,error} = await db.functions.invoke('admin-password-reset-verify',{
+        body:{admin_id:pendingAdminResetId,token:token,new_password:password}
       });
-      if (verifyError) { alert('Invalid or expired recovery code.'); return; }
-      const {error:updateError} = await db.auth.updateUser({password:password});
-      if (updateError) { alert('Password update failed: ' + updateError.message); return; }
+      if (error || !data || !data.success) {
+        console.error('Admin recovery verification failed:', error || data);
+        alert('Password reset failed. The code may be invalid/expired, or the admin-password-reset-verify Edge Function may not be deployed.');
+        return;
+      }
       await db.auth.signOut();
       closeAdminForgotModal();
-      alert('Administrator password updated. Please sign in again.');
+      alert('Administrator password updated successfully. Please sign in using the new password.');
     }
 
     window.executeCandidateDirectLogin = executeCandidateDirectLogin;
