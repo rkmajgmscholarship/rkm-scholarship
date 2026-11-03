@@ -8,6 +8,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <!-- Supabase Client JS Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- QR code generation for acknowledgment receipts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- jsPDF & JSZip for Bulk PDF Zip Generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -591,6 +593,16 @@
       #printableSlip, #printableSlip * { visibility: visible; }
       #printableApplication { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
       #printableSlip { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+    }
+  </style>
+  <style>
+    @media print {
+      body.rkma-print-receipt * { visibility: hidden !important; }
+      body.rkma-print-receipt #rkmaAcknowledgmentReceipt,
+      body.rkma-print-receipt #rkmaAcknowledgmentReceipt * { visibility: visible !important; }
+      body.rkma-print-receipt #rkmaAcknowledgmentReceipt { position:absolute;left:0;top:0;width:100%;display:block !important; }
+      body.rkma-print-receipt #rkmaAcknowledgmentReceipt button { display:none !important; }
+      body.rkma-print-receipt #rkmaAcknowledgmentReceipt iframe { width:100%;height:900px;border:0; }
     }
   </style>
 </head>
@@ -1271,7 +1283,7 @@
             <div><label>Name</label><input type="text" id="genCandName" placeholder="Full Name"></div>
             <div><label>Mobile</label><input type="tel" id="genCandMobile" placeholder="10-digit Phone"></div>
             <div><label>Candidate ID</label><input type="text" id="genCandId" placeholder="e.g. RKM-2026-002"></div>
-            <div><label>Password</label><input type="text" id="genCandPass" placeholder="e.g. Student@2026"></div>
+            <div><label>Password</label><input type="password" id="genCandPass" placeholder="Set a secure initial password"></div>
           </div>
           <div style="margin-top:10px; text-align:right;">
             <button class="btn-primary" onclick="adminCreateCustomCandidate()">Create Candidate</button>
@@ -1294,7 +1306,6 @@
                   <th>Candidate ID</th>
                   <th>Full Name</th>
                   <th>Phone Number</th>
-                  <th>Password</th>
                   <th>Profile Ready?</th>
                   <th>Applied?</th>
                   <th>Profile Card</th>
@@ -1492,7 +1503,8 @@
             <div class="form-group"><label>Name & Designation</label><input type="text" id="newAdminName" placeholder="e.g. Swami X Maharaj"></div>
             <div class="form-group"><label>Mobile</label><input type="tel" id="newAdminMobile" placeholder="10-digit Phone"></div>
             <div class="form-group"><label>Admin ID</label><input type="text" id="newAdminId" placeholder="e.g. SwamiX@RKMAJGM"></div>
-            <div class="form-group"><label>Password</label><input type="text" id="newAdminPass" placeholder="Secret Password"></div>
+             <div class="form-group"><label>Official Email</label><input type="email" id="newAdminEmail" placeholder="Official administrator email"></div>
+            <div class="form-group"><label>Password</label><input type="password" id="newAdminPass" placeholder="Secret Password"></div>
           </div>
           <button class="btn-primary" style="background:#4338ca;" onclick="superAdminCreateAdmin()">Provision Administrator</button>
         </div>
@@ -1810,7 +1822,7 @@
         <div style="background:#fafaf9; border:1px solid #e7e5e4; padding:14px; border-radius:6px; font-size:13px; color:#292524;">
           <strong>Important Instructions for Candidate:</strong>
           <ol style="margin:8px 0 0 20px; padding:0;">
-            <li style="margin-bottom:4px;">Keep your Candidate ID and active Password strictly confidential.</li>
+            <li style="margin-bottom:4px;">Keep your Candidate ID and account password strictly confidential.</li>
             <li style="margin-bottom:4px;">Whenever you update your password, your newly generated Profile Card will reflect the active credentials.</li>
             <li>All official notifications and correspondence will be linked to the contact details shown in this profile.</li>
           </ol>
@@ -1948,7 +1960,7 @@
         if (admData && admData.length > 0) {
           admins = {};
           admData.forEach(a => {
-            admins[a.admin_id] = { name: a.name, mobile: a.mobile, pass: a.pass, email: a.email, role: a.role };
+            admins[a.admin_id] = { name: a.name, mobile: a.mobile, email: a.email, role: a.role, auth_user_id: a.auth_user_id };
           });
         }
 
@@ -1961,7 +1973,6 @@
             candidates[c.candidate_id] = { 
               name: c.name, 
               mobile: c.mobile, 
-              pass: c.pass, 
               dob: c.dob || '',
               email: c.email || '',
               vill: c.vill || '',
@@ -2083,8 +2094,8 @@
         if (siteContent.customBlocks && siteContent.customBlocks.length > 0) {
           customContainer.innerHTML = siteContent.customBlocks.map(b => `
             <div class="card" style="border-left: 5px solid ${b.color || '#7f1d1d'};">
-              <h3 style="color:${b.color || '#7f1d1d'}; font-size:18px; margin-bottom:8px;">${b.title}</h3>
-              <p style="font-size:14px; line-height:1.7; color:#3f3f46; white-space:pre-line;">${b.content}</p>
+              <h3 style="color:${b.color || '#7f1d1d'}; font-size:18px; margin-bottom:8px;">${escapeHTML(b.title)}</h3>
+              <p style="font-size:14px; line-height:1.7; color:#3f3f46; white-space:pre-line;">${escapeHTML(b.content)}</p>
             </div>
           `).join('');
         } else {
@@ -2099,8 +2110,8 @@
       const homeNotices = document.getElementById('homeNoticesList');
       homeNotices.innerHTML = notices.slice(0, 3).map(n => `
         <div class="notice-item">
-          <div><a href="${n.link}" target="_blank" style="color:#1c1917; text-decoration:none; font-weight:600; font-size:13px;">${n.title}</a></div>
-          <span class="notice-date">${n.date}</span>
+          <div><a href="${escapeHTML(safeHttpUrl(n.link))}" target="_blank" style="color:#1c1917; text-decoration:none; font-weight:600; font-size:13px;">${escapeHTML(n.title)}</a></div>
+          <span class="notice-date">${escapeHTML(n.date)}</span>
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No current notices.</p>';
 
@@ -2109,11 +2120,11 @@
       fullNotices.innerHTML = notices.map(n => `
         <div class="notice-item">
           <div>
-            <a href="${n.link}" target="_blank" style="color:#7f1d1d; text-decoration:none; font-weight:700; font-size:14px;">${n.title}</a>
+            <a href="${escapeHTML(safeHttpUrl(n.link))}" target="_blank" style="color:#7f1d1d; text-decoration:none; font-weight:700; font-size:14px;">${escapeHTML(n.title)}</a>
           </div>
           <div style="display:flex; align-items:center; gap:8px;">
-            <span class="notice-date">${n.date}</span>
-            <a href="${n.link}" target="_blank" class="action-btn btn-pdf" style="text-decoration:none;">View</a>
+            <span class="notice-date">${escapeHTML(n.date)}</span>
+            <a href="${escapeHTML(safeHttpUrl(n.link))}" target="_blank" class="action-btn btn-pdf" style="text-decoration:none;">View</a>
           </div>
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No notices published yet.</p>';
@@ -2123,10 +2134,10 @@
       dlGrid.innerHTML = downloads.map(d => `
         <div class="download-item">
           <div>
-            <h4>${d.title}</h4>
-            <p style="font-size:11px; color:#78716c;">${d.desc}</p>
+            <h4>${escapeHTML(d.title)}</h4>
+            <p style="font-size:11px; color:#78716c;">${escapeHTML(d.desc)}</p>
           </div>
-          <a href="${d.link}" target="_blank" class="download-link">📥 Download Document</a>
+          <a href="${escapeHTML(safeHttpUrl(d.link))}" target="_blank" class="download-link">📥 Download Document</a>
         </div>
       `).join('');
     }
@@ -2178,6 +2189,28 @@
     // -------------------------------------------------------------
     // ADMIN LOGIN
     // -------------------------------------------------------------
+
+    async function sendCandidateSubmissionEmailOTP() {
+      const email = rkmaValue('f_email');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('Enter a valid email address in Step 3 first.');
+        goToStep(3);
+        return;
+      }
+      const button = document.getElementById('btnSendCandOtp');
+      button.disabled = true;
+      const {data,error} = await db.functions.invoke('send-application-email-otp',{body:{email:email}});
+      button.disabled = false;
+      if (error || !data || !data.success) {
+        alert('Could not send email OTP. Please try again later.');
+        return;
+      }
+      candidateOtpTargetEmail = email;
+      const hint = document.getElementById('candOtpHint');
+      if (hint) hint.textContent = 'A six-digit verification code has been sent to ' + email + '.';
+      alert('Email verification code sent successfully.');
+    }
+
     async function requestAdminEmailOTP() {
       const id = document.getElementById('manualAdminId').value.trim();
       const pass = document.getElementById('manualAdminPass').value.trim();
@@ -2247,7 +2280,7 @@
       const admin = pendingAdminLoginData;
       activeAdminId = admin.admin_id;
       document.getElementById('activeAdminTitle').innerText = admin.name;
-      document.getElementById('activeAdminContact').innerText = `Admin ID: ${admin.admin_id} | Mobile: ${admin.mobile} | Email: ${admin.email}`;
+      document.getElementById('activeAdminContact').innerText = `Admin ID: ${admin.admin_id} | Mobile: ${escapeHTML(admin.mobile)} | Email: ${escapeHTML(admin.email)}`;
       
       const isSuperAdmin = (admin.role === 'SUPER_ADMIN');
       document.getElementById('adminRoleBadge').innerText = isSuperAdmin ? '👑 SUPER ADMIN CONSOLE' : 'ADMIN CONSOLE';
@@ -2367,14 +2400,14 @@
       }
 
       // Update candidate password in database
-      const { error: dbErr } = await db.from('candidates').update({ pass: newPass }).eq('candidate_id', pendingCandResetId);
+      const { error: dbErr } = await db.auth.updateUser({ password: newPass });
       if (dbErr) {
         alert('Failed to update password in database: ' + dbErr.message);
         return;
       }
 
       if (candidates[pendingCandResetId]) {
-        candidates[pendingCandResetId].pass = newPass;
+        
       }
 
       alert('Password reset successful! You can now log in with your updated password.');
@@ -2464,14 +2497,14 @@
         return;
       }
 
-      const { error: dbErr } = await db.from('admins').update({ pass: newPass }).eq('admin_id', pendingAdminResetId);
+      const { error: dbErr } = await db.auth.updateUser({ password: newPass });
       if (dbErr) {
         alert('Failed to update admin password: ' + dbErr.message);
         return;
       }
 
       if (admins[pendingAdminResetId]) {
-        admins[pendingAdminResetId].pass = newPass;
+        
       }
 
       alert('Admin password updated successfully! Please log in with your updated credentials.');
@@ -2482,6 +2515,44 @@
     // -------------------------------------------------------------
     // CANDIDATE DIRECT LOGIN & PROFILE STATUS CHECK
     // -------------------------------------------------------------
+
+    function openSchemeSelectionWindow() {
+      if (!activeCandidateId || !candidates[activeCandidateId]) return;
+      const candidate = candidates[activeCandidateId];
+      if (!candidate.isProfileComplete) {
+        alert('Please complete your Basic Profile details before applying.');
+        openCandidateProfileModal(true);
+        return;
+      }
+      const existing = applications.find(function (item) { return item.candidateId === activeCandidateId; });
+      if (existing && existing.status !== 'Returned for Correction') {
+        alert('You have already submitted an application (' + existing.status + ') under ' + (existing.schemeName || 'Scholarship') + '.');
+        return;
+      }
+      const grid = document.getElementById('candidateSchemeSelectionGrid');
+      grid.textContent = '';
+      scholarshipSchemes.forEach(function (scheme) {
+        const card = document.createElement('div');
+        card.className = 'scheme-card';
+        const icon = document.createElement('div');
+        icon.textContent = '🎓';
+        icon.style.cssText = 'font-size:28px;margin-bottom:8px;';
+        const title = document.createElement('h3');
+        title.textContent = scheme.name || '';
+        const description = document.createElement('p');
+        description.textContent = scheme.desc || '';
+        const button = document.createElement('button');
+        button.className = 'btn-primary';
+        button.textContent = 'Apply for ' + (scheme.name || 'Scholarship') + ' →';
+        button.addEventListener('click',function () {
+          proceedToApplicationFormWithScheme(scheme.id);
+        });
+        card.append(icon,title,description,button);
+        grid.appendChild(card);
+      });
+      navigateTo('schemeSelection');
+    }
+
     async function executeCandidateDirectLogin() {
       const id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
@@ -2612,7 +2683,7 @@
           alert('New Password and Confirm Password do not match!');
           return;
         }
-        payload.pass = newPass;
+        
       }
 
       // 1. Update Candidate in Supabase Database
@@ -2690,12 +2761,9 @@
             <td style="font-size:15px; font-weight:bold; color:#7f1d1d;">${cid}</td>
           </tr>
           <tr>
-            <td style="font-weight:bold;">Active Password:</td>
-            <td><code style="font-size:14px; background:#f5f5f4; padding:2px 8px; border-radius:4px; font-weight:bold; color:#b91c1c;">${cand.pass}</code></td>
-          </tr>
-          <tr>
+            <tr>
             <td style="font-weight:bold;">Applicant Full Name:</td>
-            <td>${cand.name}</td>
+            <td>${escapeHTML(cand.name)}</td>
           </tr>
           <tr>
             <td style="font-weight:bold;">Date of Birth:</td>
@@ -2703,7 +2771,7 @@
           </tr>
           <tr>
             <td style="font-weight:bold;">Contact Mobile:</td>
-            <td>${cand.mobile}</td>
+            <td>${escapeHTML(cand.mobile)}</td>
           </tr>
           <tr>
             <td style="font-weight:bold;">Email Address:</td>
@@ -2711,7 +2779,7 @@
           </tr>
           <tr>
             <td style="font-weight:bold;">Residential Address:</td>
-            <td>${cand.vill ? `${cand.vill}, P.O: ${cand.po}, P.S: ${cand.ps}, Dist: ${cand.dist} - ${cand.pin}, ${cand.state}` : 'Not updated'}</td>
+            <td>${cand.vill ? `${escapeHTML(cand.vill)}, P.O: ${escapeHTML(cand.po)}, P.S: ${escapeHTML(cand.ps)}, Dist: ${escapeHTML(cand.dist)} - ${escapeHTML(cand.pin)}, ${cand.state}` : 'Not updated'}</td>
           </tr>
           <tr>
             <td style="font-weight:bold;">Present Class & Stream:</td>
@@ -2794,12 +2862,12 @@
         const lineHeight = 10;
         const details = [
           ["Candidate ID:", cid, true],
-          ["Active Password:", cand.pass || "N/A", true],
+          
           ["Applicant Full Name:", cand.name || "N/A", false],
           ["Date of Birth:", cand.dob || "Not updated", false],
           ["Contact Mobile:", cand.mobile || "N/A", false],
           ["Email Address:", cand.email || "Not updated", false],
-          ["Residential Address:", cand.vill ? `${cand.vill}, P.O: ${cand.po}, P.S: ${cand.ps}, Dist: ${cand.dist} - ${cand.pin}, ${cand.state}` : "Not updated", false],
+          ["Residential Address:", cand.vill ? `${escapeHTML(cand.vill)}, P.O: ${escapeHTML(cand.po)}, P.S: ${escapeHTML(cand.ps)}, Dist: ${escapeHTML(cand.dist)} - ${escapeHTML(cand.pin)}, ${cand.state}` : "Not updated", false],
           ["Present Class & Stream:", cand.currClass ? `${cand.currClass} (${cand.stream})` : "Not updated", false],
           ["Institution Name:", cand.institution || "Not updated", false],
           ["Application Submission:", appData ? `${appData.status} (${appData.schemeName || 'Applied'})` : "Pending Submission", false]
@@ -2837,7 +2905,7 @@
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8.5);
         doc.setTextColor(70, 70, 70);
-        doc.text("1. Keep your Candidate ID and active Password strictly confidential.", 26, currentY + 15);
+        doc.text("1. Keep your Candidate ID and account password strictly confidential.", 26, currentY + 15);
         doc.text("2. Whenever you update your password, your newly generated Profile Card reflects it.", 26, currentY + 22);
         doc.text("3. All official notifications and correspondence will be linked to this profile.", 26, currentY + 29);
         doc.text("4. Log in to the scholarship portal to complete and track scholarship applications.", 26, currentY + 36);
@@ -2884,9 +2952,9 @@
       grid.innerHTML = scholarshipSchemes.map(s => `
         <div class="scheme-card">
           <div style="font-size:28px; margin-bottom:8px;">🎓</div>
-          <h3>${s.name}</h3>
-          <p>${s.desc}</p>
-          <button class="btn-primary" onclick="proceedToApplicationFormWithScheme('${s.id}')">Apply for ${s.name} &rarr;</button>
+          <h3>${escapeHTML(s.name)}</h3>
+          <p>${escapeHTML(s.desc)}</p>
+          <button class="btn-primary" onclick="proceedToApplicationFormWithScheme('${s.id}')">Apply for ${escapeHTML(s.name)} &rarr;</button>
         </div>
       `).join('');
 
@@ -3080,7 +3148,7 @@
       }
       if (newPass) {
         if (newPass.length < 6) { alert('Password must be 6+ characters!'); return; }
-        updates.pass = newPass;
+        
         authUpdates.password = newPass;
       }
 
@@ -3184,14 +3252,14 @@
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><strong>${app.appNo}</strong></td>
-          <td><span style="font-size:11px; font-weight:bold; color:#7f1d1d; background:#ffedd5; padding:2px 6px; border-radius:4px;">${schemeTitle}</span></td>
-          <td>${app.photoBase64 ? `<img src="${app.photoBase64}" style="width:36px; height:42px; object-fit:cover; border-radius:4px;">` : '<span style="color:#aaa; font-size:10px;">N/A</span>'}</td>
-          <td>${app.name}<br><span style="color:#78716c; font-size:10px;">ID: ${app.candidateId}</span></td>
-          <td>${app.currClass} (${app.stream})<br><span style="color:#78716c; font-size:10px;">${app.institution}</span></td>
-          <td style="color:#15803d; font-weight:bold;">${app.marksPct}</td>
-          <td>₹${app.income}</td>
-          <td><span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span></td>
+          <td><strong>${escapeHTML(app.appNo)}</strong></td>
+          <td><span style="font-size:11px; font-weight:bold; color:#7f1d1d; background:#ffedd5; padding:2px 6px; border-radius:4px;">${escapeHTML(schemeTitle)}</span></td>
+          <td>${app.photoBase64 ? `<img src="${escapeHTML(app.photoBase64)}" style="width:36px; height:42px; object-fit:cover; border-radius:4px;">` : '<span style="color:#aaa; font-size:10px;">N/A</span>'}</td>
+          <td>${escapeHTML(app.name)}<br><span style="color:#78716c; font-size:10px;">ID: ${escapeHTML(app.candidateId)}</span></td>
+          <td>${escapeHTML(app.currClass)} (${escapeHTML(app.stream)})<br><span style="color:#78716c; font-size:10px;">${escapeHTML(app.institution)}</span></td>
+          <td style="color:#15803d; font-weight:bold;">${escapeHTML(app.marksPct)}</td>
+          <td>₹${escapeHTML(app.income)}</td>
+          <td><span class="status-badge ${getStatusBadgeClass(app.status)}">${escapeHTML(app.status)}</span></td>
           <td>
             <div class="action-btn-group">
               <button class="action-btn btn-manage" onclick="openScrutinyModal(${index})">Scrutiny</button>
@@ -3231,9 +3299,8 @@
         tr.innerHTML = `
           <td>${sl++}</td>
           <td><strong>${cid}</strong></td>
-          <td>${cand.name}</td>
-          <td>${cand.mobile}</td>
-          <td><code style="background:#f5f5f4; padding:2px 6px; border-radius:4px; font-weight:bold;">${cand.pass}</code></td>
+          <td>${escapeHTML(cand.name)}</td>
+          <td>${escapeHTML(cand.mobile)}</td>
           <td><span style="font-weight:bold; color:${cand.isProfileComplete ? '#15803d' : '#ea580c'};">${cand.isProfileComplete ? '✅ Complete' : '⚠️ Incomplete'}</span></td>
           <td><span style="font-weight:bold; color:${isSubmitted ? '#15803d' : '#dc2626'};">${isSubmitted ? '✅ Yes' : '⏳ Pending'}</span></td>
           <td><button class="action-btn btn-pdf" onclick="downloadCandidateProfileCard('${cid}')">🖨️ Profile Card</button></td>
@@ -3245,7 +3312,7 @@
 
     async function deleteEntireCandidateAccount(cid) {
       const cand = candidates[cid];
-      if (confirm(`CRITICAL: Are you sure you want to permanently delete Candidate "${cand.name}" (${cid}) and all associated records?`)) {
+      if (confirm(`CRITICAL: Are you sure you want to permanently delete Candidate "${escapeHTML(cand.name)}" (${cid}) and all associated records?`)) {
         const { error } = await db.from('candidates').delete().eq('candidate_id', cid);
         if (error) {
           alert('Failed to delete candidate: ' + error.message);
@@ -3291,7 +3358,7 @@
       }
 
       const { error } = await db.from('candidates').insert([
-        { candidate_id: id, name: name, mobile: mobile, pass: pass }
+        { candidate_id: id, name: name, mobile: mobile }
       ]);
 
       if (error) {
@@ -3309,9 +3376,9 @@
 
     function downloadSampleCandidateTemplate() {
       const sampleData = [
-        ["Name", "Phone", "CandidateID", "Password"],
-        ["Swapan Mahato", "9876543211", "RKM-2026-003", "Pass@1234"],
-        ["Raju Murmu", "9876543212", "RKM-2026-004", "Pass@5678"]
+        ["Name", "Phone", "CandidateID", "InitialPassword"],
+        ["Swapan Mahato", "9876543211", "RKM-2026-003", "SetSecurePassword1!"],
+        ["Raju Murmu", "9876543212", "RKM-2026-004", "SetSecurePassword2!"]
       ];
       const ws = XLSX.utils.aoa_to_sheet(sampleData);
       const wb = XLSX.utils.book_new();
@@ -3364,7 +3431,7 @@
               return;
             }
 
-            rowsToInsert.push({ candidate_id: cid, name: name, mobile: cleanPhone, pass: pass });
+            rowsToInsert.push({ candidate_id: cid, name: name, mobile: cleanPhone });
           });
 
           if (rowsToInsert.length > 0) {
@@ -3397,8 +3464,8 @@
       tbody.innerHTML = scholarshipSchemes.map(s => `
         <tr>
           <td><code>${s.id}</code></td>
-          <td><strong>${s.name}</strong></td>
-          <td>${s.desc}</td>
+          <td><strong>${escapeHTML(s.name)}</strong></td>
+          <td>${escapeHTML(s.desc)}</td>
           <td>
             <button class="action-btn btn-pdf" onclick="openRenameSchemeModal('${s.id}')">✏️ Rename</button>
             ${s.id !== 'belur_math' && s.id !== 'other_scholarships' ? `<button class="action-btn btn-delete" onclick="deleteScholarshipScheme('${s.id}')">Delete</button>` : ''}
@@ -3479,7 +3546,7 @@
       const box = document.getElementById('adminNoticeList');
       box.innerHTML = notices.map((n) => `
         <div class="notice-item">
-          <div><strong>${n.title}</strong> (${n.date})<br><a href="${n.link}" target="_blank" style="font-size:11px; color:#0284c7;">${n.link}</a></div>
+          <div><strong>${escapeHTML(n.title)}</strong> (${escapeHTML(n.date)})<br><a href="${escapeHTML(safeHttpUrl(n.link))}" target="_blank" style="font-size:11px; color:#0284c7;">${escapeHTML(safeHttpUrl(n.link))}</a></div>
           <button class="action-btn btn-delete" onclick="deleteNotice(${n.id})">Delete</button>
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No notices.</p>';
@@ -3522,7 +3589,7 @@
       const box = document.getElementById('adminDownloadList');
       box.innerHTML = downloads.map((d) => `
         <div class="notice-item">
-          <div><strong>${d.title}</strong> - <span style="font-size:12px; color:#666;">${d.desc}</span><br><a href="${d.link}" target="_blank" style="font-size:11px; color:#0284c7;">${d.link}</a></div>
+          <div><strong>${escapeHTML(d.title)}</strong> - <span style="font-size:12px; color:#666;">${escapeHTML(d.desc)}</span><br><a href="${escapeHTML(safeHttpUrl(d.link))}" target="_blank" style="font-size:11px; color:#0284c7;">${escapeHTML(safeHttpUrl(d.link))}</a></div>
           <button class="action-btn btn-delete" onclick="deleteDownload(${d.id})">Delete</button>
         </div>
       `).join('') || '<p style="font-size:12px; color:#888;">No downloads.</p>';
@@ -3659,8 +3726,8 @@
         return;
       }
       container.innerHTML = blocks.map(b => `
-        <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid #e7e5e4; border-left:4px solid ${b.color}; padding:8px 12px; border-radius:4px; margin-bottom:6px;">
-          <div><strong style="color:${b.color}; font-size:13px;">${b.title}</strong></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid #e7e5e4; border-left:4px solid ${safeColor(b.color)}; padding:8px 12px; border-radius:4px; margin-bottom:6px;">
+          <div><strong style="color:${safeColor(b.color)}; font-size:13px;">${escapeHTML(b.title)}</strong></div>
           <button type="button" class="action-btn btn-delete" onclick="removeCustomContentBlock('${b.id}')">Remove</button>
         </div>
       `).join('');
@@ -3747,8 +3814,8 @@
 
       wrapper.innerHTML = photos.map(p => `
         <div class="slide-item">
-          <img src="${formatDriveImageUrl(p.url)}" alt="${p.caption}">
-          <div class="slide-caption">${p.caption}</div>
+          <img src="${formatDriveImageUrl(p.url)}" alt="${escapeHTML(p.caption)}">
+          <div class="slide-caption">${escapeHTML(p.caption)}</div>
         </div>
       `).join('');
 
@@ -3826,7 +3893,7 @@
       }
 
       const { error } = await db.from('admins').insert([
-        { admin_id: id, name: name, mobile: mobile, pass: pass, email: 'admin@rkmm.org', role: 'ADMIN' }
+        { admin_id: id, name: name, mobile: mobile, email: 'admin@rkmm.org', role: 'ADMIN' }
       ]);
 
       if (error) {
@@ -3867,9 +3934,9 @@
       selectedScrutinyIndex = index;
       const app = applications[index];
       document.getElementById('scrutinyAppInfo').innerHTML = `
-        <strong>Applicant:</strong> ${app.name} (${app.candidateId})<br>
-        <strong>Scheme:</strong> <span style="color:#7f1d1d; font-weight:bold;">${app.schemeName || 'Scholarship'}</span><br>
-        <strong>Application No:</strong> ${app.appNo} | <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span>
+        <strong>Applicant:</strong> ${escapeHTML(app.name)} (${escapeHTML(app.candidateId)})<br>
+        <strong>Scheme:</strong> <span style="color:#7f1d1d; font-weight:bold;">${escapeHTML(app.schemeName || 'Scholarship')}</span><br>
+        <strong>Application No:</strong> ${escapeHTML(app.appNo)} | <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${escapeHTML(app.status)}</span>
       `;
       document.getElementById('modalStatusSelect').value = app.status;
       document.getElementById('modalAdminRemarks').value = app.adminRemarks || '';
@@ -3956,9 +4023,9 @@
       } else {
         box.innerHTML = `
           <div style="padding:12px; background:#f0f9ff; border-left:4px solid #0284c7; border-radius:6px;">
-            <strong>Scheme:</strong> <span style="color:#7f1d1d; font-weight:bold;">${app.schemeName || 'Scholarship'}</span><br>
-            <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${app.status}</span><br>
-            <strong>Official Remarks:</strong> ${app.adminRemarks || 'Under standard scrutiny.'}
+            <strong>Scheme:</strong> <span style="color:#7f1d1d; font-weight:bold;">${escapeHTML(app.schemeName || 'Scholarship')}</span><br>
+            <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${escapeHTML(app.status)}</span><br>
+            <strong>Official Remarks:</strong> ${escapeHTML(app.adminRemarks || 'Under standard scrutiny.')}
           </div>
         `;
       }
@@ -4055,27 +4122,31 @@
     function downloadApplicationPDF(index) {
       const app = applications[index];
       document.getElementById('pdfHeaderMeta').innerHTML = `
-        <strong>Application No:</strong> ${app.appNo}<br>
-        <strong>Category / Scheme:</strong> <span style="color:#7f1d1d;">${app.schemeName || 'Belur Math Scholarship'}</span><br>
-        <strong>Candidate ID:</strong> ${app.candidateId}<br>
-        <strong>Name:</strong> ${app.name}<br>
-        <strong>Status:</strong> ${app.status}
+        <strong>Application No:</strong> ${escapeHTML(app.appNo)}<br>
+        <strong>Category / Scheme:</strong> <span style="color:#7f1d1d;">${escapeHTML(app.schemeName || 'Belur Math Scholarship')}</span><br>
+        <strong>Candidate ID:</strong> ${escapeHTML(app.candidateId)}<br>
+        <strong>Name:</strong> ${escapeHTML(app.name)}<br>
+        <strong>Status:</strong> ${escapeHTML(app.status)}
       `;
-      document.getElementById('pdfPhotoBox').innerHTML = app.photoBase64 ? `<img src="${app.photoBase64}" style="width:100%; height:100%; object-fit:cover;">` : '';
-      document.getElementById('pdfSignBox').innerHTML = app.signBase64 ? `<img src="${app.signBase64}" style="max-height:45px; max-width:180px;">` : '';
+      document.getElementById('pdfPhotoBox').innerHTML = app.photoBase64 ? `<img src="${escapeHTML(app.photoBase64)}" style="width:100%; height:100%; object-fit:cover;">` : '';
+      document.getElementById('pdfSignBox').innerHTML = app.signBase64 ? `<img src="${escapeHTML(app.signBase64)}" style="max-height:45px; max-width:180px;">` : '';
 
       document.getElementById('pdfContentBody').innerHTML = `
         <table style="width:100%; border:1px solid #444; border-collapse:collapse; font-size:13px;">
-          <tr><td style="padding:5px; border:1px solid #444; width:35%;">Date of Birth / Gender / Caste</td><td style="padding:5px; border:1px solid #444;">${app.dob} | ${app.gender} | ${app.caste}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Father's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${app.father} (${app.fatherOcc})</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Mother's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${app.mother} (${app.motherOcc})</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Contact Numbers</td><td style="padding:5px; border:1px solid #444;">Phone: ${app.mobile} | WhatsApp: ${app.whatsapp}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Address</td><td style="padding:5px; border:1px solid #444;">${app.vill}, ${app.po}, ${app.ps}, ${app.dist} - ${app.pin}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Present Course & Institution</td><td style="padding:5px; border:1px solid #444;">${app.currClass} (${app.stream}) at ${app.institution}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Qualifying Exam & Marks</td><td style="padding:5px; border:1px solid #444;">${app.lastExam} (${app.marksPct})</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Monthly Income</td><td style="padding:5px; border:1px solid #444;">₹${app.income}</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Bank Details</td><td style="padding:5px; border:1px solid #444;">${app.bankName} (A/C: ${app.bankAcc}, IFSC: ${app.ifsc})</td></tr>
-          <tr><td style="padding:5px; border:1px solid #444;">Scrutiny Remarks</td><td style="padding:5px; border:1px solid #444;">${app.adminRemarks || 'Under Scrutiny'}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444; width:35%;">Date of Birth / Gender / Caste</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.dob)} | ${escapeHTML(app.gender)} | ${escapeHTML(app.caste)}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Father's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.father)} (${escapeHTML(app.fatherOcc)})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Mother's Name & Occupation</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.mother)} (${escapeHTML(app.motherOcc)})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Contact Numbers</td><td style="padding:5px; border:1px solid #444;">Phone: ${escapeHTML(app.mobile)} | WhatsApp: ${escapeHTML(app.whatsapp)}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Address</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.vill)}, ${escapeHTML(app.po)}, ${escapeHTML(app.ps)}, ${escapeHTML(app.dist)} - ${escapeHTML(app.pin)}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Present Course & Institution</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.currClass)} (${escapeHTML(app.stream)}) at ${escapeHTML(app.institution)}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Qualifying Exam & Marks</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.lastExam)} (${escapeHTML(app.marksPct)})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Monthly Income</td><td style="padding:5px; border:1px solid #444;">₹${escapeHTML(app.income)}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Bank Details</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.bankName)} (Branch: ${escapeHTML(app.bankBranch || '')}, A/C: ${escapeHTML(app.bankAcc)}, IFSC: ${escapeHTML(app.ifsc)})</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Scholarship Type / Previous Scholarship</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.scholarshipType || '')} | ${escapeHTML(app.previousScholarshipName || '')} | ₹${escapeHTML(app.previousScholarshipAmount || '')} | ${escapeHTML(app.previousScholarshipYear || '')}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Roll / Registration Number</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.rollRegistration || '')}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Income Certificate</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.incomeCertificateNo || '')} | ${escapeHTML(app.incomeIssuingAuthority || '')}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Sanction Details</td><td style="padding:5px; border:1px solid #444;">₹${escapeHTML(app.sanctionAmount || '')} | ${escapeHTML(app.sanctionDate || '')}</td></tr>
+          <tr><td style="padding:5px; border:1px solid #444;">Scrutiny Remarks</td><td style="padding:5px; border:1px solid #444;">${escapeHTML(app.adminRemarks || 'Under Scrutiny')}</td></tr>
         </table>
       `;
 
@@ -4099,14 +4170,14 @@
           <h2 style="color:#800000; text-align:center;">RAMAKRISHNA MISSION ASHRAMA</h2>
           <p style="text-align:center;">Satyabanpally, Jhargram, West Bengal - 721507</p>
           <table border="1" cellpadding="6" style="width:100%; border-collapse:collapse;">
-            <tr><td><b>App No</b></td><td>${app.appNo}</td></tr>
-            <tr><td><b>Category/Scheme</b></td><td>${app.schemeName || 'Scholarship Scheme'}</td></tr>
-            <tr><td><b>Name</b></td><td>${app.name}</td></tr>
-            <tr><td><b>Status</b></td><td>${app.status}</td></tr>
-            <tr><td><b>Course</b></td><td>${app.currClass} (${app.institution})</td></tr>
-            <tr><td><b>Phone</b></td><td>${app.mobile}</td></tr>
-            <tr><td><b>Income</b></td><td>Rs. ${app.income}</td></tr>
-            <tr><td><b>Remarks</b></td><td>${app.adminRemarks || ''}</td></tr>
+            <tr><td><b>App No</b></td><td>${escapeHTML(app.appNo)}</td></tr>
+            <tr><td><b>Category/Scheme</b></td><td>${escapeHTML(app.schemeName || 'Scholarship Scheme')}</td></tr>
+            <tr><td><b>Name</b></td><td>${escapeHTML(app.name)}</td></tr>
+            <tr><td><b>Status</b></td><td>${escapeHTML(app.status)}</td></tr>
+            <tr><td><b>Course</b></td><td>${escapeHTML(app.currClass)} (${escapeHTML(app.institution)})</td></tr>
+            <tr><td><b>Phone</b></td><td>${escapeHTML(app.mobile)}</td></tr>
+            <tr><td><b>Income</b></td><td>Rs. ${escapeHTML(app.income)}</td></tr>
+            <tr><td><b>Remarks</b></td><td>${escapeHTML(app.adminRemarks || '')}</td></tr>
           </table>
         </body></html>
       `;
@@ -4114,7 +4185,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Application_${app.appNo}_${app.name.replace(/\s+/g, '_')}.doc`;
+      a.download = `Application_${escapeHTML(app.appNo)}_${app.name.replace(/\s+/g, '_')}.doc`;
       a.click();
     }
 
@@ -4131,10 +4202,9 @@
     }
 
     function exportCandidatesRosterCSV() {
-      let csv = 'Candidate ID,Name,Mobile,Password,Profile Complete,Email,Institution\n';
+      let csv = 'Candidate ID,Name,Mobile,Profile Complete,Email,Institution\n';
       for (let cid in candidates) {
         const c = candidates[cid];
-        csv += `"${cid}","${c.name}","${c.mobile}","${c.pass}","${c.isProfileComplete ? 'YES' : 'NO'}","${c.email || ''}","${c.institution || ''}"\n`;
       }
       const a = document.createElement('a');
       a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;' }));
@@ -4178,7 +4248,7 @@
         activeAdminId = savedUserId;
         const admin = admins[savedUserId];
         document.getElementById('activeAdminTitle').innerText = admin.name;
-        document.getElementById('activeAdminContact').innerText = `Admin ID: ${savedUserId} | Mobile: ${admin.mobile} | Email: ${admin.email}`;
+        document.getElementById('activeAdminContact').innerText = `Admin ID: ${savedUserId} | Mobile: ${escapeHTML(admin.mobile)} | Email: ${escapeHTML(admin.email)}`;
         
         const isSuperAdmin = (admin.role === 'SUPER_ADMIN');
         document.getElementById('adminRoleBadge').innerText = isSuperAdmin ? '👑 SUPER ADMIN CONSOLE' : 'ADMIN CONSOLE';
@@ -4195,7 +4265,7 @@
         document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
         document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + savedUserId + ' | Mobile: ' + cand.mobile;
 
-        setAuthenticatedUI('candidate', 'CANDIDATE SCHOLARSHIP WORKSPACE', `${cand.name} (${savedUserId})`);
+        setAuthenticatedUI('candidate', 'CANDIDATE SCHOLARSHIP WORKSPACE', `${escapeHTML(cand.name)} (${savedUserId})`);
         
         const validCandPages = ['candidateDashboard', 'schemeSelection', 'applicationForm', 'trackStatus'];
         navigateTo(validCandPages.includes(savedPage) ? savedPage : 'candidateDashboard');
@@ -4206,5 +4276,1357 @@
       }
     });
   </script>
+
+  <!-- ================================================================
+       RKMA SECURITY, CLOUD CMS, APPLICATION EXTENSIONS
+       This extension preserves the existing layout and visual system.
+       Required database migration is supplied in the companion SQL file.
+  ================================================================ -->
+  <style>
+    .rkma-extra-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+    .rkma-info-card{background:#fff7ed;border:1px solid #fed7aa;border-left:4px solid #ea580c;border-radius:8px;padding:14px;margin:12px 0}
+    .rkma-timeline-item{border-left:3px solid #ea580c;padding:8px 12px;margin:8px 0;background:#fafaf9;border-radius:0 6px 6px 0}
+    .rkma-receipt-doc{page-break-inside:avoid;border:1px solid #ddd;padding:10px;margin:8px 0}
+    .rkma-danger{color:#b91c1c;font-size:12px}
+  </style>
+
+  <script>
+  (function () {
+    'use strict';
+
+    const RKMA_PRIVATE_BUCKET = 'application-private';
+    const RKMA_PUBLIC_BUCKET = 'site-media';
+    let rkmaDeclarationAccepted = false;
+    let rkmaStatusHistory = [];
+    let rkmaReceiptDocuments = [];
+    let rkmaSanctionControlsReady = false;
+
+    function escapeHTML(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]);
+      });
+    }
+
+    function safeHttpUrl(value) {
+      try {
+        const parsed = new URL(String(value || ''),window.location.href);
+        return (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.href : '';
+      } catch (error) {
+        return '';
+      }
+    }
+
+    function safeColor(value) {
+      const color = String(value || '');
+      return /^#[0-9a-f]{3,8}$/i.test(color) ? color : '#ea580c';
+    }
+
+    function rkmaValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+
+    function rkmaSetText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value == null ? '' : String(value);
+    }
+
+    function rkmaAddField(parent, labelText, id, type, required, placeholder) {
+      const wrap = document.createElement('div');
+      wrap.className = 'form-group';
+      const label = document.createElement('label');
+      label.htmlFor = id;
+      label.textContent = labelText;
+      const input = document.createElement('input');
+      input.id = id;
+      input.type = type || 'text';
+      input.required = !!required;
+      input.placeholder = placeholder || '';
+      wrap.append(label, input);
+      parent.appendChild(wrap);
+      return input;
+    }
+
+    function rkmaAddSelect(parent, labelText, id, options, required) {
+      const wrap = document.createElement('div');
+      wrap.className = 'form-group';
+      const label = document.createElement('label');
+      label.htmlFor = id;
+      label.textContent = labelText;
+      const select = document.createElement('select');
+      select.id = id;
+      select.required = !!required;
+      options.forEach(function (option) {
+        const node = document.createElement('option');
+        node.value = option.value;
+        node.textContent = option.label;
+        select.appendChild(node);
+      });
+      wrap.append(label, select);
+      parent.appendChild(wrap);
+      return select;
+    }
+
+    function rkmaAddUpload(parent, labelText, id, key, required) {
+      const wrap = document.createElement('div');
+      wrap.className = 'form-group';
+      const label = document.createElement('label');
+      label.htmlFor = id;
+      label.textContent = labelText;
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.id = id;
+      input.className = 'input-file-field';
+      input.accept = '.pdf,.jpg,.jpeg,.png';
+      input.required = !!required;
+      input.addEventListener('change', function () {
+        const file = input.files && input.files[0];
+        if (!file) {
+          delete currentUploadedDocs[key];
+          return;
+        }
+        const allowed = ['application/pdf','image/jpeg','image/png'];
+        if (!allowed.includes(file.type) || file.size > 512000) {
+          alert('Please select a PDF, JPG or PNG file not exceeding 500 KB.');
+          input.value = '';
+          delete currentUploadedDocs[key];
+          return;
+        }
+        currentUploadedDocs[key] = { file: file, name: file.name, type: file.type };
+      });
+      const hint = document.createElement('span');
+      hint.className = 'file-rule-hint';
+      hint.textContent = 'PDF, JPG or PNG | Maximum 500 KB';
+      wrap.append(label, input, hint);
+      parent.appendChild(wrap);
+      return input;
+    }
+
+    function rkmaEnsureNewFormFields() {
+      const step2 = document.querySelector('#formStep2 .form-grid');
+      if (step2 && !document.getElementById('f_scholarship_type')) {
+        rkmaAddSelect(step2, 'Scholarship Type', 'f_scholarship_type', [
+          {value:'Fresh',label:'Fresh'}, {value:'Renewal',label:'Renewal'}
+        ], true);
+        const previousName = rkmaAddField(step2, 'Previous Scholarship Name (Renewal)', 'f_previous_scholarship_name', 'text', false);
+        const previousAmount = rkmaAddField(step2, 'Previous Scholarship Amount (₹)', 'f_previous_scholarship_amount', 'number', false);
+        const previousYear = rkmaAddField(step2, 'Previous Scholarship Year', 'f_previous_scholarship_year', 'text', false);
+        [previousName, previousAmount, previousYear].forEach(function (field) {
+          field.dataset.renewalField = 'true';
+        });
+        document.getElementById('f_scholarship_type').addEventListener('change', rkmaToggleRenewalFields);
+        rkmaToggleRenewalFields();
+      }
+
+      const step4 = document.querySelector('#formStep4 .form-grid');
+      if (step4 && !document.getElementById('f_roll_registration')) {
+        rkmaAddField(step4, 'Roll / Registration Number', 'f_roll_registration', 'text', true);
+        rkmaAddField(step4, 'Income Certificate Number (Optional)', 'f_income_certificate_no', 'text', false);
+        rkmaAddField(step4, 'Issuing Authority', 'f_income_issuing_authority', 'text', true);
+      }
+
+      const step5 = document.querySelector('#formStep5 .form-grid');
+      if (step5 && !document.getElementById('f_bank_branch')) {
+        rkmaAddField(step5, 'Bank Branch Name', 'f_bank_branch', 'text', true);
+        const ifsc = document.getElementById('f_ifsc');
+        if (ifsc) {
+          ifsc.maxLength = 11;
+          ifsc.pattern = '^[A-Z]{4}0[A-Z0-9]{6}$';
+          ifsc.title = 'Enter a valid 11-character IFSC code.';
+          ifsc.addEventListener('input', function () {
+            ifsc.value = ifsc.value.toUpperCase().replace(/\s/g, '');
+          });
+        }
+      }
+
+      const step6 = document.querySelector('#formStep6 .form-grid');
+      if (step6 && !document.getElementById('f_doc_bonafide')) {
+        rkmaAddUpload(step6, 'g. Institution Head Bonafide Certificate', 'f_doc_bonafide', 'docBonafide', true);
+        rkmaAddUpload(step6, 'h. Caste Certificate (SC/ST/OBC Applicants)', 'f_doc_caste', 'docCaste', false);
+        rkmaAddUpload(step6, 'i. Disability Certificate (Optional)', 'f_doc_disability', 'docDisability', false);
+      }
+
+      const submitRow = document.querySelector('#formStep6 .step-btn-container');
+      if (submitRow && !document.getElementById('f_application_declaration')) {
+        const declaration = document.createElement('label');
+        declaration.id = 'f_application_declaration';
+        declaration.style.cssText = 'display:flex;gap:9px;align-items:flex-start;margin:16px 0;padding:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;font-size:12px;line-height:1.5;';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = 'f_declaration_checkbox';
+        checkbox.style.cssText = 'width:auto;margin-top:2px;flex:0 0 auto;';
+        checkbox.addEventListener('change', function () { rkmaDeclarationAccepted = checkbox.checked; });
+        const text = document.createElement('span');
+        text.textContent = 'I hereby declare that all the information and documents submitted in this application are true and correct to the best of my knowledge. I understand that any false information may lead to rejection of my application and cancellation of any scholarship awarded.';
+        declaration.append(checkbox, text);
+        submitRow.parentNode.insertBefore(declaration, submitRow);
+      }
+    }
+
+    function rkmaToggleRenewalFields() {
+      const renewal = rkmaValue('f_scholarship_type') === 'Renewal';
+      document.querySelectorAll('[data-renewal-field="true"]').forEach(function (field) {
+        field.required = renewal;
+        field.parentElement.style.display = renewal ? '' : 'none';
+      });
+    }
+
+    function rkmaEnsurePublicSections() {
+      const home = document.getElementById('sec-home');
+      if (!home) return;
+      if (!document.getElementById('rkmaPublicHighlights')) {
+        const highlights = document.createElement('div');
+        highlights.id = 'rkmaPublicHighlights';
+        highlights.className = 'rkma-extra-grid';
+        highlights.innerHTML = '<div class="rkma-info-card" id="rkmaDeadlineBox"><h3>Application Deadline</h3><p id="rkmaDeadlineText"></p></div><div class="rkma-info-card" id="rkmaEligibilityBox"><h3>Eligibility Criteria</h3><p id="rkmaEligibilityText"></p></div>';
+        const hero = home.querySelector('.hero-card');
+        if (hero) hero.insertAdjacentElement('afterend', highlights);
+      }
+      if (!document.getElementById('rkmaVerifyApplication')) {
+        const verify = document.createElement('div');
+        verify.id = 'rkmaVerifyApplication';
+        verify.className = 'card';
+        verify.innerHTML = '<h3 style="color:#7f1d1d;margin-bottom:10px;">Verify Application</h3><div class="rkma-extra-grid"><div class="form-group"><label for="rkmaVerifyAppNo">Application Number</label><input id="rkmaVerifyAppNo" type="text" autocomplete="off"></div><div class="form-group"><label for="rkmaVerifyMobile">Registered Mobile Number</label><input id="rkmaVerifyMobile" type="tel" maxlength="10" autocomplete="off"></div></div><button type="button" class="btn-primary" id="rkmaVerifyButton">Verify Application</button><p id="rkmaVerifyResult" style="margin-top:10px;font-size:13px;" aria-live="polite"></p>';
+        const notices = home.querySelector('.card[style*="border-left"]');
+        if (notices) notices.insertAdjacentElement('beforebegin', verify);
+        else home.appendChild(verify);
+        document.getElementById('rkmaVerifyButton').addEventListener('click', verifyPublicApplication);
+      }
+    }
+
+    function rkmaRenderPublicCMS() {
+      const hero = document.querySelector('#sec-home .hero-card');
+      if (hero) {
+        const heading = hero.querySelector('h2');
+        const subtitle = hero.querySelector('p');
+        const badge = hero.querySelector('.badge');
+        if (heading && siteContent.heroTitle) heading.textContent = siteContent.heroTitle;
+        if (heading && siteContent.heroTitle === '') heading.textContent = 'Ramakrishna Mission Ashrama, Jhargram';
+        if (subtitle && siteContent.heroSubtitle !== undefined) subtitle.textContent = siteContent.heroSubtitle;
+        if (badge && siteContent.academicSession !== undefined) badge.textContent = siteContent.academicSession;
+      }
+      const deadline = document.getElementById('rkmaDeadlineText');
+      const eligibility = document.getElementById('rkmaEligibilityText');
+      if (deadline) deadline.textContent = siteContent.applicationDeadline || 'Please check the latest official notice for the application deadline.';
+      if (eligibility) eligibility.textContent = siteContent.eligibilityCriteria || 'Eligibility criteria will be published by the Ashrama.';
+      const deadlineBox = document.getElementById('rkmaDeadlineBox');
+      const eligibilityBox = document.getElementById('rkmaEligibilityBox');
+      if (deadlineBox) deadlineBox.style.display = siteContent.showDeadline === false ? 'none' : '';
+      if (eligibilityBox) eligibilityBox.style.display = siteContent.showEligibility === false ? 'none' : '';
+    }
+
+    async function verifyPublicApplication() {
+      const appNo = rkmaValue('rkmaVerifyAppNo');
+      const mobile = rkmaValue('rkmaVerifyMobile');
+      const output = document.getElementById('rkmaVerifyResult');
+      output.textContent = '';
+      if (!appNo || !/^[0-9]{10}$/.test(mobile)) {
+        output.textContent = 'Enter a valid application number and 10-digit mobile number.';
+        return;
+      }
+      const {data, error} = await db.rpc('public_verify_application', {
+        p_app_no: appNo, p_mobile: mobile
+      });
+      if (error || !data || !data.length) {
+        output.textContent = 'No matching application was found.';
+        return;
+      }
+      const record = data[0];
+      output.textContent = 'Applicant: ' + record.applicant_name + ' | Status: ' + record.application_status;
+    }
+
+    async function rkmaSaveSiteContent() {
+      const {error} = await db.from('site_content').upsert({
+        id: 1, content: siteContent, updated_at: new Date().toISOString(),
+        updated_by: (await db.auth.getUser()).data.user?.id || null
+      }, {onConflict:'id'});
+      if (error) throw error;
+      localStorage.setItem('rkm_site_content', JSON.stringify(siteContent));
+    }
+
+    async function rkmaUploadPrivateFile(file, folder, appNo, key) {
+      if (!file) return null;
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = folder + '/' + appNo + '/' + key + '_' + Date.now() + '_' + safeName;
+      const {data, error} = await db.storage.from(RKMA_PRIVATE_BUCKET).upload(path, file, {
+        cacheControl:'3600', upsert:false, contentType:file.type
+      });
+      if (error) throw error;
+      return data.path;
+    }
+
+    async function rkmaCreateSignedUrl(path, expiresIn) {
+      if (!path) return '';
+      const {data, error} = await db.storage.from(RKMA_PRIVATE_BUCKET).createSignedUrl(path, expiresIn || 300);
+      if (error) throw error;
+      return data.signedUrl;
+    }
+
+    function rkmaGetFileFromInput(id, legacyValue) {
+      const input = document.getElementById(id);
+      return input && input.files && input.files[0] ? input.files[0] : null;
+    }
+
+    async function rkmaBuildApplicationFilePaths(appNo) {
+      const photo = rkmaGetFileFromInput('f_cand_photo');
+      const sign = rkmaGetFileFromInput('f_cand_sign');
+      const result = {photo_path:null, sign_path:null, uploaded_documents:{}};
+      if (photo) result.photo_path = await rkmaUploadPrivateFile(photo, activeCandidateId, appNo, 'photo');
+      if (sign) result.sign_path = await rkmaUploadPrivateFile(sign, activeCandidateId, appNo, 'signature');
+      const fileInputs = [
+        ['f_doc_aadhaar','docAadhaar'],['f_doc_adm','docAdm'],['f_doc_mark','docMark'],
+        ['f_doc_passbook','docPassbook'],['f_doc_income','docIncome'],['f_doc_prayer','docPrayer'],
+        ['f_doc_bonafide','docBonafide'],['f_doc_caste','docCaste'],['f_doc_disability','docDisability']
+      ];
+      for (const [inputId,key] of fileInputs) {
+        const file = rkmaGetFileFromInput(inputId);
+        if (file) {
+          const path = await rkmaUploadPrivateFile(file, activeCandidateId, appNo, key);
+          result.uploaded_documents[key] = {name:file.name,type:file.type,path:path};
+        } else if (currentUploadedDocs[key] && currentUploadedDocs[key].path) {
+          result.uploaded_documents[key] = currentUploadedDocs[key];
+        }
+      }
+      return result;
+    }
+
+    function rkmaMakeQrDataUrl(textValue) {
+      const url = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(textValue);
+      return url;
+    }
+
+    async function rkmaGenerateAcknowledgmentReceipt(app) {
+      const receipt = document.createElement('section');
+      receipt.id = 'rkmaAcknowledgmentReceipt';
+      receipt.className = 'card';
+      receipt.innerHTML = '<h2 style="text-align:center;color:#7f1d1d;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</h2><h3 style="text-align:center;">ACKNOWLEDGMENT RECEIPT</h3><div id="rkmaReceiptMeta"></div><div style="text-align:center;margin:14px;"><div id="rkmaReceiptQR" aria-label="Application verification QR code" style="display:inline-block;"></div></div><h4>Submitted Documents</h4><div id="rkmaReceiptDocuments"></div><p style="font-size:11px;">This is a computer-generated acknowledgment of receipt, not a guarantee of scholarship sanction.</p><button class="btn-primary" onclick="printAcknowledgmentReceipt()">Print Receipt</button>';
+      const existing = document.getElementById('rkmaAcknowledgmentReceipt');
+      if (existing) existing.remove();
+      document.querySelector('main').appendChild(receipt);
+      document.getElementById('rkmaReceiptMeta').textContent =
+        'Application Number: ' + app.appNo + ' | Applicant: ' + app.name +
+        ' | Submitted: ' + new Date().toLocaleString();
+      const qrTarget = document.getElementById('rkmaReceiptQR');
+      if (window.QRCode) {
+        new QRCode(qrTarget,{text:app.appNo,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});
+      } else {
+        qrTarget.textContent = 'QR code library unavailable. Application No: ' + app.appNo;
+      }
+      const docs = document.getElementById('rkmaReceiptDocuments');
+      for (const [label,path] of [['Applicant Photo',app.photoPath],['Applicant Signature',app.signPath]]) {
+        if (path) {
+          const signed = await rkmaCreateSignedUrl(path,300);
+          const row = document.createElement('div');
+          row.className = 'rkma-receipt-doc';
+          const heading = document.createElement('strong');
+          heading.textContent = label;
+          const image = document.createElement('img');
+          image.src = signed;
+          image.alt = label;
+          image.style.cssText = 'display:block;max-width:220px;max-height:180px;margin-top:8px;object-fit:contain;';
+          row.append(heading,image);
+          docs.appendChild(row);
+        }
+      }
+      docs.textContent = 'Application details and uploaded document copies are listed below. For privacy, document copies are retrieved through authenticated, short-lived links.';
+      const allDocs = app.uploadedDocuments || {};
+      for (const key of Object.keys(allDocs)) {
+        const item = allDocs[key];
+        const row = document.createElement('div');
+        row.className = 'rkma-receipt-doc';
+        row.textContent = item.name || key;
+        if (item.path) {
+          try {
+            const signed = await rkmaCreateSignedUrl(item.path, 300);
+            if (item.type && item.type.indexOf('image/') === 0) {
+              const image = document.createElement('img');
+              image.src = signed;
+              image.alt = item.name || key;
+              image.style.cssText = 'display:block;max-width:100%;max-height:700px;margin-top:8px;object-fit:contain;';
+              row.appendChild(image);
+            } else if (item.type === 'application/pdf') {
+              const frame = document.createElement('iframe');
+              frame.src = signed;
+              frame.title = item.name || key;
+              frame.style.cssText = 'width:100%;height:900px;border:0;margin-top:8px;';
+              row.appendChild(frame);
+            }
+            const link = document.createElement('a');
+            link.href = signed;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.textContent = 'Open / download original copy';
+            row.appendChild(document.createElement('br'));
+            row.appendChild(link);
+          } catch (err) {
+            row.appendChild(document.createTextNode(' (Document link unavailable)'));
+          }
+        }
+        docs.appendChild(row);
+      }
+    }
+
+    function printAcknowledgmentReceipt() {
+      document.body.classList.add('rkma-print-receipt');
+      window.addEventListener('afterprint',function cleanupReceiptPrint() {
+        document.body.classList.remove('rkma-print-receipt');
+      },{once:true});
+      window.print();
+    }
+
+    async function rkmaLoadHistory(appNo) {
+      const {data,error} = await db.from('status_history').select('*').eq('app_no',appNo).order('changed_at',{ascending:true});
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function rkmaSaveStatusHistory(app, newStatus, remarks) {
+      const {data:userData} = await db.auth.getUser();
+      const {error} = await db.from('status_history').insert([{
+        app_no:app.appNo, old_status:app.status, new_status:newStatus,
+        changed_by:userData.user ? userData.user.id : null,
+        changed_at:new Date().toISOString(), remarks:remarks || ''
+      }]);
+      if (error) throw error;
+    }
+
+    function rkmaAddSanctionInputs() {
+      const select = document.getElementById('modalStatusSelect');
+      if (!select || rkmaSanctionControlsReady) return;
+      const parent = select.closest('.form-group') || select.parentElement;
+      const box = document.createElement('div');
+      box.className = 'rkma-extra-grid';
+      box.id = 'rkmaSanctionFields';
+      box.style.display = 'none';
+      box.innerHTML = '<div class="form-group"><label for="rkmaSanctionAmount">Sanction Amount (₹)</label><input type="number" min="1" id="rkmaSanctionAmount"></div><div class="form-group"><label for="rkmaSanctionDate">Sanction Date</label><input type="date" id="rkmaSanctionDate"></div>';
+      parent.insertAdjacentElement('afterend', box);
+      select.addEventListener('change', function () {
+        box.style.display = select.value === 'Sanctioned' ? 'grid' : 'none';
+      });
+      rkmaSanctionControlsReady = true;
+    }
+
+    async function rkmaOpenStatusTimeline(appNo, container) {
+      const history = await rkmaLoadHistory(appNo);
+      container.innerHTML = '';
+      if (!history.length) {
+        const item = document.createElement('div');
+        item.className = 'rkma-timeline-item';
+        item.textContent = 'No status history has been recorded yet.';
+        container.appendChild(item);
+        return;
+      }
+      history.forEach(function (entry) {
+        const item = document.createElement('div');
+        item.className = 'rkma-timeline-item';
+        const heading = document.createElement('strong');
+        heading.textContent = (entry.old_status || 'Initial') + ' → ' + entry.new_status;
+        const details = document.createElement('div');
+        details.textContent = new Date(entry.changed_at).toLocaleString() + ' | ' + (entry.remarks || 'No remarks');
+        item.append(heading, details);
+        container.appendChild(item);
+      });
+    }
+
+    // Candidate authentication uses Supabase Auth; legacy plaintext passwords are never queried.
+    // Candidate accounts must be provisioned by the trusted create-candidate-auth-user Edge Function.
+    async function executeCandidateDirectLogin() {
+      const id = rkmaValue('candIdField');
+      const password = rkmaValue('candPassField');
+      if (!id || !password) {
+        alert('Enter your Candidate ID and password.');
+        return;
+      }
+      const authEmail = id.toLowerCase().replace(/[^a-z0-9._-]/g,'') + '@candidates.rkma.local';
+      const {data,error} = await db.auth.signInWithPassword({email:authEmail,password:password});
+      if (error || !data.user) {
+        alert('Authentication failed. Check your Candidate ID and password.');
+        return;
+      }
+      const {data:ownCandidate,error:ownError} = await db.from('candidates')
+        .select('*').eq('auth_user_id',data.user.id).maybeSingle();
+      if (ownError || !ownCandidate || ownCandidate.candidate_id !== id) {
+        await db.auth.signOut();
+        alert('Your authenticated account is not linked to this Candidate ID.');
+        return;
+      }
+      activeCandidateId = id;
+      rkmaSetText('candWelcomeName','Welcome, ' + ownCandidate.name);
+      rkmaSetText('candWelcomeId','Candidate ID: ' + id + ' | Mobile: ' + ownCandidate.mobile);
+      document.getElementById('candIdField').value = '';
+      document.getElementById('candPassField').value = '';
+      saveActiveSession('candidate',id);
+      setAuthenticatedUI('candidate','CANDIDATE SCHOLARSHIP WORKSPACE',ownCandidate.name + ' (' + id + ')');
+      await loadDataFromSupabase();
+      navigateTo('candidateDashboard');
+      checkCandidateProfileStatus();
+    }
+
+
+    async function requestAdminEmailOTP() {
+      const id = rkmaValue('manualAdminId');
+      const password = rkmaValue('manualAdminPass');
+      if (!id || !password) {
+        alert('Enter your Admin ID and password.');
+        return;
+      }
+      const {data:result,error} = await db.functions.invoke('admin-authenticate', {
+        body:{admin_id:id,password:password}
+      });
+      if (error || !result || !result.session) {
+        alert('Administrator authentication failed.');
+        return;
+      }
+      const {error:sessionError} = await db.auth.setSession({
+        access_token:result.session.access_token,
+        refresh_token:result.session.refresh_token
+      });
+      if (sessionError) {
+        alert('Could not establish administrator session: ' + sessionError.message);
+        return;
+      }
+      const {data:userData} = await db.auth.getUser();
+      const {data:admin,error:adminError} = await db.from('admins')
+        .select('admin_id,name,mobile,email,role,auth_user_id')
+        .eq('auth_user_id',userData.user.id).maybeSingle();
+      if (adminError || !admin || admin.admin_id !== id) {
+        await db.auth.signOut();
+        alert('Authenticated account is not linked to this administrator ID.');
+        return;
+      }
+      pendingAdminLoginData = admin;
+      const {error:otpError} = await db.auth.signInWithOtp({
+        email:admin.email,options:{shouldCreateUser:false}
+      });
+      if (otpError) {
+        alert('Unable to send the verification code: ' + otpError.message);
+        return;
+      }
+      document.getElementById('adminLoginStep1').style.display = 'none';
+      document.getElementById('adminLoginStep2').style.display = 'block';
+      document.getElementById('adminOtpNoticeText').textContent = 'A verification code has been sent to your registered administrator email.';
+    }
+
+    // Replaces legacy status update and writes an immutable audit entry.
+
+    function openScrutinyModal(index) {
+      selectedScrutinyIndex = index;
+      const app = applications[index];
+      const info = document.getElementById('scrutinyAppInfo');
+      info.textContent = '';
+      const rows = [
+        ['Applicant',app.name + ' (' + app.candidateId + ')'],
+        ['Scheme',app.schemeName || 'Scholarship'],
+        ['Application No',app.appNo],
+        ['Status',app.status]
+      ];
+      rows.forEach(function (entry) {
+        const line = document.createElement('div');
+        const label = document.createElement('strong');
+        label.textContent = entry[0] + ': ';
+        line.append(label,document.createTextNode(String(entry[1] || '')));
+        info.appendChild(line);
+      });
+      document.getElementById('modalStatusSelect').value = app.status;
+      document.getElementById('modalAdminRemarks').value = app.adminRemarks || '';
+      rkmaAddSanctionInputs();
+      const amount = document.getElementById('rkmaSanctionAmount');
+      const date = document.getElementById('rkmaSanctionDate');
+      if (amount) amount.value = app.sanctionAmount || '';
+      if (date) date.value = app.sanctionDate || '';
+      document.getElementById('rkmaSanctionFields').style.display =
+        app.status === 'Sanctioned' ? 'grid' : 'none';
+      handleStatusSelectionChange();
+      document.getElementById('adminScrutinyModal').style.display = 'flex';
+    }
+
+    async function saveAdminStatusDecision() {
+      if (selectedScrutinyIndex === null) return;
+      const app = applications[selectedScrutinyIndex];
+      const newStatus = rkmaValue('modalStatusSelect');
+      const remarks = rkmaValue('modalAdminRemarks');
+      if (newStatus === 'Sanctioned' && app.status !== 'Approved') {
+        alert('The application must be Approved before it can be Sanctioned.');
+        return;
+      }
+      if (newStatus === 'Returned for Correction' && !remarks) {
+        alert('Remarks are required when returning an application.');
+        return;
+      }
+      const update = {status:newStatus,admin_remarks:remarks};
+      if (newStatus === 'Sanctioned') {
+        const amount = Number(rkmaValue('rkmaSanctionAmount'));
+        const date = rkmaValue('rkmaSanctionDate');
+        if (!amount || amount <= 0 || !date) {
+          alert('Enter a valid sanction amount and sanction date.');
+          return;
+        }
+        update.sanction_amount = amount;
+        update.sanction_date = date;
+      }
+      const {error} = await db.rpc('admin_update_application_status',{
+        p_app_no:app.appNo,
+        p_new_status:newStatus,
+        p_remarks:remarks,
+        p_sanction_amount:update.sanction_amount || null,
+        p_sanction_date:update.sanction_date || null
+      });
+      if (error) {
+        alert('Status update and audit log failed: ' + error.message);
+        return;
+      }
+      alert('Status updated and history recorded.');
+      closeScrutinyModal();
+      await loadDataFromSupabase();
+    }
+
+    async function openTrackStatus() {
+      const app = applications.find(function (item) { return item.candidateId === activeCandidateId; });
+      const box = document.getElementById('trackTimelineBox');
+      if (!app) {
+        box.textContent = 'No application submitted yet.';
+      } else {
+        box.innerHTML = '<div class="rkma-info-card" id="rkmaCurrentStatus"></div><h4>Status History</h4><div id="rkmaStatusHistoryTimeline"></div>';
+        document.getElementById('rkmaCurrentStatus').textContent =
+          'Scheme: ' + (app.schemeName || 'Scholarship') + ' | Current Status: ' + app.status +
+          ' | Remarks: ' + (app.adminRemarks || 'Under standard scrutiny.');
+        try {
+          await rkmaOpenStatusTimeline(app.appNo,document.getElementById('rkmaStatusHistoryTimeline'));
+        } catch (error) {
+          document.getElementById('rkmaStatusHistoryTimeline').textContent = 'Status history is temporarily unavailable.';
+        }
+      }
+      navigateTo('trackStatus');
+    }
+
+    // Secure application submission: all uploaded files are stored privately; only paths enter Postgres.
+    async function executeFinalApplicationSubmit() {
+      rkmaEnsureNewFormFields();
+      const declaration = document.getElementById('f_declaration_checkbox');
+      if (!declaration || !declaration.checked) {
+        alert('Please accept the declaration before submitting the application.');
+        return;
+      }
+      const ifsc = rkmaValue('f_ifsc').toUpperCase();
+      if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) {
+        alert('Enter a valid 11-character IFSC code.');
+        goToStep(5);
+        return;
+      }
+      if (!rkmaValue('f_roll_registration') || !rkmaValue('f_income_issuing_authority') || !rkmaValue('f_bank_branch')) {
+        alert('Complete all required new fields before submission.');
+        return;
+      }
+      if (rkmaValue('f_scholarship_type') === 'Renewal' &&
+          (!rkmaValue('f_previous_scholarship_name') || !rkmaValue('f_previous_scholarship_amount') || !rkmaValue('f_previous_scholarship_year'))) {
+        alert('Complete the previous scholarship name, amount and year for Renewal applications.');
+        goToStep(2);
+        return;
+      }
+      if (rkmaValue('f_caste') !== 'General' && !rkmaGetFileFromInput('f_doc_caste')) {
+        alert('Please upload your caste certificate for SC/ST/OBC category.');
+        goToStep(6);
+        return;
+      }
+      if (!rkmaGetFileFromInput('f_doc_bonafide')) {
+        alert('Bonafide Certificate is required.');
+        goToStep(6);
+        return;
+      }
+      if (rkmaValue('f_captchaInput').toUpperCase() !== currentGeneratedCaptcha) {
+        alert('Invalid CAPTCHA.');
+        return;
+      }
+      const enteredOtp = rkmaValue('f_emailOtpInput');
+      const email = rkmaValue('f_email');
+      if (!enteredOtp || enteredOtp.length !== 6 || candidateOtpTargetEmail !== email) {
+        alert('Request and enter the six-digit email OTP before submitting.');
+        return;
+      }
+      const {data:otpResult,error:otpError} = await db.functions.invoke('verify-application-email-otp',{
+        body:{email:email,token:enteredOtp,candidate_id:activeCandidateId}
+      });
+      if (otpError || !otpResult || !otpResult.success) {
+        alert('Email OTP verification failed. Request a new code and try again.');
+        return;
+      }
+      const existingIndex = applications.findIndex(function (item) { return item.candidateId === activeCandidateId; });
+      const appNo = existingIndex >= 0 ? applications[existingIndex].appNo :
+        'RKM-SCH-2026-' + String(Date.now()).slice(-8);
+      let filePaths;
+      try {
+        filePaths = await rkmaBuildApplicationFilePaths(appNo);
+      } catch (uploadError) {
+        alert('Secure document upload failed: ' + uploadError.message);
+        return;
+      }
+      const schemeObj = scholarshipSchemes.find(function (item) { return item.id === selectedScholarshipSchemeId; });
+      const payload = {
+        app_no:appNo,candidate_id:activeCandidateId,scheme_id:selectedScholarshipSchemeId,
+        scheme_name:schemeObj ? schemeObj.name : 'Scholarship',
+        name:rkmaValue('f_name'),dob:rkmaValue('f_dob'),caste:rkmaValue('f_caste'),
+        gender:rkmaValue('f_gender'),father:rkmaValue('f_fname'),father_occ:rkmaValue('f_focc'),
+        mother:rkmaValue('f_mname'),mother_occ:rkmaValue('f_mocc'),guardian:rkmaValue('f_gname'),
+        guardian_rel:rkmaValue('f_grel'),mobile:rkmaValue('f_mobile'),alt_mobile:rkmaValue('f_altmobile'),
+        whatsapp:rkmaValue('f_whatsapp'),email:email,vill:rkmaValue('f_vill'),po:rkmaValue('f_po'),
+        ps:rkmaValue('f_ps'),dist:rkmaValue('f_dist'),pin:rkmaValue('f_pin'),
+        curr_class:rkmaValue('f_currclass'),adm_date:rkmaValue('f_admdate'),stream:rkmaValue('f_stream'),
+        institution:rkmaValue('f_instname'),last_exam:rkmaValue('f_lastexam'),
+        marks_pct:rkmaValue('f_percentage'),income:rkmaValue('f_income'),
+        ac_holder:rkmaValue('f_acholder'),bank_acc:rkmaValue('f_acno'),ifsc:ifsc,
+        bank_name:rkmaValue('f_bankname'),bank_branch:rkmaValue('f_bank_branch'),
+        scholarship_type:rkmaValue('f_scholarship_type'),
+        previous_scholarship_name:rkmaValue('f_previous_scholarship_name'),
+        previous_scholarship_amount:rkmaValue('f_previous_scholarship_amount') || null,
+        previous_scholarship_year:rkmaValue('f_previous_scholarship_year'),
+        roll_registration:rkmaValue('f_roll_registration'),
+        income_certificate_no:rkmaValue('f_income_certificate_no'),
+        income_issuing_authority:rkmaValue('f_income_issuing_authority'),
+        status:'Submitted',admin_remarks:'Application submitted and email verified.',
+        photo_path:filePaths.photo_path,sign_path:filePaths.sign_path,
+        uploaded_documents:filePaths.uploaded_documents,
+        declaration_accepted:true,declaration_text:document.querySelector('#f_application_declaration span').textContent,
+        submission_date:new Date().toISOString()
+      };
+      const result = existingIndex >= 0 ?
+        await db.from('applications').update(payload).eq('app_no',appNo) :
+        await db.from('applications').insert([payload]);
+      if (result.error) {
+        alert('Application submission failed: ' + result.error.message);
+        return;
+      }
+      const receiptApp = {
+        appNo:appNo,name:payload.name,schemeName:payload.scheme_name,
+        uploadedDocuments:payload.uploaded_documents,
+        photoPath:payload.photo_path,
+        signPath:payload.sign_path
+      };
+      await loadDataFromSupabase();
+      await rkmaGenerateAcknowledgmentReceipt(receiptApp);
+      candidateOtpTargetEmail = '';
+      document.getElementById('f_emailOtpInput').value = '';
+      alert('Application submitted successfully. Your acknowledgment receipt is ready.');
+      navigateTo('candidateDashboard');
+    }
+
+    // CMS saves are persisted in Supabase, not merely in this browser.
+    async function saveWebsiteContentChanges() {
+      siteContent.aboutIntro = rkmaValue('editAboutIntro');
+      siteContent.actEdu = rkmaValue('editActEdu');
+      siteContent.actWelfare = rkmaValue('editActWelfare');
+      siteContent.actYouth = rkmaValue('editActYouth');
+      siteContent.actSpiritual = rkmaValue('editActSpiritual');
+      siteContent.monk1 = {title:rkmaValue('editMonkTitle1'),photo:rkmaValue('editMonkPhoto1'),msg:rkmaValue('editMonkMsg1')};
+      siteContent.monk2 = {title:rkmaValue('editMonkTitle2'),photo:rkmaValue('editMonkPhoto2'),msg:rkmaValue('editMonkMsg2')};
+      siteContent.monk3 = {title:rkmaValue('editMonkTitle3'),photo:rkmaValue('editMonkPhoto3'),msg:rkmaValue('editMonkMsg3')};
+      siteContent.heroTitle = rkmaValue('rkmaCmsHeroTitle');
+      siteContent.heroSubtitle = rkmaValue('rkmaCmsHeroSubtitle');
+      siteContent.academicSession = rkmaValue('rkmaCmsAcademicSession');
+      siteContent.applicationDeadline = rkmaValue('rkmaCmsDeadline');
+      siteContent.eligibilityCriteria = rkmaValue('rkmaCmsEligibility');
+      siteContent.showDeadline = document.getElementById('rkmaCmsShowDeadline')?.checked !== false;
+      siteContent.showEligibility = document.getElementById('rkmaCmsShowEligibility')?.checked !== false;
+      try {
+        await rkmaSaveSiteContent();
+        renderPublicSiteContent();
+        rkmaRenderPublicCMS();
+        alert('Website content saved to Supabase successfully.');
+      } catch (error) {
+        alert('CMS cloud save failed: ' + error.message);
+      }
+    }
+
+    async function addCustomContentBlock() {
+      const title = rkmaValue('newCustomContentTitle');
+      const content = rkmaValue('newCustomContentBody');
+      const color = rkmaValue('newCustomContentColor');
+      if (!title || !content) {
+        alert('Enter a section title and body content.');
+        return;
+      }
+      siteContent.customBlocks = siteContent.customBlocks || [];
+      siteContent.customBlocks.push({id:'block_' + crypto.randomUUID(),title:title,content:content,color:color});
+      try {
+        await rkmaSaveSiteContent();
+        document.getElementById('newCustomContentTitle').value = '';
+        document.getElementById('newCustomContentBody').value = '';
+        renderCustomBlocksAdminList();
+        renderPublicSiteContent();
+      } catch (error) {
+        alert('Could not save the content block: ' + error.message);
+      }
+    }
+
+    async function removeCustomContentBlock(id) {
+      if (!confirm('Delete this content section?')) return;
+      siteContent.customBlocks = (siteContent.customBlocks || []).filter(function (block) { return block.id !== id; });
+      try {
+        await rkmaSaveSiteContent();
+        renderCustomBlocksAdminList();
+        renderPublicSiteContent();
+      } catch (error) {
+        alert('Could not delete the content block: ' + error.message);
+      }
+    }
+
+    async function updateSlideCaption(index, caption) {
+      if (!siteContent.sliderPhotos || !siteContent.sliderPhotos[index]) return;
+      siteContent.sliderPhotos[index].caption = caption;
+      await rkmaSaveSiteContent();
+      buildSliderDOM();
+    }
+
+    async function deleteSlidePhoto(index) {
+      if (!confirm('Delete this photo from the slider?')) return;
+      const slide = siteContent.sliderPhotos[index];
+      if (slide && slide.storagePath) {
+        const {error} = await db.storage.from(RKMA_PUBLIC_BUCKET).remove([slide.storagePath]);
+        if (error) {
+          alert('Unable to delete stored image: ' + error.message);
+          return;
+        }
+      }
+      siteContent.sliderPhotos.splice(index,1);
+      await rkmaSaveSiteContent();
+      renderAdminSliderTable();
+      buildSliderDOM();
+    }
+
+    async function addNewSlidePhoto() {
+      const urlInput = rkmaValue('newSlideUrl');
+      const caption = rkmaValue('newSlideCaption') || 'Ashrama Activities - ' + ((siteContent.sliderPhotos || []).length + 1);
+      const fileInput = document.getElementById('newSlideFileInput');
+      let url = urlInput;
+      let storagePath = null;
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+          alert('Select a JPG, PNG or WEBP image not exceeding 5 MB.');
+          return;
+        }
+        storagePath = 'slider/' + crypto.randomUUID() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+        const {data,error} = await db.storage.from(RKMA_PUBLIC_BUCKET).upload(storagePath,file,{upsert:false,contentType:file.type});
+        if (error) {
+          alert('Image upload failed: ' + error.message);
+          return;
+        }
+        const publicResult = db.storage.from(RKMA_PUBLIC_BUCKET).getPublicUrl(data.path);
+        url = publicResult.data.publicUrl;
+      }
+      if (!url) {
+        alert('Provide an image URL or choose an image file.');
+        return;
+      }
+      siteContent.sliderPhotos = siteContent.sliderPhotos || [];
+      siteContent.sliderPhotos.push({url:url,caption:caption,storagePath:storagePath});
+      try {
+        await rkmaSaveSiteContent();
+        if (fileInput) fileInput.value = '';
+        document.getElementById('newSlideUrl').value = '';
+        document.getElementById('newSlideCaption').value = '';
+        renderAdminSliderTable();
+        buildSliderDOM();
+        alert('Slider image added and saved to Supabase.');
+      } catch (error) {
+        alert('Slider CMS save failed: ' + error.message);
+      }
+    }
+
+    async function submitContactForm() {
+      const name = rkmaValue('contactName');
+      const phone = rkmaValue('contactPhone');
+      const message = rkmaValue('contactMessage');
+      if (!name || !phone || !message) {
+        alert('Please fill in Name, Phone and Message.');
+        return;
+      }
+      const {error} = await db.from('helpdesk_messages').insert([{
+        name:name,phone:phone,message:message,created_at:new Date().toISOString()
+      }]);
+      if (error) {
+        alert('Your inquiry could not be saved. Please try again later.');
+        return;
+      }
+      alert('Thank you. Your inquiry has been received by the Ashrama.');
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactMessage').value = '';
+    }
+
+
+
+    async function superAdminCreateAdmin() {
+      if (!admins[activeAdminId] || admins[activeAdminId].role !== 'SUPER_ADMIN') {
+        alert('Permission denied.');
+        return;
+      }
+      const name = rkmaValue('newAdminName');
+      const mobile = rkmaValue('newAdminMobile').replace(/\D/g,'');
+      const id = rkmaValue('newAdminId');
+      const email = rkmaValue('newAdminEmail').toLowerCase();
+      const password = rkmaValue('newAdminPass');
+      if (!name || mobile.length !== 10 || !id || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || password.length < 10) {
+        alert('Enter name, valid mobile, Admin ID, official email and a password of at least 10 characters.');
+        return;
+      }
+      const {data,error} = await db.functions.invoke('create-admin-auth-user',{
+        body:{admin_id:id,name:name,mobile:mobile,email:email,password:password}
+      });
+      if (error || !data || !data.success) {
+        alert('Administrator provisioning failed: ' + (error ? error.message : 'Unknown error'));
+        return;
+      }
+      ['newAdminName','newAdminMobile','newAdminId','newAdminEmail','newAdminPass'].forEach(function (field) {
+        document.getElementById(field).value = '';
+      });
+      await loadDataFromSupabase();
+      alert('Administrator Auth account created successfully.');
+    }
+
+    async function adminCreateCustomCandidate() {
+      const name = rkmaValue('genCandName');
+      const mobile = rkmaValue('genCandMobile').replace(/\D/g,'');
+      const id = rkmaValue('genCandId');
+      const password = rkmaValue('genCandPass');
+      if (!name || mobile.length !== 10 || !id || password.length < 8) {
+        alert('Enter name, valid 10-digit mobile, Candidate ID and a password of at least 8 characters.');
+        return;
+      }
+      const {data,error} = await db.functions.invoke('create-candidate-auth-user', {
+        body:{candidate_id:id,name:name,mobile:mobile,password:password}
+      });
+      if (error || !data || !data.success) {
+        alert('Candidate account creation failed: ' + (error ? error.message : 'Unknown error'));
+        return;
+      }
+      ['genCandName','genCandMobile','genCandId','genCandPass'].forEach(function (field) {
+        document.getElementById(field).value = '';
+      });
+      await loadDataFromSupabase();
+      alert('Candidate Auth account created successfully. Share the Candidate ID and initial password securely.');
+    }
+
+    function downloadSampleCandidateTemplate() {
+      const sampleData = [
+        ['Name','Phone','CandidateID','InitialPassword'],
+        ['Swapan Mahato','9876543211','RKM-2026-003','SetSecurePassword1!'],
+        ['Raju Murmu','9876543212','RKM-2026-004','SetSecurePassword2!']
+      ];
+      const sheet = XLSX.utils.aoa_to_sheet(sampleData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook,sheet,'Candidates_Template');
+      XLSX.writeFile(workbook,'RKMA_Bulk_Candidates_Sample_Template.xlsx');
+    }
+
+    function processBulkCandidateExcelUpload() {
+      const input = document.getElementById('bulkExcelFileInput');
+      const report = document.getElementById('bulkUploadReport');
+      report.style.display = 'none';
+      if (!input.files || !input.files[0]) {
+        alert('Choose an Excel file first.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = async function (event) {
+        const workbook = XLSX.read(new Uint8Array(event.target.result),{type:'array'});
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]],{defval:''});
+        let created = 0;
+        const failures = [];
+        for (let index = 0; index < rows.length; index++) {
+          const row = rows[index];
+          const candidate = {
+            name:String(row.Name || row.name || '').trim(),
+            mobile:String(row.Phone || row.phone || '').replace(/\D/g,'').slice(-10),
+            candidate_id:String(row.CandidateID || row.candidateid || '').trim(),
+            password:String(row.InitialPassword || row.initialpassword || '').trim()
+          };
+          if (!candidate.name || candidate.mobile.length !== 10 || !candidate.candidate_id || candidate.password.length < 8) {
+            failures.push('Row ' + (index + 2) + ': Missing or invalid data.');
+            continue;
+          }
+          const {error} = await db.functions.invoke('create-candidate-auth-user',{body:candidate});
+          if (error) failures.push('Row ' + (index + 2) + ': ' + error.message);
+          else created++;
+        }
+        report.style.display = 'block';
+        report.textContent = 'Created: ' + created + ' | Failed: ' + failures.length + (failures.length ? ' | ' + failures.join(' ; ') : '');
+        input.value = '';
+        await loadDataFromSupabase();
+      };
+      reader.readAsArrayBuffer(input.files[0]);
+    }
+
+    async function requestCandidatePasswordResetOTP() {
+      const candidateId = rkmaValue('candForgotQueryInput');
+      if (!candidateId) { alert('Enter your Candidate ID.'); return; }
+      const {data,error} = await db.functions.invoke('candidate-password-reset-request',{
+        body:{candidate_id:candidateId}
+      });
+      if (error || !data || !data.success) {
+        alert('Password recovery could not be started. Contact the Ashrama office.');
+        return;
+      }
+      pendingCandResetId = candidateId;
+      document.getElementById('candForgotStep1').style.display = 'none';
+      document.getElementById('candForgotStep2').style.display = 'block';
+      document.getElementById('candForgotNoticeText').textContent = 'A recovery code has been sent to the registered contact email address.';
+    }
+
+    async function verifyCandidatePasswordResetOTP() {
+      const token = rkmaValue('candForgotOtpInput');
+      const password = rkmaValue('candForgotNewPass');
+      const confirmation = rkmaValue('candForgotConfPass');
+      if (!pendingCandResetId || token.length !== 6 || password.length < 8 || password !== confirmation) {
+        alert('Enter the valid recovery code and matching password (at least 8 characters).');
+        return;
+      }
+      const {data,error} = await db.functions.invoke('candidate-password-reset-verify',{
+        body:{candidate_id:pendingCandResetId,token:token,new_password:password}
+      });
+      if (error || !data || !data.success) {
+        alert('Password recovery failed. Check the code or request a new one.');
+        return;
+      }
+      closeCandidateForgotModal();
+      alert('Password updated successfully. Sign in with your new password.');
+    }
+
+    async function saveCandidateFullProfile() {
+      const newPassword = rkmaValue('prof_newpass');
+      const confirmPassword = rkmaValue('prof_confpass');
+      const payload = {
+        dob:rkmaValue('prof_dob'),email:rkmaValue('prof_email'),vill:rkmaValue('prof_vill'),
+        po:rkmaValue('prof_po'),ps:rkmaValue('prof_ps'),dist:rkmaValue('prof_dist'),
+        pin:rkmaValue('prof_pin'),state:rkmaValue('prof_state') || 'West Bengal',
+        curr_class:rkmaValue('prof_currclass'),stream:rkmaValue('prof_stream'),
+        adm_date:rkmaValue('prof_admdate'),institution:rkmaValue('prof_instname')
+      };
+      if (Object.values(payload).some(function (value) { return !value; })) {
+        alert('Complete all mandatory profile fields.');
+        return;
+      }
+      if (newPassword) {
+        if (newPassword.length < 8 || newPassword !== confirmPassword) {
+          alert('Password must be at least 8 characters and both entries must match.');
+          return;
+        }
+        const {error} = await db.auth.updateUser({password:newPassword});
+        if (error) {
+          alert('Password update failed: ' + error.message);
+          return;
+        }
+      }
+      const {error} = await db.from('candidates').update(payload).eq('candidate_id',activeCandidateId);
+      if (error) {
+        alert('Profile update failed: ' + error.message);
+        return;
+      }
+      await loadDataFromSupabase();
+      closeCandidateProfileModal();
+      checkCandidateProfileStatus();
+      alert('Profile updated successfully.');
+    }
+
+    // Remove password fields from all candidate-facing profile cards and admin roster.
+    function downloadCandidateProfileCard(cid) {
+      const candidate = candidates[cid];
+      if (!candidate) {
+        alert('Candidate record not found.');
+        return;
+      }
+      const app = applications.find(function (item) { return item.candidateId === cid; });
+      document.getElementById('slipBodyContent').innerHTML =
+        '<table style="width:100%;border-collapse:collapse;font-size:13px;line-height:1.9;">' +
+        '<tr><td><strong>Candidate ID:</strong></td><td>' + escapeHTML(cid) + '</td></tr>' +
+        '<tr><td><strong>Applicant Name:</strong></td><td>' + escapeHTML(candidate.name) + '</td></tr>' +
+        '<tr><td><strong>Date of Birth:</strong></td><td>' + escapeHTML(candidate.dob || 'Not updated') + '</td></tr>' +
+        '<tr><td><strong>Mobile:</strong></td><td>' + escapeHTML(candidate.mobile) + '</td></tr>' +
+        '<tr><td><strong>Email:</strong></td><td>' + escapeHTML(candidate.email || 'Not updated') + '</td></tr>' +
+        '<tr><td><strong>Address:</strong></td><td>' + escapeHTML([candidate.vill,candidate.po,candidate.ps,candidate.dist,candidate.pin].filter(Boolean).join(', ') || 'Not updated') + '</td></tr>' +
+        '<tr><td><strong>Institution:</strong></td><td>' + escapeHTML(candidate.institution || 'Not updated') + '</td></tr>' +
+        '<tr><td><strong>Application Status:</strong></td><td>' + escapeHTML(app ? app.status : 'Not submitted') + '</td></tr></table>';
+      document.getElementById('printableSlip').style.display = 'block';
+      window.print();
+      document.getElementById('printableSlip').style.display = 'none';
+    }
+
+    // Candidate roster omits all password columns and password data.
+    function renderRegisteredCandidatesTable() {
+      const tbody = document.getElementById('registeredCandidatesTableBody');
+      if (!tbody) return;
+      tbody.textContent = '';
+      let serial = 1;
+      Object.keys(candidates).forEach(function (cid) {
+        const candidate = candidates[cid];
+        const submitted = applications.some(function (app) { return app.candidateId === cid; });
+        const row = document.createElement('tr');
+        const values = [
+          String(serial++),cid,candidate.name,candidate.mobile,
+          candidate.isProfileComplete ? 'Complete' : 'Incomplete',
+          submitted ? 'Yes' : 'Pending'
+        ];
+        values.forEach(function (value) {
+          const cell = document.createElement('td');
+          cell.textContent = value || '';
+          row.appendChild(cell);
+        });
+        const profileCell = document.createElement('td');
+        const profileButton = document.createElement('button');
+        profileButton.type = 'button';
+        profileButton.className = 'action-btn btn-pdf';
+        profileButton.textContent = 'Profile Card';
+        profileButton.addEventListener('click',function () { downloadCandidateProfileCard(cid); });
+        profileCell.appendChild(profileButton);
+        row.appendChild(profileCell);
+        const deleteCell = document.createElement('td');
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'action-btn btn-delete';
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click',function () { deleteEntireCandidateAccount(cid); });
+        deleteCell.appendChild(deleteButton);
+        row.appendChild(deleteCell);
+        tbody.appendChild(row);
+      });
+    }
+
+    function exportCandidatesRosterCSV() {
+      const rows = [['Candidate ID','Name','Mobile','Profile Complete','Email','Institution']];
+      Object.keys(candidates).forEach(function (cid) {
+        const c = candidates[cid];
+        rows.push([cid,c.name,c.mobile,c.isProfileComplete ? 'YES' : 'NO',c.email || '',c.institution || '']);
+      });
+      const csv = rows.map(function (row) {
+        return row.map(function (value) { return '"' + String(value == null ? '' : value).replace(/"/g,'""') + '"'; }).join(',');
+      }).join('\n');
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+      link.download = 'RKMA_Candidates_Roster.csv';
+      link.click();
+    }
+
+    function rkmaInstallCMSFields() {
+      const cms = document.getElementById('adminWindowManageSite');
+      if (!cms || document.getElementById('rkmaCmsExtraFields')) return;
+      const panel = document.createElement('div');
+      panel.id = 'rkmaCmsExtraFields';
+      panel.className = 'card';
+      panel.innerHTML = '<h3 style="color:#7f1d1d;margin-bottom:10px;">Landing Page & Public Application Information</h3><div class="form-group"><label for="rkmaCmsHeroTitle">Hero Heading</label><input id="rkmaCmsHeroTitle" type="text"></div><div class="form-group"><label for="rkmaCmsHeroSubtitle">Hero Description</label><textarea id="rkmaCmsHeroSubtitle" rows="2"></textarea></div><div class="form-group"><label for="rkmaCmsAcademicSession">Academic Session Badge</label><input id="rkmaCmsAcademicSession" type="text"></div><div class="form-group"><label for="rkmaCmsDeadline">Application Deadline</label><textarea id="rkmaCmsDeadline" rows="2"></textarea></div><div class="form-group"><label for="rkmaCmsEligibility">Eligibility Criteria</label><textarea id="rkmaCmsEligibility" rows="3"></textarea></div><label><input type="checkbox" id="rkmaCmsShowDeadline" checked style="width:auto;"> Show application deadline</label><label><input type="checkbox" id="rkmaCmsShowEligibility" checked style="width:auto;"> Show eligibility criteria</label><p class="file-rule-hint">Uncheck either option to remove its public box without deleting the saved text.</p>';
+      cms.appendChild(panel);
+    }
+
+    // Do not persist candidate, administrator or application records in browser localStorage.
+    window.saveState = function () {
+      try { localStorage.setItem('rkm_site_content',JSON.stringify(siteContent)); } catch (error) {}
+    };
+
+    // Supabase site_content is the source of truth. Existing data loading remains intact.
+    const legacyLoadDataFromSupabase = window.loadDataFromSupabase;
+    window.loadDataFromSupabase = async function () {
+      await legacyLoadDataFromSupabase();
+      Object.values(candidates).forEach(function (candidate) { delete candidate.pass; });
+      Object.values(admins).forEach(function (admin) { delete admin.pass; });
+      localStorage.removeItem('rkm_cand_db');
+      localStorage.removeItem('rkm_admins_db');
+      document.querySelectorAll('th').forEach(function (cell) {
+        if (cell.textContent.trim().toLowerCase() === 'password' &&
+            cell.closest('table') && cell.closest('table').querySelector('#registeredCandidatesTableBody')) {
+          cell.remove();
+        }
+      });
+      const {data,error} = await db.from('site_content').select('content').eq('id',1).maybeSingle();
+      if (!error && data && data.content) {
+        siteContent = Object.assign({},siteContent,data.content);
+      }
+      const {data:secureApps} = await db.from('applications')
+        .select('app_no,photo_path,sign_path,uploaded_documents,scholarship_type,previous_scholarship_name,previous_scholarship_amount,previous_scholarship_year,roll_registration,income_certificate_no,income_issuing_authority,bank_branch,sanction_amount,sanction_date')
+      if (secureApps) {
+        secureApps.forEach(function (row) {
+          const app = applications.find(function (item) { return item.appNo === row.app_no; });
+          if (app) {
+            app.photoPath = row.photo_path;
+            app.signPath = row.sign_path;
+            app.uploadedDocuments = row.uploaded_documents || app.uploadedDocuments || {};
+            app.scholarshipType = row.scholarship_type;
+            app.previousScholarshipName = row.previous_scholarship_name;
+            app.previousScholarshipAmount = row.previous_scholarship_amount;
+            app.previousScholarshipYear = row.previous_scholarship_year;
+            app.rollRegistration = row.roll_registration;
+            app.incomeCertificateNo = row.income_certificate_no;
+            app.incomeIssuingAuthority = row.income_issuing_authority;
+            app.bankBranch = row.bank_branch;
+            app.sanctionAmount = row.sanction_amount;
+            app.sanctionDate = row.sanction_date;
+          }
+        });
+      }
+      rkmaRenderPublicCMS();
+      rkmaInstallCMSFields();
+      rkmaEnsureNewFormFields();
+      rkmaEnsurePublicSections();
+      rkmaAddSanctionInputs();
+      if (document.getElementById('rkmaCmsDeadline')) {
+        document.getElementById('rkmaCmsHeroTitle').value = siteContent.heroTitle || 'Ramakrishna Mission Ashrama, Jhargram';
+        document.getElementById('rkmaCmsHeroSubtitle').value = siteContent.heroSubtitle || 'Scholarship Application & Management Portal | Empowering Students Through Education, Values and Service';
+        document.getElementById('rkmaCmsAcademicSession').value = siteContent.academicSession || 'Academic Session 2026-2027';
+        document.getElementById('rkmaCmsDeadline').value = siteContent.applicationDeadline || '';
+        document.getElementById('rkmaCmsEligibility').value = siteContent.eligibilityCriteria || '';
+        document.getElementById('rkmaCmsShowDeadline').checked = siteContent.showDeadline !== false;
+        document.getElementById('rkmaCmsShowEligibility').checked = siteContent.showEligibility !== false;
+      }
+    };
+
+    // Sanitize dynamic content in high-risk public/admin rendering functions.
+    const oldRenderPublicSiteContent = window.renderPublicSiteContent;
+    if (typeof oldRenderPublicSiteContent === 'function') {
+      window.renderPublicSiteContent = function () {
+        oldRenderPublicSiteContent();
+        rkmaRenderPublicCMS();
+      };
+    }
+
+    // Public helpdesk and application verification are wired after DOM creation.
+    document.addEventListener('DOMContentLoaded',function () {
+      rkmaEnsureNewFormFields();
+      rkmaEnsurePublicSections();
+      rkmaInstallCMSFields();
+      rkmaAddSanctionInputs();
+      rkmaRenderPublicCMS();
+    });
+
+    const legacyDownloadApplicationPDF = window.downloadApplicationPDF;
+    window.downloadApplicationPDF = async function (index) {
+      const app = applications[index];
+      if (!app) return;
+      try {
+        if (app.photoPath) app.photoBase64 = await rkmaCreateSignedUrl(app.photoPath, 300);
+        if (app.signPath) app.signBase64 = await rkmaCreateSignedUrl(app.signPath, 300);
+        for (const key of Object.keys(app.uploadedDocuments || {})) {
+          const doc = app.uploadedDocuments[key];
+          if (doc.path) {
+            doc.base64 = await rkmaCreateSignedUrl(doc.path, 300);
+          }
+        }
+        legacyDownloadApplicationPDF(index);
+      } catch (error) {
+        alert('Unable to securely retrieve application documents: ' + error.message);
+      }
+    };
+
+
+
+    async function executeAdminDirectProfileUpdate() {
+      const mobile = rkmaValue('updNewMobile');
+      const email = rkmaValue('updNewEmail');
+      const password = rkmaValue('updNewPassword');
+      if (!mobile && !email && !password) {
+        alert('Enter at least one profile change.');
+        return;
+      }
+      const updates = {};
+      const authUpdates = {};
+      if (mobile) {
+        if (!/^\d{10}$/.test(mobile)) { alert('Mobile number must contain 10 digits.'); return; }
+        updates.mobile = mobile;
+        authUpdates.phone = mobile;
+      }
+      if (email) {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Enter a valid email address.'); return; }
+        updates.email = email;
+        authUpdates.email = email;
+      }
+      if (password) {
+        if (password.length < 10) { alert('Password must contain at least 10 characters.'); return; }
+        authUpdates.password = password;
+      }
+      if (Object.keys(authUpdates).length) {
+        const {error} = await db.auth.updateUser(authUpdates);
+        if (error) { alert('Auth profile update failed: ' + error.message); return; }
+      }
+      if (Object.keys(updates).length) {
+        const {error} = await db.from('admins').update(updates).eq('admin_id',activeAdminId);
+        if (error) { alert('Administrator profile update failed: ' + error.message); return; }
+      }
+      ['updNewMobile','updNewEmail','updNewPassword'].forEach(function (id) { document.getElementById(id).value = ''; });
+      await loadDataFromSupabase();
+      alert('Administrator profile updated successfully.');
+    }
+
+    async function requestAdminPasswordResetOTP() {
+      const adminId = rkmaValue('adminForgotQueryInput');
+      if (!adminId) { alert('Enter your Admin ID.'); return; }
+      const {data,error} = await db.functions.invoke('admin-password-reset-request',{body:{admin_id:adminId}});
+      if (error || !data || !data.success) {
+        alert('Password recovery could not be started. Contact the system administrator.');
+        return;
+      }
+      pendingAdminResetEmail = data.email;
+      pendingAdminResetId = adminId;
+      document.getElementById('adminForgotStep1').style.display = 'none';
+      document.getElementById('adminForgotStep2').style.display = 'block';
+      document.getElementById('adminForgotNoticeText').textContent = 'A recovery code has been sent to your registered administrator email.';
+    }
+
+    async function verifyAdminPasswordResetOTP() {
+      const token = rkmaValue('adminForgotOtpInput');
+      const password = rkmaValue('adminForgotNewPass');
+      const confirmation = rkmaValue('adminForgotConfPass');
+      if (!pendingAdminResetEmail || token.length !== 6 || password.length < 10 || password !== confirmation) {
+        alert('Enter the valid six-digit code and matching password (10+ characters).');
+        return;
+      }
+      const {error:verifyError} = await db.auth.verifyOtp({
+        email:pendingAdminResetEmail,token:token,type:'recovery'
+      });
+      if (verifyError) { alert('Invalid or expired recovery code.'); return; }
+      const {error:updateError} = await db.auth.updateUser({password:password});
+      if (updateError) { alert('Password update failed: ' + updateError.message); return; }
+      await db.auth.signOut();
+      closeAdminForgotModal();
+      alert('Administrator password updated. Please sign in again.');
+    }
+
+    window.executeCandidateDirectLogin = executeCandidateDirectLogin;
+    window.openSchemeSelectionWindow = openSchemeSelectionWindow;
+    window.printAcknowledgmentReceipt = printAcknowledgmentReceipt;
+    window.sendCandidateSubmissionEmailOTP = sendCandidateSubmissionEmailOTP;
+    window.adminCreateCustomCandidate = adminCreateCustomCandidate;
+    window.superAdminCreateAdmin = superAdminCreateAdmin;
+    window.executeAdminDirectProfileUpdate = executeAdminDirectProfileUpdate;
+    window.requestAdminPasswordResetOTP = requestAdminPasswordResetOTP;
+    window.verifyAdminPasswordResetOTP = verifyAdminPasswordResetOTP;
+    window.downloadSampleCandidateTemplate = downloadSampleCandidateTemplate;
+    window.processBulkCandidateExcelUpload = processBulkCandidateExcelUpload;
+    window.requestCandidatePasswordResetOTP = requestCandidatePasswordResetOTP;
+    window.verifyCandidatePasswordResetOTP = verifyCandidatePasswordResetOTP;
+    window.saveCandidateFullProfile = saveCandidateFullProfile;
+    window.requestAdminEmailOTP = requestAdminEmailOTP;
+    window.executeFinalApplicationSubmit = executeFinalApplicationSubmit;
+    window.saveAdminStatusDecision = saveAdminStatusDecision;
+    window.openScrutinyModal = openScrutinyModal;
+    window.openTrackStatus = openTrackStatus;
+    window.saveWebsiteContentChanges = saveWebsiteContentChanges;
+    window.addCustomContentBlock = addCustomContentBlock;
+    window.removeCustomContentBlock = removeCustomContentBlock;
+    window.updateSlideCaption = updateSlideCaption;
+    window.deleteSlidePhoto = deleteSlidePhoto;
+    window.addNewSlidePhoto = addNewSlidePhoto;
+    window.submitContactForm = submitContactForm;
+    window.renderRegisteredCandidatesTable = renderRegisteredCandidatesTable;
+    window.exportCandidatesRosterCSV = exportCandidatesRosterCSV;
+
+    // Expose only safe utility functions required by inline legacy handlers.
+    window.escapeHTML = escapeHTML;
+    window.safeHttpUrl = safeHttpUrl;
+    window.safeColor = safeColor;
+    window.verifyPublicApplication = verifyPublicApplication;
+    window.rkmaSaveSiteContent = rkmaSaveSiteContent;
+    window.rkmaCreateSignedUrl = rkmaCreateSignedUrl;
+    window.rkmaEnsureNewFormFields = rkmaEnsureNewFormFields;
+
+  })();
+  </script>
+
 </body>
 </html>
+
