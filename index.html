@@ -2216,23 +2216,77 @@
     }
 
     // -------------------------------------------------------------
-    // EMAIL OTP HELPERS (shared by admin login, candidate submission and password recovery)
-    // The OTP e-mail is sent by Supabase's email OTP service. After the code is
-    // verified, the temporary auth session is signed out at once, so no auth user
-    // is ever attached to a portal record.
+    // EMAIL OTP HELPERS (Supabase Auth e-mail templates, one template per purpose)
+    //   purpose 'final_submission' -> "Confirm sign up" template   (candidate final submission)
+    //   purpose 'admin_login'      -> "Magic Link" template        (admin login OTP)
+    //   purpose 'password_reset'   -> "Reset Password" template    (admin and candidate)
+    //
+    // Two small SQL helper functions (see supabase_auth_setup/1_auth_helper_functions.sql)
+    // prepare the Auth user before each e-mail and remove temporary candidate Auth users
+    // afterwards. No Auth user id is ever stored in any portal table.
     // -------------------------------------------------------------
-    async function sendEmailOtp(email) {
-      const { error } = await db.auth.signInWithOtp({
-        email: email,
-        options: { shouldCreateUser: true }
-      });
-      return error || null;
+    function randomAuthPassword() {
+      const a = new Uint8Array(18);
+      crypto.getRandomValues(a);
+      return 'Aa1!' + Array.from(a).map(b => b.toString(36)).join('').slice(0, 24);
     }
 
-    async function verifyEmailOtp(email, token) {
-      const { error } = await db.auth.verifyOtp({ email: email, token: token, type: 'email' });
+    async function cleanupAuthUser(email) {
+      try { await db.rpc('rkma_cleanup_auth_user', { p_email: String(email || '').trim() }); } catch (e) { /* ignore */ }
+    }
+
+    async function sendEmailOtp(email, purpose) {
+      const clean = String(email || '').trim();
+      try {
+        const prep = await db.rpc('rkma_prepare_auth_user', { p_email: clean, p_purpose: purpose });
+        if (prep.error) {
+          return { message: 'Setup problem: ' + prep.error.message + ' (Run supabase_auth_setup/1_auth_helper_functions.sql in the Supabase SQL Editor.)' };
+        }
+        if (prep.data === 'not_registered') {
+          return { message: 'This email address is not registered in the portal.' };
+        }
+
+        if (purpose === 'admin_login') {
+          // Existing (confirmed) Auth user -> "Magic Link" template
+          const { error } = await db.auth.signInWithOtp({ email: clean, options: { shouldCreateUser: false } });
+          return error ? { message: error.message } : null;
+        }
+
+        if (purpose === 'password_reset') {
+          // -> "Reset Password" template
+          const { error } = await db.auth.resetPasswordForEmail(clean);
+          return error ? { message: error.message } : null;
+        }
+
+        if (purpose === 'final_submission') {
+          // Brand-new sign up -> "Confirm sign up" template
+          const { data, error } = await db.auth.signUp({ email: clean, password: randomAuthPassword() });
+          if (error) return { message: error.message };
+          if (data && data.session) {
+            // "Confirm email" is switched OFF in Supabase, so no email was sent
+            try { await db.auth.signOut(); } catch (e) { /* ignore */ }
+            await cleanupAuthUser(clean);
+            return { message: 'Supabase "Confirm email" is switched off, so no OTP email can be sent. Turn it ON in Authentication -> Sign In / Providers -> Email.' };
+          }
+          if (data && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+            return { message: 'This email address is reserved for administrators. Please use the candidate email address.' };
+          }
+          return null;
+        }
+        return { message: 'Invalid OTP purpose.' };
+      } catch (e) {
+        return { message: e.message || 'Could not send the OTP email.' };
+      }
+    }
+
+    async function verifyEmailOtp(email, token, purpose) {
+      const clean = String(email || '').trim();
+      const typeByPurpose = { admin_login: 'email', password_reset: 'recovery', final_submission: 'signup' };
+      const { error } = await db.auth.verifyOtp({ email: clean, token: token, type: typeByPurpose[purpose] || 'email' });
       try { await db.auth.signOut(); } catch (e) { /* ignore */ }
-      return error || null;
+      // Candidate Auth users are temporary: delete them right after the code is checked
+      if (!error && purpose !== 'admin_login') await cleanupAuthUser(clean);
+      return error ? { message: error.message } : null;
     }
 
     function friendlyOtpError(error) {
@@ -2445,8 +2499,6 @@
       sessionStorage.removeItem('rkm_active_user_id');
       sessionStorage.removeItem('rkm_current_admin_tab');
 
-      try { db.auth.signOut(); } catch (e) { /* ignore */ }
-
       document.getElementById('portalTopHeader').style.display = 'none';
       document.getElementById('publicHeader').style.display = 'block';
       document.getElementById('publicFooter').style.display = 'block';
@@ -2490,7 +2542,7 @@
       }
 
       setBtnBusy(btn, true, 'Sending OTP...');
-      const otpError = await sendEmailOtp(admin.email);
+      const otpError = await sendEmailOtp(admin.email, 'admin_login');
       setBtnBusy(btn, false, null, 'Verify Credentials & Send OTP');
 
       if (otpError) {
@@ -2522,7 +2574,7 @@
 
       const btn = document.getElementById('btnAdminVerifyOtp');
       setBtnBusy(btn, true, 'Verifying...');
-      const verifyError = await verifyEmailOtp(pendingAdminLoginData.email, token);
+      const verifyError = await verifyEmailOtp(pendingAdminLoginData.email, token, 'admin_login');
       setBtnBusy(btn, false, null, 'Verify OTP & Access Console');
 
       if (verifyError) {
@@ -2624,7 +2676,7 @@
       pendingCandResetId = matchedCandidate.id;
       pendingCandResetEmail = matchedCandidate.email;
 
-      const otpError = await sendEmailOtp(matchedCandidate.email);
+      const otpError = await sendEmailOtp(matchedCandidate.email, 'password_reset');
       if (otpError) {
         alert('Failed to dispatch recovery code: ' + friendlyOtpError(otpError));
         return;
@@ -2658,7 +2710,7 @@
         return;
       }
 
-      const verifyErr = await verifyEmailOtp(pendingCandResetEmail, token);
+      const verifyErr = await verifyEmailOtp(pendingCandResetEmail, token, 'password_reset');
       if (verifyErr) {
         alert('Invalid or expired recovery code: ' + verifyErr.message);
         return;
@@ -2721,7 +2773,7 @@
       pendingAdminResetId = admin.admin_id;
       pendingAdminResetEmail = admin.email;
 
-      const otpError = await sendEmailOtp(admin.email);
+      const otpError = await sendEmailOtp(admin.email, 'password_reset');
       if (otpError) {
         alert('Failed to send recovery code: ' + friendlyOtpError(otpError));
         return;
@@ -2755,7 +2807,7 @@
         return;
       }
 
-      const verifyErr = await verifyEmailOtp(pendingAdminResetEmail, token);
+      const verifyErr = await verifyEmailOtp(pendingAdminResetEmail, token, 'password_reset');
       if (verifyErr) {
         alert('Invalid or expired recovery code: ' + verifyErr.message);
         return;
@@ -3824,7 +3876,7 @@
       const btn = document.getElementById('btnSendCandOtp');
       setBtnBusy(btn, true, 'Sending...');
 
-      const otpError = await sendEmailOtp(email);
+      const otpError = await sendEmailOtp(email, 'final_submission');
 
       if (otpError) {
         setBtnBusy(btn, false, null, 'Send OTP');
@@ -3896,7 +3948,7 @@
       }
 
       setBtnBusy(btn, true, 'Verifying OTP...');
-      const otpVerifyErr = await verifyEmailOtp(app.email, enteredOtp);
+      const otpVerifyErr = await verifyEmailOtp(app.email, enteredOtp, 'final_submission');
       if (otpVerifyErr) {
         setBtnBusy(btn, false, null, idleText);
         alert('OTP Verification Failed: ' + otpVerifyErr.message);
