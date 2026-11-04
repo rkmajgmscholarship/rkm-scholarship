@@ -537,6 +537,14 @@
     .step-item.active { color: #ea580c; }
     .step-item.completed { color: #16a34a; }
     .form-step { display: none; }
+    .ifsc-msg { font-size: 11px; margin-top: 3px; display: none; }
+    .ifsc-msg.bad { display: block; color: #dc2626; }
+    .ifsc-msg.good { display: block; color: #15803d; }
+    .decl-box { background:#fffbeb; border:1px solid #fcd34d; border-radius:8px; padding:12px 14px; margin-top:14px; }
+    .decl-box label { display:flex; gap:10px; align-items:flex-start; font-size:13px; line-height:1.5; cursor:pointer; font-weight:normal; }
+    .decl-box input[type=checkbox] { width:18px; height:18px; margin-top:2px; flex-shrink:0; }
+    .doc-row { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; padding:9px 10px; border-bottom:1px solid #e7e5e4; font-size:13px; }
+    .doc-row:last-child { border-bottom:none; }
     .form-step.active { display: block; }
     .step-btn-container {
       display: flex;
@@ -797,6 +805,7 @@
         </div>
       </div>
       <div style="display:flex; gap:8px;">
+        <button class="nav-btn" id="btnPortalHome" style="background:#15803d; border-color:#16a34a; display:none;" onclick="goToPortalHome()">&larr; Main Dashboard</button>
         <button class="nav-btn" style="background:#44403c;" onclick="openProfileModal()">My Profile</button>
         <button class="nav-btn" style="background:#dc2626; border-color:#ef4444;" onclick="executeSecureLogout()">Logout</button>
       </div>
@@ -916,7 +925,7 @@
             <input type="text" id="contactName" placeholder="Your Name" style="margin-bottom:8px;">
             <input type="tel" id="contactPhone" placeholder="Your Phone Number" style="margin-bottom:8px;">
             <textarea id="contactMessage" rows="2" placeholder="Your inquiry..."></textarea>
-            <button class="btn-primary" style="width:100%; margin-top:6px;" onclick="submitContactForm()">Send Message</button>
+            <button class="btn-primary" id="btnContactSend" style="width:100%; margin-top:6px;" onclick="submitContactForm()">Send Message</button>
           </div>
         </div>
       </div>
@@ -1099,19 +1108,23 @@
           <div class="step-item" id="stepIndicator4">4. Education</div>
           <div class="step-item" id="stepIndicator5">5. Bank</div>
           <div class="step-item" id="stepIndicator6">6. Documents</div>
+          <div class="step-item" id="stepIndicator7">7. Preview</div>
         </div>
 
+        <div style="background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:12px;" id="mandatoryNote">
+          ℹ️ All fields are <strong>mandatory</strong> except <em>Income Certificate No.</em> You cannot move to the next step until every required field of the current step is filled.
+        </div>
         <form id="scholarshipMultiForm" onsubmit="return false;">
           <!-- STEP 1 -->
           <div class="form-step active" id="formStep1">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 1: Personal Details &amp; Photographs</h4>
             <div class="form-grid">
-              <div class="form-group"><label>Applicant Full Name</label><input type="text" id="f_name" required readonly style="background:#f5f5f4;"></div>
-              <div class="form-group"><label>Date of Birth</label><input type="date" id="f_dob" required></div>
+              <div class="form-group"><label>Applicant Full Name *</label><input type="text" id="f_name" required readonly style="background:#f5f5f4;"></div>
+              <div class="form-group"><label>Date of Birth *</label><input type="date" id="f_dob" required></div>
               <!-- NEW: Caste (SC / ST / OBC / GENERAL) -->
               <div class="form-group">
                 <label>Caste *</label>
-                <select id="f_caste" required>
+                <select id="f_caste" required onchange="updateCasteCertRequirement()">
                   <option value="">-- Select Caste --</option>
                   <option value="SC">SC</option>
                   <option value="ST">ST</option>
@@ -1122,17 +1135,17 @@
               <!-- NEW: Is physically challenged (Yes / No) -->
               <div class="form-group">
                 <label>Is Physically Challenged? *</label>
-                <select id="f_phc" required>
+                <select id="f_phc" required onchange="updatePhcCertRequirement()">
                   <option value="">-- Select --</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>
               </div>
-              <div class="form-group"><label>Gender</label><select id="f_gender" required><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
-              <div class="form-group"><label>Government ID Number</label><input type="text" id="f_aadhaar" placeholder="Enter Identity Number" required></div>
+              <div class="form-group"><label>Gender *</label><select id="f_gender" required><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+              <div class="form-group"><label>Government ID Number *</label><input type="text" id="f_aadhaar" placeholder="Enter Identity Number" required></div>
 
               <div class="form-group">
-                <label>Candidate Passport Photo</label>
+                <label>Candidate Passport Photo *</label>
                 <input type="file" id="f_cand_photo" class="input-file-field" accept=".jpg,.jpeg,.png" onchange="validateAndPreviewFile(this, 'candPhotoPreview', 100, ['image/jpeg','image/jpg','image/png'], 'photoErr')">
                 <span class="file-rule-hint">Format: JPG, JPEG, PNG | Max Size: 100 KB</span>
                 <span class="file-error-msg" id="photoErr">Invalid format or size exceeded!</span>
@@ -1140,7 +1153,7 @@
               </div>
 
               <div class="form-group">
-                <label>Candidate Specimen Signature</label>
+                <label>Candidate Specimen Signature *</label>
                 <input type="file" id="f_cand_sign" class="input-file-field" accept=".jpg,.jpeg,.png" onchange="validateAndPreviewFile(this, 'candSignPreview', 50, ['image/jpeg','image/jpg','image/png'], 'signErr')">
                 <span class="file-rule-hint">Format: JPG, JPEG, PNG | Max Size: 50 KB</span>
                 <span class="file-error-msg" id="signErr">Invalid format or size exceeded!</span>
@@ -1148,7 +1161,7 @@
               </div>
             </div>
             <div class="step-btn-container" style="justify-content: flex-end;">
-              <button type="button" class="btn-primary" onclick="goToStep(2)">Next Step &rarr;</button>
+              <button type="button" class="btn-primary" onclick="nextStep(1)">Next Step &rarr;</button>
             </div>
           </div>
 
@@ -1165,21 +1178,21 @@
               </div>
               <!-- Renewal-only fields: hidden for FRESH applications -->
               <div class="renewal-only" id="renewalFieldsBlock">
-                <div class="form-group"><label>Previous Scholarship Name / Scheme</label><input type="text" id="f_prevscheme"></div>
-                <div class="form-group"><label>Previous Scholarship Amount (₹)</label><input type="number" id="f_prevamount"></div>
-                <div class="form-group"><label>Year of Award</label><input type="text" id="f_prevyear" placeholder="e.g. 2025"></div>
+                <div class="form-group"><label>Previous Scholarship Name / Scheme *</label><input type="text" id="f_prevscheme"></div>
+                <div class="form-group"><label>Previous Scholarship Amount (₹) *</label><input type="number" id="f_prevamount"></div>
+                <div class="form-group"><label>Year of Award *</label><input type="text" id="f_prevyear" placeholder="e.g. 2025"></div>
               </div>
-              <div class="form-group"><label>Father's Name</label><input type="text" id="f_fname" required></div>
-              <div class="form-group"><label>Father's Occupation</label><input type="text" id="f_focc" required></div>
-              <div class="form-group"><label>Mother's Name</label><input type="text" id="f_mname" required></div>
-              <div class="form-group"><label>Mother's Occupation</label><input type="text" id="f_mocc" required></div>
-              <div class="form-group"><label>Guardian's Name</label><input type="text" id="f_gname"></div>
-              <div class="form-group"><label>Guardian's Occupation</label><input type="text" id="f_gocc"></div>
-              <div class="form-group"><label>Relation with Guardian</label><input type="text" id="f_grel"></div>
+              <div class="form-group"><label>Father's Name *</label><input type="text" id="f_fname" required></div>
+              <div class="form-group"><label>Father's Occupation *</label><input type="text" id="f_focc" required></div>
+              <div class="form-group"><label>Mother's Name *</label><input type="text" id="f_mname" required></div>
+              <div class="form-group"><label>Mother's Occupation *</label><input type="text" id="f_mocc" required></div>
+              <div class="form-group"><label>Guardian's Name *</label><input type="text" id="f_gname"></div>
+              <div class="form-group"><label>Guardian's Occupation *</label><input type="text" id="f_gocc"></div>
+              <div class="form-group"><label>Relation with Guardian *</label><input type="text" id="f_grel"></div>
             </div>
             <div class="step-btn-container">
               <button type="button" class="btn-neutral" onclick="goToStep(1)">&larr; Back</button>
-              <button type="button" class="btn-primary" onclick="goToStep(3)">Next Step &rarr;</button>
+              <button type="button" class="btn-primary" onclick="nextStep(2)">Next Step &rarr;</button>
             </div>
           </div>
 
@@ -1187,20 +1200,20 @@
           <div class="form-step" id="formStep3">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 3: Contact &amp; Address Details (Auto-filled from Profile)</h4>
             <div class="form-grid">
-              <div class="form-group"><label>Mobile No.</label><input type="tel" id="f_mobile" required readonly style="background:#f5f5f4;"></div>
-              <div class="form-group"><label>Alternative Mobile No.</label><input type="tel" id="f_altmobile"></div>
-              <div class="form-group"><label>WhatsApp No.</label><input type="tel" id="f_whatsapp" required></div>
-              <div class="form-group"><label>Email (OTP will be sent here)</label><input type="email" id="f_email" required></div>
-              <div class="form-group"><label>Village</label><input type="text" id="f_vill" required></div>
-              <div class="form-group"><label>P.O.</label><input type="text" id="f_po" required></div>
-              <div class="form-group"><label>P.S.</label><input type="text" id="f_ps" required></div>
-              <div class="form-group"><label>District</label><input type="text" id="f_dist" required></div>
-              <div class="form-group"><label>State</label><input type="text" id="f_state" value="West Bengal" required></div>
-              <div class="form-group"><label>PIN Code</label><input type="text" id="f_pin" required></div>
+              <div class="form-group"><label>Mobile No. *</label><input type="tel" id="f_mobile" required readonly style="background:#f5f5f4;"></div>
+              <div class="form-group"><label>Alternative Mobile No. *</label><input type="tel" id="f_altmobile"></div>
+              <div class="form-group"><label>WhatsApp No. *</label><input type="tel" id="f_whatsapp" required></div>
+              <div class="form-group"><label>Email (OTP will be sent here) *</label><input type="email" id="f_email" required></div>
+              <div class="form-group"><label>Village *</label><input type="text" id="f_vill" required></div>
+              <div class="form-group"><label>P.O. *</label><input type="text" id="f_po" required></div>
+              <div class="form-group"><label>P.S. *</label><input type="text" id="f_ps" required></div>
+              <div class="form-group"><label>District *</label><input type="text" id="f_dist" required></div>
+              <div class="form-group"><label>State *</label><input type="text" id="f_state" value="West Bengal" required></div>
+              <div class="form-group"><label>PIN Code *</label><input type="text" id="f_pin" required></div>
             </div>
             <div class="step-btn-container">
               <button type="button" class="btn-neutral" onclick="goToStep(2)">&larr; Back</button>
-              <button type="button" class="btn-primary" onclick="goToStep(4)">Next Step &rarr;</button>
+              <button type="button" class="btn-primary" onclick="nextStep(3)">Next Step &rarr;</button>
             </div>
           </div>
 
@@ -1209,28 +1222,28 @@
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 4: Educational &amp; Income Details (Auto-filled from Profile)</h4>
             <h5 style="font-size:13px; color:#44403c; margin-bottom:8px;">A. Present Course Details</h5>
             <div class="form-grid">
-              <div class="form-group"><label>Present Class of Study</label><input type="text" id="f_currclass" required></div>
-              <div class="form-group"><label>Admission Date</label><input type="date" id="f_admdate" required></div>
-              <div class="form-group"><label>Department / Stream Name</label><input type="text" id="f_stream" required></div>
-              <div class="form-group"><label>Institution Name</label><input type="text" id="f_instname" required></div>
-              <div class="form-group"><label>Roll / Registration No.</label><input type="text" id="f_rollno"></div>
+              <div class="form-group"><label>Present Class of Study *</label><input type="text" id="f_currclass" required></div>
+              <div class="form-group"><label>Admission Date *</label><input type="date" id="f_admdate" required></div>
+              <div class="form-group"><label>Department / Stream Name *</label><input type="text" id="f_stream" required></div>
+              <div class="form-group"><label>Institution Name *</label><input type="text" id="f_instname" required></div>
+              <div class="form-group"><label>Roll / Registration No. *</label><input type="text" id="f_rollno"></div>
             </div>
             <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">B. Qualifying Course Details</h5>
             <div class="form-grid">
-              <div class="form-group"><label>Last Qualifying Examination</label><input type="text" id="f_lastexam" required></div>
-              <div class="form-group"><label>Full Marks</label><input type="number" id="f_fullmarks" oninput="calculatePercentage()" required></div>
-              <div class="form-group"><label>Marks Obtained</label><input type="number" id="f_marksobtained" oninput="calculatePercentage()" required></div>
+              <div class="form-group"><label>Last Qualifying Examination *</label><input type="text" id="f_lastexam" required></div>
+              <div class="form-group"><label>Full Marks *</label><input type="number" id="f_fullmarks" oninput="calculatePercentage()" required></div>
+              <div class="form-group"><label>Marks Obtained *</label><input type="number" id="f_marksobtained" oninput="calculatePercentage()" required></div>
               <div class="form-group"><label>Percentage (%)</label><input type="text" id="f_percentage" readonly style="background:#f5f5f4; font-weight:bold; color:#15803d;"></div>
             </div>
             <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">C. Income &amp; Certification</h5>
             <div class="form-grid">
-              <div class="form-group"><label>Monthly Income (₹)</label><input type="number" id="f_income" required></div>
+              <div class="form-group"><label>Monthly Income (₹) *</label><input type="number" id="f_income" required></div>
               <div class="form-group"><label>Income Certificate No.</label><input type="text" id="f_incomecertno"></div>
-              <div class="form-group"><label>Income Certificate Issuing Authority</label><input type="text" id="f_incomeauth"></div>
+              <div class="form-group"><label>Income Certificate Issuing Authority *</label><input type="text" id="f_incomeauth"></div>
             </div>
             <div class="step-btn-container">
               <button type="button" class="btn-neutral" onclick="goToStep(3)">&larr; Back</button>
-              <button type="button" class="btn-primary" onclick="goToStep(5)">Next Step &rarr;</button>
+              <button type="button" class="btn-primary" onclick="nextStep(4)">Next Step &rarr;</button>
             </div>
           </div>
 
@@ -1238,21 +1251,24 @@
           <div class="form-step" id="formStep5">
             <h4 style="margin-bottom:12px; color:#9a3412;">Step 5: Bank DBT Details</h4>
             <div class="form-grid">
-              <div class="form-group"><label>A/C Holder Name</label><input type="text" id="f_acholder" required></div>
-              <div class="form-group"><label>IFSC Code</label><input type="text" id="f_ifsc" required></div>
-              <div class="form-group"><label>A/C No.</label><input type="text" id="f_acno" required></div>
-              <div class="form-group"><label>Bank Name</label><input type="text" id="f_bankname" required></div>
-              <div class="form-group"><label>Bank Branch Name</label><input type="text" id="f_bankbranch"></div>
+              <div class="form-group"><label>A/C Holder Name *</label><input type="text" id="f_acholder" required></div>
+              <div class="form-group"><label>IFSC Code *</label><input type="text" id="f_ifsc" required maxlength="11" placeholder="e.g. SBIN0011777" autocomplete="off" style="text-transform:uppercase;" oninput="onIfscInput(this)">
+                <span class="ifsc-msg" id="ifscMsg"></span>
+                <span style="font-size:10px; color:#78716c; display:block; margin-top:2px;">11 characters: 4 letters (bank) + 0 (zero) + 6 letters/digits (branch)</span>
+              </div>
+              <div class="form-group"><label>A/C No. *</label><input type="text" id="f_acno" required></div>
+              <div class="form-group"><label>Bank Name *</label><input type="text" id="f_bankname" required></div>
+              <div class="form-group"><label>Bank Branch Name *</label><input type="text" id="f_bankbranch"></div>
             </div>
             <div class="step-btn-container">
               <button type="button" class="btn-neutral" onclick="goToStep(4)">&larr; Back</button>
-              <button type="button" class="btn-primary" onclick="goToStep(6)">Next Step &rarr;</button>
+              <button type="button" class="btn-primary" onclick="nextStep(5)">Next Step &rarr;</button>
             </div>
           </div>
 
           <!-- STEP 6 -->
           <div class="form-step" id="formStep6">
-            <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Document Uploads &amp; Email OTP Verification</h4>
+            <h4 style="margin-bottom:12px; color:#9a3412;">Step 6: Document Uploads</h4>
             <p style="font-size:12px; color:#78716c; margin-bottom:12px;">Only files conforming to specified format and size will be accepted. Invalid uploads will turn red.</p>
 
             <div class="form-grid">
@@ -1313,16 +1329,40 @@
                 <span class="file-ok-msg" id="okCaste"></span>
               </div>
               <div class="form-group">
-                <label>i. Disability / PH Certificate (Optional)</label>
+                <label>i. Disability / PH Certificate <span id="phcCertReqMark" style="color:#78716c;"></span></label>
                 <input type="file" id="f_doc_disability" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errDisability', 'docDisability')">
-                <span class="file-rule-hint">Optional | PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-rule-hint">Mandatory if "Physically Challenged" = Yes. Not required otherwise. | PDF, JPG, PNG | Max 500 KB</span>
                 <span class="file-error-msg" id="errDisability">Exceeded 500 KB or invalid file type!</span>
                 <span class="file-ok-msg" id="okDisability"></span>
               </div>
             </div>
 
-            <!-- Verification & Email OTP Section (mandatory for final submit) -->
-            <div style="background:#fffbeb; border:1px solid #fef3c7; padding:16px; border-radius:8px; margin-top:16px;" id="finalSubmitSecurityBox">
+            <div class="step-btn-container">
+              <button type="button" class="btn-neutral" onclick="goToStep(5)">&larr; Back</button>
+              <button type="button" class="btn-primary" id="btnStep6Next" onclick="nextStep(6)">Preview Application &rarr;</button>
+            </div>
+          </div>
+
+          <!-- STEP 7: MANDATORY PREVIEW + DECLARATION + FINAL SUBMIT -->
+          <div class="form-step" id="formStep7">
+            <h4 style="margin-bottom:6px; color:#9a3412;">Step 7: Application Preview &amp; Declaration</h4>
+            <p style="font-size:12px; color:#78716c; margin-bottom:10px;">Please read your whole application carefully. Use "Back" to correct anything before the final submission.</p>
+            <div id="inlinePreviewArea" style="font-size:13px; line-height:1.6; border:1px solid #e7e5e4; border-radius:8px; padding:12px; max-height:60vh; overflow-y:auto;"></div>
+
+            <div class="decl-box">
+              <label for="f_declaration">
+                <input type="checkbox" id="f_declaration" onchange="onDeclarationToggle()">
+                <span>I hereby declare that all the information and documents submitted in this application are true and correct to the best of my knowledge. I understand that any false information may lead to rejection of my application and cancellation of any scholarship awarded.</span>
+              </label>
+            </div>
+
+            <div style="margin-top:12px; display:none;" id="finalSubmitStartWrap">
+              <button type="button" class="btn-primary" id="btnFinalSubmitStart" style="background:#15803d;" onclick="startFinalSubmit()">Final Submit</button>
+              <span style="font-size:11px; color:#78716c; margin-left:6px;">An OTP will be sent to your email.</span>
+            </div>
+
+            <!-- Captcha + Email OTP (appears only after "Final Submit" is clicked and OTP is sent) -->
+            <div style="background:#fffbeb; border:1px solid #fef3c7; padding:16px; border-radius:8px; margin-top:16px; display:none;" id="finalSubmitSecurityBox">
               <h5 style="color:#b45309; margin-bottom:10px;">Security Verification &amp; Email OTP Confirmation</h5>
 
               <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
@@ -1341,7 +1381,7 @@
                   <div style="display:flex; gap:6px;">
                     <input type="text" id="f_emailOtpInput" placeholder="Enter 6-digit Email OTP" maxlength="6" inputmode="numeric">
                     <button type="button" id="btnSendCandOtp" class="btn-primary" style="padding:8px 12px; font-size:12px; white-space:nowrap;" onclick="sendCandidateSubmissionEmailOTP()">
-                      Send OTP
+                      Resend OTP
                     </button>
                   </div>
                   <span style="font-size:11px; color:#78716c; margin-top:4px; display:block;" id="candOtpHint">
@@ -1349,14 +1389,14 @@
                   </span>
                 </div>
               </div>
+              <div style="margin-top:12px;">
+                <button type="button" class="btn-primary" id="btnFinalSubmit" onclick="executeFinalApplicationSubmit()">Verify OTP &amp; Submit</button>
+              </div>
             </div>
 
             <div class="step-btn-container">
-              <button type="button" class="btn-neutral" onclick="goToStep(5)">&larr; Back</button>
-              <div style="display:flex; gap:8px;">
-                <button type="button" class="btn-secondary" onclick="openPreviewModal()">Preview Application</button>
-                <button type="button" class="btn-primary" id="btnFinalSubmit" onclick="executeFinalApplicationSubmit()">Verify OTP &amp; Submit</button>
-              </div>
+              <button type="button" class="btn-neutral" onclick="goToStep(6)">&larr; Back</button>
+              <span></span>
             </div>
           </div>
         </form>
@@ -1887,7 +1927,8 @@
     <div id="adminScrutinyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
       <div style="background:#fff; border-radius:10px; max-width:760px; width:100%; max-height:92vh; overflow-y:auto; padding:22px;">
         <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:6px; margin-bottom:12px;">Application Scrutiny Console</h3>
-        <div id="scrutinyAppInfo" style="font-size:13px; line-height:1.6; margin-bottom:14px; background:#fafaf9; padding:10px; border-radius:6px;"></div>
+        <div id="scrutinyAppInfo" style="font-size:13px; line-height:1.6; margin-bottom:8px; background:#fafaf9; padding:10px; border-radius:6px;"></div>
+        <div style="margin-bottom:12px;"><button type="button" class="btn-primary" style="background:#0284c7; padding:6px 12px; font-size:12px;" onclick="openAdminDocsModal(selectedScrutinyIndex)">📎 View / Download Uploaded Documents</button></div>
 
         <div class="scrutiny-tabs">
           <button type="button" class="scrutiny-tab-btn active" id="scrTabBtnDetails" onclick="switchScrutinyTab('details')">1. Application Details</button>
@@ -1968,6 +2009,19 @@
         <div id="profileModalContent" style="font-size:13px; line-height:1.8;"></div>
         <div style="text-align:right; margin-top:16px;">
           <button type="button" class="btn-neutral" onclick="closeProfileModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin: Candidate Documents (view / download one by one) -->
+    <div id="adminDocsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:320; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:10px; max-width:720px; width:100%; max-height:90vh; overflow-y:auto; padding:20px;">
+        <h3 style="color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:8px; margin-bottom:10px;">📎 Uploaded Documents</h3>
+        <div id="adminDocsInfo" style="font-size:13px; background:#fafaf9; padding:8px 10px; border-radius:6px; margin-bottom:10px;"></div>
+        <div id="adminDocsList"></div>
+        <div style="margin-top:14px; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn-primary" style="background:#0284c7;" onclick="downloadAllDocsZip()">⬇ Download All (ZIP)</button>
+          <button type="button" class="btn-neutral" onclick="closeAdminDocsModal()">Close</button>
         </div>
       </div>
     </div>
@@ -2146,7 +2200,7 @@
 
     // Every supporting document slot (order = order of attachment in the combined PDF)
     // key: storage key inside uploaded_documents | input / ok: DOM ids | label: official name
-    // required: 'always' | 'caste' (mandatory only for SC/ST/OBC) | 'optional'
+    // required: 'always' | 'caste' (mandatory only for SC/ST/OBC) | 'phc' (mandatory only if Physically Challenged = Yes)
     const DOC_SLOTS = [
       { key: 'docAadhaar',    input: 'f_doc_aadhaar',    ok: 'okAadhaar',    label: 'Identity Proof Document (Aadhaar / School ID)', required: 'always' },
       { key: 'docAdm',        input: 'f_doc_adm',        ok: 'okAdm',        label: 'Admission Receipt',                             required: 'always' },
@@ -2156,7 +2210,7 @@
       { key: 'docPrayer',     input: 'f_doc_prayer',     ok: 'okPrayer',     label: 'Application Prayer / Application Letter',       required: 'always' },
       { key: 'docBonafide',   input: 'f_doc_bonafide',   ok: 'okBonafide',   label: 'Bonafide Certificate from Head of Institution', required: 'always' },
       { key: 'docCaste',      input: 'f_doc_caste',      ok: 'okCaste',      label: 'Caste Certificate',                             required: 'caste' },
-      { key: 'docDisability', input: 'f_doc_disability', ok: 'okDisability', label: 'Disability / PH Certificate',                   required: 'optional' }
+      { key: 'docDisability', input: 'f_doc_disability', ok: 'okDisability', label: 'Disability / PH Certificate',                   required: 'phc' }
     ];
 
     // -------------------------------------------------------------
@@ -2471,6 +2525,23 @@
         window.location.hash = sectionId;
         window.scrollTo(0, 0);
       }
+      const homeBtn = document.getElementById('btnPortalHome');
+      if (homeBtn) {
+        const hide = (sectionId === 'candidateDashboard' || sectionId === 'adminDashboard');
+        homeBtn.style.display = hide ? 'none' : 'inline-block';
+      }
+    }
+
+    // Back to the main interface shown right after login (candidate workspace / admin console)
+    function goToPortalHome() {
+      if (activeUserRole === 'admin') { navigateTo('adminDashboard'); return; }
+      if (!activeCandidateId) { navigateTo('home'); return; }
+      const onForm = document.getElementById('sec-applicationForm').classList.contains('active');
+      if (onForm && formMode !== 'view') {
+        if (!confirm('Go back to the main dashboard? Details entered in the application form that are not submitted will be lost.')) return;
+      }
+      updateCandidateDashboardState();
+      navigateTo('candidateDashboard');
     }
 
     function setAuthenticatedUI(role, title, identity) {
@@ -3222,6 +3293,14 @@
       const changeBtn = document.getElementById('btnChangeScheme');
       const securityBox = document.getElementById('finalSubmitSecurityBox');
       const submitBtn = document.getElementById('btnFinalSubmit');
+      const startBtn = document.getElementById('btnFinalSubmitStart');
+      const step6Next = document.getElementById('btnStep6Next');
+      const ind7 = document.getElementById('stepIndicator7');
+      const mandatoryNote = document.getElementById('mandatoryNote');
+      if (step6Next) step6Next.style.display = (mode === 'view') ? 'none' : 'inline-block';
+      if (ind7) ind7.style.display = (mode === 'view') ? 'none' : '';
+      if (mandatoryNote) mandatoryNote.style.display = (mode === 'view') ? 'none' : 'block';
+      securityBox.style.display = 'none';
 
       readonlyBanner.classList.remove('show');
       returnedBanner.classList.remove('show');
@@ -3234,22 +3313,21 @@
         heading.innerText = 'Submitted Scholarship Application (View Only)';
         readonlyBanner.classList.add('show');
         changeBtn.style.display = 'none';
-        securityBox.style.display = 'none';
         submitBtn.style.display = 'none';
       } else if (mode === 'edit') {
         heading.innerText = 'Correct & Resubmit Application';
         returnedBanner.classList.add('show');
         returnedBanner.innerHTML = `<strong>Reason for return:</strong> ${esc((app && app.adminRemarks) || 'Please review all details and correct them.')}<br><span style="font-size:12px;">Update the required details, then verify your email OTP and submit again.</span>`;
         changeBtn.style.display = 'none';
-        securityBox.style.display = 'block';
         submitBtn.style.display = 'inline-block';
         submitBtn.innerText = 'Verify OTP & Resubmit';
+        if (startBtn) startBtn.innerText = 'Final Resubmit';
       } else {
         heading.innerText = 'Scholarship Application Form (Session 2026-27)';
         changeBtn.style.display = 'inline-block';
-        securityBox.style.display = 'block';
         submitBtn.style.display = 'inline-block';
         submitBtn.innerText = 'Verify OTP & Submit';
+        if (startBtn) startBtn.innerText = 'Final Submit';
       }
     }
 
@@ -3283,11 +3361,20 @@
         hint.style.color = '#78716c';
       }
       const sendBtn = document.getElementById('btnSendCandOtp');
-      if (sendBtn) { sendBtn.disabled = false; sendBtn.innerText = 'Send OTP'; }
+      clearInterval(candOtpCooldownTimer);
+      if (sendBtn) { sendBtn.disabled = false; sendBtn.innerText = 'Resend OTP'; }
 
       document.getElementById('f_state').value = 'West Bengal';
       toggleRenewalFields();
       updateCasteCertRequirement();
+      updatePhcCertRequirement();
+      onIfscInput(document.getElementById('f_ifsc'));
+      const decl = document.getElementById('f_declaration');
+      if (decl) decl.checked = false;
+      const startWrap = document.getElementById('finalSubmitStartWrap');
+      if (startWrap) startWrap.style.display = 'none';
+      const secBox = document.getElementById('finalSubmitSecurityBox');
+      if (secBox) secBox.style.display = 'none';
       autoPopulateApplicationWindowFromProfile();
     }
 
@@ -3372,6 +3459,8 @@
 
       toggleRenewalFields();
       updateCasteCertRequirement();
+      updatePhcCertRequirement();
+      onIfscInput(document.getElementById('f_ifsc'));
     }
 
     // Shows renewal-only fields only for RENEWAL applications
@@ -3399,6 +3488,22 @@
     }
 
     document.getElementById('f_caste').addEventListener('change', updateCasteCertRequirement);
+
+    // PH certificate is mandatory only when "Is Physically Challenged?" = Yes
+    function updatePhcCertRequirement() {
+      const phc = document.getElementById('f_phc').value;
+      const mark = document.getElementById('phcCertReqMark');
+      if (!mark) return;
+      if (phc === 'Yes') {
+        mark.innerText = '(Mandatory)';
+        mark.style.color = '#dc2626';
+      } else if (phc === 'No') {
+        mark.innerText = '(Not applicable)';
+        mark.style.color = '#78716c';
+      } else {
+        mark.innerText = '';
+      }
+    }
 
     // -------------------------------------------------------------
     // CANDIDATE: TRACK STATUS
@@ -3554,7 +3659,91 @@
       });
       document.getElementById('formStep' + s).classList.add('active');
       document.getElementById('stepIndicator' + s).classList.add('active');
+      if (s === 7) renderInlinePreview();
       window.scrollTo(0, 100);
+    }
+
+    // Moves forward only if every required field of the current step is valid
+    function nextStep(from) {
+      if (formMode !== 'view') {
+        const app = collectApplicationFromForm();
+        if (!validateApplicationForm(app, from)) return;
+      }
+      goToStep(from + 1);
+    }
+
+    // IFSC: 4 letters + '0' + 6 alphanumeric characters (11 total)
+    const IFSC_REGEX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    function onIfscInput(el) {
+      if (!el) return;
+      const pos = el.selectionStart;
+      el.value = el.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      try { el.setSelectionRange(pos, pos); } catch (e) {}
+      const msg = document.getElementById('ifscMsg');
+      if (!msg) return;
+      const v = el.value;
+      msg.className = 'ifsc-msg';
+      if (!v) { msg.innerText = ''; return; }
+      if (IFSC_REGEX.test(v)) {
+        msg.innerText = '✔ Valid IFSC format';
+        msg.classList.add('good');
+      } else {
+        let reason = 'Invalid IFSC: ';
+        if (v.length < 11) reason += 'must be 11 characters (' + v.length + '/11). ';
+        if (v.length >= 4 && !/^[A-Z]{4}/.test(v)) reason += 'first 4 must be letters. ';
+        if (v.length >= 5 && v.charAt(4) !== '0') reason += '5th character must be zero (0), not the letter O. ';
+        if (v.length >= 11 && !/^[A-Z0-9]{6}$/.test(v.substring(5))) reason += 'last 6 must be letters/digits. ';
+        msg.innerText = reason.trim();
+        msg.classList.add('bad');
+      }
+    }
+
+    // Step 7 content
+    function renderInlinePreview() {
+      const app = collectApplicationFromForm();
+      const sections = getApplicationSections(app);
+      let html = `<div style="background:#fffbeb; border:1px solid #fef3c7; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:10px;">
+          <strong>Scheme:</strong> ${esc(app.schemeName)} | <strong>Application Nature:</strong> ${esc(app.nature)}
+        </div>`;
+      sections.forEach(sec => {
+        html += `<h4 style="color:#7f1d1d; margin:14px 0 6px; font-size:13px;">${esc(sec.title)}</h4>` + sectionToDetailHtml(sec);
+      });
+      document.getElementById('inlinePreviewArea').innerHTML = html;
+      // Every visit to the preview requires the declaration again
+      document.getElementById('f_declaration').checked = false;
+      document.getElementById('finalSubmitStartWrap').style.display = 'none';
+      document.getElementById('finalSubmitSecurityBox').style.display = 'none';
+      document.getElementById('inlinePreviewArea').scrollTop = 0;
+    }
+
+    function onDeclarationToggle() {
+      const checked = document.getElementById('f_declaration').checked;
+      document.getElementById('finalSubmitStartWrap').style.display = checked ? 'block' : 'none';
+      if (!checked) document.getElementById('finalSubmitSecurityBox').style.display = 'none';
+    }
+
+    // "Final Submit": re-validate everything, then send the email OTP and reveal captcha + OTP boxes
+    async function startFinalSubmit() {
+      if (formMode === 'view') return;
+      if (!document.getElementById('f_declaration').checked) {
+        alert('Please tick the declaration before final submission.');
+        return;
+      }
+      const app = collectApplicationFromForm();
+      if (!validateApplicationForm(app)) return;
+      // validateApplicationForm may jump to another step on failure; if we are still here, we are valid
+      const btn = document.getElementById('btnFinalSubmitStart');
+      const idle = btn.innerText;
+      btn.disabled = true; btn.innerText = 'Sending OTP...';
+      const ok = await sendCandidateSubmissionEmailOTP();
+      btn.disabled = false; btn.innerText = idle;
+      if (ok) {
+        document.getElementById('finalSubmitSecurityBox').style.display = 'block';
+        refreshCaptcha();
+        document.getElementById('f_captchaInput').value = '';
+        document.getElementById('f_emailOtpInput').value = '';
+        document.getElementById('finalSubmitSecurityBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
 
     function calculatePercentage() {
@@ -3637,6 +3826,8 @@
           }
           alert('Upload Error: Unsupported format.');
           input.value = '';
+          delete currentUploadedDocs[docKey];
+          if (okSpan) okSpan.style.display = 'none';
           return;
         }
 
@@ -3648,6 +3839,8 @@
           }
           alert(`Upload Error: Exceeds ${maxKb} KB.`);
           input.value = '';
+          delete currentUploadedDocs[docKey];
+          if (okSpan) okSpan.style.display = 'none';
           return;
         }
 
@@ -3795,55 +3988,92 @@
     }
 
     // Checks every mandatory field. Returns true when everything is valid.
-    function validateApplicationForm(app) {
-      const checks = [
-        ['f_dob', 'Date of Birth', 1], ['f_caste', 'Caste', 1], ['f_phc', 'Is Physically Challenged', 1],
-        ['f_gender', 'Gender', 1], ['f_aadhaar', 'Government ID Number', 1], ['f_nature', 'Application Nature', 2]
-      ];
-      if (app.nature === 'RENEWAL') {
-        checks.push(['f_prevscheme', 'Previous Scholarship Name / Scheme', 2],
-                    ['f_prevamount', 'Previous Scholarship Amount', 2],
-                    ['f_prevyear', 'Year of Award', 2]);
-      }
-      checks.push(
-        ['f_fname', "Father's Name", 2], ['f_focc', "Father's Occupation", 2],
-        ['f_mname', "Mother's Name", 2], ['f_mocc', "Mother's Occupation", 2],
-        ['f_whatsapp', 'WhatsApp No.', 3], ['f_email', 'Email', 3], ['f_vill', 'Village', 3],
-        ['f_po', 'P.O.', 3], ['f_ps', 'P.S.', 3], ['f_dist', 'District', 3], ['f_state', 'State', 3], ['f_pin', 'PIN Code', 3],
-        ['f_currclass', 'Present Class of Study', 4], ['f_admdate', 'Admission Date', 4], ['f_stream', 'Department / Stream', 4],
-        ['f_instname', 'Institution Name', 4], ['f_lastexam', 'Last Qualifying Examination', 4],
-        ['f_fullmarks', 'Full Marks', 4], ['f_marksobtained', 'Marks Obtained', 4], ['f_income', 'Monthly Income', 4],
-        ['f_acholder', 'A/C Holder Name', 5], ['f_ifsc', 'IFSC Code', 5], ['f_acno', 'A/C No.', 5], ['f_bankname', 'Bank Name', 5]
-      );
+    // onlyStep (1-6): validate just that step; omitted: validate all steps in order
+    function validateApplicationForm(app, onlyStep) {
+      const fail = (step, msg, id) => {
+        goToStep(step);
+        const el = id ? document.getElementById(id) : null;
+        if (el && el.focus) el.focus();
+        alert(msg);
+        return false;
+      };
+      const empty = id => { const el = document.getElementById(id); return !el || !String(el.value || '').trim(); };
+      const reqFields = (step, list) => {
+        for (const [id, label] of list) {
+          if (empty(id)) return fail(step, `Please fill the required field: ${label} (Step ${step}).`, id);
+        }
+        return true;
+      };
+      const run = s => !onlyStep || onlyStep === s;
 
-      for (const [id, label, step] of checks) {
-        const el = document.getElementById(id);
-        if (!el || !String(el.value || '').trim()) {
-          goToStep(step);
-          if (el) el.focus();
-          alert(`Please fill the required field: ${label} (Step ${step}).`);
-          return false;
+      // ---- Step 1 ----
+      if (run(1)) {
+        if (!reqFields(1, [['f_dob', 'Date of Birth'], ['f_caste', 'Caste'], ['f_phc', 'Is Physically Challenged'],
+                           ['f_gender', 'Gender'], ['f_aadhaar', 'Government ID Number']])) return false;
+        if (!app.photoBase64) return fail(1, 'Please upload your Passport Photo (Step 1).', 'f_cand_photo');
+        if (!app.signBase64) return fail(1, 'Please upload your Specimen Signature (Step 1).', 'f_cand_sign');
+      }
+
+      // ---- Step 2 ----
+      if (run(2)) {
+        const list = [['f_nature', 'Application Nature']];
+        if (app.nature === 'RENEWAL') {
+          list.push(['f_prevscheme', 'Previous Scholarship Name / Scheme'],
+                    ['f_prevamount', 'Previous Scholarship Amount'],
+                    ['f_prevyear', 'Year of Award']);
+        }
+        list.push(['f_fname', "Father's Name"], ['f_focc', "Father's Occupation"],
+                  ['f_mname', "Mother's Name"], ['f_mocc', "Mother's Occupation"],
+                  ['f_gname', "Guardian's Name"], ['f_gocc', "Guardian's Occupation"],
+                  ['f_grel', 'Relation with Guardian']);
+        if (!reqFields(2, list)) return false;
+      }
+
+      // ---- Step 3 ----
+      if (run(3)) {
+        if (!reqFields(3, [['f_mobile', 'Mobile No.'], ['f_altmobile', 'Alternative Mobile No.'], ['f_whatsapp', 'WhatsApp No.'],
+                           ['f_email', 'Email'], ['f_vill', 'Village'], ['f_po', 'P.O.'], ['f_ps', 'P.S.'],
+                           ['f_dist', 'District'], ['f_state', 'State'], ['f_pin', 'PIN Code']])) return false;
+        if (!isValidEmail(app.email)) return fail(3, 'Please enter a valid email address in Step 3.', 'f_email');
+        if (!/^\d{10}$/.test(String(app.whatsapp).replace(/\D/g, ''))) return fail(3, 'WhatsApp No. must be a 10-digit number.', 'f_whatsapp');
+        if (!/^\d{10}$/.test(String(app.altMobile).replace(/\D/g, ''))) return fail(3, 'Alternative Mobile No. must be a 10-digit number.', 'f_altmobile');
+        if (!/^\d{6}$/.test(app.pin)) return fail(3, 'PIN Code must be exactly 6 digits.', 'f_pin');
+      }
+
+      // ---- Step 4 (Income Certificate No. is the only optional field) ----
+      if (run(4)) {
+        if (!reqFields(4, [['f_currclass', 'Present Class of Study'], ['f_admdate', 'Admission Date'],
+                           ['f_stream', 'Department / Stream'], ['f_instname', 'Institution Name'],
+                           ['f_rollno', 'Roll / Registration No.'], ['f_lastexam', 'Last Qualifying Examination'],
+                           ['f_fullmarks', 'Full Marks'], ['f_marksobtained', 'Marks Obtained'],
+                           ['f_income', 'Monthly Income'], ['f_incomeauth', 'Income Certificate Issuing Authority']])) return false;
+        if (Number(app.fullMarks) <= 0) return fail(4, 'Full Marks must be greater than zero.', 'f_fullmarks');
+        if (Number(app.marksObtained) > Number(app.fullMarks)) return fail(4, 'Marks Obtained cannot be greater than Full Marks.', 'f_marksobtained');
+      }
+
+      // ---- Step 5 ----
+      if (run(5)) {
+        if (!reqFields(5, [['f_acholder', 'A/C Holder Name'], ['f_ifsc', 'IFSC Code'], ['f_acno', 'A/C No.'],
+                           ['f_bankname', 'Bank Name'], ['f_bankbranch', 'Bank Branch Name']])) return false;
+        if (!IFSC_REGEX.test(app.ifsc)) {
+          return fail(5, 'Invalid IFSC code! It must be exactly 11 characters: 4 letters (bank code) + the digit 0 (zero) + 6 letters/digits (branch code). Example: SBIN0011777', 'f_ifsc');
         }
       }
 
-      if (!isValidEmail(app.email)) { goToStep(3); alert('Please enter a valid email address in Step 3.'); return false; }
-      if (!/^\d{10}$/.test(app.whatsapp.replace(/\D/g, ''))) { goToStep(3); alert('WhatsApp No. must be a 10-digit number.'); return false; }
-      if (app.altMobile && !/^\d{10}$/.test(app.altMobile.replace(/\D/g, ''))) { goToStep(3); alert('Alternative Mobile No. must be a 10-digit number.'); return false; }
-      if (!/^\d{6}$/.test(app.pin)) { goToStep(3); alert('PIN Code must be exactly 6 digits.'); return false; }
-      if (Number(app.marksObtained) > Number(app.fullMarks)) { goToStep(4); alert('Marks Obtained cannot be greater than Full Marks.'); return false; }
-      if (!/^[A-Za-z]{4}0[A-Za-z0-9]{6}$/.test(app.ifsc)) { goToStep(5); alert('Please enter a valid 11-character IFSC code (example: SBIN0001234).'); return false; }
-
-      if (!app.photoBase64) { goToStep(1); alert('Please upload your Passport Photo (Step 1).'); return false; }
-      if (!app.signBase64) { goToStep(1); alert('Please upload your Specimen Signature (Step 1).'); return false; }
-
-      // Mandatory documents
-      const casteNeedsCert = ['SC', 'ST', 'OBC'].includes(app.caste);
-      for (const slot of DOC_SLOTS) {
-        const mandatory = slot.required === 'always' || (slot.required === 'caste' && casteNeedsCert);
-        if (mandatory && !(app.uploadedDocuments[slot.key] && app.uploadedDocuments[slot.key].base64)) {
-          goToStep(6);
-          alert(`Mandatory document missing: ${slot.label}.`);
-          return false;
+      // ---- Step 6: documents ----
+      if (run(6)) {
+        const casteNeedsCert = ['SC', 'ST', 'OBC'].includes(app.caste);
+        const phcNeedsCert = String(app.phc).toLowerCase() === 'yes';
+        for (const slot of DOC_SLOTS) {
+          const mandatory = slot.required === 'always' ||
+                            (slot.required === 'caste' && casteNeedsCert) ||
+                            (slot.required === 'phc' && phcNeedsCert);
+          if (mandatory && !(app.uploadedDocuments[slot.key] && app.uploadedDocuments[slot.key].base64)) {
+            let why = '';
+            if (slot.required === 'caste') why = ` (required because Caste = ${app.caste})`;
+            if (slot.required === 'phc') why = ' (required because you selected Physically Challenged = Yes)';
+            return fail(6, `Mandatory document missing: ${slot.label}${why}.`, slot.input);
+          }
         }
       }
       return true;
@@ -3865,12 +4095,12 @@
     let candOtpCooldownTimer = null;
 
     async function sendCandidateSubmissionEmailOTP() {
-      if (formMode === 'view') return;
+      if (formMode === 'view') return false;
       const email = document.getElementById('f_email').value.trim();
 
       if (!isValidEmail(email)) {
         alert('Please enter a valid email address in Step 3 before requesting OTP!');
-        return;
+        return false;
       }
 
       const btn = document.getElementById('btnSendCandOtp');
@@ -3881,7 +4111,7 @@
       if (otpError) {
         setBtnBusy(btn, false, null, 'Send OTP');
         alert('Could not send the OTP: ' + friendlyOtpError(otpError));
-        return;
+        return false;
       }
 
       candidateOtpTargetEmail = email;
@@ -3906,6 +4136,7 @@
       }, 1000);
 
       alert(`A 6-digit verification code has been sent to ${email}. Enter it below to confirm your final submission.`);
+      return true;
     }
 
     async function executeFinalApplicationSubmit() {
@@ -3929,6 +4160,10 @@
         return;
       }
 
+      if (!document.getElementById('f_declaration').checked) {
+        alert('Please tick the declaration before final submission.');
+        return;
+      }
       const app = collectApplicationFromForm();
       if (!validateApplicationForm(app)) return;
 
@@ -3939,11 +4174,11 @@
 
       const enteredOtp = document.getElementById('f_emailOtpInput').value.trim();
       if (!enteredOtp || enteredOtp.length < 6) {
-        alert('Please click "Send OTP", retrieve the 6-digit code from your email, and enter it before submitting!');
+        alert('Please retrieve the 6-digit code sent to your email and enter it before submitting!');
         return;
       }
       if (!candidateOtpTargetEmail || candidateOtpTargetEmail !== app.email) {
-        alert('Email address was changed or OTP was not requested yet. Please click "Send OTP" to receive the code.');
+        alert('Email address was changed or OTP was not requested yet. Please click "Resend OTP" to receive the code.');
         return;
       }
 
@@ -4016,11 +4251,12 @@
     // Document checklist (only marks a document "Uploaded" when a real file exists)
     function getDocChecklist(app) {
       const needsCaste = ['SC', 'ST', 'OBC'].includes(app.caste);
+      const needsPhc = String(app.phc || '').toLowerCase() === 'yes';
       return DOC_SLOTS.map((slot, i) => {
         const doc = (app.uploadedDocuments || {})[slot.key];
         const uploaded = !!(doc && doc.base64);
         let requirement = 'Mandatory';
-        if (slot.required === 'optional') requirement = 'Optional';
+        if (slot.required === 'phc') requirement = needsPhc ? 'Mandatory' : 'Not Applicable';
         if (slot.required === 'caste') requirement = needsCaste ? 'Mandatory' : 'Not Applicable';
         return {
           sl: i + 1,
@@ -4174,6 +4410,118 @@
     }
 
     // =============================================================
+    // ADMIN: VIEW / DOWNLOAD EACH UPLOADED DOCUMENT SEPARATELY
+    // =============================================================
+    let adminDocsIndex = null;
+
+    function extFromMime(mime, name) {
+      const m = String(mime || '').toLowerCase();
+      if (m.includes('pdf')) return 'pdf';
+      if (m.includes('png')) return 'png';
+      if (m.includes('jpeg') || m.includes('jpg')) return 'jpg';
+      const e = (String(name || '').split('.').pop() || '').toLowerCase();
+      return ['pdf', 'png', 'jpg', 'jpeg'].includes(e) ? e : 'bin';
+    }
+
+    // Every file the candidate uploaded for one application
+    function collectAppFiles(app) {
+      const files = [];
+      if (app.photoBase64) files.push({ key: 'photo', label: 'Passport Photo', name: 'passport_photo', data: app.photoBase64 });
+      if (app.signBase64) files.push({ key: 'sign', label: 'Specimen Signature', name: 'signature', data: app.signBase64 });
+      DOC_SLOTS.forEach(slot => {
+        const d = (app.uploadedDocuments || {})[slot.key];
+        if (d && d.base64) files.push({ key: slot.key, label: slot.label, name: d.name || slot.key, data: d.base64, mime: d.type });
+      });
+      return files;
+    }
+
+    function openAdminDocsModal(index) {
+      const app = applications[index];
+      if (!app) return;
+      adminDocsIndex = index;
+      document.getElementById('adminDocsInfo').innerHTML =
+        `<strong>${esc(app.name)}</strong> (${esc(app.candidateId)}) &nbsp;|&nbsp; <strong>App No:</strong> ${esc(app.appNo)}`;
+
+      const files = collectAppFiles(app);
+      const checklist = getDocChecklist(app);
+      let html = '';
+
+      // Photo & signature first
+      ['photo', 'sign'].forEach(k => {
+        const f = files.find(x => x.key === k);
+        const label = k === 'photo' ? 'Passport Photo' : 'Specimen Signature';
+        html += docRowHtml(label, f ? f.key : null, f ? 'Uploaded' : 'Not Uploaded', f ? '' : '');
+      });
+      checklist.forEach(d => {
+        const status = d.uploaded ? 'Uploaded' : (d.requirement === 'Not Applicable' ? 'Not Applicable' : 'Not Uploaded');
+        html += docRowHtml(d.label, d.uploaded ? d.key : null, status, d.requirement);
+      });
+      document.getElementById('adminDocsList').innerHTML = html;
+      document.getElementById('adminDocsModal').style.display = 'flex';
+    }
+
+    function docRowHtml(label, key, status, requirement) {
+      const color = status === 'Uploaded' ? '#15803d' : (requirement === 'Mandatory' ? '#dc2626' : '#78716c');
+      const buttons = key
+        ? `<span style="display:flex; gap:6px;">
+             <button type="button" class="action-btn btn-manage" onclick="viewAppDocument('${key}')">👁 View</button>
+             <button type="button" class="action-btn btn-pdf" onclick="downloadAppDocument('${key}')">⬇ Download</button>
+           </span>`
+        : '<span style="font-size:11px; color:#a8a29e;">—</span>';
+      return `<div class="doc-row">
+        <div><strong>${esc(label)}</strong><br><span style="font-size:11px; font-weight:bold; color:${color};">${esc(status)}</span>${requirement ? ` <span style="font-size:11px; color:#78716c;">(${esc(requirement)})</span>` : ''}</div>
+        ${buttons}
+      </div>`;
+    }
+
+    function closeAdminDocsModal() {
+      document.getElementById('adminDocsModal').style.display = 'none';
+      adminDocsIndex = null;
+    }
+
+    function getAppFileByKey(key) {
+      const app = applications[adminDocsIndex];
+      if (!app) return null;
+      const f = collectAppFiles(app).find(x => x.key === key);
+      return f ? { app, f } : null;
+    }
+
+    function appFileBlob(f) {
+      const mime = dataUrlMime(f.data) || f.mime || 'application/octet-stream';
+      return new Blob([dataUrlToBytes(f.data)], { type: mime });
+    }
+
+    function appFileDownloadName(app, f) {
+      const ext = extFromMime(dataUrlMime(f.data) || f.mime, f.name);
+      return safeFileName(`${app.appNo}_${app.name}_${f.label}`) + '.' + ext;
+    }
+
+    function viewAppDocument(key) {
+      const r = getAppFileByKey(key);
+      if (!r) return;
+      const url = URL.createObjectURL(appFileBlob(r.f));
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
+
+    function downloadAppDocument(key) {
+      const r = getAppFileByKey(key);
+      if (!r) return;
+      downloadBlob(appFileBlob(r.f), appFileDownloadName(r.app, r.f));
+    }
+
+    async function downloadAllDocsZip() {
+      const app = applications[adminDocsIndex];
+      if (!app) return;
+      const files = collectAppFiles(app);
+      if (!files.length) { alert('No documents uploaded by this candidate.'); return; }
+      const zip = new JSZip();
+      files.forEach(f => zip.file(appFileDownloadName(app, f), appFileBlob(f)));
+      const blob = await zip.generateAsync({ type: 'blob' });
+      downloadBlob(blob, safeFileName(`${app.appNo}_${app.name}_documents`) + '.zip');
+    }
+
+    // =============================================================
     // ADMIN: APPLICATIONS WINDOW
     // =============================================================
     function switchAdminWindow(windowType) {
@@ -4272,6 +4620,7 @@
           <td>
             <div class="action-btn-group">
               <button class="action-btn btn-manage" onclick="openScrutinyModal(${index})">Scrutiny</button>
+              <button class="action-btn" style="background:#0284c7; color:#fff;" onclick="openAdminDocsModal(${index})">📎 Docs</button>
               <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
               <button class="action-btn btn-word" onclick="downloadApplicationWord(${index})">Word</button>
               <button class="action-btn btn-delete" onclick="deleteApplicationOnly(${index})">Delete App</button>
@@ -6234,18 +6583,34 @@
     }
 
     // =============================================================
-    // CONTACT FORM (opens the visitor's own email app with the message filled in)
+    // CONTACT FORM (saved into the Supabase table "contact_inquiries")
     // =============================================================
-    function submitContactForm() {
+    async function submitContactForm() {
       const name = document.getElementById('contactName').value.trim();
       const phone = document.getElementById('contactPhone').value.trim();
       const msg = document.getElementById('contactMessage').value.trim();
       if (!name || !phone || !msg) { alert('Please fill in Name, Phone, and Message.'); return; }
+      if (phone.replace(/\D/g, '').length < 10) { alert('Please enter a valid phone number (at least 10 digits).'); return; }
+      if (msg.length > 2000) { alert('Message is too long (maximum 2000 characters).'); return; }
 
-      const subject = encodeURIComponent('Scholarship Portal Inquiry from ' + name);
-      const body = encodeURIComponent(`Name: ${name}\nPhone: ${phone}\n\nMessage:\n${msg}`);
-      window.location.href = `mailto:rkma.jgm.scholarship@gmail.com?subject=${subject}&body=${body}`;
+      // Simple anti-spam: one message every 30 seconds from the same browser
+      const last = Number(sessionStorage.getItem('rkm_last_inquiry') || 0);
+      if (Date.now() - last < 30000) { alert('Please wait a few seconds before sending another message.'); return; }
 
+      const btn = document.getElementById('btnContactSend');
+      const idle = btn.innerText;
+      btn.disabled = true; btn.innerText = 'Sending...';
+
+      const { error } = await db.from('contact_inquiries').insert([{ name: name, phone: phone, message: msg }]);
+
+      btn.disabled = false; btn.innerText = idle;
+
+      if (error) {
+        alert('Sorry, your message could not be sent: ' + error.message);
+        return;
+      }
+      sessionStorage.setItem('rkm_last_inquiry', String(Date.now()));
+      alert('Thank you! Your inquiry has been submitted. We will contact you soon.');
       document.getElementById('contactName').value = '';
       document.getElementById('contactPhone').value = '';
       document.getElementById('contactMessage').value = '';
