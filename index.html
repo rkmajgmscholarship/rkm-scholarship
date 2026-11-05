@@ -620,6 +620,15 @@
     .st-approved { background: #dcfce7; color: #15803d; }
     .st-sanctioned { background: #f3e8ff; color: #6b21a8; }
     .st-returned { background: #fee2e2; color: #991b1b; }
+    .st-rejected { background: #7f1d1d; color: #ffffff; }
+    .dv-ok { background:#dcfce7; color:#15803d; } .dv-pen { background:#fef9c3; color:#854d0e; }
+    .dv-rej { background:#fee2e2; color:#991b1b; } .dv-re { background:#ffedd5; color:#9a3412; }
+    .tl-i { position:relative; margin-left:8px; padding:0 0 14px 16px; border-left:2px solid #d6d3d1; }
+    .tl-i:before { content:''; position:absolute; left:-7px; top:2px; width:12px; height:12px; border-radius:50%; background:#d6d3d1; }
+    .tl-i.done { border-color:#16a34a; } .tl-i.done:before { background:#16a34a; }
+    .tl-i.cur:before { background:#ea580c; box-shadow:0 0 0 4px #fed7aa; }
+    .tl-i.bad:before { background:#dc2626; box-shadow:0 0 0 4px #fecaca; }
+    .bell-badge { background:#dc2626; color:#fff; border-radius:10px; padding:0 6px; font-size:11px; margin-left:2px; }
 
     .forgot-link {
       display: block;
@@ -810,6 +819,7 @@
       <div style="display:flex; gap:8px;">
         <button class="nav-btn" id="btnLang" style="background:#7c3aed; display:none;" onclick="toggleLanguage()">বাংলা</button>
         <button class="nav-btn" id="btnPortalHome" style="background:#15803d; border-color:#16a34a; display:none;" onclick="goToPortalHome()">&larr; Main Dashboard</button>
+        <button class="nav-btn" id="btnBell" style="background:#b45309; display:none;" onclick="openNotifications()">🔔 <span class="bell-badge" id="bellCount">0</span></button>
         <button class="nav-btn" style="background:#44403c;" onclick="openProfileModal()">My Profile</button>
         <button class="nav-btn" style="background:#dc2626; border-color:#ef4444;" onclick="executeSecureLogout()">Logout</button>
       </div>
@@ -966,8 +976,8 @@
         <!-- Step 1: Admin ID & Password -->
         <div id="adminLoginStep1">
           <div class="form-group">
-            <label>Admin ID</label>
-            <input type="text" id="manualAdminId" placeholder="Enter Official Admin ID" autocomplete="off">
+            <label>Admin ID or Email</label>
+            <input type="text" id="manualAdminId" placeholder="Enter Admin ID or registered Email" autocomplete="off">
           </div>
 
           <div class="form-group">
@@ -1067,6 +1077,16 @@
           <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
             <button class="btn-neutral" onclick="openCandidateProfileModal(false)">Change Password</button>
             <button class="btn-primary" style="background:#0284c7;" onclick="openTrackStatus()">Track Status</button>
+          </div>
+        </div>
+
+        <div class="card" style="border-top:4px solid #b45309; text-align:center;">
+          <h3 style="margin-bottom:8px; color:#b45309;">4. Notifications, Documents &amp; History</h3>
+          <p style="font-size:13px; color:#57534e; margin-bottom:16px;">See notices and updates, check document verification and your application history.</p>
+          <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+            <button class="btn-primary" style="background:#b45309;" onclick="openNotifications()">🔔 Notifications <span class="bell-badge" id="notifBadge">0</span></button>
+            <button class="btn-neutral" onclick="openTrackStatus('docs')">📄 Documents</button>
+            <button class="btn-neutral" onclick="openTrackStatus('history')">🕘 History</button>
           </div>
         </div>
       </div>
@@ -1419,7 +1439,19 @@
           <h3 id="trackHeading">Application Scrutiny &amp; Status History</h3>
           <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Workspace</button>
         </div>
+        <div id="trackTabs" class="sub-tabs-container" style="margin-top:10px;"></div>
         <div id="trackTimelineBox" style="margin-top:14px; display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+    </section>
+
+    <!-- ================= AUTHENTICATED: NOTIFICATION CENTRE ================= -->
+    <section id="sec-notifications" class="page-section">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <h3>🔔 Notification Centre</h3>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Workspace</button>
+        </div>
+        <div id="notifBox" style="margin-top:12px;"></div>
       </div>
     </section>
 
@@ -1440,6 +1472,9 @@
       <div class="admin-nav-tabs">
         <button class="admin-tab-btn active" id="tabBtnApplications" onclick="switchAdminWindow('applications')">
           📋 Applications Window (<span id="appCountBadge">0</span>)
+        </button>
+        <button class="admin-tab-btn" id="tabBtnAnalytics" onclick="switchAdminWindow('analytics')">
+          📊 Analytics &amp; Reports
         </button>
         <button class="admin-tab-btn" id="tabBtnRegistration" onclick="switchAdminWindow('registration')">
           👤 Registration Window (<span id="regCountBadge">0</span>)
@@ -1497,7 +1532,7 @@
           <div class="sub-tabs-container" id="adminAppSubTabsContainer"></div>
 
           <div class="filter-bar">
-            <input type="search" id="appSearch" placeholder="🔍 Search name, App No, ID, mobile, email, institution" oninput="renderAdminTable()" style="min-width:260px;">
+            <input type="search" id="appSearch" placeholder="🔍 Smart Search: name, Candidate ID, mobile, App No, email, Aadhaar, A/C" oninput="renderAdminTable()" style="min-width:260px;">
             <select id="appFStatus" onchange="renderAdminTable()"><option value="">All Status</option></select>
             <select id="appFCaste" onchange="renderAdminTable()"><option value="">All Caste</option><option>SC</option><option>ST</option><option>OBC</option><option>GENERAL</option></select>
             <select id="appFPhc" onchange="renderAdminTable()"><option value="">PH: All</option><option value="Yes">PH: Yes</option><option value="No">PH: No</option></select>
@@ -1505,11 +1540,18 @@
             <button type="button" class="btn-neutral" style="padding:6px 10px; font-size:12px;" onclick="clearAppFilters()">Clear</button>
             <span id="appFilterCount" style="font-size:12px; color:#78716c; align-self:center;"></span>
           </div>
+          <div id="bulkBar" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:#faf5ff; border:1px solid #e9d5ff; border-radius:8px; padding:8px 12px; margin-bottom:10px; font-size:12px;">
+            <strong>☑ Selected: <span id="bulkCount">0</span></strong>
+            <button type="button" class="action-btn" style="background:#15803d; color:#fff;" onclick="bulkVerify()">✔ Bulk Verification</button>
+            <button type="button" class="action-btn" style="background:#6b21a8; color:#fff;" onclick="openBulkStatus()">🔄 Bulk Status Update</button>
+            <button type="button" class="action-btn btn-neutral" onclick="bulkToggleAll(false)">Clear</button>
+          </div>
 
           <div style="overflow-x:auto;">
             <table>
               <thead>
                 <tr>
+                  <th><input type="checkbox" onchange="bulkToggleAll(this.checked)" title="Select all shown"></th>
                   <th>App No</th>
                   <th>Category</th>
                   <th>Photo</th>
@@ -1524,6 +1566,14 @@
               <tbody id="adminAppTableBody"></tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <!-- WINDOW: ANALYTICS & REPORTS -->
+      <div id="adminWindowAnalytics" style="display:none;">
+        <div class="card">
+          <div class="sub-tabs-container" id="anTabs"></div>
+          <div id="anBody" style="margin-top:12px;"></div>
         </div>
       </div>
 
@@ -1815,6 +1865,13 @@
           <div class="form-group"><label>Change Password</label><input type="password" id="updNewPassword" placeholder="New Secret Password"></div>
           <button class="btn-primary" style="background:#0284c7; width:100%;" onclick="executeAdminDirectProfileUpdate()">Save Profile</button>
         </div>
+        <div class="card" style="border-left: 5px solid #4338ca; max-width:600px; margin:12px auto 0;">
+          <h3 style="font-size:16px; margin-bottom:6px; color:#3730a3;">🆔 Change My Admin ID</h3>
+          <p style="font-size:12px; color:#78716c; margin-bottom:10px;">Your current Admin ID: <strong id="curAdminIdText"></strong>. The new ID is also updated in the database and works from your next login.</p>
+          <div class="form-group"><label>New Admin ID (min 4 characters, no spaces)</label><input type="text" id="updNewAdminId" autocomplete="off"></div>
+          <div class="form-group"><label>Current Password (to confirm)</label><input type="password" id="updAdminIdPass" autocomplete="current-password"></div>
+          <button class="btn-primary" style="background:#4338ca; width:100%;" onclick="changeMyAdminId()">Change Admin ID</button>
+        </div>
       </div>
     </section>
 
@@ -1869,7 +1926,7 @@
           <p style="font-size:12px; color:#57534e; margin-bottom:12px;">Enter your Admin ID to receive a recovery code on your registered official email.</p>
           <div class="form-group">
             <label>Official Admin ID</label>
-            <input type="text" id="adminForgotIdInput" placeholder="e.g. Secretary@RKMAJGM">
+            <input type="text" id="adminForgotIdInput" placeholder="Admin ID or registered Email">
           </div>
           <button class="btn-primary" style="background:#1c1917; color:#fde047; width:100%; margin-top:8px;" onclick="requestAdminPasswordResetOTP()">Send Recovery Email</button>
         </div>
@@ -2026,6 +2083,7 @@
               <option value="Approved">Approved</option>
               <option value="Sanctioned">Sanctioned (Amount Disbursed)</option>
               <option value="Returned for Correction">Returned for Correction (Send Back)</option>
+              <option value="Rejected">Rejected (Application Cancelled)</option>
             </select>
             <span id="sanctionLockNotice" style="display:none; font-size:11px; color:#dc2626; margin-top:4px;">⚠️ Must be Approved before Sanctioned.</span>
           </div>
@@ -2068,6 +2126,28 @@
 
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px; border-top:1px solid #e7e5e4; padding-top:12px;">
           <button type="button" class="btn-neutral" onclick="closeScrutinyModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Status Update Modal -->
+    <div id="bulkModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:300; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:10px; max-width:480px; width:100%; max-height:90vh; overflow-y:auto; padding:20px;">
+        <h3 style="color:#6b21a8; border-bottom:2px solid #6b21a8; padding-bottom:8px; margin-bottom:12px;">🔄 Bulk Status Update (<span id="bulkModalCount">0</span> applications)</h3>
+        <div class="form-group"><label>New Status</label>
+          <select id="bulkStatus" onchange="bulkStatusChange()">
+            <option>Under Verification</option><option>Approved</option><option value="Sanctioned">Sanctioned</option>
+            <option value="Returned for Correction">Returned for Correction</option><option>Rejected</option>
+          </select></div>
+        <div id="bulkSancBlock" style="display:none;" class="form-grid">
+          <div class="form-group"><label>Sanctioned Amount (₹)</label><input type="number" id="bulkAmount" min="1"></div>
+          <div class="form-group"><label>Sanction Date</label><input type="date" id="bulkDate"></div>
+        </div>
+        <div class="form-group"><label>Remarks (candidate will see it)</label><textarea id="bulkRemarks" rows="3"></textarea></div>
+        <p style="font-size:11px; color:#78716c;">“Sanctioned” is applied only to applications already Approved. “Returned for Correction” unlocks all 6 sections.</p>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+          <button type="button" class="btn-neutral" onclick="document.getElementById('bulkModal').style.display='none'">Cancel</button>
+          <button type="button" class="btn-primary" style="background:#6b21a8;" onclick="bulkApplyStatus()">Apply to All Selected</button>
         </div>
       </div>
     </div>
@@ -2615,7 +2695,9 @@
         photoBase64: a.photo_base64,
         signBase64: a.sign_base64,
         uploadedDocuments: a.uploaded_documents || {},
-        unlockedSections: a.unlocked_sections || ''
+        unlockedSections: a.unlocked_sections || '',
+        statusUpdatedAt: a.status_updated_at || null,
+        docVerification: a.doc_verification || {}
       };
     }
 
@@ -2659,6 +2741,7 @@
       document.getElementById('portalUserIdentity').innerText = identity;
       const lb = document.getElementById('btnLang');
       if (lb) lb.style.display = (role === 'candidate') ? 'inline-block' : 'none';
+      const bb = document.getElementById('btnBell'); if (bb) bb.style.display = (role === 'candidate') ? 'inline-block' : 'none';
       if (typeof applyLanguage === 'function') applyLanguage();
     }
 
@@ -2703,14 +2786,14 @@
         const pass = document.getElementById('manualAdminPass').value.trim();
 
         if (!id || !pass) {
-          alert('Please enter both Admin ID and Password!');
+          alert('Please enter both Admin ID (or Email) and Password!');
           return;
         }
 
-        const { data: adminData, error } = await db.from('admins').select('*').eq('admin_id', id).eq('pass', pass);
+        const { data: adminData, error } = await findAdminByIdOrEmail(id, pass);
 
         if (error || !adminData || adminData.length === 0) {
-          alert('Invalid Administrator Credentials! Please verify ID and Password.');
+          alert('Invalid Administrator Credentials! Please verify Admin ID / Email and Password.');
           return;
         }
         admin = adminData[0];
@@ -2939,9 +3022,9 @@
         return;
       }
 
-      const { data, error } = await db.from('admins').select('*').eq('admin_id', aid);
+      const { data, error } = await findAdminByIdOrEmail(aid, null);
       if (error || !data || data.length === 0) {
-        alert('No registered administrator account found with this ID.');
+        alert('No registered administrator account found with this ID / Email.');
         return;
       }
 
@@ -3071,6 +3154,7 @@
 
     // Switches the main dashboard card between Apply Now / View Application / Edit Application
     function updateCandidateDashboardState() {
+      if (typeof loadCandidateExtras === 'function') loadCandidateExtras();
       const btn = document.getElementById('btnCandApplyMain');
       const title = document.getElementById('candCard1Title');
       const text = document.getElementById('candCard1Text');
@@ -3634,36 +3718,14 @@
     // -------------------------------------------------------------
     // CANDIDATE: TRACK STATUS
     // -------------------------------------------------------------
-    function openTrackStatus() {
-      const app = getCandidateApplication();
-      const box = document.getElementById('trackTimelineBox');
-      if (!app) {
-        box.innerHTML = '<div style="padding:10px; background:#fff7ed; color:#c2410c;">No application submitted yet.</div>';
-      } else {
-        const submitted = app.submittedAt ? formatDateDMY(app.submittedAt) : 'Not available';
-        let sanctionHtml = '';
-        if (app.status === 'Sanctioned' && app.sanctionedAmount) {
-          sanctionHtml = `<br><strong>Sanctioned Amount:</strong> ₹${esc(app.sanctionedAmount)}<br><strong>Sanction Date:</strong> ${esc(formatDateDMY(app.sanctionedDate))}`;
-        }
-        box.innerHTML = `
-          <div style="padding:12px; background:#f0f9ff; border-left:4px solid #0284c7; border-radius:6px; line-height:1.8;">
-            <strong>Application No:</strong> ${esc(app.appNo)}<br>
-            <strong>Scheme:</strong> <span style="color:#7f1d1d; font-weight:bold;">${esc(app.schemeName || 'Scholarship')}</span><br>
-            <strong>Submission Date:</strong> ${esc(submitted)}<br>
-            <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${esc(app.status)}</span>
-            ${sanctionHtml}<br>
-            <strong>Official Remarks:</strong> ${esc(app.adminRemarks || 'Under standard scrutiny.')}
-          </div>
-        `;
-      }
-      navigateTo('trackStatus');
-    }
+    // (openTrackStatus is defined in the "NEW FEATURES" block near the end of the script)
 
     function getStatusBadgeClass(s) {
       if (s === 'Submitted') return 'st-submitted';
       if (s === 'Under Verification') return 'st-under-verification';
       if (s === 'Approved') return 'st-approved';
       if (s === 'Sanctioned') return 'st-sanctioned';
+      if (s === 'Rejected') return 'st-rejected';
       return 'st-returned';
     }
 
@@ -4349,6 +4411,14 @@
         const payload = applicationToDbPayload({ ...app, appNo: appNo, status: 'Submitted', adminRemarks: 'Application corrected and resubmitted (email verified) under ' + app.schemeName + '.' });
         payload.submitted_at = nowIso;
         payload.unlocked_sections = null;
+        { // documents that were replaced go back to "Pending" verification
+          const dv = { ...(existing.docVerification || {}) }; let ch = false;
+          Object.keys(app.uploadedDocuments || {}).forEach(k => {
+            const o = (existing.uploadedDocuments || {})[k];
+            if (!o || o.path !== app.uploadedDocuments[k].path) { dv[k] = { status: 'Pending', remark: '' }; ch = true; }
+          });
+          if (ch) payload.doc_verification = dv;
+        }
         // Locked sections are not sent at all, so their saved values stay exactly as they were
         if (formMode === 'edit') {
           for (let n = 1; n <= 6; n++) {
@@ -4389,6 +4459,7 @@
       }
 
       notifyStatusEmail(appNo);
+      candHistAdd({ appNo: appNo, schemeName: app.schemeName }, existing ? 'Corrected application resubmitted' : 'Application submitted', existing ? existing.status : '', 'Submitted', '');
       if (existing) {
         // Replaced documents: remove the old files from Storage (silent if the delete-docs function is not deployed)
         const keep = new Set(Object.values(app.uploadedDocuments || {}).map(d => d && d.path).filter(Boolean));
@@ -4625,37 +4696,7 @@
       return f.data;
     }
 
-    function openAdminDocsModal(index) {
-      const app = applications[index];
-      if (!app) return;
-      adminDocsIndex = index;
-      document.getElementById('adminDocsInfo').innerHTML =
-        `<strong>${esc(app.name)}</strong> (${esc(app.candidateId)}) &nbsp;|&nbsp; <strong>App No:</strong> ${esc(app.appNo)}`;
-      let html = '';
-      [['photo', 'Passport Photo', !!app.photoBase64], ['sign', 'Specimen Signature', !!app.signBase64]].forEach(([k, label, has]) => {
-        html += docRowHtml(label, has ? k : null, has ? 'Uploaded' : 'Not Uploaded', '');
-      });
-      getDocChecklist(app).forEach(d => {
-        const status = d.uploaded ? 'Uploaded' : (d.requirement === 'Not Applicable' ? 'Not Applicable' : 'Not Uploaded');
-        html += docRowHtml(d.label, d.uploaded ? d.key : null, status, d.requirement);
-      });
-      document.getElementById('adminDocsList').innerHTML = html;
-      document.getElementById('adminDocsModal').style.display = 'flex';
-    }
-
-    function docRowHtml(label, key, status, requirement) {
-      const color = status === 'Uploaded' ? '#15803d' : (requirement === 'Mandatory' ? '#dc2626' : '#78716c');
-      const buttons = key
-        ? `<span style="display:flex; gap:6px;">
-             <button type="button" class="action-btn btn-manage" onclick="viewAppDocument('${key}')">👁 View</button>
-             <button type="button" class="action-btn btn-pdf" onclick="downloadAppDocument('${key}')">⬇ Download</button>
-           </span>`
-        : '<span style="font-size:11px; color:#a8a29e;">—</span>';
-      return `<div class="doc-row">
-        <div><strong>${esc(label)}</strong><br><span style="font-size:11px; font-weight:bold; color:${color};">${esc(status)}</span>${requirement ? ` <span style="font-size:11px; color:#78716c;">(${esc(requirement)})</span>` : ''}</div>
-        ${buttons}
-      </div>`;
-    }
+    // (openAdminDocsModal with document verification is defined in the "NEW FEATURES" block near the end of the script)
 
     function closeAdminDocsModal() {
       document.getElementById('adminDocsModal').style.display = 'none';
@@ -4714,7 +4755,7 @@
     // ADMIN: APPLICATIONS WINDOW
     // =============================================================
     function switchAdminWindow(windowType) {
-      const tabs = ['applications', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'inquiries', 'auditLog', 'updateProfile'];
+      const tabs = ['applications', 'analytics', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'inquiries', 'auditLog', 'updateProfile'];
       const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
       tabs.forEach(t => {
         const btn = document.getElementById('tabBtn' + cap(t));
@@ -4736,6 +4777,8 @@
       sessionStorage.setItem('rkm_current_admin_tab', windowType);
 
       if (windowType === 'applications') { renderAdminAppSubTabs(); renderAdminTable(); }
+      if (windowType === 'analytics') renderAnalytics();
+      if (windowType === 'updateProfile') { const e = document.getElementById('curAdminIdText'); if (e) e.innerText = activeAdminId; }
       if (windowType === 'registration') renderRegisteredCandidatesTable();
       if (windowType === 'manageSchemes') renderAdminSchemesTable();
       if (windowType === 'manageSite') loadCMSInputs();
@@ -4794,7 +4837,7 @@
       filteredApps = filteredApps.filter(a =>
         (!fSt || a.status === fSt) && (!fCa || String(a.caste).toUpperCase() === fCa) &&
         (!fPh || a.phc === fPh) && (!fDi || a.dist === fDi) &&
-        (!q || [a.name, a.appNo, a.candidateId, a.mobile, a.email, a.institution, a.govId].some(v => String(v || '').toLowerCase().includes(q))));
+        (!q || [a.name, a.appNo, a.candidateId, a.mobile, a.altMobile, a.email, a.institution, a.govId, a.bankAcc].some(v => String(v || '').toLowerCase().includes(q))));
       const cntEl = document.getElementById('appFilterCount');
       if (cntEl) cntEl.innerText = `Showing ${filteredApps.length} of ${applications.length}`;
       const dupGov = {}, dupBank = {};
@@ -4805,7 +4848,7 @@
       });
 
       if (filteredApps.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:16px; color:#888;">No applications found in this scholarship category.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:16px; color:#888;">No applications found in this scholarship category.</td></tr>';
         return;
       }
 
@@ -4816,10 +4859,11 @@
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
+          <td><input type="checkbox" class="bchk" value="${esc(app.appNo)}" ${bulkSel.has(app.appNo) ? 'checked' : ''} onchange="bulkToggle(this)"></td>
           <td><strong>${esc(app.appNo)}</strong></td>
           <td><span style="font-size:11px; font-weight:bold; color:#7f1d1d; background:#ffedd5; padding:2px 6px; border-radius:4px;">${esc(schemeTitle)}</span></td>
           <td>${app.photoBase64 ? `<img src="${app.photoBase64}" style="width:36px; height:42px; object-fit:cover; border-radius:4px;">` : '<span style="color:#aaa; font-size:10px;">N/A</span>'}</td>
-          <td>${esc(app.name)}${dupGov[normId(app.govId)] > 1 ? ' <span class="dup-badge" title="Same Government ID used in another application">⚠ Dup ID</span>' : ''}${dupBank[normId(app.bankAcc)] > 1 ? ' <span class="dup-badge" title="Same bank account used in another application">⚠ Same A/C</span>' : ''}<br><span style="color:#78716c; font-size:10px;">ID: ${esc(app.candidateId)}</span></td>
+          <td>${esc(app.name)}${dupGov[normId(app.govId)] > 1 ? ' <span class="dup-badge" title="Same Government ID used in another application">⚠ Dup ID</span>' : ''}${dupBank[normId(app.bankAcc)] > 1 ? ' <span class="dup-badge" title="Same bank account used in another application">⚠ Same A/C</span>' : ''}<br><span style="color:#78716c; font-size:10px;">ID: ${esc(app.candidateId)}</span><br><span style="font-size:10px; color:#0369a1;">📄 ${esc(dvSummary(app) || 'No documents')}</span></td>
           <td>${esc(app.currClass)} (${esc(app.stream)})<br><span style="color:#78716c; font-size:10px;">${esc(app.institution)}</span></td>
           <td style="color:#15803d; font-weight:bold;">${esc(app.marksPct)}</td>
           <td>₹${esc(app.income)}</td>
@@ -4986,8 +5030,8 @@
           return;
         }
       }
-      if (newStatus === 'Returned for Correction' && !remarks) {
-        alert('The reason for returning the application must be written in Remarks!');
+      if ((newStatus === 'Returned for Correction' || newStatus === 'Rejected') && !remarks) {
+        alert('The reason must be written in Remarks (the candidate will see it)!');
         return;
       }
 
@@ -5011,6 +5055,7 @@
       }
 
       logAudit('STATUS_CHANGE', app.appNo, { candidate: app.candidateId, from: app.status, to: newStatus, remarks: remarks, amount: newStatus === 'Sanctioned' ? Number(amount) : null, unlocked: newStatus === 'Returned for Correction' ? unlockList : null });
+      statusSideEffects(app, newStatus, remarks, amount, sDate);
       const mail = await notifyStatusEmail(app.appNo);
       let mailNote = '';
       if (['Approved', 'Sanctioned', 'Returned for Correction'].includes(newStatus)) {
@@ -6766,7 +6811,7 @@
         alert('Permission Denied!');
         return;
       }
-      if (aid === 'Secretary@RKMAJGM') {
+      if (admins[aid] && admins[aid].role === 'SUPER_ADMIN') {
         alert('Cannot delete the primary Super Administrator!');
         return;
       }
@@ -7220,9 +7265,11 @@
       '📄 Download Complete Application (PDF)': '📄 সম্পূর্ণ আবেদন ডাউনলোড (PDF)', '🪪 Profile Card (PDF)': '🪪 প্রোফাইল কার্ড (PDF)',
       '1. Apply for Scholarship': '১. বৃত্তির জন্য আবেদন', 'Apply Now': 'এখনই আবেদন করুন', '👁️ View Application': '👁️ আবেদন দেখুন',
       '✏️ Edit Application': '✏️ আবেদন সংশোধন', '1. Your Application': '১. আপনার আবেদন', '1. Correct Your Application': '১. আবেদন সংশোধন করুন',
-      'Select Scholarship Scheme': 'বৃত্তির স্কিম নির্বাচন করুন'
+      'Select Scholarship Scheme': 'বৃত্তির স্কিম নির্বাচন করুন',
+      '4. Notifications, Documents & History': '৪. নোটিফিকেশন, ডকুমেন্ট ও ইতিহাস', '📄 Documents': '📄 ডকুমেন্ট', '🕘 History': '🕘 ইতিহাস',
+      '🔔 Notification Centre': '🔔 নোটিফিকেশন কেন্দ্র', 'See notices and updates, check document verification and your application history.': 'নোটিশ ও আপডেট দেখুন, ডকুমেন্ট যাচাইয়ের অবস্থা ও আবেদনের ইতিহাস জানুন।'
     };
-    const I18N_ROOTS = ['portalTopHeader', 'sec-candidateDashboard', 'sec-schemeSelection', 'sec-applicationForm', 'sec-trackStatus'];
+    const I18N_ROOTS = ['sec-notifications', 'portalTopHeader', 'sec-candidateDashboard', 'sec-schemeSelection', 'sec-applicationForm', 'sec-trackStatus'];
     const i18nOrig = new WeakMap();
     let uiLang = 'en';
     try { uiLang = localStorage.getItem('rkm_lang') || 'en'; } catch (e) {}
@@ -7276,6 +7323,381 @@
     // =============================================================
     // STARTUP: restore session after a page refresh, load live data
     // =============================================================
+    // =============================================================
+    // NEW FEATURES (candidate tracker / notifications / history, admin analytics / bulk tools, admin ID + email login)
+    // Needs the SQL file "supabase_new_features.sql" to be run once in the Supabase SQL Editor.
+    // =============================================================
+    const byId = id => document.getElementById(id);
+
+    // ---- Admin login by Admin ID OR Email ----
+    async function findAdminByIdOrEmail(idOrEmail, pass) {
+      let q = db.from('admins').select('*').eq('admin_id', idOrEmail);
+      if (pass !== null) q = q.eq('pass', pass);
+      const r1 = await q;
+      if (r1.error || (r1.data && r1.data.length)) return r1;
+      let q2 = db.from('admins').select('*').ilike('email', idOrEmail.replace(/[\\%_]/g, '\\$&'));
+      if (pass !== null) q2 = q2.eq('pass', pass);
+      const r2 = await q2;
+      if (r2.error) return r2;
+      return { data: (r2.data || []).filter(a => String(a.email || '').toLowerCase() === idOrEmail.toLowerCase()), error: null };
+    }
+
+    // ---- Admin: change own Admin ID ----
+    async function changeMyAdminId() {
+      const nid = byId('updNewAdminId').value.trim(), pw = byId('updAdminIdPass').value.trim();
+      const me = admins[activeAdminId], old = activeAdminId;
+      if (!me) return;
+      if (nid.length < 4 || /\s/.test(nid)) { alert('New Admin ID must be at least 4 characters with no spaces.'); return; }
+      if (nid === old) { alert('This is already your Admin ID.'); return; }
+      if (admins[nid]) { alert('This Admin ID is already used by another administrator.'); return; }
+      if (pw !== me.pass) { alert('Current password is wrong.'); return; }
+      let { data, error } = await db.rpc('rkma_change_admin_id', { p_admin: old, p_pass: pw, p_new_id: nid });
+      if (error && /rkma_change_admin_id|PGRST202|42883/.test((error.message || '') + (error.code || ''))) {
+        const r = await db.from('admins').update({ admin_id: nid }).eq('admin_id', old);   // fallback if the SQL function is missing
+        error = r.error; data = 'ok';
+      }
+      if (error) { alert('Could not change Admin ID: ' + error.message); return; }
+      if (data === 'exists') { alert('This Admin ID is already used by another administrator.'); return; }
+      if (data && data !== 'ok') { alert('Could not change Admin ID (' + data + ').'); return; }
+      admins[nid] = admins[old]; delete admins[old];
+      activeAdminId = nid;
+      sessionStorage.setItem('rkm_active_user_id', nid);
+      byId('updNewAdminId').value = ''; byId('updAdminIdPass').value = ''; byId('curAdminIdText').innerText = nid;
+      byId('activeAdminContact').innerText = `Admin ID: ${nid} | Mobile: ${me.mobile} | Email: ${me.email}`;
+      logAudit('CHANGE_ADMIN_ID', nid, { old_id: old });
+      alert('Admin ID changed successfully. Use the new ID (or your email) from the next login.');
+      await loadDataFromSupabase();
+    }
+
+    // ---- Document verification helpers ----
+    const DV_LIST = ['Verified', 'Pending', 'Rejected', 'Re-upload Required'];
+    const DV_CLS = { 'Verified': 'dv-ok', 'Pending': 'dv-pen', 'Rejected': 'dv-rej', 'Re-upload Required': 'dv-re' };
+    const DV_BAD = ['Rejected', 'Re-upload Required'];
+    function dvBadge(s) { return `<span class="status-badge ${DV_CLS[s] || 'dv-pen'}">${esc(s)}</span>`; }
+    function dvGet(app, key) { const d = (app.docVerification || {})[key]; return d && d.status ? d : { status: 'Pending', remark: '' }; }
+    function dvItems(app) {
+      const it = [];
+      if (app.photoBase64) it.push({ key: 'photo', label: 'Passport Photo', up: true });
+      if (app.signBase64) it.push({ key: 'sign', label: 'Specimen Signature', up: true });
+      getDocChecklist(app).forEach(d => { if (d.uploaded || d.requirement === 'Mandatory') it.push({ key: d.key, label: d.label, up: d.uploaded, req: d.requirement }); });
+      return it;
+    }
+    function dvSummary(app) {
+      const c = {};
+      dvItems(app).filter(i => i.up).forEach(i => { const s = dvGet(app, i.key).status; c[s] = (c[s] || 0) + 1; });
+      return Object.keys(c).map(s => `${c[s]} ${s}`).join(' · ');
+    }
+    async function dvWrite(app, changes) {
+      const dv = { ...(app.docVerification || {}) }, at = new Date().toISOString();
+      Object.keys(changes).forEach(k => { dv[k] = { ...changes[k], by: activeAdminId, at: at }; });
+      const { error } = await db.from('applications').update({ doc_verification: dv }).eq('app_no', app.appNo);
+      if (error) { alert('Could not save document status: ' + error.message + '\n(Run supabase_new_features.sql first.)'); return false; }
+      app.docVerification = dv; return true;
+    }
+
+    // Admin: documents window with Verified / Pending / Rejected / Re-upload Required
+    function openAdminDocsModal(index) {
+      const app = applications[index];
+      if (!app) return;
+      adminDocsIndex = index;
+      byId('adminDocsInfo').innerHTML = `<strong>${esc(app.name)}</strong> (${esc(app.candidateId)}) &nbsp;|&nbsp; <strong>App No:</strong> ${esc(app.appNo)}`;
+      let html = `<div style="text-align:right; margin-bottom:6px;"><button type="button" class="action-btn" style="background:#15803d; color:#fff;" onclick="dvMarkAll()">✔ Mark all uploaded as Verified</button></div>`;
+      dvItems(app).forEach(i => {
+        const v = dvGet(app, i.key);
+        const btns = i.up
+          ? `<span style="display:flex; gap:6px;"><button type="button" class="action-btn btn-manage" onclick="viewAppDocument('${i.key}')">👁 View</button><button type="button" class="action-btn btn-pdf" onclick="downloadAppDocument('${i.key}')">⬇ Download</button></span>`
+          : '<span style="font-size:11px; color:#dc2626; font-weight:bold;">Not Uploaded</span>';
+        const ctl = i.up ? `<div style="display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:4px;">
+            <select id="dvs_${i.key}" style="width:auto; padding:4px; font-size:12px;">${DV_LIST.map(s => `<option ${s === v.status ? 'selected' : ''}>${s}</option>`).join('')}</select>
+            <input type="text" id="dvr_${i.key}" value="${esc(v.remark || '')}" placeholder="Remark (shown to candidate)" style="flex:1; min-width:140px; padding:4px; font-size:12px;">
+            <button type="button" class="action-btn btn-manage" onclick="dvSave('${i.key}')">Save</button></div>` : '';
+        html += `<div class="doc-row"><div><strong>${esc(i.label)}</strong> ${i.req ? `<span style="font-size:11px; color:#78716c;">(${esc(i.req)})</span>` : ''}<br>${i.up ? dvBadge(v.status) : ''}</div>${btns}${ctl}</div>`;
+      });
+      byId('adminDocsList').innerHTML = html;
+      byId('adminDocsModal').style.display = 'flex';
+    }
+    async function dvSave(key) {
+      const app = applications[adminDocsIndex]; if (!app) return;
+      const st = byId('dvs_' + key).value, rm = byId('dvr_' + key).value.trim();
+      if (DV_BAD.includes(st) && !rm) { alert('Please write a remark so the candidate knows what to correct.'); return; }
+      if (!(await dvWrite(app, { [key]: { status: st, remark: rm } }))) return;
+      const label = (dvItems(app).find(i => i.key === key) || {}).label || key;
+      admHist(app, 'Document: ' + st, '', '', label + (rm ? ' - ' + rm : ''));
+      logAudit('DOC_VERIFICATION', app.appNo, { doc: label, status: st, remark: rm });
+      if (DV_BAD.includes(st)) notify(app.candidateId, 'document', 'Document needs correction: ' + label, st + '. ' + rm, app.appNo);
+      openAdminDocsModal(adminDocsIndex); renderAdminTable();
+    }
+    async function dvMarkAll() {
+      const app = applications[adminDocsIndex]; if (!app) return;
+      if (!confirm('Mark every uploaded document of this application as Verified?')) return;
+      const ch = {}; dvItems(app).filter(i => i.up).forEach(i => { ch[i.key] = { status: 'Verified', remark: '' }; });
+      if (!(await dvWrite(app, ch))) return;
+      admHist(app, 'All documents verified', '', '', '');
+      logAudit('DOC_VERIFICATION', app.appNo, { doc: 'ALL', status: 'Verified' });
+      openAdminDocsModal(adminDocsIndex); renderAdminTable();
+    }
+
+    // ---- History + notifications written by the admin side ----
+    function admHist(app, ev, from, to, rm) {
+      const c = adminCreds(); if (!c) return;
+      db.rpc('rkma_add_history', { ...c, p_app_no: app.appNo, p_cid: app.candidateId, p_scheme: app.schemeName || '', p_event: ev, p_from: from || '', p_to: to || '', p_remarks: rm || '' }).then(() => {}, () => {});
+    }
+    function notify(cid, type, title, msg, appNo) {
+      const c = adminCreds(); if (!c) return;
+      db.rpc('rkma_add_notification', { ...c, p_cid: cid, p_type: type, p_title: title, p_message: msg || '', p_app_no: appNo || '' }).then(() => {}, () => {});
+    }
+    function statusSideEffects(app, st, rm, amt, sd) {
+      admHist(app, 'Status changed', app.status, st, rm);
+      const M = {
+        'Under Verification': ['status', 'Application under verification', 'Your application is now being verified by the Ashrama office.'],
+        'Approved': ['approval', 'Application approved', 'Your application has been approved.'],
+        'Sanctioned': ['sanction', 'Scholarship amount sanctioned', 'A scholarship of ₹' + amt + ' has been sanctioned on ' + formatDateDMY(sd) + '.'],
+        'Returned for Correction': ['returned', 'Application returned for correction', 'Please correct and resubmit your application. Reason: ' + rm],
+        'Rejected': ['status', 'Application rejected', 'Your application was not accepted. ' + rm]
+      }[st];
+      if (M && (st !== app.status || st === 'Returned for Correction')) notify(app.candidateId, M[0], M[1], M[2], app.appNo);
+    }
+    function candHistAdd(app, ev, from, to, rm) {
+      const c = candCreds(); if (!c) return;
+      db.rpc('rkma_cand_add_history', { ...c, p_app_no: app.appNo || '', p_scheme: app.schemeName || '', p_event: ev, p_from: from || '', p_to: to || '', p_remarks: rm || '' }).then(() => {}, () => {});
+    }
+
+    // ---- Candidate: notification centre ----
+    let candHist = [], candNotifs = [], trackTab = 'progress', extrasErr = '';
+    async function loadCandidateExtras() {
+      const c = candCreds();
+      if (!c) { candHist = []; candNotifs = []; return; }
+      if (!window._nfTimer) window._nfTimer = setInterval(() => { if (activeUserRole === 'candidate') loadCandidateExtras(); }, 60000);
+      try {
+        const [h, n] = await Promise.all([db.rpc('rkma_cand_history', c), db.rpc('rkma_cand_notifications', c)]);
+        extrasErr = (h.error || n.error) ? 'Notifications / history are not set up yet (run supabase_new_features.sql in Supabase).' : '';
+        candHist = h.data || []; candNotifs = n.data || [];
+      } catch (e) { extrasErr = 'Could not load notifications.'; }
+      updateBell();
+    }
+    function nfReadSet() { try { return new Set(JSON.parse(localStorage.getItem('rkm_nread_' + activeCandidateId) || '[]')); } catch (e) { return new Set(); } }
+    function nfList() {
+      const rs = nfReadSet(), since = Date.now() - 30 * 864e5;
+      const a = candNotifs.map(n => ({ id: 'n' + n.id, type: n.type, title: n.title, msg: n.message, at: n.created_at, read: !!n.is_read }));
+      notices.filter(x => new Date(x.date).getTime() >= since).slice(0, 10).forEach(x => a.push({ id: 't' + x.id, type: 'notice', title: 'New Notice: ' + x.title, msg: '', link: x.link, at: x.date, read: rs.has('t' + x.id) }));
+      return a.sort((x, y) => new Date(y.at) - new Date(x.at));
+    }
+    function updateBell() {
+      const n = nfList().filter(x => !x.read).length;
+      ['bellCount', 'notifBadge'].forEach(id => { const e = byId(id); if (e) e.innerText = n; });
+    }
+    async function openNotifications() {
+      navigateTo('notifications');
+      await loadCandidateExtras();
+      const ICON = { notice: '📢', status: 'ℹ️', approval: '✅', sanction: '💰', returned: '↩️', document: '📄' };
+      const list = nfList();
+      byId('notifBox').innerHTML = (extrasErr ? `<div style="background:#fef2f2; color:#991b1b; padding:8px 10px; border-radius:6px; font-size:12px; margin-bottom:8px;">${esc(extrasErr)}</div>` : '') +
+        (list.length ? list.map(x => `<div style="border:1px solid #e7e5e4; ${x.read ? '' : 'border-left:4px solid #ea580c; background:#fff7ed;'} border-radius:6px; padding:10px 12px; margin-bottom:8px;">
+          <div style="font-weight:bold; font-size:13px;">${ICON[x.type] || '🔔'} ${esc(x.title)} ${x.read ? '' : '<span class="bell-badge">NEW</span>'}</div>
+          ${x.msg ? `<div style="font-size:12px; color:#57534e; margin-top:2px;">${esc(x.msg)}</div>` : ''}
+          ${x.link ? `<a href="${esc(x.link)}" target="_blank" rel="noopener" style="font-size:12px;">Open notice &rarr;</a>` : ''}
+          <div style="font-size:11px; color:#a8a29e; margin-top:2px;">${esc(timestampDMYHM(x.at))}</div></div>`).join('') : '<div style="padding:12px; color:#78716c;">No notifications yet.</div>');
+      const rs = nfReadSet(); notices.forEach(x => rs.add('t' + x.id));
+      try { localStorage.setItem('rkm_nread_' + activeCandidateId, JSON.stringify([...rs])); } catch (e) {}
+      candNotifs.forEach(n => n.is_read = true); updateBell();
+      const c = candCreds(); if (c) db.rpc('rkma_cand_mark_read', c).then(() => {}, () => {});
+    }
+
+    // ---- Candidate: progress tracker / documents / history ----
+    function openTrackStatus(tab) { trackTab = tab || 'progress'; navigateTo('trackStatus'); renderTrack(); loadCandidateExtras().then(renderTrack); }
+    function renderTrack() {
+      const app = getCandidateApplication(), box = byId('trackTimelineBox');
+      byId('trackTabs').innerHTML = [['progress', '📍 Progress'], ['docs', '📄 Documents'], ['history', '🕘 History']]
+        .map(([k, l]) => `<button type="button" class="sub-tab-btn ${trackTab === k ? 'active' : ''}" onclick="trackTab='${k}'; renderTrack()">${l}</button>`).join('');
+      if (trackTab === 'history') { box.innerHTML = historyHtml(); return; }
+      if (!app) { box.innerHTML = '<div style="padding:10px; background:#fff7ed; color:#c2410c;">No application submitted yet.</div>'; return; }
+      box.innerHTML = trackTab === 'docs' ? docsTrackHtml(app) : progressHtml(app);
+    }
+    function histWhen(app, st) {
+      const h = candHist.filter(x => x.app_no === app.appNo && x.to_status === st).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      return h[0] ? h[0].created_at : null;
+    }
+    function progressHtml(app) {
+      const steps = ['Submitted', 'Under Verification', 'Approved', 'Sanctioned'];
+      const DESC = ['Application received with email verification.', 'Office is checking your details and documents.', 'Application approved by the Ashrama.', 'Scholarship amount sanctioned.'];
+      const NEXT = { 'Submitted': 'Your application is waiting to be taken up for scrutiny. No action needed.', 'Under Verification': 'The office is checking your details. Watch the Documents tab for anything marked Rejected / Re-upload Required.', 'Returned for Correction': 'Click "Edit Application" on your dashboard, correct the unlocked sections and resubmit.', 'Approved': 'Your application is approved. The scholarship amount will be sanctioned next.', 'Sanctioned': 'Scholarship sanctioned. Nothing more to do.', 'Rejected': 'Your application was not accepted. Please contact the Ashrama office.' };
+      const side = app.status === 'Returned for Correction' || app.status === 'Rejected';
+      const rank = side ? 1 : Math.max(0, steps.indexOf(app.status));
+      let tl = steps.map((s, i) => {
+        const done = i < rank || (app.status === 'Sanctioned' && i <= rank), cur = !side && i === rank && !done;
+        const when = i === 0 ? app.submittedAt : (histWhen(app, s) || (i === rank && !side ? app.statusUpdatedAt : null));
+        return `<div class="tl-i ${done ? 'done' : ''} ${cur ? 'cur' : ''}"><strong>${s}</strong> ${when ? `<span style="font-size:11px; color:#78716c;">${esc(timestampDMYHM(when))}</span>` : ''}<div style="font-size:12px; color:#57534e;">${DESC[i]}</div></div>`;
+      }).join('');
+      if (side) tl += `<div class="tl-i bad cur"><strong style="color:#b91c1c;">${esc(app.status)}</strong> ${app.statusUpdatedAt ? `<span style="font-size:11px; color:#78716c;">${esc(timestampDMYHM(app.statusUpdatedAt))}</span>` : ''}<div style="font-size:12px;">${esc(app.adminRemarks || '')}</div></div>`;
+      const needs = dvItems(app).filter(i => i.up && DV_BAD.includes(dvGet(app, i.key).status)).length;
+      const sanc = app.status === 'Sanctioned' && app.sanctionedAmount ? `<br><strong>Sanctioned Amount:</strong> ₹${esc(app.sanctionedAmount)} (${esc(formatDateDMY(app.sanctionedDate))})` : '';
+      return `<div style="padding:12px; background:#f0f9ff; border-left:4px solid #0284c7; border-radius:6px; line-height:1.8;">
+          <strong>Application No:</strong> ${esc(app.appNo)}<br><strong>Scheme:</strong> <span style="color:#7f1d1d; font-weight:bold;">${esc(app.schemeName || 'Scholarship')}</span><br>
+          <strong>Submitted:</strong> ${esc(app.submittedAt ? timestampDMYHM(app.submittedAt) : 'Not available')}<br>
+          <strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(app.status)}">${esc(app.status)}</span>${sanc}<br>
+          <strong>Official Remarks:</strong> ${esc(app.adminRemarks || 'Under standard scrutiny.')}</div>
+        <div class="tl">${tl}</div>
+        <div style="padding:10px 12px; background:#fffbeb; border:1px solid #fde68a; border-radius:6px; font-size:13px;"><strong>👉 Next step:</strong> ${esc(NEXT[app.status] || '')}</div>
+        ${needs ? `<div style="padding:10px 12px; background:#fef2f2; border:1px solid #fecaca; border-radius:6px; font-size:13px; color:#991b1b;">⚠ ${needs} document(s) need your attention. <a href="#" onclick="trackTab='docs'; renderTrack(); return false;">Open Documents &rarr;</a></div>` : ''}`;
+    }
+    function docsTrackHtml(app) {
+      const canRe = app.status !== 'Sanctioned';
+      return `<input type="file" id="reupFile" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="reuploadDoc(this)">` +
+        dvItems(app).map(i => {
+          const v = dvGet(app, i.key), needs = i.up && DV_BAD.includes(v.status);
+          const act = !needs ? '' : ((canRe && i.key !== 'photo' && i.key !== 'sign')
+            ? `<button type="button" class="action-btn btn-manage" onclick="reupPick('${i.key}')">⬆ Re-upload</button>`
+            : '<span style="font-size:11px; color:#9a3412;">Photo / signature: ask the office to return your application to change it.</span>');
+          return `<div class="doc-row"><div><strong>${esc(i.label)}</strong><br>${i.up ? dvBadge(v.status) : '<span class="status-badge dv-rej">Not Uploaded</span>'}${v.remark ? `<div style="font-size:12px; color:#b45309; margin-top:2px;">Office remark: ${esc(v.remark)}</div>` : ''}</div>${act}</div>`;
+        }).join('') + '<div style="font-size:11px; color:#78716c;">Re-upload: PDF / JPG / PNG, max 500 KB. A re-uploaded document goes back to “Pending” for the office to verify again.</div>';
+    }
+    let reupKey = null;
+    function reupPick(k) { reupKey = k; byId('reupFile').value = ''; byId('reupFile').click(); }
+    async function reuploadDoc(inp) {
+      const f = inp.files[0], app = getCandidateApplication(), key = reupKey;
+      if (!f || !app || !key) return;
+      if (!/\.(pdf|jpe?g|png)$/i.test(f.name)) { alert('Only PDF, JPG or PNG files are allowed.'); return; }
+      if (f.size > 500 * 1024) { alert('File must be 500 KB or smaller.'); return; }
+      try {
+        const base64 = await readAsDataUrl(f);
+        const up = await uploadDocsToStorage({ [key]: { name: f.name, type: f.type, base64: base64 } }, activeCandidateId);
+        const docs = {};
+        Object.keys(app.uploadedDocuments || {}).forEach(k => { const d = app.uploadedDocuments[k]; if (d && d.path) docs[k] = { name: d.name, type: d.type, path: d.path }; });
+        docs[key] = up[key];
+        const dv = { ...(app.docVerification || {}), [key]: { status: 'Pending', remark: '', at: new Date().toISOString(), by: activeCandidateId } };
+        const { error } = await db.from('applications').update({ uploaded_documents: docs, doc_verification: dv }).eq('app_no', app.appNo);
+        if (error) throw new Error(error.message);
+        const old = (app.uploadedDocuments || {})[key];
+        if (old && old.path) removeStorageFiles({ as: 'candidate', cid: activeCandidateId, pass: candidates[activeCandidateId].pass, paths: [old.path] });
+        candHistAdd(app, 'Document re-uploaded', '', '', (dvItems(app).find(i => i.key === key) || {}).label || key);
+        alert('Document uploaded. The office will verify it again.');
+        await loadDataFromSupabase(); renderTrack();
+      } catch (e) { alert('Upload failed: ' + (e.message || e)); }
+    }
+    function historyHtml() {
+      if (!candHist.length) return `<div style="padding:10px; background:#fff7ed; color:#c2410c;">No history yet. ${esc(extrasErr)}</div>`;
+      const by = {};
+      candHist.forEach(h => { (by[h.app_no || '-'] = by[h.app_no || '-'] || []).push(h); });
+      return Object.keys(by).map(no => {
+        const ev = by[no].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)), first = ev[ev.length - 1];
+        const corr = ev.filter(e => /resubmitted/i.test(e.event)).length;
+        return `<div style="border:1px solid #e7e5e4; border-radius:8px; padding:12px;"><strong>${esc(no)}</strong> — ${esc(first.scheme_name || '')}
+          <div style="font-size:12px; color:#78716c;">First submitted: ${esc(timestampDMYHM(first.created_at))} | Corrections made: ${corr}</div>` +
+          ev.map(e => `<div style="border-top:1px solid #f5f5f4; padding:6px 0; font-size:12px;"><strong>${esc(e.event)}</strong> ${e.to_status ? '&rarr; ' + esc(e.to_status) : ''} <span style="color:#78716c;">${esc(timestampDMYHM(e.created_at))}</span>${e.remarks ? `<div style="color:#57534e;">Note / Admin comment: ${esc(e.remarks)}</div>` : ''}</div>`).join('') + '</div>';
+      }).join('');
+    }
+
+    // ---- Admin: Analytics, Scheme report, Pending work, Duplicates ----
+    let anTab = 'overview';
+    const PEND = ['Submitted', 'Under Verification', 'Returned for Correction', 'Approved'];
+    const ALL_ST = ['Submitted', 'Under Verification', 'Approved', 'Sanctioned', 'Returned for Correction', 'Rejected'];
+    function appDays(a) { const t = a.statusUpdatedAt || a.submittedAt; return t ? Math.max(0, Math.floor((Date.now() - new Date(t)) / 864e5)) : 0; }
+    function cnt(f, L) { return (L || applications).filter(f).length; }
+    function anBar(l, n, T) { const p = T ? Math.round(n * 100 / T) : 0; return `<div style="display:flex; align-items:center; gap:8px; font-size:12px; margin:4px 0;"><span style="width:150px;">${esc(l)}</span><div style="flex:1; background:#f5f5f4; border-radius:4px;"><div style="width:${p}%; background:#ea580c; height:14px; border-radius:4px;"></div></div><strong style="width:70px; text-align:right;">${n} (${p}%)</strong></div>`; }
+    function renderAnalytics() {
+      byId('anTabs').innerHTML = [['overview', '📊 Overview'], ['scheme', '🎓 Scheme-wise Report'], ['pending', '⏳ Pending Work'], ['dups', '⚠ Duplicates']]
+        .map(([k, l]) => `<button type="button" class="sub-tab-btn ${anTab === k ? 'active' : ''}" onclick="anTab='${k}'; renderAnalytics()">${l}</button>`).join('');
+      byId('anBody').innerHTML = { overview: anOverview, scheme: anScheme, pending: anPending, dups: anDups }[anTab]();
+    }
+    function anOverview() {
+      const T = applications.length, amt = applications.reduce((s, a) => s + (a.status === 'Sanctioned' ? Number(a.sanctionedAmount) || 0 : 0), 0);
+      const K = [['Total Applications', T, '#0284c7'], ['Approved / Sanctioned', cnt(a => a.status === 'Approved' || a.status === 'Sanctioned'), '#15803d'], ['Rejected / Cancelled', cnt(a => a.status === 'Rejected'), '#dc2626'],
+        ['Returned for Correction', cnt(a => a.status === 'Returned for Correction'), '#d97706'], ['Pending (Awaiting Action)', cnt(a => a.status === 'Submitted' || a.status === 'Under Verification'), '#7c3aed'], ['Total Sanctioned Amount', '₹' + amt.toLocaleString('en-IN'), '#6b21a8']];
+      return `<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:14px;">${K.map(k => `<div style="border-top:4px solid ${k[2]}; background:#fafaf9; border-radius:8px; padding:10px; text-align:center;"><div style="font-size:22px; font-weight:bold; color:${k[2]};">${k[1]}</div><div style="font-size:11px; color:#57534e;">${k[0]}</div></div>`).join('')}</div>
+        <h4 style="font-size:13px; margin-bottom:4px;">By Status</h4>${ALL_ST.map(s => anBar(s, cnt(a => a.status === s), T)).join('')}
+        <h4 style="font-size:13px; margin:12px 0 4px;">By Caste</h4>${['SC', 'ST', 'OBC', 'GENERAL'].map(c => anBar(c, cnt(a => String(a.caste).toUpperCase() === c), T)).join('')}`;
+    }
+    function anScheme() {
+      const rows = scholarshipSchemes.map(s => {
+        const L = applications.filter(a => a.schemeId === s.id), c = st => cnt(a => a.status === st, L);
+        const amt = L.reduce((x, a) => x + (a.status === 'Sanctioned' ? Number(a.sanctionedAmount) || 0 : 0), 0);
+        return `<tr><td><strong>${esc(s.name)}</strong></td><td>${L.length}</td><td>${c('Submitted')}</td><td>${c('Under Verification')}</td><td>${c('Approved')}</td><td>${c('Sanctioned')}</td><td>${c('Returned for Correction')}</td><td>${c('Rejected')}</td><td>₹${amt.toLocaleString('en-IN')}</td><td><button type="button" class="action-btn btn-excel" onclick="exportSchemeExcel('${esc(s.id)}')">📥 Excel</button></td></tr>`;
+      }).join('');
+      return `<div style="overflow-x:auto;"><table><thead><tr><th>Scheme</th><th>Total</th><th>Submitted</th><th>Under Verif.</th><th>Approved</th><th>Sanctioned</th><th>Returned</th><th>Rejected</th><th>Amount</th><th>Report</th></tr></thead><tbody>${rows || '<tr><td colspan="10">No schemes.</td></tr>'}</tbody></table></div>`;
+    }
+    function exportSchemeExcel(id) {
+      const s = scholarshipSchemes.find(x => x.id === id), L = applications.filter(a => a.schemeId === id);
+      if (!L.length) { alert('No applications in this scheme.'); return; }
+      if (!window.XLSX) { alert('Excel library is not loaded.'); return; }
+      const rows = L.map((a, i) => ({ 'Sl': i + 1, 'Application No': a.appNo, 'Candidate ID': a.candidateId, 'Name': a.name, 'Mobile': String(a.mobile || ''), 'Class': a.currClass, 'Institution': a.institution, 'Marks %': a.marksPct, 'Income': a.income, 'Status': a.status, 'Sanctioned Amount': a.sanctionedAmount, 'Sanction Date': a.sanctionedDate ? dateOnlyDMY(a.sanctionedDate) : '', 'Documents': dvSummary(a) }));
+      const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Report');
+      XLSX.writeFile(wb, safeFileName('Report_' + (s ? s.name : id)) + '.xlsx');
+    }
+    function anPending() {
+      const L = applications.filter(a => PEND.includes(a.status)).map(a => ({ a: a, d: appDays(a) })).sort((x, y) => y.d - x.d);
+      const B = [['0–3 days', 0, 3, '#15803d'], ['4–7 days', 4, 7, '#ca8a04'], ['8–15 days', 8, 15, '#ea580c'], ['16+ days', 16, 1e9, '#dc2626']];
+      return `<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">${B.map(b => `<div style="border-top:4px solid ${b[3]}; background:#fafaf9; padding:8px 14px; border-radius:6px; text-align:center;"><div style="font-size:20px; font-weight:bold; color:${b[3]};">${L.filter(x => x.d >= b[1] && x.d <= b[2]).length}</div><div style="font-size:11px;">${b[0]}</div></div>`).join('')}</div>
+        <div style="overflow-x:auto;"><table><thead><tr><th>App No</th><th>Candidate</th><th>Status</th><th>Waiting (days)</th><th>Since</th><th>Action</th></tr></thead><tbody>${L.length ? L.map(x => `<tr><td><strong>${esc(x.a.appNo)}</strong></td><td>${esc(x.a.name)}<br><span style="font-size:10px; color:#78716c;">${esc(x.a.candidateId)}</span></td><td><span class="status-badge ${getStatusBadgeClass(x.a.status)}">${esc(x.a.status)}</span></td><td><strong style="color:${x.d > 15 ? '#dc2626' : x.d > 7 ? '#ea580c' : '#15803d'};">${x.d}</strong></td><td>${esc(timestampDMYHM(x.a.statusUpdatedAt || x.a.submittedAt))}</td><td><button type="button" class="action-btn btn-manage" onclick="openScrutinyModal(${applications.indexOf(x.a)})">Scrutiny</button></td></tr>`).join('') : '<tr><td colspan="6" style="text-align:center; color:#15803d;">No pending work 🎉</td></tr>'}</tbody></table></div>
+        <p style="font-size:11px; color:#78716c; margin-top:6px;">Days are counted from the last status change (or submission date).</p>`;
+    }
+    function anDups() {
+      const K = { 'Aadhaar / Govt ID': a => normId(a.govId), 'Bank Account': a => normId(a.bankAcc), 'Mobile': a => String(a.mobile || '').replace(/\D/g, '').slice(-10), 'Name + Date of Birth': a => (a.name && a.dob) ? String(a.name).replace(/\s+/g, ' ').trim().toLowerCase() + ' / ' + String(a.dob).slice(0, 10) : '' };
+      let html = '', n = 0;
+      Object.keys(K).forEach(k => {
+        const g = {};
+        applications.forEach(a => { const v = K[k](a); if (v) (g[v] = g[v] || []).push(a); });
+        Object.keys(g).filter(v => g[v].length > 1).forEach(v => {
+          n++;
+          html += `<div style="border:1px solid #fde68a; background:#fffbeb; border-radius:8px; padding:10px; margin-bottom:8px; font-size:12px;"><strong>⚠ Same ${esc(k)}:</strong> ${esc(v)}` +
+            g[v].map(a => `<div style="margin-top:4px;">• ${esc(a.appNo)} — ${esc(a.name)} (${esc(a.candidateId)}) <span class="status-badge ${getStatusBadgeClass(a.status)}">${esc(a.status)}</span> <button type="button" class="action-btn btn-manage" onclick="openScrutinyModal(${applications.indexOf(a)})">Scrutiny</button></div>`).join('') + '</div>';
+        });
+      });
+      return (n ? `<p style="font-size:13px; margin-bottom:8px;"><strong>${n}</strong> possible duplicate group(s) found. Please check before approving.</p>` : '<p style="color:#15803d;">✔ No duplicate Aadhaar, bank account, mobile or name + DOB found.</p>') + html;
+    }
+
+    // ---- Admin: bulk verification / bulk status update ----
+    const bulkSel = new Set();
+    function bulkToggle(el) { el.checked ? bulkSel.add(el.value) : bulkSel.delete(el.value); bulkUpdate(); }
+    function bulkToggleAll(on) { document.querySelectorAll('.bchk').forEach(c => { c.checked = on; on ? bulkSel.add(c.value) : bulkSel.delete(c.value); }); bulkUpdate(); }
+    function bulkUpdate() { const e = byId('bulkCount'); if (e) e.innerText = bulkSel.size; }
+    function bulkApps() { return applications.filter(a => bulkSel.has(a.appNo)); }
+    async function bulkVerify() {
+      const L = bulkApps();
+      if (!L.length) { alert('Select at least one application first.'); return; }
+      if (!confirm(`Mark all uploaded documents of ${L.length} application(s) as Verified and move “Submitted” ones to “Under Verification”?`)) return;
+      let ok = 0; const bad = [], at = new Date().toISOString();
+      for (const a of L) {
+        const dv = { ...(a.docVerification || {}) };
+        dvItems(a).filter(i => i.up).forEach(i => { dv[i.key] = { status: 'Verified', remark: '', by: activeAdminId, at: at }; });
+        const upd = { doc_verification: dv };
+        if (a.status === 'Submitted') upd.status = 'Under Verification';
+        const { error } = await db.from('applications').update(upd).eq('app_no', a.appNo);
+        if (error) { bad.push(a.appNo); continue; }
+        ok++;
+        if (upd.status) statusSideEffects(a, 'Under Verification', '');
+        admHist(a, 'Bulk verification', '', upd.status || '', 'All uploaded documents verified');
+        logAudit('BULK_VERIFY', a.appNo, { candidate: a.candidateId });
+      }
+      alert(`Verified: ${ok}` + (bad.length ? `\nFailed: ${bad.join(', ')}\n(Run supabase_new_features.sql if the column is missing.)` : ''));
+      bulkSel.clear(); await loadDataFromSupabase(); bulkUpdate();
+    }
+    function openBulkStatus() {
+      if (!bulkSel.size) { alert('Select at least one application first.'); return; }
+      byId('bulkModalCount').innerText = bulkSel.size; bulkStatusChange(); byId('bulkModal').style.display = 'flex';
+    }
+    function bulkStatusChange() { byId('bulkSancBlock').style.display = byId('bulkStatus').value === 'Sanctioned' ? 'grid' : 'none'; }
+    async function bulkApplyStatus() {
+      const L = bulkApps(), st = byId('bulkStatus').value, rm = byId('bulkRemarks').value.trim(), amt = byId('bulkAmount').value.trim(), sd = byId('bulkDate').value;
+      if (st === 'Sanctioned' && (!(Number(amt) > 0) || !sd)) { alert('Enter the sanction amount and date.'); return; }
+      if ((st === 'Returned for Correction' || st === 'Rejected') && !rm) { alert('Remarks are required for this status.'); return; }
+      if (!confirm(`Change ${L.length} application(s) to “${st}”?`)) return;
+      let ok = 0; const skip = [], bad = [];
+      for (const a of L) {
+        if (st === 'Sanctioned' && a.status !== 'Approved' && a.status !== 'Sanctioned') { skip.push(a.appNo); continue; }
+        const upd = { status: st, admin_remarks: rm, unlocked_sections: st === 'Returned for Correction' ? '1,2,3,4,5,6' : null, sanctioned_amount: st === 'Sanctioned' ? Number(amt) : null, sanctioned_date: st === 'Sanctioned' ? sd : null };
+        const { error } = await db.from('applications').update(upd).eq('app_no', a.appNo);
+        if (error) { bad.push(a.appNo); continue; }
+        ok++;
+        logAudit('STATUS_CHANGE', a.appNo, { candidate: a.candidateId, from: a.status, to: st, bulk: 'yes' });
+        statusSideEffects(a, st, rm, amt, sd);
+        if (['Approved', 'Sanctioned', 'Returned for Correction'].includes(st)) await notifyStatusEmail(a.appNo);
+      }
+      byId('bulkModal').style.display = 'none';
+      alert(`Updated: ${ok}` + (skip.length ? `\nSkipped (must be Approved first): ${skip.join(', ')}` : '') + (bad.length ? `\nFailed: ${bad.join(', ')}` : ''));
+      bulkSel.clear(); await loadDataFromSupabase(); bulkUpdate();
+    }
+
+
     let sliderTimerStarted = false;
 
     window.addEventListener('load', async () => {
