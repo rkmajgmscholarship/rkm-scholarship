@@ -537,6 +537,9 @@
     .step-item.active { color: #ea580c; }
     .step-item.completed { color: #16a34a; }
     .form-step { display: none; }
+    .filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+    .filter-bar input, .filter-bar select { padding:6px 8px; font-size:12px; width:auto; min-width:130px; }
+    .dup-badge { background:#fef3c7; color:#92400e; font-size:10px; padding:1px 5px; border-radius:4px; font-weight:bold; }
     .ifsc-msg { font-size: 11px; margin-top: 3px; display: none; }
     .ifsc-msg.bad { display: block; color: #dc2626; }
     .ifsc-msg.good { display: block; color: #15803d; }
@@ -805,6 +808,7 @@
         </div>
       </div>
       <div style="display:flex; gap:8px;">
+        <button class="nav-btn" id="btnLang" style="background:#7c3aed; display:none;" onclick="toggleLanguage()">বাংলা</button>
         <button class="nav-btn" id="btnPortalHome" style="background:#15803d; border-color:#16a34a; display:none;" onclick="goToPortalHome()">&larr; Main Dashboard</button>
         <button class="nav-btn" style="background:#44403c;" onclick="openProfileModal()">My Profile</button>
         <button class="nav-btn" style="background:#dc2626; border-color:#ef4444;" onclick="executeSecureLogout()">Logout</button>
@@ -1112,7 +1116,11 @@
         </div>
 
         <div style="background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:12px;" id="mandatoryNote">
-          ℹ️ All fields are <strong>mandatory</strong> except <em>Income Certificate No.</em> You cannot move to the next step until every required field of the current step is filled.
+          ℹ️ All fields are mandatory except Income Certificate No. You cannot move to the next step until every required field of the current step is filled.
+        </div>
+        <div id="draftBar" style="display:none; margin-bottom:10px; align-items:center; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn-neutral" id="btnSaveDraft" style="padding:6px 12px; font-size:12px;" onclick="saveDraft()">💾 Save Draft</button>
+          <span id="draftInfo" style="font-size:11px; color:#78716c;"></span>
         </div>
         <form id="scholarshipMultiForm" onsubmit="return false;">
           <!-- STEP 1 -->
@@ -1354,6 +1362,7 @@
                 <input type="checkbox" id="f_declaration" onchange="onDeclarationToggle()">
                 <span>I hereby declare that all the information and documents submitted in this application are true and correct to the best of my knowledge. I understand that any false information may lead to rejection of my application and cancellation of any scholarship awarded.</span>
               </label>
+              <div id="declBn" style="display:none; margin-top:8px; padding-left:28px; font-size:12px; color:#57534e; line-height:1.6;">(বাংলা অনুবাদ) আমি এতদ্বারা ঘোষণা করছি যে এই আবেদনে জমা দেওয়া সমস্ত তথ্য ও নথি আমার জ্ঞান অনুযায়ী সত্য ও সঠিক। আমি বুঝি যে কোনো মিথ্যা তথ্য দিলে আমার আবেদন বাতিল হতে পারে এবং মঞ্জুর হওয়া যেকোনো বৃত্তি বাতিল করা হতে পারে।</div>
             </div>
 
             <div style="margin-top:12px; display:none;" id="finalSubmitStartWrap">
@@ -1450,6 +1459,12 @@
         <button class="admin-tab-btn" id="tabBtnSuperAdminManage" style="display:none; color:#4338ca;" onclick="switchAdminWindow('superAdminManage')">
           👑 Manage Admins (Super Admin Only)
         </button>
+        <button class="admin-tab-btn" id="tabBtnInquiries" onclick="switchAdminWindow('inquiries')">
+          ✉️ Inquiries (<span id="inqCountBadge">0</span> new)
+        </button>
+        <button class="admin-tab-btn" id="tabBtnAuditLog" style="display:none; color:#4338ca;" onclick="switchAdminWindow('auditLog')">
+          🧾 Audit Log (Super Admin)
+        </button>
         <button class="admin-tab-btn" id="tabBtnUpdateProfile" onclick="switchAdminWindow('updateProfile')">
           ⚙️ My Profile
         </button>
@@ -1469,7 +1484,27 @@
             </div>
           </div>
 
+          <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 12px; margin-bottom:10px;">
+            <strong style="font-size:13px; color:#1e40af;">🗓 Application Window</strong>
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:6px; font-size:12px;">
+              <label style="display:flex; gap:6px; align-items:center;"><input type="checkbox" id="pwOpen" style="width:auto;"> Accept new applications</label>
+              <label style="display:flex; gap:6px; align-items:center;">Last date &amp; time: <input type="datetime-local" id="pwDeadline" style="width:auto; padding:4px 6px; font-size:12px;"></label>
+              <button type="button" class="btn-primary" style="padding:6px 12px; font-size:12px;" id="btnSavePortalSettings" onclick="savePortalSettings()">Save</button>
+              <span id="pwStatus" style="font-size:11px; font-weight:bold;"></span>
+            </div>
+          </div>
+
           <div class="sub-tabs-container" id="adminAppSubTabsContainer"></div>
+
+          <div class="filter-bar">
+            <input type="search" id="appSearch" placeholder="🔍 Search name, App No, ID, mobile, email, institution" oninput="renderAdminTable()" style="min-width:260px;">
+            <select id="appFStatus" onchange="renderAdminTable()"><option value="">All Status</option></select>
+            <select id="appFCaste" onchange="renderAdminTable()"><option value="">All Caste</option><option>SC</option><option>ST</option><option>OBC</option><option>GENERAL</option></select>
+            <select id="appFPhc" onchange="renderAdminTable()"><option value="">PH: All</option><option value="Yes">PH: Yes</option><option value="No">PH: No</option></select>
+            <select id="appFDist" onchange="renderAdminTable()"><option value="">All Districts</option></select>
+            <button type="button" class="btn-neutral" style="padding:6px 10px; font-size:12px;" onclick="clearAppFilters()">Clear</button>
+            <span id="appFilterCount" style="font-size:12px; color:#78716c; align-self:center;"></span>
+          </div>
 
           <div style="overflow-x:auto;">
             <table>
@@ -1735,6 +1770,43 @@
       </div>
 
       <!-- WINDOW 8: UPDATE OWN PROFILE -->
+      <!-- WINDOW: INQUIRIES -->
+      <div id="adminWindowInquiries" style="display:none;">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+            <h3 style="color:#7f1d1d;">✉️ Website Inquiries</h3>
+            <div style="display:flex; gap:8px;">
+              <select id="inqFilter" onchange="renderInquiries()" style="width:auto; padding:6px 8px; font-size:12px;">
+                <option value="all">All</option><option value="New">New</option><option value="Read">Read</option><option value="Replied">Replied</option>
+              </select>
+              <button type="button" class="btn-neutral" style="padding:6px 12px; font-size:12px;" onclick="loadInquiries()">🔄 Refresh</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Date</th><th>Name / Phone</th><th>Message</th><th>Status</th><th>Reply Note</th><th>Actions</th></tr></thead>
+              <tbody id="inqTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW: AUDIT LOG -->
+      <div id="adminWindowAuditLog" style="display:none;">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="color:#4338ca;">🧾 Audit Log (latest 300 actions)</h3>
+            <button type="button" class="btn-neutral" style="padding:6px 12px; font-size:12px;" onclick="loadAuditLog()">🔄 Refresh</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Date &amp; Time</th><th>Admin</th><th>Action</th><th>Target</th><th>Details</th></tr></thead>
+              <tbody id="auditTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <div id="adminWindowUpdateProfile" style="display:none;">
         <div class="card" style="border-left: 5px solid #0284c7; max-width:600px; margin:0 auto;">
           <h3 style="font-size:16px; margin-bottom:12px; color:#0369a1;">My Profile Settings</h3>
@@ -1972,6 +2044,18 @@
             </div>
           </div>
 
+          <div id="unlockBlock" class="form-group" style="display:none; background:#fff7ed; border:1px solid #fdba74; border-radius:8px; padding:10px 12px;">
+            <label style="color:#9a3412;">🔓 Unlock these sections for the candidate (only the ticked ones can be edited) *</label>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:6px; margin-top:6px; font-size:13px;">
+              <label style="font-weight:normal;"><input type="checkbox" class="unlockChk" value="1" onchange="syncUnlockChecks()"> Step 1: Personal Details &amp; Photos</label>
+              <label style="font-weight:normal;"><input type="checkbox" class="unlockChk" value="2" onchange="syncUnlockChecks()"> Step 2: Application Type &amp; Parents</label>
+              <label style="font-weight:normal;"><input type="checkbox" class="unlockChk" value="3" onchange="syncUnlockChecks()"> Step 3: Contact &amp; Address</label>
+              <label style="font-weight:normal;"><input type="checkbox" class="unlockChk" value="4" onchange="syncUnlockChecks()"> Step 4: Education &amp; Income</label>
+              <label style="font-weight:normal;"><input type="checkbox" class="unlockChk" value="5" onchange="syncUnlockChecks()"> Step 5: Bank Details</label>
+              <label style="font-weight:normal;"><input type="checkbox" class="unlockChk" value="6" onchange="syncUnlockChecks()"> Step 6: Documents</label>
+            </div>
+            <span style="font-size:11px; color:#78716c; display:block; margin-top:6px;">Step 1 (Caste / PH answers) also unlocks Step 6 because the certificates depend on them. Nothing is deleted; all other details stay locked and unchanged.</span>
+          </div>
           <div class="form-group">
             <label id="modalRemarksLabel">Official Remarks</label>
             <textarea id="modalAdminRemarks" rows="3" placeholder="Enter remarks..."></textarea>
@@ -2193,6 +2277,23 @@
     // Application form state
     // formMode: 'new' (first application) | 'edit' (returned by admin) | 'view' (read-only after submission)
     let formMode = 'new';
+    // In 'edit' mode only the steps the admin unlocked can be changed (steps 1-6)
+    let editableSteps = [1, 2, 3, 4, 5, 6];
+    function stepEditable(s) { return formMode !== 'edit' || editableSteps.includes(s); }
+    function parseUnlocked(str) {
+      const list = String(str || '').split(',').map(x => parseInt(x, 10)).filter(n => n >= 1 && n <= 6);
+      if (list.includes(1) && !list.includes(6)) list.push(6);   // caste / PH answers decide which certificates are needed
+      return list.length ? Array.from(new Set(list)).sort() : [1, 2, 3, 4, 5, 6];
+    }
+    const STEP_DB_COLS = {
+      1: ['dob', 'caste', 'physically_challenged', 'gender', 'gov_id', 'photo_base64', 'sign_base64'],
+      2: ['application_nature', 'prev_scholarship_name', 'prev_scholarship_amount', 'prev_award_year', 'father', 'father_occ', 'mother', 'mother_occ', 'guardian', 'guardian_occ', 'guardian_rel'],
+      3: ['mobile', 'alt_mobile', 'whatsapp', 'email', 'vill', 'po', 'ps', 'dist', 'state', 'pin'],
+      4: ['curr_class', 'adm_date', 'stream', 'institution', 'roll_no', 'last_exam', 'full_marks', 'marks_obtained', 'marks_pct', 'income', 'income_cert_no', 'income_cert_authority'],
+      5: ['ac_holder', 'bank_acc', 'ifsc', 'bank_name', 'bank_branch'],
+      6: ['uploaded_documents']
+    };
+    const STEP_NAMES = { 1: 'Step 1 - Personal Details & Photos', 2: 'Step 2 - Application Type & Parents/Guardian', 3: 'Step 3 - Contact & Address', 4: 'Step 4 - Education & Income', 5: 'Step 5 - Bank Details', 6: 'Step 6 - Documents' };
     let currentUploadedPhotoBase64 = '';
     let currentUploadedSignBase64 = '';
     let currentUploadedDocs = {};
@@ -2201,6 +2302,10 @@
     // Every supporting document slot (order = order of attachment in the combined PDF)
     // key: storage key inside uploaded_documents | input / ok: DOM ids | label: official name
     // required: 'always' | 'caste' (mandatory only for SC/ST/OBC) | 'phc' (mandatory only if Physically Challenged = Yes)
+    const DOC_BUCKET = 'application-docs';
+    function docPresent(d) { return !!(d && (d.base64 || d.path)); }
+    function normId(v) { return String(v || '').replace(/\s+/g, '').toUpperCase(); }
+
     const DOC_SLOTS = [
       { key: 'docAadhaar',    input: 'f_doc_aadhaar',    ok: 'okAadhaar',    label: 'Identity Proof Document (Aadhaar / School ID)', required: 'always' },
       { key: 'docAdm',        input: 'f_doc_adm',        ok: 'okAdm',        label: 'Admission Receipt',                             required: 'always' },
@@ -2509,7 +2614,8 @@
         submittedAt: a.submitted_at || null,
         photoBase64: a.photo_base64,
         signBase64: a.sign_base64,
-        uploadedDocuments: a.uploaded_documents || {}
+        uploadedDocuments: a.uploaded_documents || {},
+        unlockedSections: a.unlocked_sections || ''
       };
     }
 
@@ -2551,6 +2657,9 @@
       document.getElementById('portalTopHeader').style.display = 'block';
       document.getElementById('portalWorkspaceTitle').innerText = title;
       document.getElementById('portalUserIdentity').innerText = identity;
+      const lb = document.getElementById('btnLang');
+      if (lb) lb.style.display = (role === 'candidate') ? 'inline-block' : 'none';
+      if (typeof applyLanguage === 'function') applyLanguage();
     }
 
     function saveActiveSession(role, userId) {
@@ -2665,6 +2774,7 @@
       const isSuperAdmin = (admin.role === 'SUPER_ADMIN');
       document.getElementById('adminRoleBadge').innerText = isSuperAdmin ? '👑 SUPER ADMIN CONSOLE' : 'ADMIN CONSOLE';
       document.getElementById('tabBtnSuperAdminManage').style.display = isSuperAdmin ? 'inline-block' : 'none';
+      document.getElementById('tabBtnAuditLog').style.display = isSuperAdmin ? 'inline-block' : 'none';
 
       saveActiveSession('admin', admin.admin_id);
       setAuthenticatedUI('admin', isSuperAdmin ? 'SUPER ADMIN WORKSPACE' : 'ADMINISTRATOR CONSOLE', admin.name);
@@ -3206,6 +3316,9 @@
         return;
       }
 
+      const win = applicationWindowState();
+      if (!win.open) { alert(win.reason); updateCandidateDashboardState(); return; }
+
       const grid = document.getElementById('candidateSchemeSelectionGrid');
       grid.innerHTML = scholarshipSchemes.map(s => `
         <div class="scheme-card">
@@ -3228,6 +3341,9 @@
         return;
       }
 
+      const win = applicationWindowState();
+      if (!win.open) { alert(win.reason); navigateTo('candidateDashboard'); return; }
+
       selectedScholarshipSchemeId = schemeId;
       const scheme = scholarshipSchemes.find(s => s.id === schemeId);
 
@@ -3238,6 +3354,7 @@
       refreshCaptcha();
       goToStep(1);
       navigateTo('applicationForm');
+      tryResumeDraft();
     }
 
     // Admin returned the application: candidate may correct and resubmit
@@ -3256,7 +3373,7 @@
       document.getElementById('activeFormSchemeBadge').innerText = 'Selected Scheme: ' + (app.schemeName || 'Scholarship');
 
       refreshCaptcha();
-      goToStep(1);
+      goToStep(editableSteps[0] || 1);
       navigateTo('applicationForm');
     }
 
@@ -3301,6 +3418,8 @@
       if (ind7) ind7.style.display = (mode === 'view') ? 'none' : '';
       if (mandatoryNote) mandatoryNote.style.display = (mode === 'view') ? 'none' : 'block';
       securityBox.style.display = 'none';
+      const draftBar = document.getElementById('draftBar');
+      if (draftBar) draftBar.style.display = (mode === 'new') ? 'flex' : 'none';
 
       readonlyBanner.classList.remove('show');
       returnedBanner.classList.remove('show');
@@ -3308,6 +3427,13 @@
 
       const fields = form.querySelectorAll('input, select, textarea');
       fields.forEach(el => { el.disabled = (mode === 'view'); });
+      editableSteps = (mode === 'edit' && app) ? parseUnlocked(app.unlockedSections) : [1, 2, 3, 4, 5, 6];
+      if (mode === 'edit') {
+        for (let n = 1; n <= 6; n++) {
+          const box = document.getElementById('formStep' + n);
+          if (box && !editableSteps.includes(n)) box.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+        }
+      }
 
       if (mode === 'view') {
         heading.innerText = 'Submitted Scholarship Application (View Only)';
@@ -3317,7 +3443,7 @@
       } else if (mode === 'edit') {
         heading.innerText = 'Correct & Resubmit Application';
         returnedBanner.classList.add('show');
-        returnedBanner.innerHTML = `<strong>Reason for return:</strong> ${esc((app && app.adminRemarks) || 'Please review all details and correct them.')}<br><span style="font-size:12px;">Update the required details, then verify your email OTP and submit again.</span>`;
+        returnedBanner.innerHTML = `<strong>Reason for return:</strong> ${esc((app && app.adminRemarks) || 'Please review all details and correct them.')}<br><span style="font-size:12px;">Only the sections listed below are unlocked for you. Everything else is locked.<br><strong>Unlocked:</strong> ${editableSteps.map(n => STEP_NAMES[n]).join(' &bull; ')}<br>Update the details, then verify your email OTP and submit again.</span>`;
         changeBtn.style.display = 'none';
         submitBtn.style.display = 'inline-block';
         submitBtn.innerText = 'Verify OTP & Resubmit';
@@ -3762,102 +3888,110 @@
       document.getElementById('captchaDisplay').innerText = currentGeneratedCaptcha;
     }
 
-    function validateAndPreviewFile(input, previewId, maxKb, allowedTypes, errSpanId) {
-      const errSpan = document.getElementById(errSpanId);
-      input.classList.remove('file-invalid');
-      if (errSpan) errSpan.style.display = 'none';
-
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const fileSizeKb = file.size / 1024;
-
-        if (!allowedTypes.includes(file.type)) {
-          input.classList.add('file-invalid');
-          if (errSpan) {
-            errSpan.innerText = 'Unsupported file format! Allowed: JPG, JPEG, PNG.';
-            errSpan.style.display = 'block';
-          }
-          alert('Upload Error: Unsupported format. Allowed: JPG, JPEG, PNG.');
-          input.value = '';
-          return;
+    // ---------- Upload helpers: read, auto-compress images ----------
+    function readAsDataUrl(blob) {
+      return new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = () => rej(new Error('Could not read the file.'));
+        r.readAsDataURL(blob);
+      });
+    }
+    function loadImageFromFile(file) {
+      return new Promise((res, rej) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => { URL.revokeObjectURL(url); res(img); };
+        img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('This file is not a readable image.')); };
+        img.src = url;
+      });
+    }
+    // Shrinks an image (JPEG) until it fits under maxKb. Returns a Blob or null.
+    async function compressImageToLimit(file, maxKb) {
+      const img = await loadImageFromFile(file);
+      const limit = maxKb * 1024 * 0.95;
+      const base = Math.min(1, 2000 / Math.max(img.width, img.height));
+      for (const sc of [1, 0.85, 0.7, 0.55, 0.45, 0.35]) {
+        const w = Math.max(1, Math.round(img.width * base * sc));
+        const h = Math.max(1, Math.round(img.height * base * sc));
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        for (const q of [0.9, 0.8, 0.7, 0.6, 0.5, 0.4]) {
+          const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', q));
+          if (blob && blob.size <= limit) return blob;
         }
-
-        if (fileSizeKb > maxKb) {
-          input.classList.add('file-invalid');
-          if (errSpan) {
-            errSpan.innerText = `File size (${fileSizeKb.toFixed(1)} KB) exceeds limit of ${maxKb} KB!`;
-            errSpan.style.display = 'block';
-          }
-          alert(`Upload Error: File size exceeds ${maxKb} KB.`);
-          input.value = '';
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const container = document.getElementById(previewId);
-          container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-          if (previewId === 'candPhotoPreview') currentUploadedPhotoBase64 = e.target.result;
-          if (previewId === 'candSignPreview') currentUploadedSignBase64 = e.target.result;
-        };
-        reader.readAsDataURL(file);
       }
+      return null;
+    }
+    // Returns { dataUrl, name, type, note } or throws an Error with a user-friendly message
+    async function prepareUpload(file, maxKb) {
+      if (file.size > 15 * 1024 * 1024) throw new Error('File is too large (over 15 MB).');
+      if (file.size / 1024 <= maxKb) return { dataUrl: await readAsDataUrl(file), name: file.name, type: file.type, note: '' };
+      if (!String(file.type).startsWith('image/')) {
+        throw new Error(`This PDF is ${Math.round(file.size / 1024)} KB, above the ${maxKb} KB limit. PDFs cannot be shrunk automatically - please upload a smaller PDF.`);
+      }
+      const blob = await compressImageToLimit(file, maxKb);
+      if (!blob) throw new Error(`The image could not be reduced below ${maxKb} KB. Please use a smaller picture.`);
+      return {
+        dataUrl: await readAsDataUrl(blob),
+        name: file.name.replace(/\.[^.]+$/, '') + '.jpg',
+        type: 'image/jpeg',
+        note: ` (auto-compressed ${Math.round(file.size / 1024)} KB -> ${Math.round(blob.size / 1024)} KB)`
+      };
     }
 
-    function storeAndValidateDoc(input, maxKb, errSpanId, docKey) {
+    async function validateAndPreviewFile(input, previewId, maxKb, allowedTypes, errSpanId) {
+      const errSpan = document.getElementById(errSpanId);
+      input.classList.remove('file-invalid');
+      if (errSpan) { errSpan.style.display = 'none'; errSpan.style.color = ''; }
+      if (!(input.files && input.files[0])) return;
+      const file = input.files[0];
+      const isPhoto = previewId === 'candPhotoPreview';
+      const fail = msg => {
+        input.classList.add('file-invalid');
+        if (errSpan) { errSpan.innerText = msg; errSpan.style.display = 'block'; }
+        alert('Upload Error: ' + msg);
+        input.value = '';
+        if (isPhoto) currentUploadedPhotoBase64 = ''; else currentUploadedSignBase64 = '';
+        document.getElementById(previewId).innerHTML = `<span style="font-size:10px; color:#a8a29e;">${isPhoto ? 'Photo' : 'Signature'} Preview</span>`;
+      };
+      if (!allowedTypes.includes(file.type)) { fail('Unsupported file format! Allowed: JPG, JPEG, PNG.'); return; }
+      try {
+        const r = await prepareUpload(file, maxKb);
+        document.getElementById(previewId).innerHTML = `<img src="${r.dataUrl}" alt="Preview">`;
+        if (isPhoto) currentUploadedPhotoBase64 = r.dataUrl; else currentUploadedSignBase64 = r.dataUrl;
+        if (r.note && errSpan) { errSpan.innerText = '✔ Accepted' + r.note; errSpan.style.color = '#15803d'; errSpan.style.display = 'block'; }
+      } catch (e) { fail(e.message || 'Upload failed.'); }
+    }
+
+    async function storeAndValidateDoc(input, maxKb, errSpanId, docKey) {
       const errSpan = document.getElementById(errSpanId);
       const slot = DOC_SLOTS.find(s => s.key === docKey);
       const okSpan = slot ? document.getElementById(slot.ok) : null;
       input.classList.remove('file-invalid');
-      if (errSpan) errSpan.style.display = 'none';
-
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const fileSizeKb = file.size / 1024;
-        const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-        const ext = (file.name.split('.').pop() || '').toLowerCase();
-        const extOk = ['pdf', 'jpg', 'jpeg', 'png'].includes(ext);
-
-        if (!validTypes.includes(file.type) || !extOk) {
-          input.classList.add('file-invalid');
-          if (errSpan) {
-            errSpan.innerText = 'Unsupported format! Allowed: PDF, JPG, PNG.';
-            errSpan.style.display = 'block';
-          }
-          alert('Upload Error: Unsupported format.');
-          input.value = '';
-          delete currentUploadedDocs[docKey];
-          if (okSpan) okSpan.style.display = 'none';
-          return;
-        }
-
-        if (fileSizeKb > maxKb) {
-          input.classList.add('file-invalid');
-          if (errSpan) {
-            errSpan.innerText = `File size exceeds ${maxKb} KB!`;
-            errSpan.style.display = 'block';
-          }
-          alert(`Upload Error: Exceeds ${maxKb} KB.`);
-          input.value = '';
-          delete currentUploadedDocs[docKey];
-          if (okSpan) okSpan.style.display = 'none';
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          currentUploadedDocs[docKey] = {
-            name: file.name,
-            type: file.type,
-            base64: e.target.result
-          };
-          if (okSpan) {
-            okSpan.innerText = '✔ Selected: ' + file.name;
-            okSpan.style.display = 'block';
-          }
-        };
-        reader.readAsDataURL(file);
+      if (errSpan) { errSpan.style.display = 'none'; errSpan.style.color = ''; }
+      if (!(input.files && input.files[0])) return;
+      const file = input.files[0];
+      const ext = (file.name.split('.').pop() || '').toLowerCase();
+      const fail = msg => {
+        input.classList.add('file-invalid');
+        if (errSpan) { errSpan.innerText = msg; errSpan.style.display = 'block'; }
+        alert('Upload Error: ' + msg);
+        input.value = '';
+        delete currentUploadedDocs[docKey];
+        if (okSpan) okSpan.style.display = 'none';
+      };
+      if (!['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'].includes(file.type) || !['pdf', 'jpg', 'jpeg', 'png'].includes(ext)) {
+        fail('Unsupported format! Allowed: PDF, JPG, PNG.'); return;
       }
+      try {
+        const r = await prepareUpload(file, maxKb);
+        currentUploadedDocs[docKey] = { name: r.name, type: r.type, base64: r.dataUrl };
+        if (okSpan) { okSpan.innerText = '✔ Selected: ' + r.name + r.note; okSpan.style.display = 'block'; }
+      } catch (e) { fail(e.message || 'Upload failed.'); }
     }
 
     // Reads the form into an application object (same shape as mapApplicationRow)
@@ -4004,12 +4138,15 @@
         }
         return true;
       };
-      const run = s => !onlyStep || onlyStep === s;
+      const run = s => (!onlyStep || onlyStep === s) && stepEditable(s);
 
       // ---- Step 1 ----
       if (run(1)) {
         if (!reqFields(1, [['f_dob', 'Date of Birth'], ['f_caste', 'Caste'], ['f_phc', 'Is Physically Challenged'],
                            ['f_gender', 'Gender'], ['f_aadhaar', 'Government ID Number']])) return false;
+        if (applications.some(a => a.candidateId !== app.candidateId && normId(a.govId) === normId(app.govId))) {
+          return fail(1, 'An application with this Government ID Number already exists. One person can apply only once.', 'f_aadhaar');
+        }
         if (!app.photoBase64) return fail(1, 'Please upload your Passport Photo (Step 1).', 'f_cand_photo');
         if (!app.signBase64) return fail(1, 'Please upload your Specimen Signature (Step 1).', 'f_cand_sign');
       }
@@ -4058,6 +4195,9 @@
         if (!IFSC_REGEX.test(app.ifsc)) {
           return fail(5, 'Invalid IFSC code! It must be exactly 11 characters: 4 letters (bank code) + the digit 0 (zero) + 6 letters/digits (branch code). Example: SBIN0011777', 'f_ifsc');
         }
+        if (applications.some(a => a.candidateId !== app.candidateId && normId(a.bankAcc) === normId(app.bankAcc))) {
+          return fail(5, 'This Bank Account Number is already used in another application. The same account number cannot be used twice.', 'f_acno');
+        }
       }
 
       // ---- Step 6: documents ----
@@ -4068,7 +4208,7 @@
           const mandatory = slot.required === 'always' ||
                             (slot.required === 'caste' && casteNeedsCert) ||
                             (slot.required === 'phc' && phcNeedsCert);
-          if (mandatory && !(app.uploadedDocuments[slot.key] && app.uploadedDocuments[slot.key].base64)) {
+          if (mandatory && !docPresent(app.uploadedDocuments[slot.key])) {
             let why = '';
             if (slot.required === 'caste') why = ` (required because Caste = ${app.caste})`;
             if (slot.required === 'phc') why = ' (required because you selected Physically Challenged = Yes)';
@@ -4190,6 +4330,15 @@
         return;
       }
 
+      setBtnBusy(btn, true, 'Uploading documents...');
+      try {
+        app.uploadedDocuments = await uploadDocsToStorage(app.uploadedDocuments, app.candidateId);
+      } catch (e) {
+        setBtnBusy(btn, false, null, idleText);
+        alert('Document upload failed: ' + (e.message || e) + '\n\nPlease check your internet connection and try again.');
+        return;
+      }
+
       setBtnBusy(btn, true, 'Submitting...');
       const nowIso = new Date().toISOString();
       let res = null;
@@ -4199,6 +4348,13 @@
         // Re-submission of a returned application
         const payload = applicationToDbPayload({ ...app, appNo: appNo, status: 'Submitted', adminRemarks: 'Application corrected and resubmitted (email verified) under ' + app.schemeName + '.' });
         payload.submitted_at = nowIso;
+        payload.unlocked_sections = null;
+        // Locked sections are not sent at all, so their saved values stay exactly as they were
+        if (formMode === 'edit') {
+          for (let n = 1; n <= 6; n++) {
+            if (!editableSteps.includes(n)) (STEP_DB_COLS[n] || []).forEach(c => { delete payload[c]; });
+          }
+        }
         res = await db.from('applications').update(payload).eq('app_no', appNo);
       } else {
         // Fresh submission (retry with a new number if two candidates submit at the same moment)
@@ -4208,6 +4364,7 @@
           payload.submitted_at = nowIso;
           res = await db.from('applications').insert([payload]);
           if (!res.error) break;
+          if (res.error.code === '23505' && /gov_id|bank_acc/i.test(res.error.message || '')) break;      // duplicate Government ID / bank account
           if (res.error.code === '23505' && /candidate/i.test(res.error.message || '')) break; // duplicate candidate
           if (res.error.code === '23505') { await loadDataFromSupabase(); continue; }
           break;
@@ -4217,7 +4374,13 @@
       setBtnBusy(btn, false, null, idleText);
 
       if (res && res.error) {
-        if (res.error.code === '23505') {
+        if (res.error.code === '23505' && /gov_id/i.test(res.error.message || '')) {
+          goToStep(1);
+          alert('An application with this Government ID Number already exists. One person can apply only once.');
+        } else if (res.error.code === '23505' && /bank_acc/i.test(res.error.message || '')) {
+          goToStep(5);
+          alert('This Bank Account Number is already used in another application. The same account number cannot be used twice.');
+        } else if (res.error.code === '23505') {
           alert('An application already exists for this candidate. A candidate can apply only once.');
         } else {
           alert('Database submission failed: ' + res.error.message);
@@ -4225,6 +4388,14 @@
         return;
       }
 
+      notifyStatusEmail(appNo);
+      if (existing) {
+        // Replaced documents: remove the old files from Storage (silent if the delete-docs function is not deployed)
+        const keep = new Set(Object.values(app.uploadedDocuments || {}).map(d => d && d.path).filter(Boolean));
+        const gone = Object.values(existing.uploadedDocuments || {}).map(d => d && d.path).filter(p => p && !keep.has(p));
+        if (gone.length) removeStorageFiles({ as: 'candidate', cid: app.candidateId, pass: (candidates[app.candidateId] || {}).pass, paths: gone });
+      }
+      deleteDraftSilently();
       alert(`Email verified! Application ${existing ? 'resubmitted' : 'submitted'} successfully under "${app.schemeName}"! (App No: ${appNo})`);
       candidateOtpTargetEmail = '';
       document.getElementById('f_emailOtpInput').value = '';
@@ -4254,7 +4425,7 @@
       const needsPhc = String(app.phc || '').toLowerCase() === 'yes';
       return DOC_SLOTS.map((slot, i) => {
         const doc = (app.uploadedDocuments || {})[slot.key];
-        const uploaded = !!(doc && doc.base64);
+        const uploaded = docPresent(doc);
         let requirement = 'Mandatory';
         if (slot.required === 'phc') requirement = needsPhc ? 'Mandatory' : 'Not Applicable';
         if (slot.required === 'caste') requirement = needsCaste ? 'Mandatory' : 'Not Applicable';
@@ -4423,16 +4594,35 @@
       return ['pdf', 'png', 'jpg', 'jpeg'].includes(e) ? e : 'bin';
     }
 
-    // Every file the candidate uploaded for one application
+    // Every file the candidate uploaded for one application (documents may live in Supabase Storage)
     function collectAppFiles(app) {
       const files = [];
       if (app.photoBase64) files.push({ key: 'photo', label: 'Passport Photo', name: 'passport_photo', data: app.photoBase64 });
       if (app.signBase64) files.push({ key: 'sign', label: 'Specimen Signature', name: 'signature', data: app.signBase64 });
       DOC_SLOTS.forEach(slot => {
         const d = (app.uploadedDocuments || {})[slot.key];
-        if (d && d.base64) files.push({ key: slot.key, label: slot.label, name: d.name || slot.key, data: d.base64, mime: d.type });
+        if (docPresent(d)) files.push({ key: slot.key, label: slot.label, name: d.name || slot.key, data: d.base64 || null, mime: d.type });
       });
       return files;
+    }
+
+    async function ensureOneDoc(d) {
+      if (!d || d.base64 || !d.path) return;
+      const { data, error } = await db.storage.from(DOC_BUCKET).download(d.path);
+      if (error || !data) throw new Error('Could not download "' + (d.name || d.path) + '" from storage' + (error ? ': ' + error.message : '.'));
+      d.base64 = await readAsDataUrl(data);
+    }
+    // Makes sure every stored document of an application is available as base64 (PDF / Word / ZIP need it)
+    async function ensureAppDocsLoaded(app) {
+      const docs = app.uploadedDocuments || {};
+      for (const k of Object.keys(docs)) await ensureOneDoc(docs[k]);
+    }
+    async function ensureFileData(app, f) {
+      if (f.data) return f.data;
+      const d = (app.uploadedDocuments || {})[f.key];
+      await ensureOneDoc(d);
+      f.data = d.base64;
+      return f.data;
     }
 
     function openAdminDocsModal(index) {
@@ -4441,18 +4631,11 @@
       adminDocsIndex = index;
       document.getElementById('adminDocsInfo').innerHTML =
         `<strong>${esc(app.name)}</strong> (${esc(app.candidateId)}) &nbsp;|&nbsp; <strong>App No:</strong> ${esc(app.appNo)}`;
-
-      const files = collectAppFiles(app);
-      const checklist = getDocChecklist(app);
       let html = '';
-
-      // Photo & signature first
-      ['photo', 'sign'].forEach(k => {
-        const f = files.find(x => x.key === k);
-        const label = k === 'photo' ? 'Passport Photo' : 'Specimen Signature';
-        html += docRowHtml(label, f ? f.key : null, f ? 'Uploaded' : 'Not Uploaded', f ? '' : '');
+      [['photo', 'Passport Photo', !!app.photoBase64], ['sign', 'Specimen Signature', !!app.signBase64]].forEach(([k, label, has]) => {
+        html += docRowHtml(label, has ? k : null, has ? 'Uploaded' : 'Not Uploaded', '');
       });
-      checklist.forEach(d => {
+      getDocChecklist(app).forEach(d => {
         const status = d.uploaded ? 'Uploaded' : (d.requirement === 'Not Applicable' ? 'Not Applicable' : 'Not Uploaded');
         html += docRowHtml(d.label, d.uploaded ? d.key : null, status, d.requirement);
       });
@@ -4479,13 +4662,6 @@
       adminDocsIndex = null;
     }
 
-    function getAppFileByKey(key) {
-      const app = applications[adminDocsIndex];
-      if (!app) return null;
-      const f = collectAppFiles(app).find(x => x.key === key);
-      return f ? { app, f } : null;
-    }
-
     function appFileBlob(f) {
       const mime = dataUrlMime(f.data) || f.mime || 'application/octet-stream';
       return new Blob([dataUrlToBytes(f.data)], { type: mime });
@@ -4496,18 +4672,27 @@
       return safeFileName(`${app.appNo}_${app.name}_${f.label}`) + '.' + ext;
     }
 
-    function viewAppDocument(key) {
-      const r = getAppFileByKey(key);
-      if (!r) return;
-      const url = URL.createObjectURL(appFileBlob(r.f));
-      window.open(url, '_blank');
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    async function viewAppDocument(key) {
+      const app = applications[adminDocsIndex];
+      const f = app && collectAppFiles(app).find(x => x.key === key);
+      if (!f) return;
+      const w = window.open('', '_blank');   // opened first so the browser does not block it
+      try {
+        await ensureFileData(app, f);
+        const url = URL.createObjectURL(appFileBlob(f));
+        if (w) w.location.href = url; else window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } catch (e) { if (w) w.close(); alert(e.message || e); }
     }
 
-    function downloadAppDocument(key) {
-      const r = getAppFileByKey(key);
-      if (!r) return;
-      downloadBlob(appFileBlob(r.f), appFileDownloadName(r.app, r.f));
+    async function downloadAppDocument(key) {
+      const app = applications[adminDocsIndex];
+      const f = app && collectAppFiles(app).find(x => x.key === key);
+      if (!f) return;
+      try {
+        await ensureFileData(app, f);
+        downloadBlob(appFileBlob(f), appFileDownloadName(app, f));
+      } catch (e) { alert(e.message || e); }
     }
 
     async function downloadAllDocsZip() {
@@ -4515,17 +4700,21 @@
       if (!app) return;
       const files = collectAppFiles(app);
       if (!files.length) { alert('No documents uploaded by this candidate.'); return; }
-      const zip = new JSZip();
-      files.forEach(f => zip.file(appFileDownloadName(app, f), appFileBlob(f)));
-      const blob = await zip.generateAsync({ type: 'blob' });
-      downloadBlob(blob, safeFileName(`${app.appNo}_${app.name}_documents`) + '.zip');
+      showPdfLoading('Preparing ZIP...', 'Downloading documents. Please wait.');
+      try {
+        const zip = new JSZip();
+        for (const f of files) { await ensureFileData(app, f); zip.file(appFileDownloadName(app, f), appFileBlob(f)); }
+        const blob = await zip.generateAsync({ type: 'blob' });
+        hidePdfLoading();
+        downloadBlob(blob, safeFileName(`${app.appNo}_${app.name}_documents`) + '.zip');
+      } catch (e) { hidePdfLoading(); alert(e.message || e); }
     }
 
     // =============================================================
     // ADMIN: APPLICATIONS WINDOW
     // =============================================================
     function switchAdminWindow(windowType) {
-      const tabs = ['applications', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'updateProfile'];
+      const tabs = ['applications', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'inquiries', 'auditLog', 'updateProfile'];
       const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
       tabs.forEach(t => {
         const btn = document.getElementById('tabBtn' + cap(t));
@@ -4596,6 +4785,24 @@
       if (activeAdminAppFilterSchemeId !== 'all') {
         filteredApps = applications.filter(a => a.schemeId === activeAdminAppFilterSchemeId);
       }
+      populateAppFilterOptions();
+      const q = (document.getElementById('appSearch').value || '').trim().toLowerCase();
+      const fSt = document.getElementById('appFStatus').value;
+      const fCa = document.getElementById('appFCaste').value;
+      const fPh = document.getElementById('appFPhc').value;
+      const fDi = document.getElementById('appFDist').value;
+      filteredApps = filteredApps.filter(a =>
+        (!fSt || a.status === fSt) && (!fCa || String(a.caste).toUpperCase() === fCa) &&
+        (!fPh || a.phc === fPh) && (!fDi || a.dist === fDi) &&
+        (!q || [a.name, a.appNo, a.candidateId, a.mobile, a.email, a.institution, a.govId].some(v => String(v || '').toLowerCase().includes(q))));
+      const cntEl = document.getElementById('appFilterCount');
+      if (cntEl) cntEl.innerText = `Showing ${filteredApps.length} of ${applications.length}`;
+      const dupGov = {}, dupBank = {};
+      applications.forEach(a => {
+        const g = normId(a.govId), b = normId(a.bankAcc);
+        if (g) dupGov[g] = (dupGov[g] || 0) + 1;
+        if (b) dupBank[b] = (dupBank[b] || 0) + 1;
+      });
 
       if (filteredApps.length === 0) {
         tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:16px; color:#888;">No applications found in this scholarship category.</td></tr>';
@@ -4612,7 +4819,7 @@
           <td><strong>${esc(app.appNo)}</strong></td>
           <td><span style="font-size:11px; font-weight:bold; color:#7f1d1d; background:#ffedd5; padding:2px 6px; border-radius:4px;">${esc(schemeTitle)}</span></td>
           <td>${app.photoBase64 ? `<img src="${app.photoBase64}" style="width:36px; height:42px; object-fit:cover; border-radius:4px;">` : '<span style="color:#aaa; font-size:10px;">N/A</span>'}</td>
-          <td>${esc(app.name)}<br><span style="color:#78716c; font-size:10px;">ID: ${esc(app.candidateId)}</span></td>
+          <td>${esc(app.name)}${dupGov[normId(app.govId)] > 1 ? ' <span class="dup-badge" title="Same Government ID used in another application">⚠ Dup ID</span>' : ''}${dupBank[normId(app.bankAcc)] > 1 ? ' <span class="dup-badge" title="Same bank account used in another application">⚠ Same A/C</span>' : ''}<br><span style="color:#78716c; font-size:10px;">ID: ${esc(app.candidateId)}</span></td>
           <td>${esc(app.currClass)} (${esc(app.stream)})<br><span style="color:#78716c; font-size:10px;">${esc(app.institution)}</span></td>
           <td style="color:#15803d; font-weight:bold;">${esc(app.marksPct)}</td>
           <td>₹${esc(app.income)}</td>
@@ -4623,26 +4830,12 @@
               <button class="action-btn" style="background:#0284c7; color:#fff;" onclick="openAdminDocsModal(${index})">📎 Docs</button>
               <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
               <button class="action-btn btn-word" onclick="downloadApplicationWord(${index})">Word</button>
-              <button class="action-btn btn-delete" onclick="deleteApplicationOnly(${index})">Delete App</button>
+              <button class="action-btn" style="background:#d97706; color:#fff;" title="Unlock selected sections so the candidate can correct them" onclick="openUnlockForApp(${index})">🔓 Unlock</button>
             </div>
           </td>
         `;
         tbody.appendChild(tr);
       });
-    }
-
-    async function deleteApplicationOnly(index) {
-      const item = applications[index];
-      if (!item) return;
-      if (confirm(`Delete application "${item.appNo}" for ${item.name}? This removes the submission but preserves candidate registration.`)) {
-        const { error } = await db.from('applications').delete().eq('app_no', item.appNo);
-        if (error) {
-          alert('Failed to delete application from database: ' + error.message);
-          return;
-        }
-        await loadDataFromSupabase();
-        alert('Application deleted successfully.');
-      }
     }
 
     // =============================================================
@@ -4671,6 +4864,9 @@
       document.getElementById('modalAdminRemarks').value = (app.status === 'Returned for Correction' || app.status === 'Approved' || app.status === 'Sanctioned') ? (app.adminRemarks || '') : '';
       document.getElementById('modalSanctionAmount').value = app.sanctionedAmount || '';
       document.getElementById('modalSanctionDate').value = app.sanctionedDate ? String(app.sanctionedDate).substring(0, 10) : '';
+      const savedUnlock = String(app.unlockedSections || '').split(',');
+      document.querySelectorAll('.unlockChk').forEach(b => { b.checked = savedUnlock.includes(b.value); b.disabled = false; });
+      syncUnlockChecks();
       handleStatusSelectionChange();
 
       switchScrutinyTab('details');
@@ -4712,6 +4908,22 @@
       renderScrutinyStep();
     }
 
+    function syncUnlockChecks() {
+      const boxes = Array.from(document.querySelectorAll('.unlockChk'));
+      const c1 = boxes.find(b => b.value === '1'), c6 = boxes.find(b => b.value === '6');
+      if (c1 && c6) { if (c1.checked) c6.checked = true; c6.disabled = c1.checked; }
+    }
+    function getUnlockSelection() {
+      return Array.from(document.querySelectorAll('.unlockChk')).filter(b => b.checked).map(b => b.value).join(',');
+    }
+    // "Unlock" button in the application list: opens the status tab ready to unlock sections
+    function openUnlockForApp(index) {
+      openScrutinyModal(index);
+      switchScrutinyTab('status');
+      document.getElementById('modalStatusSelect').value = 'Returned for Correction';
+      handleStatusSelectionChange();
+    }
+
     function handleStatusSelectionChange() {
       if (selectedScrutinyIndex === null) return;
       const app = applications[selectedScrutinyIndex];
@@ -4721,6 +4933,7 @@
         (status === 'Sanctioned' && app.status !== 'Approved' && app.status !== 'Sanctioned') ? 'block' : 'none';
       document.getElementById('sanctionFieldsBlock').style.display = (status === 'Sanctioned') ? 'block' : 'none';
       document.getElementById('returnRemarksNotice').style.display = (status === 'Returned for Correction') ? 'block' : 'none';
+      document.getElementById('unlockBlock').style.display = (status === 'Returned for Correction') ? 'block' : 'none';
       document.getElementById('modalRemarksLabel').innerText =
         (status === 'Returned for Correction') ? 'Reason for Returning the Application (Remarks) *' : 'Official Remarks';
 
@@ -4758,8 +4971,14 @@
         return;
       }
 
+      const unlockList = getUnlockSelection();
+      if (newStatus === 'Returned for Correction' && !unlockList) {
+        alert('Please tick at least one section to unlock for the candidate.');
+        return;
+      }
       const update = {
         status: newStatus,
+        unlocked_sections: newStatus === 'Returned for Correction' ? unlockList : null,
         admin_remarks: remarks,
         sanctioned_amount: newStatus === 'Sanctioned' ? Number(amount) : null,
         sanctioned_date: newStatus === 'Sanctioned' ? sDate : null
@@ -4771,7 +4990,13 @@
         return;
       }
 
-      alert(`Status updated to: ${newStatus}`);
+      logAudit('STATUS_CHANGE', app.appNo, { candidate: app.candidateId, from: app.status, to: newStatus, remarks: remarks, amount: newStatus === 'Sanctioned' ? Number(amount) : null, unlocked: newStatus === 'Returned for Correction' ? unlockList : null });
+      const mail = await notifyStatusEmail(app.appNo);
+      let mailNote = '';
+      if (['Approved', 'Sanctioned', 'Returned for Correction'].includes(newStatus)) {
+        mailNote = mail.ok ? (mail.sent ? '\n\n✉ Email sent to the candidate.' : '\n\nℹ ' + mail.msg) : '\n\n⚠ Status saved, but the email was NOT sent: ' + (mail.msg || 'email function not available') + '\n(See the email setup guide.)';
+      }
+      alert(`Status updated to: ${newStatus}` + mailNote);
       closeScrutinyModal();
       await loadDataFromSupabase();
     }
@@ -5105,6 +5330,7 @@
       if (!window.jspdf || !window.PDFLib) {
         throw new Error('PDF libraries are not loaded. Please check your internet connection and reload the page.');
       }
+      await ensureAppDocsLoaded(app);
       setPdfLoadingText('Step 1 of 3: Building application details pages...');
       const details = await generateApplicationDetailsPdf(app);
 
@@ -5221,13 +5447,14 @@
     // Image documents are embedded. PDF uploads cannot be embedded inside Word,
     // so they are listed by name (the PDF download contains them in full).
     // =============================================================
-    function downloadApplicationWord(index) {
+    async function downloadApplicationWord(index) {
       if (activeUserRole !== 'admin') {
         alert('Only authorised administrators can use this action.');
         return;
       }
       const app = applications[index];
       if (!app) return;
+      try { await ensureAppDocsLoaded(app); } catch (e) { alert(e.message || e); return; }
 
       const parts = [];
       const addImage = dataUrl => {
@@ -6072,6 +6299,9 @@
       const cand = candidates[cid];
       if (!cand) return;
       if (confirm(`CRITICAL: Are you sure you want to permanently delete Candidate "${cand.name}" (${cid}) and all associated records (including any submitted application)?`)) {
+        // Remove the candidate's uploaded files from Storage (silent if the delete-docs function is not deployed)
+        const ac = adminCreds();
+        if (ac) removeStorageFiles({ as: 'admin', admin: ac.p_admin, pass: ac.p_pass, folder: cid });
         // Remove the candidate's application first so no orphan record is left behind
         const appDel = await db.from('applications').delete().eq('candidate_id', cid);
         if (appDel.error) {
@@ -6079,6 +6309,7 @@
           return;
         }
         const { error } = await db.from('candidates').delete().eq('candidate_id', cid);
+      if (!error) logAudit('DELETE_CANDIDATE', cid, {});
         if (error) {
           alert('Failed to delete candidate: ' + error.message);
           return;
@@ -6525,6 +6756,7 @@
       }
       if (confirm(`Remove administrator "${admins[aid].name}" (${aid})?`)) {
         const { error } = await db.from('admins').delete().eq('admin_id', aid);
+      if (!error) logAudit('DELETE_ADMIN', aid, {});
         if (error) {
           alert('Failed to remove admin: ' + error.message);
           return;
@@ -6617,6 +6849,411 @@
     }
 
     // =============================================================
+    // STORAGE: documents are kept in Supabase Storage (bucket "application-docs")
+    // The database stores only { name, type, path } for each document.
+    // =============================================================
+    async function uploadDocsToStorage(docs, candidateId) {
+      const out = {};
+      for (const key of Object.keys(docs || {})) {
+        const d = docs[key];
+        if (!d) continue;
+        if (!d.path && d.base64) {
+          const mime = dataUrlMime(d.base64) || d.type || 'application/octet-stream';
+          const blob = new Blob([dataUrlToBytes(d.base64)], { type: mime });
+          const rand = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+          const path = `${safeFileName(candidateId)}/${key}_${rand}.${extFromMime(mime, d.name)}`;
+          const { error } = await db.storage.from(DOC_BUCKET).upload(path, blob, { contentType: mime, upsert: false });
+          if (error) throw new Error(`${key}: ${error.message}`);
+          d.path = path;
+        }
+        if (d.path) out[key] = { name: d.name, type: d.type, path: d.path };
+      }
+      return out;
+    }
+
+    // =============================================================
+    // STATUS E-MAIL (Supabase Edge Function "send-status-email"; fails silently if not deployed)
+    // =============================================================
+    async function notifyStatusEmail(appNo) {
+      try {
+        const { data, error } = await db.functions.invoke('send-status-email', { body: { app_no: appNo } });
+        if (error) return { ok: false, msg: error.message || 'Email function error' };
+        return { ok: !!(data && data.ok), sent: !(data && data.sent === false), msg: (data && (data.message || data.error)) || '' };
+      } catch (e) { return { ok: false, msg: String((e && e.message) || e) }; }
+    }
+
+    // Deletes files from the private Storage bucket through the "delete-docs" Edge Function (never throws)
+    async function removeStorageFiles(body) {
+      try { await db.functions.invoke('delete-docs', { body: body }); } catch (e) { /* ignore */ }
+    }
+
+    // =============================================================
+    // AUDIT LOG
+    // =============================================================
+    function adminCreds() {
+      const a = activeAdminId && admins[activeAdminId];
+      return a ? { p_admin: activeAdminId, p_pass: a.pass } : null;
+    }
+    function logAudit(action, target, details) {
+      const c = adminCreds();
+      if (!c) return;
+      db.rpc('rkma_add_audit', { ...c, p_action: action, p_target: String(target || ''), p_details: details || {} }).then(() => {}, () => {});
+    }
+    async function loadAuditLog() {
+      const c = adminCreds();
+      const body = document.getElementById('auditTableBody');
+      if (!c) return;
+      body.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:14px; color:#888;">Loading...</td></tr>';
+      const { data, error } = await db.rpc('rkma_list_audit', { ...c, p_limit: 300 });
+      if (error) { body.innerHTML = `<tr><td colspan="5" style="color:#dc2626; padding:12px;">${esc(error.message)}</td></tr>`; return; }
+      if (!data || !data.length) { body.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:14px; color:#888;">No actions recorded yet.</td></tr>'; return; }
+      body.innerHTML = data.map(r => {
+        const d = r.details || {};
+        const txt = Object.keys(d).filter(k => d[k] !== null && d[k] !== '' && d[k] !== undefined).map(k => `${k}: ${d[k]}`).join(' | ');
+        return `<tr><td style="white-space:nowrap;">${esc(timestampDMYHM(r.created_at))}</td><td>${esc(r.admin_id)}</td>
+          <td><strong>${esc(r.action)}</strong></td><td>${esc(r.target)}</td><td style="font-size:11px; color:#57534e;">${esc(txt)}</td></tr>`;
+      }).join('');
+    }
+
+    // =============================================================
+    // INQUIRIES (read through admin-verified RPC functions)
+    // =============================================================
+    let inquiries = [];
+    function inqStatus(r) { return r.replied_at ? 'Replied' : (r.is_read ? 'Read' : 'New'); }
+    async function loadInquiries(silent) {
+      const c = adminCreds();
+      if (!c) return;
+      const { data, error } = await db.rpc('rkma_list_inquiries', c);
+      if (error) { if (!silent) alert('Could not load inquiries: ' + error.message); return; }
+      inquiries = data || [];
+      const nw = inquiries.filter(r => inqStatus(r) === 'New').length;
+      const badge = document.getElementById('inqCountBadge');
+      if (badge) badge.innerText = nw;
+      if (!silent) renderInquiries();
+    }
+    function renderInquiries() {
+      const f = document.getElementById('inqFilter').value;
+      const body = document.getElementById('inqTableBody');
+      const rows = inquiries.filter(r => f === 'all' || inqStatus(r) === f);
+      if (!rows.length) { body.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:14px; color:#888;">No inquiries found.</td></tr>'; return; }
+      body.innerHTML = rows.map(r => {
+        const st = inqStatus(r);
+        const digits = String(r.phone || '').replace(/\D/g, '');
+        const wa = 'https://wa.me/' + (digits.length === 10 ? '91' + digits : digits) + '?text=' + encodeURIComponent(`Namaskar ${r.name}, regarding your inquiry to Ramakrishna Mission Ashrama, Jhargram: `);
+        const color = st === 'New' ? '#dc2626' : (st === 'Read' ? '#b45309' : '#15803d');
+        return `<tr>
+          <td style="white-space:nowrap; font-size:11px;">${esc(timestampDMYHM(r.created_at))}</td>
+          <td><strong>${esc(r.name)}</strong><br><a href="tel:${esc(digits)}" style="font-size:11px;">${esc(r.phone)}</a></td>
+          <td style="max-width:260px; white-space:pre-wrap; font-size:12px;">${esc(r.message)}</td>
+          <td><span style="font-weight:bold; color:${color};">${st}</span>${r.replied_by ? `<br><span style="font-size:10px; color:#78716c;">by ${esc(r.replied_by)}</span>` : ''}</td>
+          <td><textarea id="inqNote_${r.id}" rows="2" style="font-size:11px; min-width:140px;" placeholder="Reply note...">${esc(r.reply_note || '')}</textarea></td>
+          <td><div class="action-btn-group">
+            <a class="action-btn btn-manage" style="text-decoration:none;" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+            <button class="action-btn btn-pdf" onclick="updateInquiry(${r.id}, ${r.is_read ? 'false' : 'true'}, null)">${r.is_read ? 'Mark Unread' : 'Mark Read'}</button>
+            <button class="action-btn btn-word" onclick="updateInquiry(${r.id}, true, true)">Save &amp; Replied</button>
+            <button class="action-btn btn-delete" onclick="deleteInquiry(${r.id})">Delete</button>
+          </div></td></tr>`;
+      }).join('');
+    }
+    async function updateInquiry(id, isRead, replied) {
+      const c = adminCreds();
+      const noteEl = document.getElementById('inqNote_' + id);
+      const { error } = await db.rpc('rkma_update_inquiry', { ...c, p_id: id, p_is_read: isRead, p_note: noteEl ? noteEl.value.trim() : null, p_replied: replied });
+      if (error) { alert('Update failed: ' + error.message); return; }
+      await loadInquiries();
+    }
+    async function deleteInquiry(id) {
+      if (!confirm('Delete this inquiry permanently?')) return;
+      const { error } = await db.rpc('rkma_delete_inquiry', { ...adminCreds(), p_id: id });
+      if (error) { alert('Delete failed: ' + error.message); return; }
+      logAudit('DELETE_INQUIRY', String(id), {});
+      await loadInquiries();
+    }
+
+    // =============================================================
+    // APPLICATION WINDOW (open / close / last date)
+    // =============================================================
+    let portalSettings = { open: true, deadline: null };
+    async function loadPortalSettings() {
+      try {
+        const { data } = await db.from('portal_settings').select('*').eq('id', 'main').maybeSingle();
+        if (data) portalSettings = { open: data.applications_open !== false, deadline: data.deadline || null };
+      } catch (e) { /* table not created yet: keep applications open */ }
+    }
+    function applicationWindowState() {
+      if (!portalSettings.open) return { open: false, reason: 'Applications are currently closed by the administration.' };
+      if (portalSettings.deadline && Date.now() > new Date(portalSettings.deadline).getTime()) {
+        return { open: false, reason: 'The last date for applications (' + timestampDMYHM(portalSettings.deadline) + ') has passed.' };
+      }
+      return { open: true, reason: '' };
+    }
+    function toLocalInput(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    }
+    function renderPortalSettingsCard() {
+      const o = document.getElementById('pwOpen');
+      if (!o) return;
+      o.checked = portalSettings.open;
+      document.getElementById('pwDeadline').value = toLocalInput(portalSettings.deadline);
+      const st = applicationWindowState();
+      const s = document.getElementById('pwStatus');
+      s.innerText = st.open ? '● Open for applications' : '● Closed - ' + st.reason;
+      s.style.color = st.open ? '#15803d' : '#dc2626';
+    }
+    async function savePortalSettings() {
+      const dl = document.getElementById('pwDeadline').value;
+      const open = document.getElementById('pwOpen').checked;
+      const { error } = await db.rpc('rkma_set_portal_settings', { ...adminCreds(), p_open: open, p_deadline: dl ? new Date(dl).toISOString() : null });
+      if (error) { alert('Could not save: ' + error.message + '\n(Run upgrade_2.sql in the Supabase SQL Editor first.)'); return; }
+      logAudit('APPLICATION_WINDOW', 'portal_settings', { open: open, deadline: dl || 'none' });
+      await loadPortalSettings();
+      renderPortalSettingsCard();
+      alert('Application window settings saved.');
+    }
+
+    // Wrappers (keep the original functions, add behaviour)
+    const _origUpdateDash = updateCandidateDashboardState;
+    updateCandidateDashboardState = function () {
+      _origUpdateDash();
+      const btn = document.getElementById('btnCandApplyMain');
+      if (!btn) return;
+      let note = document.getElementById('candWindowNotice');
+      if (!note) {
+        note = document.createElement('div');
+        note.id = 'candWindowNotice';
+        note.style.cssText = 'background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:10px;';
+        btn.parentNode.insertBefore(note, btn);
+      }
+      const st = applicationWindowState();
+      const hasApp = !!getCandidateApplication();
+      if (!st.open && !hasApp) {
+        note.innerText = '🔒 ' + st.reason;
+        note.style.display = 'block';
+        btn.disabled = true;
+        btn.innerText = 'Applications Closed';
+      } else {
+        note.style.display = 'none';
+        btn.disabled = false;
+        if (st.open && portalSettings.deadline && !hasApp) {
+          note.innerText = '⏰ Last date to apply: ' + timestampDMYHM(portalSettings.deadline);
+          note.style.cssText += 'background:#fffbeb; border-color:#fde68a; color:#92400e; display:block;';
+        }
+      }
+    };
+
+    const _origLoadData = loadDataFromSupabase;
+    loadDataFromSupabase = async function () {
+      await _origLoadData();
+      await loadPortalSettings();
+      if (activeUserRole === 'candidate') updateCandidateDashboardState();
+      if (activeUserRole === 'admin') { renderPortalSettingsCard(); loadInquiries(true); }
+    };
+
+    const _origSwitchAdmin = switchAdminWindow;
+    switchAdminWindow = function (w) {
+      if (w === 'auditLog' && !(admins[activeAdminId] && admins[activeAdminId].role === 'SUPER_ADMIN')) {
+        alert('Only Super Admin can view the Audit Log.');
+        w = 'applications';
+      }
+      _origSwitchAdmin(w);
+      if (w === 'applications') renderPortalSettingsCard();
+      if (w === 'inquiries') loadInquiries();
+      if (w === 'auditLog') loadAuditLog();
+    };
+
+    // =============================================================
+    // ADMIN: filters for the applications list
+    // =============================================================
+    function populateAppFilterOptions() {
+      const fill = (id, values) => {
+        const sel = document.getElementById(id);
+        if (!sel || sel.options.length - 1 === values.length) return;
+        const cur = sel.value;
+        const first = sel.options[0].outerHTML;
+        sel.innerHTML = first + values.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+        sel.value = cur;
+      };
+      fill('appFStatus', [...new Set(applications.map(a => a.status).filter(Boolean))].sort());
+      fill('appFDist', [...new Set(applications.map(a => a.dist).filter(Boolean))].sort());
+    }
+    function clearAppFilters() {
+      ['appSearch', 'appFStatus', 'appFCaste', 'appFPhc', 'appFDist'].forEach(id => { document.getElementById(id).value = ''; });
+      renderAdminTable();
+    }
+
+    // =============================================================
+    // DRAFTS (saved on the server, tied to candidate ID + password)
+    // =============================================================
+    const DRAFT_SKIP = ['f_captchaInput', 'f_emailOtpInput', 'f_declaration', 'f_name', 'f_mobile'];
+    function candCreds() {
+      const c = activeCandidateId && candidates[activeCandidateId];
+      return c ? { p_cid: activeCandidateId, p_pass: c.pass } : null;
+    }
+    async function saveDraft() {
+      if (formMode !== 'new') return;
+      const creds = candCreds();
+      if (!creds) return;
+      const btn = document.getElementById('btnSaveDraft');
+      setBtnBusy(btn, true, 'Saving...');
+      try {
+        const fields = {};
+        document.querySelectorAll('#scholarshipMultiForm input:not([type=file]):not([type=checkbox]), #scholarshipMultiForm select, #scholarshipMultiForm textarea').forEach(el => {
+          if (el.id && !DRAFT_SKIP.includes(el.id)) fields[el.id] = el.value;
+        });
+        const docs = await uploadDocsToStorage(currentUploadedDocs, activeCandidateId);
+        const data = { fields: fields, photo: currentUploadedPhotoBase64, sign: currentUploadedSignBase64, docs: docs };
+        const { error } = await db.rpc('rkma_save_draft', { ...creds, p_scheme: selectedScholarshipSchemeId || '', p_data: data });
+        if (error) throw new Error(error.message);
+        document.getElementById('draftInfo').innerText = '✔ Draft saved at ' + new Date().toLocaleTimeString();
+      } catch (e) {
+        alert('Could not save the draft: ' + (e.message || e) + '\n(Run upgrade_2.sql in the Supabase SQL Editor first.)');
+      }
+      setBtnBusy(btn, false, null, '💾 Save Draft');
+    }
+    async function tryResumeDraft() {
+      const creds = candCreds();
+      if (!creds || formMode !== 'new') return;
+      const { data, error } = await db.rpc('rkma_get_draft', creds);
+      if (error || !data || !data.data) return;
+      if (!confirm('You have a saved draft (last saved ' + timestampDMYHM(data.updated_at) + '). Do you want to continue from it?')) return;
+      const d = data.data;
+      Object.keys(d.fields || {}).forEach(id => { const el = document.getElementById(id); if (el) el.value = d.fields[id]; });
+      if (data.scheme_id && scholarshipSchemes.some(s => s.id === data.scheme_id)) {
+        selectedScholarshipSchemeId = data.scheme_id;
+        const sc = scholarshipSchemes.find(s => s.id === data.scheme_id);
+        document.getElementById('activeFormSchemeBadge').innerText = 'Selected Scheme: ' + sc.name;
+      }
+      currentUploadedPhotoBase64 = d.photo || '';
+      currentUploadedSignBase64 = d.sign || '';
+      if (d.photo) document.getElementById('candPhotoPreview').innerHTML = `<img src="${d.photo}" alt="Preview">`;
+      if (d.sign) document.getElementById('candSignPreview').innerHTML = `<img src="${d.sign}" alt="Preview">`;
+      currentUploadedDocs = d.docs || {};
+      DOC_SLOTS.forEach(slot => {
+        const doc = currentUploadedDocs[slot.key];
+        const ok = document.getElementById(slot.ok);
+        if (doc && ok) { ok.innerText = '✔ Saved: ' + doc.name + ' (choose a new file only to replace it)'; ok.style.display = 'block'; }
+      });
+      toggleRenewalFields(); calculatePercentage(); updateCasteCertRequirement(); updatePhcCertRequirement();
+      onIfscInput(document.getElementById('f_ifsc'));
+      document.getElementById('draftInfo').innerText = '✔ Draft loaded';
+    }
+    function deleteDraftSilently() {
+      const creds = candCreds();
+      if (creds) db.rpc('rkma_delete_draft', creds).then(() => {}, () => {});
+    }
+
+    // =============================================================
+    // LANGUAGE: English <-> Bengali for the candidate screens
+    // =============================================================
+    const I18N_BN = {
+      '← Main Dashboard': '← মূল ড্যাশবোর্ড', 'My Profile': 'আমার প্রোফাইল', 'Logout': 'লগ আউট',
+      'Change Scheme': 'স্কিম বদলান', 'Back to Workspace': 'ড্যাশবোর্ডে ফিরুন',
+      '1. Personal': '১. ব্যক্তিগত', '2. Parents': '২. অভিভাবক', '3. Contact': '৩. যোগাযোগ', '4. Education': '৪. শিক্ষা',
+      '5. Bank': '৫. ব্যাংক', '6. Documents': '৬. ডকুমেন্ট', '7. Preview': '৭. প্রিভিউ',
+      'ℹ️ All fields are mandatory except Income Certificate No. You cannot move to the next step until every required field of the current step is filled.':
+        'ℹ️ আয়ের সার্টিফিকেট নম্বর ছাড়া সব ঘর পূরণ করা বাধ্যতামূলক। বর্তমান ধাপের সব আবশ্যিক ঘর পূরণ না করলে পরের ধাপে যাওয়া যাবে না।',
+      '💾 Save Draft': '💾 খসড়া সংরক্ষণ',
+      'Step 1: Personal Details & Photographs': 'ধাপ ১: ব্যক্তিগত তথ্য ও ছবি',
+      'Step 2: Application Type & Parents / Guardian Details': 'ধাপ ২: আবেদনের ধরন ও পিতামাতা / অভিভাবকের তথ্য',
+      'Step 3: Contact & Address Details (Auto-filled from Profile)': 'ধাপ ৩: যোগাযোগ ও ঠিকানা (প্রোফাইল থেকে স্বয়ংক্রিয় পূরণ)',
+      'Step 4: Educational & Income Details (Auto-filled from Profile)': 'ধাপ ৪: শিক্ষাগত ও আয়ের তথ্য (প্রোফাইল থেকে স্বয়ংক্রিয় পূরণ)',
+      'Step 5: Bank DBT Details': 'ধাপ ৫: ব্যাংক (DBT) তথ্য', 'Step 6: Document Uploads': 'ধাপ ৬: ডকুমেন্ট আপলোড',
+      'Step 7: Application Preview & Declaration': 'ধাপ ৭: আবেদন প্রিভিউ ও ঘোষণা',
+      'Applicant Full Name': 'আবেদনকারীর পূর্ণ নাম', 'Date of Birth': 'জন্ম তারিখ', 'Caste': 'জাতিগত শ্রেণি (Caste)',
+      'Is Physically Challenged?': 'শারীরিকভাবে প্রতিবন্ধী কি?', 'Gender': 'লিঙ্গ', 'Government ID Number': 'সরকারি পরিচয়পত্র নম্বর',
+      'Candidate Passport Photo': 'পাসপোর্ট সাইজ ছবি', 'Candidate Specimen Signature': 'নমুনা স্বাক্ষর',
+      '-- Select Caste --': '-- নির্বাচন করুন --', '-- Select --': '-- নির্বাচন করুন --', 'GENERAL': 'সাধারণ (GENERAL)',
+      'Yes': 'হ্যাঁ', 'No': 'না', 'Male': 'পুরুষ', 'Female': 'মহিলা', 'Other': 'অন্যান্য',
+      'Format: JPG, JPEG, PNG | Max Size: 100 KB': 'ফরম্যাট: JPG, JPEG, PNG | সর্বোচ্চ: ১০০ KB (বড় হলে নিজে ছোট হবে)',
+      'Format: JPG, JPEG, PNG | Max Size: 50 KB': 'ফরম্যাট: JPG, JPEG, PNG | সর্বোচ্চ: ৫০ KB (বড় হলে নিজে ছোট হবে)',
+      'Format: PDF, JPG, PNG | Max Size: 500 KB': 'ফরম্যাট: PDF, JPG, PNG | সর্বোচ্চ: ৫০০ KB',
+      'Photo Preview': 'ছবির প্রিভিউ', 'Signature Preview': 'স্বাক্ষরের প্রিভিউ',
+      'Next Step →': 'পরবর্তী ধাপ →', '← Back': '← পিছনে', 'Preview Application →': 'আবেদন প্রিভিউ →',
+      'Application Nature': 'আবেদনের ধরন', 'FRESH': 'নতুন (FRESH)', 'RENEWAL': 'নবীকরণ (RENEWAL)',
+      'Previous Scholarship Name / Scheme': 'পূর্ববর্তী বৃত্তির নাম / স্কিম', 'Previous Scholarship Amount (₹)': 'পূর্ববর্তী বৃত্তির পরিমাণ (₹)', 'Year of Award': 'প্রাপ্তির বছর',
+      "Father's Name": 'পিতার নাম', "Father's Occupation": 'পিতার পেশা', "Mother's Name": 'মাতার নাম', "Mother's Occupation": 'মাতার পেশা',
+      "Guardian's Name": 'অভিভাবকের নাম', "Guardian's Occupation": 'অভিভাবকের পেশা', 'Relation with Guardian': 'অভিভাবকের সঙ্গে সম্পর্ক',
+      'Mobile No.': 'মোবাইল নম্বর', 'Alternative Mobile No.': 'বিকল্প মোবাইল নম্বর', 'WhatsApp No.': 'হোয়াটসঅ্যাপ নম্বর',
+      'Email (OTP will be sent here)': 'ইমেইল (এখানে OTP যাবে)', 'Village': 'গ্রাম', 'P.O.': 'ডাকঘর (P.O.)', 'P.S.': 'থানা (P.S.)',
+      'District': 'জেলা', 'State': 'রাজ্য', 'PIN Code': 'পিন কোড',
+      'A. Present Course Details': 'ক. বর্তমান কোর্সের তথ্য', 'B. Qualifying Course Details': 'খ. শেষ উত্তীর্ণ পরীক্ষার তথ্য', 'C. Income & Certification': 'গ. আয় ও সার্টিফিকেট',
+      'Present Class of Study': 'বর্তমান শ্রেণি', 'Admission Date': 'ভর্তির তারিখ', 'Department / Stream Name': 'বিভাগ / স্ট্রিম', 'Institution Name': 'প্রতিষ্ঠানের নাম',
+      'Roll / Registration No.': 'রোল / রেজিস্ট্রেশন নম্বর', 'Last Qualifying Examination': 'শেষ উত্তীর্ণ পরীক্ষা', 'Full Marks': 'পূর্ণমান', 'Marks Obtained': 'প্রাপ্ত নম্বর',
+      'Percentage (%)': 'শতকরা হার (%)', 'Monthly Income (₹)': 'মাসিক আয় (₹)', 'Income Certificate No.': 'আয়ের সার্টিফিকেট নম্বর (ঐচ্ছিক)',
+      'Income Certificate Issuing Authority': 'আয়ের সার্টিফিকেট প্রদানকারী কর্তৃপক্ষ',
+      'A/C Holder Name': 'অ্যাকাউন্ট হোল্ডারের নাম', 'IFSC Code': 'IFSC কোড', 'A/C No.': 'অ্যাকাউন্ট নম্বর', 'Bank Name': 'ব্যাংকের নাম', 'Bank Branch Name': 'ব্যাংকের শাখার নাম',
+      '11 characters: 4 letters (bank) + 0 (zero) + 6 letters/digits (branch)': '১১ অক্ষর: ৪টি অক্ষর (ব্যাংক) + 0 (শূন্য) + ৬টি অক্ষর/সংখ্যা (শাখা)',
+      'Only files conforming to specified format and size will be accepted. Invalid uploads will turn red.': 'নির্দিষ্ট ফরম্যাট ও সাইজের ফাইলই গ্রহণ করা হবে। ভুল ফাইল লাল হয়ে যাবে।',
+      'a. Identity Proof Document (Aadhaar / School ID)': 'ক. পরিচয়পত্র (আধার / স্কুল আইডি)', 'b. Admission Receipt': 'খ. ভর্তির রসিদ',
+      'c. Qualifying Exam Marksheet': 'গ. শেষ পরীক্ষার মার্কশিট', 'd. Bank Passbook / Cancelled Cheque': 'ঘ. ব্যাংক পাসবুক / বাতিল চেক',
+      'e. Income Proof Certificate': 'ঙ. আয়ের প্রমাণপত্র', 'f. Application Prayer / Application Letter': 'চ. আবেদনপত্র / প্রার্থনাপত্র',
+      'g. Bonafide Certificate from Head of Institution': 'ছ. প্রতিষ্ঠান প্রধানের বোনাফাইড সার্টিফিকেট', 'h. Caste Certificate': 'জ. জাতিগত শংসাপত্র (Caste Certificate)',
+      'i. Disability / PH Certificate': 'ঝ. প্রতিবন্ধী (PH) শংসাপত্র',
+      'Please read your whole application carefully. Use "Back" to correct anything before the final submission.': 'চূড়ান্ত জমার আগে পুরো আবেদন মন দিয়ে পড়ুন। কিছু ভুল থাকলে "পিছনে" গিয়ে ঠিক করুন।',
+      'Final Submit': 'চূড়ান্ত জমা দিন', 'Final Resubmit': 'আবার চূড়ান্ত জমা দিন', 'An OTP will be sent to your email.': 'আপনার ইমেইলে একটি OTP যাবে।',
+      'Security Verification & Email OTP Confirmation': 'নিরাপত্তা যাচাই ও ইমেইল OTP নিশ্চিতকরণ', 'Refresh Captcha': 'ক্যাপচা বদলান', 'Enter Captcha': 'ক্যাপচা লিখুন',
+      'Applicant Email OTP': 'ইমেইল OTP', 'Resend OTP': 'OTP আবার পাঠান', 'Verify OTP & Submit': 'OTP যাচাই করে জমা দিন', 'Verify OTP & Resubmit': 'OTP যাচাই করে আবার জমা দিন',
+      '2. Application & Profile Card': '২. আবেদন ও প্রোফাইল কার্ড', '3. Account Security & Tracking': '৩. অ্যাকাউন্ট নিরাপত্তা ও ট্র্যাকিং',
+      'Change Password': 'পাসওয়ার্ড পরিবর্তন', 'Track Status': 'স্ট্যাটাস দেখুন',
+      '📄 Download Complete Application (PDF)': '📄 সম্পূর্ণ আবেদন ডাউনলোড (PDF)', '🪪 Profile Card (PDF)': '🪪 প্রোফাইল কার্ড (PDF)',
+      '1. Apply for Scholarship': '১. বৃত্তির জন্য আবেদন', 'Apply Now': 'এখনই আবেদন করুন', '👁️ View Application': '👁️ আবেদন দেখুন',
+      '✏️ Edit Application': '✏️ আবেদন সংশোধন', '1. Your Application': '১. আপনার আবেদন', '1. Correct Your Application': '১. আবেদন সংশোধন করুন',
+      'Select Scholarship Scheme': 'বৃত্তির স্কিম নির্বাচন করুন'
+    };
+    const I18N_ROOTS = ['portalTopHeader', 'sec-candidateDashboard', 'sec-schemeSelection', 'sec-applicationForm', 'sec-trackStatus'];
+    const i18nOrig = new WeakMap();
+    let uiLang = 'en';
+    try { uiLang = localStorage.getItem('rkm_lang') || 'en'; } catch (e) {}
+
+    function i18nTranslateText(n) {
+      const p = n.parentNode;
+      if (!p || /^(SCRIPT|STYLE|TEXTAREA)$/.test(p.nodeName)) return;
+      const hasOrig = i18nOrig.has(n);
+      const orig = hasOrig ? i18nOrig.get(n) : n.nodeValue;
+      let key = String(orig).replace(/\s+/g, ' ').trim();
+      if (!key) return;
+      if (uiLang === 'bn') {
+        let star = '';
+        if (/ \*$/.test(key)) { key = key.slice(0, -2); star = ' *'; }
+        const bn = I18N_BN[key];
+        if (bn) { i18nOrig.set(n, orig); n.nodeValue = bn + star; }
+      } else if (hasOrig) {
+        n.nodeValue = orig;
+        i18nOrig.delete(n);
+      }
+    }
+    function i18nTranslateTree(root) {
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (w.nextNode()) nodes.push(w.currentNode);
+      nodes.forEach(i18nTranslateText);
+    }
+    function applyLanguage() {
+      I18N_ROOTS.forEach(id => { const el = document.getElementById(id); if (el) i18nTranslateTree(el); });
+      const b = document.getElementById('btnLang');
+      if (b) b.innerText = uiLang === 'bn' ? 'English' : 'বাংলা';
+      const d = document.getElementById('declBn');
+      if (d) d.style.display = uiLang === 'bn' ? 'block' : 'none';
+    }
+    function toggleLanguage() {
+      uiLang = uiLang === 'bn' ? 'en' : 'bn';
+      try { localStorage.setItem('rkm_lang', uiLang); } catch (e) {}
+      applyLanguage();
+    }
+    (function startI18nObserver() {
+      const obs = new MutationObserver(muts => {
+        if (uiLang !== 'bn') return;
+        muts.forEach(m => m.addedNodes.forEach(n => {
+          if (n.nodeType === 3) i18nTranslateText(n);
+          else if (n.nodeType === 1) i18nTranslateTree(n);
+        }));
+      });
+      I18N_ROOTS.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el, { childList: true, subtree: true }); });
+    })();
+
+    // =============================================================
     // STARTUP: restore session after a page refresh, load live data
     // =============================================================
     let sliderTimerStarted = false;
@@ -6645,6 +7282,7 @@
         const isSuperAdmin = (admin.role === 'SUPER_ADMIN');
         document.getElementById('adminRoleBadge').innerText = isSuperAdmin ? '👑 SUPER ADMIN CONSOLE' : 'ADMIN CONSOLE';
         document.getElementById('tabBtnSuperAdminManage').style.display = isSuperAdmin ? 'inline-block' : 'none';
+        document.getElementById('tabBtnAuditLog').style.display = isSuperAdmin ? 'inline-block' : 'none';
 
         setAuthenticatedUI('admin', isSuperAdmin ? 'SUPER ADMIN WORKSPACE' : 'ADMINISTRATOR CONSOLE', admin.name);
         refreshAdminDashboardPanels();
