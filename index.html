@@ -4831,11 +4831,31 @@
               <button class="action-btn btn-pdf" onclick="downloadApplicationPDF(${index})">PDF</button>
               <button class="action-btn btn-word" onclick="downloadApplicationWord(${index})">Word</button>
               <button class="action-btn" style="background:#d97706; color:#fff;" title="Unlock selected sections so the candidate can correct them" onclick="openUnlockForApp(${index})">🔓 Unlock</button>
+              <button class="action-btn btn-delete" onclick="deleteApplicationOnly(${index})">Delete App</button>
             </div>
           </td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    async function deleteApplicationOnly(index) {
+      const item = applications[index];
+      if (!item) return;
+      if (confirm(`Delete application "${item.appNo}" for ${item.name}? This removes the submission but preserves candidate registration.`)) {
+        const { error } = await db.from('applications').delete().eq('app_no', item.appNo);
+        if (error) {
+          alert('Failed to delete application from database: ' + error.message);
+          return;
+        }
+        // Also remove the uploaded files of this application from Storage (silent if delete-docs is not deployed)
+        const ac = adminCreds();
+        const paths = Object.values(item.uploadedDocuments || {}).map(d => d && d.path).filter(Boolean);
+        if (ac && paths.length) removeStorageFiles({ as: 'admin', admin: ac.p_admin, pass: ac.p_pass, paths: paths });
+        logAudit('DELETE_APPLICATION', item.appNo, { candidate: item.candidateId, name: item.name });
+        await loadDataFromSupabase();
+        alert('Application deleted successfully.');
+      }
     }
 
     // =============================================================
@@ -6876,7 +6896,7 @@
     // =============================================================
     async function notifyStatusEmail(appNo) {
       try {
-        const { data, error } = await db.functions.invoke('send-status-email', { body: { app_no: appNo } });
+        const { data, error } = await db.functions.invoke('Send-Status-Email', { body: { app_no: appNo } });
         if (error) return { ok: false, msg: error.message || 'Email function error' };
         return { ok: !!(data && data.ok), sent: !(data && data.sent === false), msg: (data && (data.message || data.error)) || '' };
       } catch (e) { return { ok: false, msg: String((e && e.message) || e) }; }
@@ -6884,7 +6904,7 @@
 
     // Deletes files from the private Storage bucket through the "delete-docs" Edge Function (never throws)
     async function removeStorageFiles(body) {
-      try { await db.functions.invoke('delete-docs', { body: body }); } catch (e) { /* ignore */ }
+      try { await db.functions.invoke('Delete-Docs', { body: body }); } catch (e) { /* ignore */ }
     }
 
     // =============================================================
