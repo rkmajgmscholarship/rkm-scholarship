@@ -10,6 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- jsPDF, JSZip and pdf-lib for PDF generation, merging and ZIP export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <style>
@@ -782,9 +783,41 @@
       width: 794px;
       background: #ffffff;
     }
+
+    /* ===== Theme: Maroon / Gold / Ivory ===== */
+    body { background:#faf7ef; color:#2b2523; }
+    #publicHeader { background:linear-gradient(135deg,#5f1212,#7f1d1d 60%,#8a5a12); border-bottom:3px solid #c9a227; }
+    #portalTopHeader { background:#2a0f0f; border-bottom:3px solid #c9a227; }
+    .btn-primary { background:linear-gradient(135deg,#7f1d1d,#5f1212) !important; color:#fff !important; border:1px solid #c9a227 !important; }
+    .nav-btn-admin { background:#2a0f0f; color:#e7c75a; border-color:#c9a227; }
+    .card { border-top:3px solid #e7d9a8; background:#fff; }
+    .hero-card { background:linear-gradient(135deg,#5f1212,#7f1d1d 65%,#9a7b1c) !important; }
+    .qa-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:16px; }
+    .qa-card { background:#fff; border:1px solid #e7d9a8; border-top:3px solid #c9a227; border-radius:10px; padding:14px 8px; text-align:center; cursor:pointer; font-size:13px; font-weight:600; color:#5f1212; }
+    .qa-card:hover { box-shadow:0 4px 10px rgba(95,18,18,.18); transform:translateY(-1px); }
+    .qa-card span { display:block; font-size:26px; margin-bottom:4px; }
+    .kpi { background:#fff; border:1px solid #e7e5e4; border-radius:8px; padding:8px 14px; text-align:center; cursor:pointer; min-width:96px; }
+    .kpi.on { outline:2px solid #c9a227; background:#fffbeb; }
+    .kpi b { display:block; font-size:20px; }
+    #btnDark { position:fixed; bottom:14px; right:14px; z-index:400; width:42px; height:42px; border-radius:50%; border:2px solid #c9a227; background:#5f1212; color:#fff; font-size:18px; cursor:pointer; }
+    body.dark { background:#1a1614 !important; background-image:none !important; color:#e7e5e4; }
+    body.dark .card, body.dark .qa-card, body.dark .kpi, body.dark div[style*="background:#fff;"], body.dark div[style*="background:#fafaf9"] { background:#292524 !important; color:#e7e5e4 !important; border-color:#44403c; }
+    body.dark input, body.dark select, body.dark textarea { background:#1c1917; color:#e7e5e4; border-color:#57534e; }
+    body.dark h2, body.dark h3, body.dark h4, body.dark .qa-card { color:#f1d27a !important; }
+    body.dark table, body.dark td, body.dark th { background:#292524 !important; color:#e7e5e4 !important; border-color:#44403c !important; }
+    #botNav { display:none; position:fixed; bottom:0; left:0; right:0; z-index:350; background:#5f1212; border-top:2px solid #c9a227; }
+    #botNav button { flex:1; background:none; border:none; color:#fde68a; padding:8px 2px; font-size:11px; cursor:pointer; }
+    @media (max-width:700px) { body.is-cand #botNav { display:flex; } body.is-cand main { padding-bottom:64px; } body.is-cand #btnDark { bottom:70px; } }
+    @media print { #publicHeader, #portalTopHeader, #btnDark, .admin-nav-tabs { display:none !important; } }
   </style>
 </head>
 <body>
+
+  <button id="btnDark" title="Light / Dark mode" onclick="toggleDark()">🌙</button>
+
+  <div id="botNav"><button onclick="goToPortalHome()">🏠<br>Home</button><button onclick="openTrackStatus()">📍<br>Status</button><button onclick="openNotifications()">🔔<br>Alerts <span class="bell-badge" id="bnBadge">0</span></button><button onclick="openSupport()">🆘<br>Support</button></div>
+
+  <div id="lightbox" onclick="this.style.display='none'" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:500; align-items:center; justify-content:center;"><img id="lbImg" style="max-width:94%; max-height:92%; border:3px solid #c9a227;"></div>
 
   <!-- 1. PUBLIC HEADER -->
   <header id="publicHeader">
@@ -797,6 +830,7 @@
         </div>
       </div>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <button class="nav-btn" id="btnLangPub" style="background:#7c3aed;" onclick="toggleLanguage()">বাংলা</button>
         <button class="nav-btn" onclick="navigateTo('home')">Home</button>
         <button class="nav-btn" onclick="navigateTo('notices')">Notice Board</button>
         <button class="nav-btn" onclick="navigateTo('downloads')">Downloads</button>
@@ -830,13 +864,21 @@
     <!-- ================= PUBLIC SECTION 1: HOME ================= -->
     <section id="sec-home" class="page-section active">
       <div class="card hero-card">
-        <span class="badge">Academic Session 2026-2027</span>
+        <span class="badge" id="heroSession">Academic Session 2026-2027</span>
         <h2>Ramakrishna Mission Ashrama, Jhargram</h2>
         <p>Scholarship Application &amp; Management Portal<br>Empowering Students Through Education, Values and Service</p>
         <div class="btn-group">
           <button class="btn-primary" onclick="navigateTo('candidateLogin')">Candidate Portal</button>
           <button class="btn-secondary" onclick="navigateTo('adminLogin')">Admin Login</button>
         </div>
+      </div>
+
+      <div class="qa-grid">
+        <div class="qa-card" onclick="navigateTo('candidateLogin')"><span>🎓</span>Candidate Login</div>
+        <div class="qa-card" onclick="alert('How to apply:\n1. Get your Candidate ID & password from the Ashrama.\n2. Login and complete your profile.\n3. Choose a scheme and fill the 6-step form.\n4. Upload documents, verify email OTP and submit.\n5. Track status from your dashboard.')"><span>📝</span>Application Procedure</div>
+        <div class="qa-card" onclick="showRequiredDocs()"><span>📎</span>Required Documents</div>
+        <div class="qa-card" onclick="navigateTo('downloads')"><span>📥</span>Downloads</div>
+        <div class="qa-card" onclick="navigateTo('notices')"><span>📢</span>Notice Board</div>
       </div>
 
       <!-- Quick Notices Preview on Home -->
@@ -1048,6 +1090,8 @@
         <!-- Shown only when admin has returned the application -->
         <div id="candReturnedAlert" class="returned-banner" style="margin-top:10px; margin-bottom:0;"></div>
       </div>
+
+      <div id="candHero"></div>
 
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
         <!-- Card 1: label and action are switched dynamically by JS:
@@ -1444,6 +1488,17 @@
       </div>
     </section>
 
+    <section id="sec-support" class="page-section">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;"><h3>🆘 Help &amp; Support</h3>
+          <button class="nav-btn" style="background:#78716c; border:none;" onclick="navigateTo('candidateDashboard')">Back to Workspace</button></div>
+        <div class="form-group" style="margin-top:10px;"><label>Subject</label><input type="text" id="tkSubject" maxlength="120"></div>
+        <div class="form-group"><label>Describe your problem</label><textarea id="tkMsg" rows="3" maxlength="1500"></textarea></div>
+        <button type="button" class="btn-primary" onclick="submitTicket('Support')">Submit &amp; get Ticket ID</button>
+        <div id="tkList" style="margin-top:14px;"></div>
+      </div>
+    </section>
+
     <!-- ================= AUTHENTICATED: NOTIFICATION CENTRE ================= -->
     <section id="sec-notifications" class="page-section">
       <div class="card">
@@ -1476,6 +1531,7 @@
         <button class="admin-tab-btn" id="tabBtnAnalytics" onclick="switchAdminWindow('analytics')">
           📊 Analytics &amp; Reports
         </button>
+        <button class="admin-tab-btn" id="tabBtnTickets" onclick="switchAdminWindow('tickets')">🆘 Support Tickets</button>
         <button class="admin-tab-btn" id="tabBtnRegistration" onclick="switchAdminWindow('registration')">
           👤 Registration Window (<span id="regCountBadge">0</span>)
         </button>
@@ -1529,6 +1585,7 @@
             </div>
           </div>
 
+          <div id="adminKpi" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>
           <div class="sub-tabs-container" id="adminAppSubTabsContainer"></div>
 
           <div class="filter-bar">
@@ -1576,6 +1633,10 @@
           <div id="anBody" style="margin-top:12px;"></div>
         </div>
       </div>
+
+      <div id="adminWindowTickets" style="display:none;"><div class="card">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><h3>🆘 Candidate Support Tickets &amp; Withdrawal Requests</h3><button type="button" class="btn-neutral" onclick="loadAdminTickets()">🔄 Refresh</button></div>
+        <div style="overflow-x:auto;"><table><thead><tr><th>Ticket</th><th>Candidate</th><th>Type</th><th>Message</th><th>Status</th><th>Action</th></tr></thead><tbody id="adminTkBody"></tbody></table></div></div></div>
 
       <!-- WINDOW 2: REGISTRATION -->
       <div id="adminWindowRegistration" style="display:none;">
@@ -1677,7 +1738,8 @@
           <h3 style="color:#9a3412; margin-bottom:10px;">Publish New Official Notice</h3>
           <div class="form-grid">
             <div class="form-group"><label>Notice Title</label><input type="text" id="noticeTitleInput" placeholder="e.g. Scholarship Application Extended"></div>
-            <div class="form-group"><label>Notice Date</label><input type="date" id="noticeDateInput"></div>
+            <div class="form-group"><label>Notice Date</label><input type="date" id="noticeDateInput"> <small>(publish date: future date = auto-publish later)</small></div>
+            <div class="form-group"><label>Expires on (optional)</label><input type="date" id="noticeExpireInput"></div>
             <div class="form-group"><label>Document Link (Google Drive / URL)</label><input type="url" id="noticeLinkInput" placeholder="https://drive.google.com/..."></div>
           </div>
           <button class="btn-primary" onclick="publishNewNotice()">📢 Publish Notice to Website</button>
@@ -1712,6 +1774,28 @@
         <div class="card" style="border-left:5px solid #16a34a;">
           <h3 style="color:#15803d; margin-bottom:6px;">Landing Page Content Manager</h3>
           <p style="font-size:12px; color:#78716c; margin-bottom:14px;">Edit, add or delete every part of the landing page. Press "Save All Website Content" at the bottom to publish your changes.</p>
+
+          <div class="cms-section-box">
+            <h4 style="color:#7f1d1d; border-bottom:2px solid #fed7aa;">🖼 Website Background Image</h4>
+            <div class="form-group"><label>Image URL</label><input type="text" id="editBgImage" placeholder="https://... (or upload a small image below)"></div>
+            <div class="form-group"><label>Or upload (max 300 KB)</label><input type="file" id="editBgFile" accept="image/*"></div>
+            <button type="button" class="btn-primary" onclick="saveBackground()">Save Background</button>
+            <button type="button" class="btn-neutral" onclick="clearBackground()">Remove Background</button>
+          </div>
+
+          <div class="cms-section-box">
+            <h4 style="color:#7f1d1d; border-bottom:2px solid #fed7aa;">📅 Academic Session</h4>
+            <div class="form-group"><label>Current session</label><input type="text" id="editSession" placeholder="2026-2027"></div>
+            <button type="button" class="btn-primary" onclick="setSession(false)">Save Session</button>
+            <button type="button" class="btn-neutral" onclick="setSession(true)">Start New Session (archive current)</button>
+            <div id="sessArchive" style="font-size:12px; color:#78716c; margin-top:6px;"></div>
+          </div>
+
+          <div class="cms-section-box">
+            <h4 style="color:#7f1d1d; border-bottom:2px solid #fed7aa;">🌐 About Us in Bengali (shown when the visitor selects বাংলা)</h4>
+            <div class="form-group"><textarea id="editAboutBn" rows="4" placeholder="বাংলায় আশ্রমের পরিচিতি লিখুন"></textarea></div>
+            <button type="button" class="btn-primary" onclick="saveAboutBn()">Save Bengali About Text</button>
+          </div>
 
           <!-- A. About text -->
           <div class="cms-section-box">
@@ -2115,10 +2199,15 @@
             <span style="font-size:11px; color:#78716c; display:block; margin-top:6px;">Step 1 (Caste / PH answers) also unlocks Step 6 because the certificates depend on them. Nothing is deleted; all other details stay locked and unchanged.</span>
           </div>
           <div class="form-group">
+            <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:8px 10px; margin-bottom:8px;"><strong style="font-size:12px;">✅ Verification Checklist</strong>
+              <div style="display:flex; gap:12px; flex-wrap:wrap; font-size:12px; margin-top:4px;"><label><input type="checkbox" class="vcChk" value="Personal"> Personal</label><label><input type="checkbox" class="vcChk" value="Academic"> Academic</label><label><input type="checkbox" class="vcChk" value="Income"> Income Cert.</label><label><input type="checkbox" class="vcChk" value="Bank"> Bank</label><label><input type="checkbox" class="vcChk" value="Documents"> Documents</label></div>
+              <div id="vcInfo" style="font-size:10px; color:#78716c;"></div></div>
+            <div id="corrBlock" style="display:none; margin-bottom:8px;"><label>⏰ Correction deadline (candidate can edit only until this date)</label><input type="date" id="modalCorrDeadline"></div>
             <label id="modalRemarksLabel">Official Remarks</label>
             <textarea id="modalAdminRemarks" rows="3" placeholder="Enter remarks..."></textarea>
             <span id="returnRemarksNotice" style="display:none; font-size:11px; color:#dc2626; margin-top:4px;">⚠️ The reason for returning the application must be written in Remarks. The candidate will see it.</span>
           </div>
+          <div class="form-group"><label>🔒 Internal Remarks (admins only)</label><textarea id="modalInternalRemarks" rows="2" placeholder="Private note for other admins"></textarea></div>
           <div style="display:flex; justify-content:flex-end; gap:8px;">
             <button type="button" class="btn-primary" onclick="saveAdminStatusDecision()">Update Status</button>
           </div>
@@ -2148,6 +2237,29 @@
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
           <button type="button" class="btn-neutral" onclick="document.getElementById('bulkModal').style.display='none'">Cancel</button>
           <button type="button" class="btn-primary" style="background:#6b21a8;" onclick="bulkApplyStatus()">Apply to All Selected</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scholarship Configuration Modal -->
+    <div id="cfgModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:310; justify-content:center; align-items:center; padding:16px;">
+      <div style="background:#fff; border-radius:10px; max-width:640px; width:100%; max-height:92vh; overflow-y:auto; padding:20px;">
+        <h3 style="color:#3730a3; border-bottom:2px solid #3730a3; padding-bottom:8px; margin-bottom:10px;">⚙ Scholarship Configuration: <span id="cfgTitle"></span></h3>
+        <h4 style="font-size:13px;">Eligibility criteria (leave blank = no limit)</h4>
+        <div class="form-grid">
+          <div class="form-group"><label>Minimum marks %</label><input type="number" id="cfgMinMarks"></div>
+          <div class="form-group"><label>Maximum monthly income (₹)</label><input type="number" id="cfgMaxIncome"></div>
+          <div class="form-group"><label>Allowed classes (comma separated)</label><input type="text" id="cfgClasses" placeholder="e.g. Class 11, Class 12, B.A."></div>
+          <div class="form-group"><label>Allowed categories</label><input type="text" id="cfgCastes" placeholder="e.g. SC, ST, OBC"></div>
+        </div>
+        <h4 style="font-size:13px; margin-top:8px;">Document requirements for this scholarship</h4>
+        <div id="cfgDocs" style="font-size:12px; display:grid; gap:4px;"></div>
+        <h4 style="font-size:13px; margin-top:10px;">Extra form fields (one per line)</h4>
+        <p style="font-size:11px; color:#78716c;">Format: <code>Label | type | required/optional | options</code> — type = text, number, date or select (options comma separated). Example: <code>Name of Parish | text | required</code></p>
+        <textarea id="cfgFields" rows="4"></textarea>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+          <button type="button" class="btn-neutral" onclick="byId('cfgModal').style.display='none'">Cancel</button>
+          <button type="button" class="btn-primary" onclick="saveSchemeCfg()">Save Configuration</button>
         </div>
       </div>
     </div>
@@ -2603,7 +2715,7 @@
         // 3. Fetch Scholarship Schemes
         const { data: schemeData } = await db.from('scholarship_schemes').select('*');
         if (schemeData && schemeData.length > 0) {
-          scholarshipSchemes = schemeData.map(s => ({ id: s.id, name: s.name, desc: s.description }));
+          scholarshipSchemes = schemeData.map(s => ({ id: s.id, name: s.name, desc: s.description, config: s.config || {} }));
         }
 
         // 4. Fetch Applications (all fields, including the new ones)
@@ -2615,7 +2727,8 @@
         // 5. Fetch Notices
         const { data: noticeData } = await db.from('notices').select('*').order('notice_date', { ascending: false });
         if (noticeData) {
-          notices = noticeData.map(n => ({ id: n.id, title: n.title, date: n.notice_date, link: n.link }));
+          const _today = new Date().toISOString().slice(0, 10);
+          notices = noticeData.filter(n => activeUserRole === 'admin' || ((!n.notice_date || String(n.notice_date).slice(0, 10) <= _today) && (!n.expire_on || String(n.expire_on) >= _today))).map(n => ({ id: n.id, title: n.title, date: n.notice_date, link: n.link, expire: n.expire_on }));
         }
 
         // 6. Fetch Downloads
@@ -2696,6 +2809,10 @@
         signBase64: a.sign_base64,
         uploadedDocuments: a.uploaded_documents || {},
         unlockedSections: a.unlocked_sections || '',
+        internalRemarks: a.internal_remarks || '',
+        extra: a.extra_data || {},
+        corrDeadline: a.correction_deadline || '',
+        vChecklist: a.verification_checklist || {},
         statusUpdatedAt: a.status_updated_at || null,
         docVerification: a.doc_verification || {}
       };
@@ -4755,7 +4872,7 @@
     // ADMIN: APPLICATIONS WINDOW
     // =============================================================
     function switchAdminWindow(windowType) {
-      const tabs = ['applications', 'analytics', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'inquiries', 'auditLog', 'updateProfile'];
+      const tabs = ['applications', 'analytics', 'tickets', 'registration', 'manageSchemes', 'manageNotices', 'manageDownloads', 'manageSite', 'superAdminManage', 'inquiries', 'auditLog', 'updateProfile'];
       const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
       tabs.forEach(t => {
         const btn = document.getElementById('tabBtn' + cap(t));
@@ -4778,6 +4895,7 @@
 
       if (windowType === 'applications') { renderAdminAppSubTabs(); renderAdminTable(); }
       if (windowType === 'analytics') renderAnalytics();
+      if (windowType === 'tickets') loadAdminTickets();
       if (windowType === 'updateProfile') { const e = document.getElementById('curAdminIdText'); if (e) e.innerText = activeAdminId; }
       if (windowType === 'registration') renderRegisteredCandidatesTable();
       if (windowType === 'manageSchemes') renderAdminSchemesTable();
@@ -4835,7 +4953,7 @@
       const fPh = document.getElementById('appFPhc').value;
       const fDi = document.getElementById('appFDist').value;
       filteredApps = filteredApps.filter(a =>
-        (!fSt || a.status === fSt) && (!fCa || String(a.caste).toUpperCase() === fCa) &&
+        kpiMatch(a) && (!fSt || a.status === fSt) && (!fCa || String(a.caste).toUpperCase() === fCa) &&
         (!fPh || a.phc === fPh) && (!fDi || a.dist === fDi) &&
         (!q || [a.name, a.appNo, a.candidateId, a.mobile, a.altMobile, a.email, a.institution, a.govId, a.bankAcc].some(v => String(v || '').toLowerCase().includes(q))));
       const cntEl = document.getElementById('appFilterCount');
@@ -5044,6 +5162,9 @@
         status: newStatus,
         unlocked_sections: newStatus === 'Returned for Correction' ? unlockList : null,
         admin_remarks: remarks,
+        internal_remarks: byId('modalInternalRemarks').value.trim(),
+        correction_deadline: newStatus === 'Returned for Correction' ? (byId('modalCorrDeadline').value || null) : null,
+        verification_checklist: vcCollect(),
         sanctioned_amount: newStatus === 'Sanctioned' ? Number(amount) : null,
         sanctioned_date: newStatus === 'Sanctioned' ? sDate : null
       };
@@ -6548,6 +6669,7 @@
           <td>${esc(s.desc)}</td>
           <td>
             <button class="action-btn btn-pdf" onclick="openRenameSchemeModal('${esc(s.id)}')">✏️ Rename</button>
+            <button class="action-btn" style="background:#4338ca; color:#fff;" onclick="openSchemeCfg('${esc(s.id)}')">⚙ Configure</button>
             ${s.id !== 'belur_math' && s.id !== 'other_scholarships' ? `<button class="action-btn btn-delete" onclick="deleteScholarshipScheme('${esc(s.id)}')">Delete</button>` : ''}
           </td>
         </tr>
@@ -6655,7 +6777,7 @@
         return;
       }
 
-      const { error } = await db.from('notices').insert([{ title: title, notice_date: date, link: link }]);
+      const { error } = await db.from('notices').insert([{ title: title, notice_date: date, link: link, expire_on: byId('noticeExpireInput').value || null }]);
       if (error) {
         alert('Failed to publish notice: ' + error.message);
         return;
@@ -7266,10 +7388,18 @@
       '1. Apply for Scholarship': '১. বৃত্তির জন্য আবেদন', 'Apply Now': 'এখনই আবেদন করুন', '👁️ View Application': '👁️ আবেদন দেখুন',
       '✏️ Edit Application': '✏️ আবেদন সংশোধন', '1. Your Application': '১. আপনার আবেদন', '1. Correct Your Application': '১. আবেদন সংশোধন করুন',
       'Select Scholarship Scheme': 'বৃত্তির স্কিম নির্বাচন করুন',
+      'Home': 'হোম', 'Notice Board': 'নোটিশ বোর্ড', 'Downloads': 'ডাউনলোড', 'Candidate Login': 'ক্যান্ডিডেট লগইন', 'Admin Login': 'অ্যাডমিন লগইন',
+      'Candidate Portal': 'ক্যান্ডিডেট পোর্টাল', 'Application Procedure': 'আবেদনের নিয়ম', 'Required Documents': 'প্রয়োজনীয় ডকুমেন্ট',
+      '📢 Latest Institutional Notices': '📢 সাম্প্রতিক নোটিশ', 'View All Notices →': 'সব নোটিশ দেখুন →',
+      'Candidate Portal Login': 'ক্যান্ডিডেট পোর্টাল লগইন', 'Sign in with your Candidate ID and Password': 'আপনার ক্যান্ডিডেট আইডি ও পাসওয়ার্ড দিয়ে লগইন করুন',
+      'Candidate ID': 'ক্যান্ডিডেট আইডি', 'Password': 'পাসওয়ার্ড', 'Login': 'লগইন', 'Forgot Password?': 'পাসওয়ার্ড ভুলে গেছেন?',
+      'Administrator Login': 'অ্যাডমিনিস্ট্রেটর লগইন', 'Admin ID or Email': 'অ্যাডমিন আইডি বা ইমেইল', 'Verify Credentials & Send OTP': 'যাচাই করে OTP পাঠান',
+      '🆘 Help & Support': '🆘 সাহায্য ও সহায়তা', 'Subject': 'বিষয়', 'Describe your problem': 'আপনার সমস্যা লিখুন', 'Submit & get Ticket ID': 'জমা দিন ও টিকিট আইডি নিন',
+      '📍 Progress': '📍 অগ্রগতি', '🆘 Support': '🆘 সহায়তা', 'Status': 'স্ট্যাটাস', 'Alerts': 'নোটিফিকেশন',
       '4. Notifications, Documents & History': '৪. নোটিফিকেশন, ডকুমেন্ট ও ইতিহাস', '📄 Documents': '📄 ডকুমেন্ট', '🕘 History': '🕘 ইতিহাস',
       '🔔 Notification Centre': '🔔 নোটিফিকেশন কেন্দ্র', 'See notices and updates, check document verification and your application history.': 'নোটিশ ও আপডেট দেখুন, ডকুমেন্ট যাচাইয়ের অবস্থা ও আবেদনের ইতিহাস জানুন।'
     };
-    const I18N_ROOTS = ['sec-notifications', 'portalTopHeader', 'sec-candidateDashboard', 'sec-schemeSelection', 'sec-applicationForm', 'sec-trackStatus'];
+    const I18N_ROOTS = ['publicHeader', 'sec-home', 'sec-candidateLogin', 'sec-adminLogin', 'sec-support', 'sec-notifications', 'portalTopHeader', 'sec-candidateDashboard', 'sec-schemeSelection', 'sec-applicationForm', 'sec-trackStatus'];
     const i18nOrig = new WeakMap();
     let uiLang = 'en';
     try { uiLang = localStorage.getItem('rkm_lang') || 'en'; } catch (e) {}
@@ -7595,9 +7725,9 @@
     function cnt(f, L) { return (L || applications).filter(f).length; }
     function anBar(l, n, T) { const p = T ? Math.round(n * 100 / T) : 0; return `<div style="display:flex; align-items:center; gap:8px; font-size:12px; margin:4px 0;"><span style="width:150px;">${esc(l)}</span><div style="flex:1; background:#f5f5f4; border-radius:4px;"><div style="width:${p}%; background:#ea580c; height:14px; border-radius:4px;"></div></div><strong style="width:70px; text-align:right;">${n} (${p}%)</strong></div>`; }
     function renderAnalytics() {
-      byId('anTabs').innerHTML = [['overview', '📊 Overview'], ['scheme', '🎓 Scheme-wise Report'], ['pending', '⏳ Pending Work'], ['dups', '⚠ Duplicates']]
+      byId('anTabs').innerHTML = [['overview', '📊 Overview'], ['scheme', '🎓 Scheme-wise Report'], ['pending', '⏳ Pending Work'], ['dups', '⚠ Duplicates'], ['perf', '👤 Admin Performance'], ['health', '🩺 System Health']]
         .map(([k, l]) => `<button type="button" class="sub-tab-btn ${anTab === k ? 'active' : ''}" onclick="anTab='${k}'; renderAnalytics()">${l}</button>`).join('');
-      byId('anBody').innerHTML = { overview: anOverview, scheme: anScheme, pending: anPending, dups: anDups }[anTab]();
+      byId('anBody').innerHTML = { overview: anOverview, scheme: anScheme, pending: anPending, dups: anDups, perf: anPerf, health: anHealth }[anTab]();
     }
     function anOverview() {
       const T = applications.length, amt = applications.reduce((s, a) => s + (a.status === 'Sanctioned' ? Number(a.sanctionedAmount) || 0 : 0), 0);
@@ -7697,6 +7827,351 @@
       bulkSel.clear(); await loadDataFromSupabase(); bulkUpdate();
     }
 
+
+
+    // =============================================================
+    // THEME / DARK MODE / BACKGROUND / HOME QUICK ACCESS / CANDIDATE HERO / ADMIN KPI
+    // =============================================================
+    function toggleDark() { const on = document.body.classList.toggle('dark'); try { localStorage.setItem('rkm_dark', on ? '1' : '0'); } catch (e) {} byId('btnDark').innerText = on ? '☀️' : '🌙'; }
+    (function () { try { if (localStorage.getItem('rkm_dark') === '1') { document.body.classList.add('dark'); byId('btnDark').innerText = '☀️'; } } catch (e) {} })();
+
+    function showRequiredDocs() { alert('Required documents (PDF/JPG/PNG, max 500 KB each):\n\n' + DOC_SLOTS.map((s, i) => (i + 1) + '. ' + s.label + (s.required === 'always' ? '' : ' (only if applicable)')).join('\n')); }
+
+    function applyBackground() {
+      const u = siteContent.bgImage, s = document.body.style;
+      s.backgroundImage = u ? `linear-gradient(rgba(250,247,239,.9),rgba(250,247,239,.9)),url("${String(u).replace(/"/g, '%22')}")` : '';
+      s.backgroundSize = 'cover'; s.backgroundAttachment = 'fixed';
+    }
+    const _rpsc = renderPublicSiteContent;
+    renderPublicSiteContent = function () { _rpsc(); applyBackground(); };
+    const _lci = loadCMSInputs;
+    loadCMSInputs = function () { _lci(); const e = byId('editBgImage'); if (e) e.value = String(siteContent.bgImage || '').startsWith('data:') ? '' : (siteContent.bgImage || ''); };
+    async function saveBackground() {
+      let u = byId('editBgImage').value.trim();
+      const f = byId('editBgFile').files[0];
+      if (f) {
+        if (f.size > 300 * 1024) { alert('Image must be 300 KB or smaller (or use an image URL).'); return; }
+        u = await readAsDataUrl(f);
+      }
+      if (!u) { alert('Enter an image URL or choose a file.'); return; }
+      siteContent.bgImage = u;
+      if (await persistSiteContent()) { applyBackground(); logAudit('CHANGE_BACKGROUND', 'website', {}); alert('Background saved.'); }
+    }
+    async function clearBackground() { siteContent.bgImage = ''; await persistSiteContent(); applyBackground(); byId('editBgImage').value = ''; alert('Background removed.'); }
+
+    // ---- Admin KPI cards (click to filter the table) ----
+    let kpiF = null;
+    function kpiMatch(a) { return !kpiF || (kpiF.t === 'nature' ? a.nature === kpiF.v : (kpiF.v === 'Pending' ? (a.status === 'Submitted' || a.status === 'Under Verification') : a.status === kpiF.v)); }
+    function kpiSet(t, v) { kpiF = (kpiF && kpiF.t === t && kpiF.v === v) ? null : { t: t, v: v }; renderAdminTable(); }
+    function renderKpi() {
+      const el = byId('adminKpi'); if (!el) return;
+      const C = [['Fresh', 'nature', 'FRESH', '#0369a1'], ['Renewal', 'nature', 'RENEWAL', '#0f766e'], ['Pending', 'status', 'Pending', '#ea580c'], ['Approved', 'status', 'Approved', '#15803d'], ['Sanctioned', 'status', 'Sanctioned', '#6b21a8'], ['Returned', 'status', 'Returned for Correction', '#d97706'], ['Rejected', 'status', 'Rejected', '#991b1b']];
+      el.innerHTML = C.map(c => { const n = applications.filter(a => c[1] === 'nature' ? a.nature === c[2] : (c[2] === 'Pending' ? (a.status === 'Submitted' || a.status === 'Under Verification') : a.status === c[2])).length;
+        return `<div class="kpi ${kpiF && kpiF.t === c[1] && kpiF.v === c[2] ? 'on' : ''}" style="border-top:4px solid ${c[3]};" onclick="kpiSet('${c[1]}','${c[2]}')"><b style="color:${c[3]};">${n}</b>${c[0]}</div>`; }).join('');
+    }
+    const _rat = renderAdminTable;
+    renderAdminTable = function () { renderKpi(); _rat(); };
+
+    // ---- Candidate dashboard: hero, big status card, checklist, login activity, print ----
+    function candCompletion(c) { const f = ['name', 'mobile', 'dob', 'email', 'vill', 'po', 'ps', 'dist', 'pin', 'currClass', 'stream', 'admDate', 'institution']; return Math.round(f.filter(k => c[k]).length * 100 / f.length); }
+    function loginHistory() { try { return JSON.parse(localStorage.getItem('rkm_logins_' + activeCandidateId) || '[]'); } catch (e) { return []; } }
+    function recordLogin() {
+      if (!activeCandidateId || sessionStorage.getItem('rkm_lr_' + activeCandidateId)) return;
+      sessionStorage.setItem('rkm_lr_' + activeCandidateId, '1');
+      try { const a = loginHistory(); a.unshift(new Date().toISOString()); localStorage.setItem('rkm_logins_' + activeCandidateId, JSON.stringify(a.slice(0, 6))); } catch (e) {}
+    }
+    function renderCandHero() {
+      const box = byId('candHero'), c = activeCandidateId && candidates[activeCandidateId];
+      if (!box || !c) return;
+      recordLogin();
+      const app = getCandidateApplication(), pc = candCompletion(c);
+      const COL = { 'Submitted': '#0284c7', 'Under Verification': '#ea580c', 'Approved': '#15803d', 'Sanctioned': '#6b21a8', 'Returned for Correction': '#b91c1c', 'Rejected': '#7f1d1d' };
+      const st = app ? app.status : 'Not Applied Yet', col = app ? (COL[st] || '#57534e') : '#78716c';
+      const items = app ? dvItems(app) : [], up = items.filter(i => i.up);
+      const miss = items.filter(i => !i.up), bad = up.filter(i => DV_BAD.includes(dvGet(app, i.key).status));
+      const ver = up.filter(i => dvGet(app, i.key).status === 'Verified').length;
+      const lg = loginHistory().slice(1, 4).map(x => timestampDMYHM(x)).join(' &nbsp;•&nbsp; ');
+      const avatar = app && app.photoBase64 ? `<img src="${app.photoBase64}" style="width:64px; height:76px; object-fit:cover; border-radius:8px; border:2px solid #c9a227;">` : `<div style="width:64px; height:76px; border-radius:8px; background:#7f1d1d; color:#fde68a; font-size:28px; display:flex; align-items:center; justify-content:center;">${esc((c.name || '?').charAt(0).toUpperCase())}</div>`;
+      box.innerHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:16px;">
+        <div class="card" style="margin:0; display:flex; gap:14px; align-items:center;">${avatar}<div style="flex:1;">
+          <div style="font-weight:bold; font-size:16px;">${esc(c.name)}</div><div style="font-size:12px; color:#78716c;">ID: ${esc(activeCandidateId)}</div>
+          <div style="font-size:11px; margin-top:6px;">Profile completion: <strong>${pc}%</strong></div>
+          <div style="background:#e7e5e4; border-radius:6px; height:8px;"><div style="width:${pc}%; background:#c9a227; height:8px; border-radius:6px;"></div></div></div></div>
+        <div class="card" style="margin:0; border-top:5px solid ${col}; text-align:center;">
+          <div style="font-size:11px; color:#78716c;">APPLICATION STATUS</div>
+          <div style="font-size:22px; font-weight:bold; color:${col}; margin:4px 0;">${esc(st)}</div>
+          ${app ? `<div style="font-size:12px;">${esc(app.appNo)} • ${esc(app.schemeName || '')}</div><button type="button" class="btn-primary" style="margin-top:8px; padding:6px 14px; font-size:12px;" onclick="openTrackStatus()">View Progress Timeline</button>` : '<div style="font-size:12px;">Use “Apply Now” below to start.</div>'}
+        </div></div>
+        ${app ? `<div class="card" style="margin:0 0 16px;"><strong style="font-size:13px;">📋 Document checklist:</strong> ${ver} of ${up.length} verified
+          ${miss.length ? `<div style="margin-top:6px; background:#fef2f2; color:#991b1b; padding:6px 10px; border-radius:6px; font-size:12px;">⚠ Missing: ${miss.map(i => esc(i.label)).join(', ')}</div>` : ''}
+          ${bad.length ? `<div style="margin-top:6px; background:#fff7ed; color:#9a3412; padding:6px 10px; border-radius:6px; font-size:12px;">⚠ Needs correction: ${bad.map(i => esc(i.label)).join(', ')} — <a href="#" onclick="openTrackStatus('docs'); return false;">fix now</a></div>` : ''}
+          <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="btn-neutral" onclick="printApplication()">🖨 Print Application</button><button type="button" class="btn-neutral" onclick="openTrackStatus('docs')">📄 Document Status</button></div></div>` : ''}
+        ${lg ? `<div style="font-size:11px; color:#78716c; margin:-6px 0 14px;">🔐 Previous logins on this device: ${lg}</div>` : ''}`;
+    }
+    const _ucd = updateCandidateDashboardState;
+    updateCandidateDashboardState = function () { _ucd(); renderCandHero(); };
+    function printApplication() {
+      const app = getCandidateApplication();
+      if (!app) { alert('No application submitted yet.'); return; }
+      const w = window.open('', '_blank'); if (!w) { alert('Please allow pop-ups to print.'); return; }
+      w.document.write(`<html><head><title>${esc(app.appNo)}</title><style>body{font-family:Arial,sans-serif;font-size:12px;padding:16px;color:#222}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:4px 6px;text-align:left}h2{color:#7f1d1d;margin:0}h4{color:#7f1d1d;margin:12px 0 4px}img{max-width:120px}</style></head><body><h2>Ramakrishna Mission Ashrama, Jhargram</h2><p><strong>Application No:</strong> ${esc(app.appNo)} | <strong>Scheme:</strong> ${esc(app.schemeName || '')} | <strong>Status:</strong> ${esc(app.status)}</p>` +
+        getApplicationSections(app).map(s => `<h4>${esc(s.title)}</h4>` + sectionToDetailHtml(s)).join('') + '</body></html>');
+      w.document.close(); setTimeout(() => w.print(), 600);
+    }
+
+
+    // =============================================================
+    // PART 2 FEATURES: QR acknowledgement, support tickets, withdrawal, internal remarks, mobile bottom nav
+    // =============================================================
+    function qrDataUrl(txt) { try { const d = document.createElement('div'); new QRCode(d, { text: txt, width: 128, height: 128 }); const c = d.querySelector('canvas'); return c ? c.toDataURL() : ''; } catch (e) { return ''; } }
+    function qrText(app) { return `RKMA|${app.appNo}|${app.candidateId}|${app.status}`; }
+    function downloadAcknowledgement() {
+      const app = getCandidateApplication();
+      if (!app) { alert('No application submitted yet.'); return; }
+      const w = window.open('', '_blank'); if (!w) { alert('Please allow pop-ups.'); return; }
+      w.document.write(`<html><head><title>Acknowledgement ${esc(app.appNo)}</title><style>body{font-family:Arial;padding:30px;color:#222}.b{border:2px solid #7f1d1d;padding:20px;max-width:620px;margin:auto}h2{color:#7f1d1d;margin:0}td{padding:5px 8px}</style></head><body><div class="b"><h2>Ramakrishna Mission Ashrama, Jhargram</h2><p>Scholarship Application Acknowledgement</p><img src="${qrDataUrl(qrText(app))}" style="float:right;width:110px"><table><tr><td><b>Application ID</b></td><td>${esc(app.appNo)}</td></tr><tr><td><b>Candidate</b></td><td>${esc(app.name)} (${esc(app.candidateId)})</td></tr><tr><td><b>Scheme</b></td><td>${esc(app.schemeName || '')}</td></tr><tr><td><b>Submitted on</b></td><td>${esc(timestampDMYHM(app.submittedAt))}</td></tr><tr><td><b>Status</b></td><td>${esc(app.status)}</td></tr></table><p style="font-size:11px;color:#666">Computer generated acknowledgement. Keep it for future reference.</p></div></body></html>`);
+      w.document.close(); setTimeout(() => w.print(), 600);
+    }
+    // QR code also on the printed application
+    const _pa = printApplication;
+    printApplication = function () {
+      const o = window.open; const app = getCandidateApplication();
+      window.open = function () { const w = o.apply(window, arguments); if (w && app) { const wr = w.document.write.bind(w.document); w.document.write = function (h) { wr(h.replace('<h2>', `<img src="${qrDataUrl(qrText(app))}" style="float:right;width:90px"><h2>`)); }; } return w; };
+      try { _pa(); } finally { window.open = o; }
+    };
+
+    function openSupport() { navigateTo('support'); loadTickets(); }
+    async function loadTickets() {
+      const c = candCreds(); if (!c) return;
+      const { data, error } = await db.rpc('rkma_cand_tickets', c);
+      byId('tkList').innerHTML = error ? '<div style="color:#991b1b; font-size:12px;">Support is not set up yet (run supabase_part2.sql).</div>' :
+        ((data || []).map(t => `<div style="border:1px solid #e7e5e4; border-radius:6px; padding:8px; margin-bottom:6px; font-size:12px;"><strong>TKT-${t.id}</strong> • ${esc(t.type)} • <b>${esc(t.status)}</b> <span style="color:#78716c;">${esc(timestampDMYHM(t.created_at))}</span><div><b>${esc(t.subject)}</b></div><div>${esc(t.message)}</div>${t.reply ? `<div style="background:#f0fdf4; color:#14532d; padding:4px 6px; margin-top:4px; border-radius:4px;">Office reply: ${esc(t.reply)}</div>` : ''}</div>`).join('') || 'No tickets yet.');
+    }
+    async function submitTicket(type, subj, msg) {
+      subj = subj || byId('tkSubject').value.trim(); msg = msg || byId('tkMsg').value.trim();
+      if (!subj || !msg) { alert('Please write both subject and message.'); return; }
+      const app = getCandidateApplication();
+      const { data, error } = await db.rpc('rkma_cand_add_ticket', { ...candCreds(), p_type: type, p_subject: subj, p_message: msg, p_app_no: app ? app.appNo : '' });
+      if (error) { alert('Could not submit: ' + error.message + '\n(Run supabase_part2.sql first.)'); return; }
+      alert('Submitted. Your Ticket ID is ' + data);
+      byId('tkSubject').value = ''; byId('tkMsg').value = ''; if (type === 'Support') loadTickets();
+    }
+    function withdrawRequest() {
+      const app = getCandidateApplication();
+      if (!app || ['Sanctioned', 'Rejected'].includes(app.status)) { alert('Withdrawal is not possible for this application.'); return; }
+      const why = prompt('Why do you want to withdraw application ' + app.appNo + '? (The office will review your request)');
+      if (!why || !why.trim()) return;
+      submitTicket('Withdrawal Request', 'Withdraw application ' + app.appNo, why.trim());
+      candHistAdd(app, 'Withdrawal requested', '', '', why.trim());
+    }
+
+    let adminTks = [];
+    async function loadAdminTickets() {
+      const c = adminCreds(); if (!c) return;
+      const { data, error } = await db.rpc('rkma_admin_tickets', c);
+      if (error) { byId('adminTkBody').innerHTML = `<tr><td colspan="6" style="color:#991b1b;">${esc(error.message)} (run supabase_part2.sql)</td></tr>`; return; }
+      adminTks = data || [];
+      byId('adminTkBody').innerHTML = adminTks.map((t, i) => `<tr><td><b>TKT-${t.id}</b><br><span style="font-size:10px;">${esc(timestampDMYHM(t.created_at))}</span></td><td>${esc(t.candidate_id)}<br><span style="font-size:10px;">${esc(t.app_no || '')}</span></td><td>${esc(t.type)}</td><td><b>${esc(t.subject)}</b><br>${esc(t.message)}${t.reply ? `<br><i>Reply: ${esc(t.reply)}</i>` : ''}</td><td>${esc(t.status)}</td><td><button type="button" class="action-btn btn-manage" onclick="replyTicket(${i})">Reply / Close</button></td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center;">No tickets.</td></tr>';
+    }
+    async function replyTicket(i) {
+      const t = adminTks[i]; if (!t) return;
+      const r = prompt('Reply to candidate (TKT-' + t.id + '):', t.reply || ''); if (r === null) return;
+      const { error } = await db.rpc('rkma_admin_reply_ticket', { ...adminCreds(), p_id: t.id, p_reply: r, p_status: 'Closed' });
+      if (error) { alert(error.message); return; }
+      notify(t.candidate_id, 'status', 'Reply to your ticket TKT-' + t.id, r, t.app_no || '');
+      logAudit('TICKET_REPLY', 'TKT-' + t.id, { candidate: t.candidate_id }); loadAdminTickets();
+    }
+
+    const _osm = openScrutinyModal;
+    openScrutinyModal = function (i) { _osm(i); const e = byId('modalInternalRemarks'); if (e) e.value = (applications[i] || {}).internalRemarks || ''; };
+
+    // mobile bottom navigation + extra dashboard buttons
+    const _rch = renderCandHero;
+    renderCandHero = function () {
+      document.body.classList.add('is-cand'); _rch();
+      const box = byId('candHero'), app = getCandidateApplication();
+      if (box && !byId('candExtraBtns')) box.insertAdjacentHTML('beforeend', `<div id="candExtraBtns" class="card" style="margin:0 0 16px; display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="btn-neutral" onclick="openSupport()">🆘 Help &amp; Support</button>${app ? '<button type="button" class="btn-neutral" onclick="downloadAcknowledgement()">🧾 Acknowledgement (QR)</button><button type="button" class="btn-neutral" onclick="withdrawRequest()">↩ Request Withdrawal</button>' : ''}</div>`);
+      const b = byId('bnBadge'), n = byId('bellCount'); if (b && n) b.innerText = n.innerText;
+    };
+    const _esl = executeSecureLogout;
+    executeSecureLogout = function () { document.body.classList.remove('is-cand'); _esl(); };
+
+
+    // =============================================================
+    // PART 3 FEATURES: lightbox, session, checklist, correction deadline, PDF report, performance, health, expiry
+    // =============================================================
+    document.addEventListener('click', e => { const i = e.target.closest && e.target.closest('#carouselWrapper img'); if (i) { byId('lbImg').src = i.src; byId('lightbox').style.display = 'flex'; } });
+
+    // Academic session (stored with the website content)
+    function sess() { siteContent.session = siteContent.session || { current: '2026-2027', archived: [] }; return siteContent.session; }
+    const _apb = applyBackground;
+    applyBackground = function () { _apb(); const h = byId('heroSession'); if (h) h.innerText = 'Academic Session ' + sess().current; };
+    async function setSession(archive) {
+      const v = byId('editSession').value.trim(); if (!/^\d{4}-\d{4}$/.test(v)) { alert('Use the format 2027-2028'); return; }
+      const s = sess();
+      if (archive) { if (v === s.current) { alert('Enter the NEW session name.'); return; } if (!confirm('Archive session ' + s.current + ' and start ' + v + '? (Export the Excel report of the old session first.)')) return; s.archived.push(s.current); }
+      s.current = v; if (await persistSiteContent()) { applyBackground(); loadCMSInputs(); logAudit('SESSION', v, { archived: archive }); alert('Saved.'); }
+    }
+    const _lci2 = loadCMSInputs;
+    loadCMSInputs = function () { _lci2(); const e = byId('editSession'); if (e) e.value = sess().current; const a = byId('sessArchive'); if (a) a.innerText = 'Archived sessions: ' + (sess().archived.join(', ') || 'none'); };
+
+    // Verification checklist + correction deadline in the scrutiny console
+    function vcCollect() { const items = {}; document.querySelectorAll('.vcChk').forEach(c => { items[c.value] = c.checked; }); return { items: items, by: activeAdminId, at: new Date().toISOString() }; }
+    const _osm2 = openScrutinyModal;
+    openScrutinyModal = function (i) {
+      _osm2(i); const a = applications[i] || {}, v = a.vChecklist || {};
+      document.querySelectorAll('.vcChk').forEach(c => { c.checked = !!(v.items && v.items[c.value]); });
+      byId('vcInfo').innerText = v.by ? `Last checked by ${v.by} on ${timestampDMYHM(v.at)}` : '';
+      byId('modalCorrDeadline').value = a.corrDeadline ? String(a.corrDeadline).slice(0, 10) : '';
+      byId('corrBlock').style.display = 'none'; hsc2();
+    };
+    function hsc2() { const e = byId('corrBlock'); if (e) e.style.display = byId('modalStatusSelect').value === 'Returned for Correction' ? 'block' : 'none'; }
+    const _hsc = handleStatusSelectionChange;
+    handleStatusSelectionChange = function () { _hsc(); hsc2(); };
+
+    // Candidate: deadline enforcement, expiry reminder
+    function deadlinePassed(a) { return !!(a && a.status === 'Returned for Correction' && a.corrDeadline && new Date(String(a.corrDeadline).slice(0, 10) + 'T23:59:59') < new Date()); }
+    const _hca = handleCandidateApplyAction;
+    handleCandidateApplyAction = function () {
+      const a = getCandidateApplication();
+      if (deadlinePassed(a)) { alert('The correction deadline (' + formatDateDMY(a.corrDeadline) + ') has passed. Please raise a Support ticket to the office.'); openSupport(); return; }
+      _hca();
+    };
+    const _rch2 = renderCandHero;
+    renderCandHero = function () {
+      _rch2(); const box = byId('candHero'), a = getCandidateApplication(); if (!box || !a) return;
+      let w = '';
+      if (a.status === 'Returned for Correction' && a.corrDeadline) w += `<div style="background:#fef2f2; color:#991b1b; padding:8px 12px; border-radius:6px; font-size:13px; margin-bottom:8px;">⏰ Correction ${deadlinePassed(a) ? 'deadline has PASSED' : 'deadline'}: <strong>${esc(formatDateDMY(a.corrDeadline))}</strong></div>`;
+      const inc = (a.uploadedDocuments || {}).docIncome;
+      if (inc && a.submittedAt && Date.now() - new Date(a.submittedAt) > 365 * 864e5) w += '<div style="background:#fffbeb; color:#92400e; padding:8px 12px; border-radius:6px; font-size:13px; margin-bottom:8px;">⚠ Your Income Certificate was submitted more than 1 year ago. Please check its validity and upload a fresh one if needed (Documents → Re-upload).</div>';
+      if (w) box.insertAdjacentHTML('afterbegin', w);
+    };
+
+    // PDF report (status / scheme / year / district)
+    const _as = anScheme;
+    anScheme = function () { return '<button type="button" class="btn-primary" style="margin-bottom:8px;" onclick="pdfReport()">📄 Download PDF Report (Status, Scheme, Year, District)</button>' + _as(); };
+    function pdfReport() {
+      if (!window.jspdf) { alert('PDF library not loaded.'); return; }
+      const doc = new window.jspdf.jsPDF(); let y = 16;
+      const line = (s, b) => { if (y > 280) { doc.addPage(); y = 16; } doc.setFont('helvetica', b ? 'bold' : 'normal'); doc.setFontSize(b ? 11 : 9); doc.text(String(s), 14, y); y += b ? 7 : 5; };
+      line('Ramakrishna Mission Ashrama, Jhargram - Scholarship Report', true); line('Generated: ' + timestampDMYHM(new Date()) + ' | Session ' + sess().current + ' | Total applications: ' + applications.length);
+      const grp = (title, keyFn) => { y += 3; line(title, true); const m = {}; applications.forEach(a => { const k = keyFn(a) || '-'; m[k] = (m[k] || 0) + 1; }); Object.keys(m).sort().forEach(k => line('   ' + k + ': ' + m[k] + ' (approved/sanctioned: ' + cnt(a => (keyFn(a) || '-') === k && (a.status === 'Approved' || a.status === 'Sanctioned')) + ')')); };
+      grp('Status-wise', a => a.status); grp('Scholarship-wise', a => a.schemeName); grp('Year-wise (submission)', a => a.submittedAt ? new Date(a.submittedAt).getFullYear() : ''); grp('District-wise', a => a.dist); grp('Category-wise', a => a.caste); grp('Gender-wise', a => a.gender); grp('Fresh / Renewal', a => a.nature);
+      doc.save('RKMA_Scholarship_Report.pdf');
+    }
+
+    // Admin performance (from the audit log, Super Admin) and system health
+    function anPerf() { loadPerf(); return '<div id="perfBox">Loading...</div>'; }
+    async function loadPerf() {
+      const { data, error } = await db.rpc('rkma_list_audit', { ...adminCreds(), p_limit: 2000 }); const box = byId('perfBox'); if (!box) return;
+      if (error) { box.innerText = 'Available to Super Admin only: ' + error.message; return; }
+      const m = {}; (data || []).forEach(r => { const x = m[r.admin_id] = m[r.admin_id] || { s: 0, d: 0, o: 0 }; if (r.action === 'STATUS_CHANGE') x.s++; else if (/VERIF|DOC_/.test(r.action)) x.d++; else x.o++; });
+      box.innerHTML = `<p style="font-size:12px;">Pending applications now: <strong>${cnt(a => PEND.includes(a.status))}</strong></p><table><thead><tr><th>Admin</th><th>Status changes</th><th>Verifications</th><th>Other actions</th></tr></thead><tbody>${Object.keys(m).map(k => `<tr><td>${esc(k)}</td><td>${m[k].s}</td><td>${m[k].d}</td><td>${m[k].o}</td></tr>`).join('') || '<tr><td colspan="4">No actions yet</td></tr>'}</tbody></table>`;
+    }
+    function anHealth() { runHealth(); return '<div id="healthBox">Checking...</div>'; }
+    async function runHealth() {
+      const ok = v => v ? '<span style="color:#15803d;">✔ OK</span>' : '<span style="color:#dc2626;">✖ Problem</span>';
+      const R = [];
+      try { const r = await db.from('applications').select('app_no', { head: true, count: 'exact' }); R.push(['Database', ok(!r.error)]); } catch (e) { R.push(['Database', ok(false)]); }
+      try { const r = await db.storage.from(DOC_BUCKET).list('', { limit: 1 }); R.push(['Document Storage', ok(!r.error)]); } catch (e) { R.push(['Document Storage', ok(false)]); }
+      try { const r = await db.auth.getSession(); R.push(['Authentication (OTP service)', ok(!r.error)]); } catch (e) { R.push(['Authentication (OTP service)', ok(false)]); }
+      try { const r = await db.functions.invoke('Send-Status-Email', { body: { app_no: '__health_check__' } }); R.push(['Email function', ok(!!r && (!r.error || !/fetch|relay|not found/i.test(r.error.message || '')))]); } catch (e) { R.push(['Email function', ok(false)]); }
+      const b = byId('healthBox'); if (b) b.innerHTML = '<table><tbody>' + R.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('') + '</tbody></table>';
+    }
+
+
+    // =============================================================
+    // PART 4 FEATURES: scholarship configuration (eligibility, documents, extra fields), public-site Bengali
+    // =============================================================
+    function schemeCfg(id) { const s = scholarshipSchemes.find(x => x.id === id); return (s && s.config) || {}; }
+    function applySchemeDocs(id) {
+      const c = schemeCfg(id).docs || {};
+      DOC_SLOTS.forEach(s => {
+        if (s._base === undefined) s._base = s.required;
+        const v = c[s.key]; s.required = v === 'off' ? 'off' : (v === 'on' ? 'always' : s._base);
+        const el = byId(s.input); if (el) { const g = el.closest('.form-group') || el.parentElement; if (g) g.style.display = s.required === 'off' ? 'none' : ''; }
+      });
+    }
+    const _gdc = getDocChecklist;
+    getDocChecklist = function (app) {
+      applySchemeDocs(app.schemeId || selectedScholarshipSchemeId);
+      return _gdc(app).map(d => { const sl = DOC_SLOTS.find(s => s.key === d.key); return sl && sl.required === 'off' ? { ...d, requirement: 'Not Applicable' } : d; });
+    };
+    function eligCheck(app) {
+      const e = schemeCfg(app.schemeId || selectedScholarshipSchemeId).elig || {};
+      const list = s => String(s || '').toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
+      const pct = parseFloat(app.marksPct);
+      if (e.minMarks && pct < Number(e.minMarks)) return `Minimum ${e.minMarks}% marks are required for this scholarship (yours: ${isNaN(pct) ? '-' : pct}%).`;
+      if (e.maxIncome && Number(app.income) > Number(e.maxIncome)) return `Monthly income must not exceed ₹${e.maxIncome} for this scholarship.`;
+      if (list(e.classes).length && !list(e.classes).includes(String(app.currClass).toLowerCase())) return `This scholarship is only for: ${e.classes}.`;
+      if (list(e.castes).length && !list(e.castes).includes(String(app.caste).toLowerCase())) return `This scholarship is only for categories: ${e.castes}.`;
+      return '';
+    }
+    function renderExtraFields() {
+      const box = byId('extraFields'); if (!box) return;
+      const f = schemeCfg(selectedScholarshipSchemeId).fields || [], ex = (getCandidateApplication() || {}).extra || {};
+      box.innerHTML = f.length ? '<h4 style="color:#7f1d1d; margin:10px 0 6px;">Additional details for this scholarship</h4>' + f.map(x => `<div class="form-group"><label>${esc(x.label)}${x.req ? ' *' : ''}</label>${x.type === 'select'
+        ? `<select id="ef_${x.id}"><option value="">-- Select --</option>${String(x.options || '').split(',').map(o => o.trim()).filter(Boolean).map(o => `<option ${ex[x.id] === o ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>`
+        : `<input type="${x.type === 'number' ? 'number' : x.type === 'date' ? 'date' : 'text'}" id="ef_${x.id}" value="${esc(ex[x.id] || '')}">`}</div>`).join('') : '';
+    }
+    function collectExtra() { const o = {}; (schemeCfg(selectedScholarshipSchemeId).fields || []).forEach(x => { const e = byId('ef_' + x.id); if (e) o[x.id] = e.value.trim(); }); return o; }
+    (function () { const f1 = byId('f_doc_aadhaar'); if (f1) (f1.closest('.form-group') || f1).insertAdjacentHTML('beforebegin', '<div id="extraFields"></div>'); })();
+
+    const _vaf = validateApplicationForm;
+    validateApplicationForm = function (app, onlyStep) {
+      applySchemeDocs(selectedScholarshipSchemeId);
+      const r = _vaf(app, onlyStep); if (!r) return r;
+      if (onlyStep === undefined || onlyStep === 4) { const m = eligCheck(app); if (m) { alert('Eligibility: ' + m); goToStep(4); return false; } }
+      if (onlyStep === undefined || onlyStep === 6) for (const x of (schemeCfg(selectedScholarshipSchemeId).fields || [])) { const e = byId('ef_' + x.id); if (x.req && e && !e.value.trim()) { alert('Please fill: ' + x.label); goToStep(6); return false; } }
+      return true;
+    };
+    const _caf = collectApplicationFromForm;
+    collectApplicationFromForm = function () { const a = _caf(); a.extra = collectExtra(); return a; };
+    const _atp = applicationToDbPayload;
+    applicationToDbPayload = function (a) { const p = _atp(a); if (a.extra && Object.keys(a.extra).length) p.extra_data = a.extra; return p; };
+    const _gas = getApplicationSections;
+    getApplicationSections = function (app) {
+      const s = _gas(app), f = schemeCfg(app.schemeId || selectedScholarshipSchemeId).fields || [];
+      if (f.length) s.push({ title: 'ADDITIONAL DETAILS (SCHEME SPECIFIC)', short: 'Extra', rows: f.map(x => [x.label, pv((app.extra || {})[x.id])]) });
+      return s;
+    };
+    const _nav = navigateTo;
+    navigateTo = function (id) { if (id === 'applicationForm') { applySchemeDocs(selectedScholarshipSchemeId); renderExtraFields(); } _nav(id); if (typeof uiLang !== 'undefined' && uiLang === 'bn') applyLanguage(); };
+    const _al = applyLanguage;
+    applyLanguage = function () { _al(); const b = byId('btnLangPub'); if (b) b.innerText = uiLang === 'bn' ? 'English' : 'বাংলা'; };
+
+    // Admin: configuration window
+    let cfgId = null;
+    function openSchemeCfg(id) {
+      cfgId = id; const s = scholarshipSchemes.find(x => x.id === id), c = s.config || {}, e = c.elig || {};
+      byId('cfgTitle').innerText = s.name;
+      byId('cfgMinMarks').value = e.minMarks || ''; byId('cfgMaxIncome').value = e.maxIncome || ''; byId('cfgClasses').value = e.classes || ''; byId('cfgCastes').value = e.castes || '';
+      byId('cfgDocs').innerHTML = DOC_SLOTS.map(d => { const v = (c.docs || {})[d.key] || ''; return `<div style="display:flex; justify-content:space-between; gap:8px;"><span>${esc(d.label)}</span><select id="cfgd_${d.key}" style="width:auto; padding:3px;"><option value="">Default</option><option value="on" ${v === 'on' ? 'selected' : ''}>Required</option><option value="off" ${v === 'off' ? 'selected' : ''}>Not needed</option></select></div>`; }).join('');
+      byId('cfgFields').value = (c.fields || []).map(f => [f.label, f.type, f.req ? 'required' : 'optional', f.options || ''].join(' | ')).join('\n');
+      byId('cfgModal').style.display = 'flex';
+    }
+    async function saveSchemeCfg() {
+      const elig = { minMarks: Number(byId('cfgMinMarks').value) || 0, maxIncome: Number(byId('cfgMaxIncome').value) || 0, classes: byId('cfgClasses').value.trim(), castes: byId('cfgCastes').value.trim() };
+      const docs = {}; DOC_SLOTS.forEach(d => { const v = byId('cfgd_' + d.key).value; if (v) docs[d.key] = v; });
+      const fields = byId('cfgFields').value.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+        const p = l.split('|').map(x => x.trim()), type = ['text', 'number', 'date', 'select'].includes((p[1] || '').toLowerCase()) ? p[1].toLowerCase() : 'text';
+        return { id: p[0].toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 30), label: p[0], type: type, req: /^req/i.test(p[2] || ''), options: p[3] || '' };
+      });
+      const { error } = await db.from('scholarship_schemes').update({ config: { elig: elig, docs: docs, fields: fields } }).eq('id', cfgId);
+      if (error) { alert('Could not save: ' + error.message + '\n(Run supabase_part4.sql first.)'); return; }
+      logAudit('SCHEME_CONFIG', cfgId, {}); byId('cfgModal').style.display = 'none'; alert('Configuration saved.'); await loadDataFromSupabase();
+    }
+
+
+    // Bengali version of the About text (editable by admin)
+    function showAbout() { const e = byId('viewAboutIntro'); if (e) e.innerText = (uiLang === 'bn' && siteContent.aboutIntroBn) ? siteContent.aboutIntroBn : (siteContent.aboutIntro || ''); }
+    async function saveAboutBn() { siteContent.aboutIntroBn = byId('editAboutBn').value.trim(); if (await persistSiteContent()) alert('Saved.'); }
+    const _al2 = applyLanguage;
+    applyLanguage = function () { _al2(); showAbout(); };
+    const _apb2 = applyBackground;
+    applyBackground = function () { _apb2(); showAbout(); };
+    const _lci3 = loadCMSInputs;
+    loadCMSInputs = function () { _lci3(); const e = byId('editAboutBn'); if (e) e.value = siteContent.aboutIntroBn || ''; };
 
     let sliderTimerStarted = false;
 
