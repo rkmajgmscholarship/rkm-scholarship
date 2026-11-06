@@ -2202,6 +2202,7 @@
             <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:8px 10px; margin-bottom:8px;"><strong style="font-size:12px;">✅ Verification Checklist</strong>
               <div style="display:flex; gap:12px; flex-wrap:wrap; font-size:12px; margin-top:4px;"><label><input type="checkbox" class="vcChk" value="Personal"> Personal</label><label><input type="checkbox" class="vcChk" value="Academic"> Academic</label><label><input type="checkbox" class="vcChk" value="Income"> Income Cert.</label><label><input type="checkbox" class="vcChk" value="Bank"> Bank</label><label><input type="checkbox" class="vcChk" value="Documents"> Documents</label></div>
               <div id="vcInfo" style="font-size:10px; color:#78716c;"></div></div>
+            <div id="flagBlock" style="display:none; margin-bottom:8px; background:#fff7ed; border:1px solid #fed7aa; border-radius:8px; padding:8px 10px;"><details><summary style="cursor:pointer; font-weight:bold; font-size:12px;">🎯 Select specific fields / documents to correct (<span id="flagCount">0</span> selected)</summary><p style="font-size:11px; color:#9a3412; margin:4px 0;">If you select fields here, ONLY these fields become editable for the candidate (the step unlock above is ignored) and they are highlighted in red.</p><div id="flagList" style="max-height:200px; overflow-y:auto; font-size:12px;"></div></details></div>
             <div id="corrBlock" style="display:none; margin-bottom:8px;"><label>⏰ Correction deadline (candidate can edit only until this date)</label><input type="date" id="modalCorrDeadline"></div>
             <label id="modalRemarksLabel">Official Remarks</label>
             <textarea id="modalAdminRemarks" rows="3" placeholder="Enter remarks..."></textarea>
@@ -2812,6 +2813,7 @@
         internalRemarks: a.internal_remarks || '',
         extra: a.extra_data || {},
         corrDeadline: a.correction_deadline || '',
+        flaggedFields: a.flagged_fields || [],
         vChecklist: a.verification_checklist || {},
         statusUpdatedAt: a.status_updated_at || null,
         docVerification: a.doc_verification || {}
@@ -5163,6 +5165,7 @@
         unlocked_sections: newStatus === 'Returned for Correction' ? unlockList : null,
         admin_remarks: remarks,
         internal_remarks: byId('modalInternalRemarks').value.trim(),
+        flagged_fields: newStatus === 'Returned for Correction' ? flagCollect() : [],
         correction_deadline: newStatus === 'Returned for Correction' ? (byId('modalCorrDeadline').value || null) : null,
         verification_checklist: vcCollect(),
         sanctioned_amount: newStatus === 'Sanctioned' ? Number(amount) : null,
@@ -8172,6 +8175,73 @@
     applyBackground = function () { _apb2(); showAbout(); };
     const _lci3 = loadCMSInputs;
     loadCMSInputs = function () { _lci3(); const e = byId('editAboutBn'); if (e) e.value = siteContent.aboutIntroBn || ''; };
+
+
+    // =============================================================
+    // PART 5: field-level correction requests + Bengali version of the default website content
+    // =============================================================
+    function formFieldList() {
+      const out = [];
+      document.querySelectorAll('#scholarshipMultiForm [id^="f_"]').forEach(el => {
+        if (out.some(o => o.id === el.id) || el.type === 'hidden') return;
+        const g = el.closest('.form-group'), lb = g && g.querySelector('label'), st = el.closest('.form-step');
+        const n = st ? parseInt(String(st.id).replace('formStep', ''), 10) : 0;
+        if (lb && n >= 1 && n <= 6) out.push({ id: el.id, label: lb.innerText.replace(/\*/g, '').trim(), step: n });
+      });
+      return out;
+    }
+    function flagCollect() { return Array.from(document.querySelectorAll('.flagChk:checked')).map(c => c.value); }
+    function flagCount() { byId('flagCount').innerText = flagCollect().length; }
+    function flagRender(sel) {
+      let h = '', cur = 0;
+      formFieldList().sort((a, b) => a.step - b.step).forEach(f => {
+        if (f.step !== cur) { cur = f.step; h += `<div style="font-weight:bold; margin-top:4px; color:#9a3412;">Step ${cur}</div>`; }
+        h += `<label style="display:block;"><input type="checkbox" class="flagChk" value="${esc(f.id)}" ${sel.includes(f.id) ? 'checked' : ''} onchange="flagCount()"> ${esc(f.label)}</label>`;
+      });
+      byId('flagList').innerHTML = h || '<i>No fields found.</i>'; flagCount();
+    }
+    const _osm3 = openScrutinyModal;
+    openScrutinyModal = function (i) { _osm3(i); flagRender((applications[i] || {}).flaggedFields || []); hsc2(); };
+    hsc2 = function () { const r = byId('modalStatusSelect').value === 'Returned for Correction'; ['corrBlock', 'flagBlock'].forEach(id => { const e = byId(id); if (e) e.style.display = r ? 'block' : 'none'; }); };
+
+    // Candidate side: only the flagged fields are editable and they are highlighted
+    const _sfm = setFormMode;
+    setFormMode = function (mode, app) {
+      _sfm(mode, app);
+      document.querySelectorAll('.flagged-field').forEach(e => { e.classList.remove('flagged-field'); e.style.outline = ''; e.style.background = ''; });
+      const fl = (mode === 'edit' && app && app.flaggedFields) || [];
+      if (!fl.length) return;
+      document.querySelectorAll('#scholarshipMultiForm input, #scholarshipMultiForm select, #scholarshipMultiForm textarea').forEach(el => { if (el.id && el.id.startsWith('f_')) el.disabled = !fl.includes(el.id); });
+      fl.forEach(id => { const el = byId(id); if (!el) return; el.disabled = false; el.classList.add('flagged-field'); el.style.outline = '2px solid #dc2626'; el.style.background = '#fef2f2'; });
+      const rb = byId('formReturnedBanner'); if (rb) rb.insertAdjacentHTML('beforeend', `<br><strong>Fields to correct (marked in red):</strong> ${fl.map(id => esc((formFieldList().find(f => f.id === id) || { label: id }).label)).join(', ')}`);
+      editableSteps = Array.from(new Set(fl.map(id => { const el = byId(id), st = el && el.closest('.form-step'); return st ? parseInt(st.id.replace('formStep', ''), 10) : 0; }).filter(n => n >= 1 && n <= 6)));
+      if (!editableSteps.includes(6)) editableSteps.push(6);
+    };
+
+    // Bengali translation of the default website text (only while the admin has not changed that text)
+    const SC_DEFAULT = JSON.parse(JSON.stringify(siteContent));
+    const BN_SC = {
+      about: 'রামকৃষ্ণ মিশন আশ্রম, ঝাড়গ্রাম, বেলুড় মঠের রামকৃষ্ণ মিশনের একটি শাখাকেন্দ্র, ২০১৭ সালের ২০শে আগস্ট পশ্চিমবঙ্গ সরকারের কাছ থেকে লিজে পাওয়া পাঁচ একর জমিতে প্রতিষ্ঠিত হয়। রামকৃষ্ণ মঠ ও রামকৃষ্ণ মিশন, বেলুড় মঠের ষোড়শ অধ্যক্ষ শ্রীমৎ স্বামী স্মরণানন্দজী মহারাজ ২০১৯ সালের ৭ই ডিসেম্বর আশ্রম প্রাঙ্গণে নবনির্মিত সভা ও প্রার্থনা হলের উদ্বোধন করেন।',
+      act_edu: ['শিক্ষা', '• রামকৃষ্ণ মিশন বিদ্যামন্দির (EMRS), ঝাড়গ্রাম: আদিবাসী ছাত্রদের জন্য আবাসিক বিদ্যালয় (৪৬০ জন ছাত্র)।\n• ৬টি বিনামূল্যে কোচিং সেন্টার: ৩২০ জন শিক্ষার্থী বিনামূল্যে কোচিং, ইউনিফর্ম ও হালকা টিফিন পায়।\n• বৃত্তি: ২০২৩-২৪ সালে ১৫২ জন মেধাবী শিক্ষার্থীকে ১৩.৪১ লক্ষ টাকার বৃত্তি প্রদান করা হয়েছে।'],
+      act_welfare: ['সেবা', '• দুঃস্থ পরিবারকে বস্ত্র বিতরণ, ত্রাণ ও আর্থিক সহায়তা।\n• দুর্যোগ ত্রাণ এবং শীতবস্ত্র/কম্বল বিতরণ।\n• ঝাড়গ্রাম সংশোধনাগারে মাসিক অনুপ্রেরণামূলক অনুষ্ঠান।\n• ডাঃ অশোক প্রধান কর্তৃক দু-মাস অন্তর বিনামূল্যে হোমিওপ্যাথিক স্বাস্থ্য শিবির।\n• ১০০-র বেশি রক্তদাতা সহ বার্ষিক রক্তদান শিবির।\n• স্বামী বিবেকানন্দ বৃক্ষরোপণ কর্মসূচি (১৬,০০০+ গাছ লাগানো হয়েছে)।\n• ৬ জন বিধবাকে মাসিক ১,২০০ টাকা পেনশন।'],
+      act_youth: ['যুব', '• ‘উত্তিষ্ঠত জাগ্রত’: ৩২টি প্রতিষ্ঠানের ৮,০০০ ছাত্রছাত্রী ও ৪০০ শিক্ষকের মধ্যে মূল্যবোধ শিক্ষা।\n• বার্ষিক জেলা ফুটবল প্রতিযোগিতা, যোগাসন ও সাংস্কৃতিক প্রতিযোগিতা।\n• ১২টি কেন্দ্রে বিবেকানন্দ স্টাডি সার্কেল।\n• জাতীয় যুব দিবস উদযাপন ও রবিবাসরীয় নীতিশিক্ষা ক্লাস।'],
+      act_spiritual: ['আধ্যাত্মিক', '• শ্রীরামকৃষ্ণ, শ্রীশ্রীমা সারদা দেবী ও স্বামী বিবেকানন্দের জন্মতিথি উদযাপন।\n• প্রত্যহ সান্ধ্য আরতি, ধর্মালোচনা ও একাদশী রামনাম সংকীর্তন।\n• আধ্যাত্মিক সম্মেলন ও বেদান্ত সাহিত্য বিতরণ।'],
+      monk_1: 'সম্পাদক মহারাজের বাণী', monk_2: 'সহ-সম্পাদক মহারাজের বাণী', monk_3: 'কোষাধ্যক্ষ তথা বৃত্তি প্রকল্পের মুখ্য সমন্বয়ক মহারাজের বাণী'
+    };
+    function bnView(sc) {
+      const o = { ...sc }, same = (a, b) => String(a || '').trim() === String(b || '').trim();
+      if (same(sc.aboutIntro, SC_DEFAULT.aboutIntro)) o.aboutIntro = BN_SC.about;
+      o.activities = (sc.activities || []).map(a => { const d = SC_DEFAULT.activities.find(x => x.id === a.id), b = BN_SC[a.id]; return (d && b) ? { ...a, title: same(a.title, d.title) ? b[0] : a.title, body: same(a.body, d.body) ? b[1] : a.body } : a; });
+      o.monks = (sc.monks || []).map(m => { const d = SC_DEFAULT.monks.find(x => x.id === m.id), b = BN_SC[m.id]; return (d && b && same(m.title, d.title)) ? { ...m, title: b } : m; });
+      return o;
+    }
+    const _rpsc2 = renderPublicSiteContent;
+    renderPublicSiteContent = function () {
+      if (typeof uiLang !== 'undefined' && uiLang === 'bn') { const bak = siteContent; siteContent = bnView(siteContent); try { _rpsc2(); } finally { siteContent = bak; } }
+      else _rpsc2();
+    };
+    const _al3 = applyLanguage;
+    applyLanguage = function () { _al3(); renderPublicSiteContent(); };
 
     let sliderTimerStarted = false;
 
