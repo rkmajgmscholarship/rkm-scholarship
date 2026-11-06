@@ -881,6 +881,18 @@
         <div class="qa-card" onclick="navigateTo('notices')"><span>📢</span>Notice Board</div>
       </div>
 
+      <div id="deadlineBanner"></div>
+      <div class="card" style="border-left:5px solid #0369a1;">
+        <h3 style="font-size:16px; color:#0c4a6e; margin-bottom:8px;">🔎 Check Application Status</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <input type="text" id="qsApp" placeholder="Application No" style="flex:1; min-width:150px;">
+          <input type="tel" id="qsMob" placeholder="Mobile number" maxlength="10" style="flex:1; min-width:130px;">
+          <button type="button" class="btn-primary" onclick="quickStatus()">Check</button>
+        </div>
+        <div id="qsResult" style="margin-top:8px; font-size:13px;"></div>
+      </div>
+      <div class="card" id="faqCard" style="border-left:5px solid #c9a227;"><h3 style="font-size:16px; color:#7f1d1d; margin-bottom:8px;">❓ Frequently Asked Questions</h3><div id="faqBox"></div></div>
+
       <!-- Quick Notices Preview on Home -->
       <div class="card" style="border-left:5px solid #ea580c;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -1488,6 +1500,14 @@
       </div>
     </section>
 
+    <section id="sec-verify" class="page-section">
+      <div class="card" style="max-width:560px; margin:auto;">
+        <h3 style="color:#7f1d1d;">🧾 Application Verification</h3>
+        <div id="verifyBox" style="margin-top:10px;">Checking...</div>
+        <button class="btn-neutral" style="margin-top:12px;" onclick="navigateTo('home')">Back to Home</button>
+      </div>
+    </section>
+
     <section id="sec-support" class="page-section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;"><h3>🆘 Help &amp; Support</h3>
@@ -1585,6 +1605,7 @@
             </div>
           </div>
 
+          <div id="adminToday" style="margin-bottom:10px;"></div>
           <div id="adminKpi" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>
           <div class="sub-tabs-container" id="adminAppSubTabsContainer"></div>
 
@@ -1596,6 +1617,14 @@
             <select id="appFDist" onchange="renderAdminTable()"><option value="">All Districts</option></select>
             <button type="button" class="btn-neutral" style="padding:6px 10px; font-size:12px;" onclick="clearAppFilters()">Clear</button>
             <span id="appFilterCount" style="font-size:12px; color:#78716c; align-self:center;"></span>
+          </div>
+          <div id="tblTools" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px; font-size:12px;">
+            <select id="svSel" onchange="svApply()" style="width:auto; padding:5px;"><option value="">💾 Saved filters…</option></select>
+            <button type="button" class="btn-neutral" style="padding:4px 10px;" onclick="svSave()">Save current filter</button>
+            <button type="button" class="btn-neutral" style="padding:4px 10px; color:#b91c1c;" onclick="svDel()">Delete</button>
+            <details style="position:relative;"><summary style="cursor:pointer; padding:4px 10px; border:1px solid #d6d3d1; border-radius:6px;">⚙ Columns</summary><div id="colBox" style="position:absolute; z-index:20; background:#fff; border:1px solid #d6d3d1; border-radius:6px; padding:8px; min-width:150px; box-shadow:0 4px 10px rgba(0,0,0,.15);"></div></details>
+            <span>Rows:</span><select id="pgSize" onchange="tblPage=1; renderAdminTable()" style="width:auto; padding:5px;"><option>25</option><option>50</option><option>100</option><option>500</option></select>
+            <span style="color:#78716c;">Tip: click a column heading to sort.</span>
           </div>
           <div id="bulkBar" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:#faf5ff; border:1px solid #e9d5ff; border-radius:8px; padding:8px 12px; margin-bottom:10px; font-size:12px;">
             <strong>☑ Selected: <span id="bulkCount">0</span></strong>
@@ -1795,6 +1824,32 @@
             <h4 style="color:#7f1d1d; border-bottom:2px solid #fed7aa;">🌐 About Us in Bengali (shown when the visitor selects বাংলা)</h4>
             <div class="form-group"><textarea id="editAboutBn" rows="4" placeholder="বাংলায় আশ্রমের পরিচিতি লিখুন"></textarea></div>
             <button type="button" class="btn-primary" onclick="saveAboutBn()">Save Bengali About Text</button>
+          </div>
+
+          <div class="cms-section-box">
+            <h4 style="color:#7f1d1d; border-bottom:2px solid #fed7aa;">⏳ Application Deadline (countdown on homepage)</h4>
+            <div class="form-group"><input type="date" id="editDeadline"></div>
+            <button type="button" class="btn-primary" onclick="saveDeadline()">Save Deadline</button>
+            <button type="button" class="btn-neutral" onclick="byId('editDeadline').value=''; saveDeadline()">Remove</button>
+          </div>
+          <div class="cms-section-box">
+            <h4 style="color:#7f1d1d; border-bottom:2px solid #fed7aa;">❓ FAQ Manager</h4>
+            <div id="faqEditor"></div>
+            <button type="button" class="btn-neutral" onclick="faqAdd()">+ Add Question</button>
+            <button type="button" class="btn-primary" onclick="saveFaqs()">Save FAQs</button>
+          </div>
+          <div class="cms-section-box">
+            <h4 style="color:#7f1d1d; border-bottom:2px solid #fed7aa;">💬 Remark Templates (one per line, used in Scrutiny)</h4>
+            <textarea id="editRemarkTpl" rows="6"></textarea>
+            <button type="button" class="btn-primary" style="margin-top:6px;" onclick="saveRemarkTpl()">Save Templates</button>
+            <button type="button" class="btn-neutral" style="margin-top:6px;" onclick="byId('editRemarkTpl').value=DEFAULT_REMARKS.join('\n')">Reset to default</button>
+          </div>
+
+          <div class="cms-section-box">
+            <h4 style="color:#7f1d1d; border-bottom:2px solid #fed7aa;">🤖 Inquiry Auto-Reply</h4>
+            <p style="font-size:11px; color:#78716c;">Shown to the visitor right after sending the contact form. If the message matches a FAQ, that answer is shown too.</p>
+            <textarea id="editAutoReply" rows="3"></textarea>
+            <button type="button" class="btn-primary" style="margin-top:6px;" onclick="saveAutoReply()">Save Auto-Reply</button>
           </div>
 
           <!-- A. About text -->
@@ -2206,6 +2261,7 @@
             <div id="corrBlock" style="display:none; margin-bottom:8px;"><label>⏰ Correction deadline (candidate can edit only until this date)</label><input type="date" id="modalCorrDeadline"></div>
             <label id="modalRemarksLabel">Official Remarks</label>
             <textarea id="modalAdminRemarks" rows="3" placeholder="Enter remarks..."></textarea>
+            <div id="remarkChips" style="margin-top:6px;"></div>
             <span id="returnRemarksNotice" style="display:none; font-size:11px; color:#dc2626; margin-top:4px;">⚠️ The reason for returning the application must be written in Remarks. The candidate will see it.</span>
           </div>
           <div class="form-group"><label>🔒 Internal Remarks (admins only)</label><textarea id="modalInternalRemarks" rows="2" placeholder="Private note for other admins"></textarea></div>
@@ -2262,6 +2318,29 @@
           <button type="button" class="btn-neutral" onclick="byId('cfgModal').style.display='none'">Cancel</button>
           <button type="button" class="btn-primary" onclick="saveSchemeCfg()">Save Configuration</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Photo crop modal -->
+    <div id="cropModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:460; justify-content:center; align-items:center; padding:12px;">
+      <div style="background:#fff; border-radius:10px; padding:14px; max-width:420px; width:100%;">
+        <h4 style="margin-bottom:6px;">✂ Crop &amp; rotate</h4>
+        <p style="font-size:11px; color:#78716c; margin-bottom:6px;">Drag the picture to position it. Use the slider to zoom.</p>
+        <canvas id="cropCv" style="width:100%; border:2px solid #c9a227; touch-action:none; background:#fff;"></canvas>
+        <input type="range" id="cropZoom" min="1" max="4" step="0.02" value="1" oninput="CR.zoom=+this.value; cropDraw()" style="width:100%;">
+        <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:space-between;">
+          <span><button type="button" class="btn-neutral" onclick="CR.rot=(CR.rot+3)%4; cropDraw()">⟲ Left</button> <button type="button" class="btn-neutral" onclick="CR.rot=(CR.rot+1)%4; cropDraw()">⟳ Right</button></span>
+          <span><button type="button" class="btn-neutral" onclick="cropCancel()">Cancel</button> <button type="button" class="btn-primary" onclick="cropUse()">Use this</button></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side-by-side comparison -->
+    <div id="cmpModal" style="display:none; position:fixed; inset:0; background:#fff; z-index:450; flex-direction:column;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#7f1d1d; color:#fff;"><strong id="cmpTitle">Compare</strong><span><select id="cmpDoc" onchange="cmpLoad()" style="width:auto; padding:4px;"></select> <button type="button" class="btn-neutral" onclick="byId('cmpModal').style.display='none'">✖ Close</button></span></div>
+      <div style="flex:1; display:flex; flex-wrap:wrap; min-height:0;">
+        <div id="cmpForm" style="flex:1 1 320px; overflow:auto; padding:10px; font-size:12px; border-right:2px solid #e7d9a8; min-height:200px;"></div>
+        <div id="cmpView" style="flex:1 1 320px; overflow:auto; padding:6px; text-align:center; min-height:200px;"></div>
       </div>
     </div>
 
@@ -4967,6 +5046,7 @@
         if (b) dupBank[b] = (dupBank[b] || 0) + 1;
       });
 
+      filteredApps = tblSortPage(filteredApps);
       if (filteredApps.length === 0) {
         tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:16px; color:#888;">No applications found in this scholarship category.</td></tr>';
         return;
@@ -7032,7 +7112,7 @@
         return;
       }
       sessionStorage.setItem('rkm_last_inquiry', String(Date.now()));
-      alert('Thank you! Your inquiry has been submitted. We will contact you soon.');
+      alert('Thank you! Your inquiry has been submitted. We will contact you soon.' + inqAutoReply(msg));
       document.getElementById('contactName').value = '';
       document.getElementById('contactPhone').value = '';
       document.getElementById('contactMessage').value = '';
@@ -8242,6 +8322,290 @@
     };
     const _al3 = applyLanguage;
     applyLanguage = function () { _al3(); renderPublicSiteContent(); };
+
+
+    // =============================================================
+    // PART 6: autosave, PIN / IFSC autofill, Aadhaar checksum, deadline, FAQ, quick status, QR verify,
+    //         remark templates, keyboard shortcuts, admin "today" panel
+    // =============================================================
+    const DEFAULT_FAQS = [
+      { q: 'Who can apply for the scholarship?', a: 'Students studying in recognised institutions who meet the eligibility conditions of the chosen scholarship scheme (marks, family income, class and category). The conditions are shown when you choose a scheme.', qb: 'কারা বৃত্তির জন্য আবেদন করতে পারবে?', ab: 'স্বীকৃত শিক্ষাপ্রতিষ্ঠানের যে ছাত্রছাত্রীরা নির্বাচিত বৃত্তি প্রকল্পের যোগ্যতার শর্ত (নম্বর, পারিবারিক আয়, শ্রেণি ও ক্যাটাগরি) পূরণ করে, তারা আবেদন করতে পারবে। প্রকল্প বাছার সময় শর্তগুলি দেখানো হয়।' },
+      { q: 'How do I get my Candidate ID and password?', a: 'Register through the Candidate Login page or contact the Ashrama office. Your Candidate ID is used for every login.', qb: 'ক্যান্ডিডেট আইডি ও পাসওয়ার্ড কীভাবে পাব?', ab: 'ক্যান্ডিডেট লগইন পেজ থেকে নিবন্ধন করুন অথবা আশ্রম অফিসে যোগাযোগ করুন। প্রতিবার লগইনে ক্যান্ডিডেট আইডি লাগবে।' },
+      { q: 'Which documents are required?', a: 'Aadhaar card, admission proof, latest marksheet, bank passbook, income certificate, prayer/recommendation letter and bonafide certificate. Caste and disability certificates are needed only if applicable. Tap “Required Documents” on the homepage.', qb: 'কোন কোন ডকুমেন্ট লাগবে?', ab: 'আধার কার্ড, ভর্তির প্রমাণ, সর্বশেষ মার্কশিট, ব্যাংক পাসবই, আয়ের সার্টিফিকেট, সুপারিশপত্র ও বোনাফাইড সার্টিফিকেট। জাতিগত ও প্রতিবন্ধী সার্টিফিকেট শুধু প্রযোজ্য হলে লাগবে। হোমপেজের “Required Documents” দেখুন।' },
+      { q: 'What is the file format and size limit?', a: 'PDF, JPG or PNG, up to 500 KB per document. Use a clear, readable scan.', qb: 'ফাইলের ফরম্যাট ও সাইজ কত?', ab: 'PDF, JPG বা PNG, প্রতিটি ডকুমেন্ট সর্বোচ্চ ৫০০ KB। পরিষ্কার ও পড়ার মতো স্ক্যান আপলোড করুন।' },
+      { q: 'Can I correct my application after submitting?', a: 'Only if the office returns it for correction. You will get a notification and an email, and then you can edit the marked fields and resubmit.', qb: 'জমা দেওয়ার পর কি সংশোধন করা যায়?', ab: 'অফিস সংশোধনের জন্য ফেরত দিলেই শুধু করা যায়। তখন নোটিফিকেশন ও ইমেইল পাবেন এবং চিহ্নিত ঘরগুলি সংশোধন করে আবার জমা দিতে পারবেন।' },
+      { q: 'How do I know the status of my application?', a: 'Login and open “Track Status”, or use “Check Application Status” on the homepage with your Application No and mobile number.', qb: 'আবেদনের অবস্থা কীভাবে জানব?', ab: 'লগইন করে “Track Status” দেখুন, অথবা হোমপেজে আবেদন নম্বর ও মোবাইল নম্বর দিয়ে “Check Application Status” ব্যবহার করুন।' },
+      { q: 'I forgot my password. What should I do?', a: 'Use “Forgot Password” on the login page. An OTP will be sent to your registered email.', qb: 'পাসওয়ার্ড ভুলে গেলে কী করব?', ab: 'লগইন পেজে “Forgot Password” ব্যবহার করুন। নিবন্ধিত ইমেইলে OTP যাবে।' },
+      { q: 'When will I receive the scholarship amount?', a: 'After your application is approved and the amount is sanctioned, you get a notification and email. The money is sent to your bank account given in the form, so please check the account number and IFSC carefully.', qb: 'বৃত্তির টাকা কবে পাব?', ab: 'আবেদন অনুমোদন ও টাকা মঞ্জুর হলে নোটিফিকেশন ও ইমেইল পাবেন। ফর্মে দেওয়া ব্যাংক অ্যাকাউন্টে টাকা যাবে, তাই অ্যাকাউন্ট নম্বর ও IFSC ভালো করে মিলিয়ে নিন।' },
+      { q: 'I applied by mistake. Can I withdraw?', a: 'Yes. Use “Request Withdrawal” on your dashboard, or raise a Help & Support ticket.', qb: 'ভুল করে আবেদন করেছি, প্রত্যাহার করা যাবে?', ab: 'হ্যাঁ। ড্যাশবোর্ডে “Request Withdrawal” ব্যবহার করুন অথবা Help & Support-এ টিকিট করুন।' }
+    ];
+    const DEFAULT_REMARKS = ['ঝাপসা বা অস্পষ্ট ডকুমেন্ট — পরিষ্কার স্ক্যান আপলোড করুন।', 'আয়ের সার্টিফিকেটের মেয়াদ শেষ — নতুন সার্টিফিকেট আপলোড করুন।', 'ডকুমেন্টের নাম আবেদনের নামের সঙ্গে মিলছে না।', 'ব্যাংক অ্যাকাউন্ট নম্বর বা IFSC ভুল — পাসবইয়ের সঙ্গে মিলিয়ে সংশোধন করুন।', 'পাসপোর্ট ছবি অস্পষ্ট বা নির্দেশিকা অনুযায়ী নয়।', 'স্বাক্ষর অস্পষ্ট বা ছবির সঙ্গে মেলে না।', 'মার্কশিটের নম্বর ও ফর্মের নম্বর মিলছে না।', 'জাতিগত সার্টিফিকেট আপলোড করা হয়নি বা অস্পষ্ট।', 'বোনাফাইড/ভর্তির প্রমাণ বর্তমান শিক্ষাবর্ষের নয়।', 'আধার নম্বর ও ডকুমেন্ট মিলছে না।', 'ডকুমেন্ট অসম্পূর্ণ — সব পৃষ্ঠা আপলোড করুন।', 'আবেদনের প্রয়োজনীয় তথ্য অসম্পূর্ণ — সব ঘর পূরণ করুন।', 'আবেদন যাচাই সম্পন্ন হয়েছে।', 'আবেদন বৃত্তির যোগ্যতার শর্ত পূরণ করছে না।', 'একই তথ্যে ডুপ্লিকেট আবেদন পাওয়া গেছে।'];
+    const faqs = () => siteContent.faqs || DEFAULT_FAQS;
+    const remarkTpls = () => (siteContent.remarkTemplates && siteContent.remarkTemplates.length) ? siteContent.remarkTemplates : DEFAULT_REMARKS;
+
+    // ---- public: FAQ + deadline countdown ----
+    function renderFaq() {
+      const bn = typeof uiLang !== 'undefined' && uiLang === 'bn', box = byId('faqBox'); if (!box) return;
+      box.innerHTML = faqs().map(f => `<details style="border-bottom:1px solid #e7e5e4; padding:6px 0;"><summary style="cursor:pointer; font-weight:600; font-size:14px;">${esc(bn && f.qb ? f.qb : f.q)}</summary><div style="font-size:13px; color:#57534e; padding:6px 0 2px;">${esc(bn && f.ab ? f.ab : f.a)}</div></details>`).join('') || 'No FAQs yet.';
+      byId('faqCard').style.display = faqs().length ? '' : 'none';
+    }
+    function renderDeadline() {
+      const b = byId('deadlineBanner'); if (!b) return; const d = siteContent.deadline;
+      if (!d) { b.innerHTML = ''; return; }
+      const days = Math.ceil((new Date(d + 'T23:59:59') - new Date()) / 864e5), over = days < 0;
+      b.innerHTML = `<div style="background:${over ? '#fef2f2' : days <= 5 ? '#fff7ed' : '#f0fdf4'}; border:1px solid ${over ? '#fecaca' : '#fed7aa'}; border-radius:10px; padding:12px; margin-bottom:16px; text-align:center; font-weight:bold; color:${over ? '#991b1b' : '#9a3412'};">⏳ ${over ? 'Application deadline has passed (' + esc(formatDateDMY(d)) + ')' : 'Last date: ' + esc(formatDateDMY(d)) + ' — ' + (days === 0 ? 'ends TODAY' : days + ' day(s) left')}</div>`;
+    }
+    const _apb3 = applyBackground; applyBackground = function () { _apb3(); renderFaq(); renderDeadline(); };
+    const _al4 = applyLanguage; applyLanguage = function () { _al4(); renderFaq(); };
+
+    // ---- admin editors ----
+    function renderFaqEditor() {
+      const e = byId('faqEditor'); if (!e) return;
+      e.innerHTML = faqs().map((f, i) => `<div class="faqRow" style="border:1px solid #e7e5e4; border-radius:6px; padding:8px; margin-bottom:8px;"><input type="text" class="fq" placeholder="Question (English)" value="${esc(f.q)}"><textarea class="fa" rows="2" placeholder="Answer (English)">${esc(f.a)}</textarea><input type="text" class="fqb" placeholder="প্রশ্ন (বাংলা)" value="${esc(f.qb || '')}"><textarea class="fab" rows="2" placeholder="উত্তর (বাংলা)">${esc(f.ab || '')}</textarea><button type="button" class="btn-neutral" style="color:#b91c1c;" onclick="faqDel(${i})">🗑 Delete</button></div>`).join('');
+    }
+    function faqRead() { return Array.from(document.querySelectorAll('.faqRow')).map(r => ({ q: r.querySelector('.fq').value.trim(), a: r.querySelector('.fa').value.trim(), qb: r.querySelector('.fqb').value.trim(), ab: r.querySelector('.fab').value.trim() })).filter(f => f.q && f.a); }
+    function faqAdd() { siteContent.faqs = faqRead(); siteContent.faqs.push({ q: '', a: '', qb: '', ab: '' }); renderFaqEditor(); }
+    function faqDel(i) { const l = Array.from(document.querySelectorAll('.faqRow')).map(r => ({ q: r.querySelector('.fq').value, a: r.querySelector('.fa').value, qb: r.querySelector('.fqb').value, ab: r.querySelector('.fab').value })); l.splice(i, 1); siteContent.faqs = l; renderFaqEditor(); }
+    async function saveFaqs() { siteContent.faqs = faqRead(); if (await persistSiteContent()) { renderFaq(); renderFaqEditor(); alert('FAQs saved.'); } }
+    async function saveDeadline() { siteContent.deadline = byId('editDeadline').value || ''; if (await persistSiteContent()) { renderDeadline(); alert('Deadline saved.'); } }
+    async function saveRemarkTpl() { siteContent.remarkTemplates = byId('editRemarkTpl').value.split('\n').map(x => x.trim()).filter(Boolean); if (await persistSiteContent()) alert('Templates saved.'); }
+    const _lci4 = loadCMSInputs;
+    loadCMSInputs = function () { _lci4(); renderFaqEditor(); const d = byId('editDeadline'); if (d) d.value = siteContent.deadline || ''; const r = byId('editRemarkTpl'); if (r) r.value = remarkTpls().join('\n'); };
+
+    // ---- public: status quick check + QR verification ----
+    function maskName(n) { return String(n || '').split(' ').map(w => w.length > 2 ? w[0] + '*'.repeat(w.length - 2) + w.slice(-1) : w).join(' '); }
+    async function quickStatus() {
+      const no = byId('qsApp').value.trim(), mob = byId('qsMob').value.replace(/\D/g, '').slice(-10), out = byId('qsResult');
+      if (!no || mob.length !== 10) { out.innerHTML = '<span style="color:#b91c1c;">Enter Application No and a 10-digit mobile number.</span>'; return; }
+      out.innerText = 'Checking...';
+      const { data, error } = await db.from('applications').select('*').eq('app_no', no);
+      const a = (!error && data && data.length) ? mapApplicationRow(data[0]) : null;
+      if (!a || String(a.mobile || '').replace(/\D/g, '').slice(-10) !== mob) { out.innerHTML = '<span style="color:#b91c1c;">No application found for these details.</span>'; return; }
+      out.innerHTML = `<div style="background:#f0f9ff; padding:10px; border-radius:8px; line-height:1.7;"><strong>${esc(a.appNo)}</strong> — ${esc(maskName(a.name))}<br>Scheme: ${esc(a.schemeName || '')}<br>Status: <span class="status-badge ${getStatusBadgeClass(a.status)}">${esc(a.status)}</span><br>Last update: ${esc(timestampDMYHM(a.statusUpdatedAt || a.submittedAt))}${a.status === 'Returned for Correction' ? '<br><em>Please login to correct your application.</em>' : ''}</div>`;
+    }
+    qrText = function (app) { return location.origin + location.pathname + '?verify=' + encodeURIComponent(app.appNo); };
+    async function verifyFromUrl() {
+      const no = new URLSearchParams(location.search).get('verify'); if (!no) return;
+      navigateTo('verify');
+      const { data, error } = await db.from('applications').select('*').eq('app_no', no);
+      const a = (!error && data && data.length) ? mapApplicationRow(data[0]) : null;
+      byId('verifyBox').innerHTML = a ? `<div style="background:#f0fdf4; border:2px solid #16a34a; border-radius:10px; padding:14px; line-height:1.8;"><div style="font-size:18px; font-weight:bold; color:#15803d;">✔ Valid Application</div>Application No: <strong>${esc(a.appNo)}</strong><br>Candidate: ${esc(maskName(a.name))}<br>Scheme: ${esc(a.schemeName || '')}<br>Submitted on: ${esc(timestampDMYHM(a.submittedAt))}<br>Current status: <span class="status-badge ${getStatusBadgeClass(a.status)}">${esc(a.status)}</span></div>` : '<div style="background:#fef2f2; border:2px solid #dc2626; border-radius:10px; padding:14px; color:#991b1b; font-weight:bold;">✖ This application number was not found. The acknowledgement may be invalid.</div>';
+    }
+    setTimeout(verifyFromUrl, 1500);
+
+    // ---- candidate form helpers ----
+    setInterval(() => {
+      const sec = byId('sec-applicationForm');
+      if (activeUserRole === 'candidate' && formMode === 'new' && sec && sec.classList.contains('active') && (byId('f_vill').value || byId('f_pin').value || byId('f_acno').value || byId('f_instname').value)) {
+        const oa = window.alert; window.alert = () => {}; saveDraft().finally(() => { window.alert = oa; const i = byId('draftInfo'); if (i) i.innerText = '✔ Auto-saved at ' + new Date().toLocaleTimeString(); });
+      }
+    }, 30000);
+    function setFld(id, v) {
+      const el = byId(id); if (!el || !v) return;
+      if (el.tagName === 'SELECT') { const o = Array.from(el.options).find(x => x.value.toLowerCase() === v.toLowerCase() || x.text.toLowerCase() === v.toLowerCase()); if (o) el.value = o.value; } else el.value = v;
+      el.dispatchEvent(new Event('change'));
+    }
+    document.addEventListener('input', async e => {
+      const el = e.target;
+      if (el.id === 'f_pin' && /^\d{6}$/.test(el.value)) {
+        try { const r = await (await fetch('https://api.postalpincode.in/pincode/' + el.value)).json(), p = r[0] && r[0].PostOffice && r[0].PostOffice[0]; if (p) { setFld('f_dist', p.District); setFld('f_state', p.State); } } catch (x) {}
+      }
+      if (el.id === 'f_ifsc') {
+        const c = el.value.trim().toUpperCase(); el.style.outline = '';
+        if (/^[A-Z]{4}0[A-Z0-9]{6}$/.test(c)) {
+          try { const res = await fetch('https://ifsc.razorpay.com/' + c); if (res.ok) { const d = await res.json(); setFld('f_bankname', d.BANK); setFld('f_bankbranch', d.BRANCH); el.style.outline = '2px solid #16a34a'; } else el.style.outline = '2px solid #dc2626'; } catch (x) {}
+        }
+      }
+      if (el.id === 'f_aadhaar') { const d = el.value.replace(/\s/g, ''); el.style.outline = d.length === 12 ? (verhoeff(d) ? '2px solid #16a34a' : '2px solid #dc2626') : ''; }
+    });
+    const VD = [[0,1,2,3,4,5,6,7,8,9],[1,2,3,4,0,6,7,8,9,5],[2,3,4,0,1,7,8,9,5,6],[3,4,0,1,2,8,9,5,6,7],[4,0,1,2,3,9,5,6,7,8],[5,9,8,7,6,0,4,3,2,1],[6,5,9,8,7,1,0,4,3,2],[7,6,5,9,8,2,1,0,4,3],[8,7,6,5,9,3,2,1,0,4],[9,8,7,6,5,4,3,2,1,0]];
+    const VP = [[0,1,2,3,4,5,6,7,8,9],[1,5,7,6,2,8,3,0,9,4],[5,8,0,3,7,9,6,1,4,2],[8,9,1,6,0,4,3,5,2,7],[9,4,5,3,1,2,6,8,7,0],[4,2,8,6,5,7,3,9,0,1],[2,7,9,3,8,0,6,4,1,5],[7,0,4,6,9,1,3,2,5,8]];
+    function verhoeff(s) { let c = 0; s.split('').reverse().forEach((d, i) => { c = VD[c][VP[i % 8][+d]]; }); return c === 0; }
+    const _vaf2 = validateApplicationForm;
+    validateApplicationForm = function (app, onlyStep) {
+      const r = _vaf2(app, onlyStep); if (!r) return r;
+      if (onlyStep === undefined || onlyStep === 1) {
+        const d = (byId('f_aadhaar').value || '').replace(/\s/g, '');
+        if (d && (!/^\d{12}$/.test(d) || !verhoeff(d))) { alert('The Aadhaar number is not valid. Please check all 12 digits.'); goToStep(1); return false; }
+      }
+      return true;
+    };
+
+    // ---- admin: remark templates, shortcuts, today panel ----
+    const _osm4 = openScrutinyModal;
+    openScrutinyModal = function (i) {
+      _osm4(i);
+      byId('remarkChips').innerHTML = '<div style="font-size:11px; color:#78716c; margin-bottom:3px;">Quick remarks (click to add) • Shortcuts: A = Approve, U = Under Verification, R = Return, N = Next</div>' + remarkTpls().map((r, k) => `<button type="button" class="btn-neutral" style="font-size:11px; padding:3px 8px; margin:0 4px 4px 0;" onclick="addRemark(${k})">${esc(r.length > 34 ? r.slice(0, 34) + '…' : r)}</button>`).join('');
+    };
+    function addRemark(k) { const x = byId('modalAdminRemarks'); x.value = (x.value.trim() ? x.value.trim() + ' ' : '') + remarkTpls()[k]; }
+    document.addEventListener('keydown', e => {
+      const m = byId('adminScrutinyModal'); if (!m || m.style.display !== 'flex' || /INPUT|TEXTAREA|SELECT/.test((e.target.tagName || '')) || e.ctrlKey || e.metaKey) return;
+      const k = e.key.toLowerCase(), s = byId('modalStatusSelect'), set = v => { s.value = v; handleStatusSelectionChange(); };
+      if (k === 'a') set('Approved'); else if (k === 'u') set('Under Verification'); else if (k === 'r') set('Returned for Correction');
+      else if (k === 'n') { const n = selectedScrutinyIndex + 1; if (applications[n]) { closeScrutinyModal(); openScrutinyModal(n); } }
+    });
+    let todayT = 0, todayTk = null;
+    function renderToday() {
+      const el = byId('adminToday'); if (!el) return;
+      const inq = (((byId('tabBtnInquiries') || {}).innerText || '').match(/\((\d+) new\)/) || [0, 0])[1];
+      const nw = cnt(a => a.status === 'Submitted'), old = cnt(a => PEND.includes(a.status) && appDays(a) > 7);
+      const box = (n, l, c, f) => `<div class="kpi" style="border-top:4px solid ${c};" onclick="${f}"><b style="color:${c};">${n}</b>${l}</div>`;
+      el.innerHTML = `<div style="font-size:12px; font-weight:bold; color:#7f1d1d; margin-bottom:4px;">📌 Today's To-Do</div><div style="display:flex; gap:8px; flex-wrap:wrap;">${box(nw, 'New applications', '#0284c7', "kpiSet('status','Submitted')")}${box(old, 'Pending > 7 days', '#dc2626', "anTab='pending'; switchAdminWindow('analytics')")}${box(inq, 'New inquiries', '#7c3aed', "switchAdminWindow('inquiries')")}${box(todayTk === null ? '…' : todayTk, 'Open tickets', '#d97706', "switchAdminWindow('tickets')")}</div>`;
+      if (Date.now() - todayT > 60000) { todayT = Date.now(); const c = adminCreds(); if (c) db.rpc('rkma_admin_tickets', c).then(r => { if (!r.error) { todayTk = (r.data || []).filter(x => x.status === 'Open').length; renderToday(); } }, () => {}); }
+    }
+    const _rk = renderKpi; renderKpi = function () { _rk(); renderToday(); };
+
+
+    // =============================================================
+    // PART 7: photo crop, camera scan, OCR, inquiry auto-reply, side-by-side, pagination, sorting, columns, saved filters
+    // =============================================================
+    const loadImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('Could not read the image.')); i.src = typeof src === 'string' ? src : URL.createObjectURL(src); });
+    function putFile(input, blob, name) {
+      const f = new File([blob], name, { type: blob.type }), dt = new DataTransfer(); dt.items.add(f); input.files = dt.files;
+      input._cropped = true; input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    // ---- crop & rotate for passport photo / signature ----
+    let CR = null;
+    document.addEventListener('change', e => {
+      const el = e.target;
+      if (!el || (el.id !== 'f_cand_photo' && el.id !== 'f_cand_sign')) return;
+      if (el._cropped) { el._cropped = false; return; }
+      if (!(el.files && el.files[0])) return;
+      e.stopImmediatePropagation();
+      cropOpen(el.files[0], el);
+    }, true);
+    async function cropOpen(file, input) {
+      if (!/^image\//.test(file.type)) { input._cropped = true; input.dispatchEvent(new Event('change', { bubbles: true })); return; }
+      const img = await loadImg(file), sign = input.id === 'f_cand_sign';
+      CR = { img: img, input: input, rot: 0, zoom: 1, ox: 0, oy: 0, w: sign ? 540 : 450, h: sign ? 180 : 600 };
+      byId('cropZoom').value = 1; byId('cropModal').style.display = 'flex'; cropDraw();
+    }
+    function cropDraw() {
+      const c = byId('cropCv'), x = c.getContext('2d'); c.width = CR.w; c.height = CR.h;
+      x.fillStyle = '#fff'; x.fillRect(0, 0, CR.w, CR.h); x.save(); x.translate(CR.w / 2 + CR.ox, CR.h / 2 + CR.oy); x.rotate(CR.rot * Math.PI / 2);
+      const iw = CR.rot % 2 ? CR.img.height : CR.img.width, ih = CR.rot % 2 ? CR.img.width : CR.img.height, s = Math.max(CR.w / iw, CR.h / ih) * CR.zoom;
+      x.scale(s, s); x.drawImage(CR.img, -CR.img.width / 2, -CR.img.height / 2); x.restore();
+    }
+    (function () {
+      const c = byId('cropCv'); let drag = null;
+      c.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, ox: CR.ox, oy: CR.oy }; c.setPointerCapture(e.pointerId); });
+      c.addEventListener('pointermove', e => { if (!drag) return; const k = c.width / c.clientWidth; CR.ox = drag.ox + (e.clientX - drag.x) * k; CR.oy = drag.oy + (e.clientY - drag.y) * k; cropDraw(); });
+      c.addEventListener('pointerup', () => { drag = null; });
+    })();
+    function cropUse() { byId('cropCv').toBlob(b => { byId('cropModal').style.display = 'none'; putFile(CR.input, b, 'cropped.jpg'); }, 'image/jpeg', 0.92); }
+    function cropCancel() { byId('cropModal').style.display = 'none'; CR.input.value = ''; }
+
+    // ---- camera scan with automatic document crop + compression ----
+    async function scanProcess(file) {
+      const img = await loadImg(file), sc = Math.min(1, 400 / img.width), w = Math.round(img.width * sc), h = Math.round(img.height * sc);
+      const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); x.drawImage(img, 0, 0, w, h);
+      const d = x.getImageData(0, 0, w, h).data, L = (i) => 0.3 * d[i] + 0.59 * d[i + 1] + 0.11 * d[i + 2];
+      let bg = 0, n = 0; for (let k = 0; k < w; k++) { for (const yy of [2, h - 3]) { bg += L((yy * w + k) * 4); n++; } } for (let k = 0; k < h; k++) { for (const xx of [2, w - 3]) { bg += L((k * w + xx) * 4); n++; } } bg /= n;
+      const rows = new Array(h).fill(0), cols = new Array(w).fill(0);
+      for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) if (Math.abs(L((yy * w + xx) * 4) - bg) > 35) { rows[yy]++; cols[xx]++; }
+      const first = (a, th) => a.findIndex(v => v > th), last = (a, th) => { for (let k = a.length - 1; k >= 0; k--) if (a[k] > th) return k; return -1; };
+      let x0 = first(cols, h * 0.04), x1 = last(cols, h * 0.04), y0 = first(rows, w * 0.04), y1 = last(rows, w * 0.04);
+      if (x0 < 0 || y0 < 0 || (x1 - x0) * (y1 - y0) < w * h * 0.2) { x0 = 0; y0 = 0; x1 = w - 1; y1 = h - 1; }
+      const m = 0.015, sx = Math.max(0, (x0 / w - m)) * img.width, sy = Math.max(0, (y0 / h - m)) * img.height, sw = Math.min(img.width - sx, ((x1 - x0) / w + 2 * m) * img.width), sh = Math.min(img.height - sy, ((y1 - y0) / h + 2 * m) * img.height);
+      let scale = Math.min(1, 1600 / Math.max(sw, sh)), q = 0.85, blob;
+      for (let tries = 0; tries < 8; tries++) {
+        const o = document.createElement('canvas'); o.width = Math.round(sw * scale); o.height = Math.round(sh * scale); const ox = o.getContext('2d'); ox.filter = 'contrast(1.15) brightness(1.05)'; ox.drawImage(img, sx, sy, sw, sh, 0, 0, o.width, o.height);
+        blob = await new Promise(r => o.toBlob(r, 'image/jpeg', q)); if (blob.size <= 480 * 1024) break; q -= 0.1; if (q < 0.45) { q = 0.7; scale *= 0.8; }
+      }
+      return blob;
+    }
+    function scanDoc(id) {
+      const f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; f.setAttribute('capture', 'environment');
+      f.onchange = async () => { if (!f.files[0]) return; try { putFile(byId(id), await scanProcess(f.files[0]), 'scan_' + id + '.jpg'); } catch (e) { alert(e.message || e); } };
+      f.click();
+    }
+    async function ocrMarks() {
+      const inp = byId('f_doc_mark'), out = byId('ocrOut'), f = inp.files && inp.files[0];
+      if (!f) { out.innerText = 'Choose the marksheet image first.'; return; }
+      if (!/^image\//.test(f.type)) { out.innerText = 'OCR works on photos (JPG/PNG) only, not PDF.'; return; }
+      out.innerText = 'Reading marksheet… (first time can take ~20 seconds)';
+      try {
+        if (!window.Tesseract) await new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js'; s.onload = ok; s.onerror = () => no(new Error('OCR library could not be loaded.')); document.head.appendChild(s); });
+        const r = await Tesseract.recognize(f, 'eng'), nums = (r.data.text.match(/\d+(\.\d+)?/g) || []).map(Number);
+        const got = Number(byId('f_marksobtained').value), full = Number(byId('f_fullmarks').value);
+        const hasG = nums.includes(got), hasF = nums.includes(full);
+        out.innerHTML = (got && hasG ? '✔ Marks obtained (' + got + ') found in the marksheet. ' : '⚠ Marks obtained (' + (got || '-') + ') NOT found in the marksheet — please check. ') + (full && hasF ? '✔ Full marks (' + full + ') found.' : '⚠ Full marks (' + (full || '-') + ') not found.') + ' <i>(automatic check, may be inaccurate)</i>';
+      } catch (e) { out.innerText = 'Could not read the marksheet: ' + (e.message || e); }
+    }
+    (function () {
+      document.querySelectorAll('[id^="f_doc_"]').forEach(el => el.insertAdjacentHTML('afterend', `<button type="button" class="btn-neutral" style="margin-top:4px; font-size:11px; padding:3px 8px;" onclick="scanDoc('${el.id}')">📷 Scan with camera</button>` + (el.id === 'f_doc_mark' ? ' <button type="button" class="btn-neutral" style="margin-top:4px; font-size:11px; padding:3px 8px;" onclick="ocrMarks()">🔍 Check marks (OCR)</button><div id="ocrOut" style="font-size:12px; margin-top:3px;"></div>' : '')));
+    })();
+
+    // ---- inquiry auto-reply ----
+    function inqAutoReply(msg) {
+      const words = s => new Set((String(s).toLowerCase().match(/[\p{L}\p{N}]{4,}/gu) || [])), m = words(msg);
+      let best = null, bs = 1;
+      faqs().forEach(f => { const w = words(f.q + ' ' + f.a + ' ' + (f.qb || '') + ' ' + (f.ab || '')); let s = 0; m.forEach(x => { if (w.has(x)) s++; }); if (s > bs) { bs = s; best = f; } });
+      const base = siteContent.inquiryAutoReply || 'Your message has been received. The office will reply as soon as possible.';
+      return '\n\n' + base + (best ? '\n\nMay be helpful — ' + best.q + '\n' + best.a : '');
+    }
+    async function saveAutoReply() { siteContent.inquiryAutoReply = byId('editAutoReply').value.trim(); if (await persistSiteContent()) alert('Saved.'); }
+    const _lci5 = loadCMSInputs; loadCMSInputs = function () { _lci5(); const e = byId('editAutoReply'); if (e) e.value = siteContent.inquiryAutoReply || ''; };
+
+    // ---- side-by-side comparison (form left, document right) ----
+    let cmpIdx = null;
+    const _osm5 = openScrutinyModal;
+    openScrutinyModal = function (i) { _osm5(i); byId('remarkChips').insertAdjacentHTML('afterbegin', `<button type="button" class="btn-primary" style="font-size:11px; padding:3px 10px; margin-bottom:6px;" onclick="cmpOpen(${i})">⧉ Side-by-side view</button> `); };
+    function cmpOpen(i) {
+      const app = applications[i]; if (!app) return; cmpIdx = i;
+      byId('cmpTitle').innerText = app.appNo + ' — ' + app.name;
+      byId('cmpForm').innerHTML = getApplicationSections(app).map(s => `<h4 style="color:#7f1d1d; margin:8px 0 3px;">${esc(s.title)}</h4>` + sectionToDetailHtml(s)).join('');
+      const files = collectAppFiles(app); byId('cmpDoc').innerHTML = files.map(f => `<option value="${esc(f.key)}">${esc(f.label || f.key)}</option>`).join('') || '<option value="">No documents</option>';
+      byId('cmpModal').style.display = 'flex'; cmpLoad();
+    }
+    async function cmpLoad() {
+      const app = applications[cmpIdx], key = byId('cmpDoc').value, box = byId('cmpView'), f = app && collectAppFiles(app).find(x => x.key === key);
+      if (!f) { box.innerText = 'No document.'; return; }
+      box.innerText = 'Loading…';
+      try { await ensureFileData(app, f); const b = appFileBlob(f), u = URL.createObjectURL(b); box.innerHTML = /pdf/.test(b.type) ? `<iframe src="${u}" style="width:100%; height:100%; min-height:420px; border:0;"></iframe>` : `<img src="${u}" style="max-width:100%;">`; } catch (e) { box.innerText = e.message || e; }
+    }
+
+    // ---- table: pagination, sorting, column chooser, saved filters ----
+    let tblPage = 1, tblSortK = null, tblDir = 1, tblSig = '', extraF = null, extraKey = '';
+    const SORTS = { appNo: a => a.appNo, scheme: a => String(a.schemeName || ''), name: a => String(a.name || '').toLowerCase(), cls: a => String(a.currClass || ''), marks: a => parseFloat(a.marksPct) || 0, income: a => Number(a.income) || 0, status: a => a.status };
+    const COLS = [[2, 'App No', 'appNo'], [3, 'Scholarship', 'scheme'], [4, 'Photo', null], [5, 'Name', 'name'], [6, 'Class / Institution', 'cls'], [7, 'Marks %', 'marks'], [8, 'Income', 'income'], [9, 'Status', 'status']];
+    const _km = kpiMatch; kpiMatch = function (a) { return _km(a) && (!extraF || extraF(a)); };
+    const FILTER_IDS = ['appSearch', 'appFStatus', 'appFCaste', 'appFPhc', 'appFDist'];
+    function tblSortPage(list) {
+      const sig = FILTER_IDS.map(i => (byId(i) || {}).value).join('|') + JSON.stringify(kpiF) + extraKey + activeAdminAppFilterSchemeId;
+      if (sig !== tblSig) { tblSig = sig; tblPage = 1; }
+      if (tblSortK) { const f = SORTS[tblSortK]; list = [...list].sort((x, y) => { const a = f(x), b = f(y); return (a > b ? 1 : a < b ? -1 : 0) * tblDir; }); }
+      const size = Number(byId('pgSize').value) || 25, pages = Math.max(1, Math.ceil(list.length / size)); if (tblPage > pages) tblPage = pages;
+      byId('adminPager').innerHTML = pages > 1 ? `<button type="button" class="btn-neutral" ${tblPage <= 1 ? 'disabled' : ''} onclick="tblPage--; renderAdminTable()">‹ Prev</button> <strong style="margin:0 8px; font-size:12px;">Page ${tblPage} / ${pages}</strong> <button type="button" class="btn-neutral" ${tblPage >= pages ? 'disabled' : ''} onclick="tblPage++; renderAdminTable()">Next ›</button>` : '';
+      return list.slice((tblPage - 1) * size, tblPage * size);
+    }
+    function colApply() {
+      const hid = JSON.parse(localStorage.getItem('rkm_hidecols') || '[]'); let s = document.getElementById('colStyle');
+      if (!s) { s = document.createElement('style'); s.id = 'colStyle'; document.head.appendChild(s); }
+      s.textContent = hid.map(i => `#adminAppTbl th:nth-child(${i}), #adminAppTbl td:nth-child(${i}) { display:none; }`).join('\n');
+    }
+    function colToggle(i, on) { let hid = JSON.parse(localStorage.getItem('rkm_hidecols') || '[]').filter(x => x !== i); if (!on) hid.push(i); localStorage.setItem('rkm_hidecols', JSON.stringify(hid)); colApply(); }
+    function svList() { const P = [{ name: '📌 My Pending (new + under verification)', kpi: { t: 'status', v: 'Pending' }, preset: 1 }, { name: '📌 SC with incomplete / rejected documents', caste: 'SC', extra: 'docs', preset: 1 }, { name: '📌 Returned — waiting for candidate', kpi: { t: 'status', v: 'Returned for Correction' }, preset: 1 }]; let c = []; try { c = JSON.parse(localStorage.getItem('rkm_sf') || '[]'); } catch (e) {} return P.concat(c); }
+    function svRender() { byId('svSel').innerHTML = '<option value="">💾 Saved filters…</option>' + svList().map((f, i) => `<option value="${i}">${esc(f.name)}</option>`).join(''); }
+    function svApply() {
+      const f = svList()[byId('svSel').value]; if (!f) return;
+      byId('appSearch').value = f.q || ''; byId('appFStatus').value = f.st || ''; byId('appFCaste').value = f.caste || ''; byId('appFPhc').value = f.phc || ''; byId('appFDist').value = f.dist || '';
+      kpiF = f.kpi || null; extraKey = f.extra || ''; extraF = extraKey === 'docs' ? (a => dvItems(a).some(i => !i.up || DV_BAD.includes(dvGet(a, i.key).status))) : null; renderAdminTable();
+    }
+    function svSave() {
+      const name = prompt('Name for this filter:'); if (!name) return;
+      const c = JSON.parse(localStorage.getItem('rkm_sf') || '[]'); c.push({ name: name, q: byId('appSearch').value, st: byId('appFStatus').value, caste: byId('appFCaste').value, phc: byId('appFPhc').value, dist: byId('appFDist').value, kpi: kpiF, extra: extraKey });
+      localStorage.setItem('rkm_sf', JSON.stringify(c)); svRender();
+    }
+    function svDel() { const i = Number(byId('svSel').value); if (byId('svSel').value === '' || i < 3) { alert('Choose one of your own saved filters to delete.'); return; } const c = JSON.parse(localStorage.getItem('rkm_sf') || '[]'); c.splice(i - 3, 1); localStorage.setItem('rkm_sf', JSON.stringify(c)); svRender(); }
+    (function () {
+      const tb = byId('adminAppTableBody'), tbl = tb.closest('table'); tbl.id = 'adminAppTbl'; tbl.insertAdjacentHTML('afterend', '<div id="adminPager" style="margin-top:8px; text-align:center;"></div>');
+      const ths = tbl.querySelectorAll('thead th'), hid = JSON.parse(localStorage.getItem('rkm_hidecols') || '[]');
+      COLS.forEach(([i, label, key]) => { if (key) { ths[i - 1].style.cursor = 'pointer'; ths[i - 1].title = 'Click to sort'; ths[i - 1].onclick = () => { tblDir = (tblSortK === key) ? -tblDir : 1; tblSortK = key; ths.forEach((h, k) => { h.innerText = h.innerText.replace(/ [▲▼]$/, ''); }); ths[i - 1].innerText += tblDir > 0 ? ' ▲' : ' ▼'; renderAdminTable(); }; } });
+      byId('colBox').innerHTML = COLS.map(([i, label]) => `<label style="display:block; font-size:12px;"><input type="checkbox" ${hid.includes(i) ? '' : 'checked'} onchange="colToggle(${i}, this.checked)"> ${label}</label>`).join('');
+      colApply(); svRender();
+    })();
 
     let sliderTimerStarted = false;
 
