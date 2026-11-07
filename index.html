@@ -1314,9 +1314,9 @@
             </div>
             <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">B. Qualifying Course Details</h5>
             <div class="form-grid">
-              <div class="form-group"><label>Last Qualifying Examination *</label><input type="text" id="f_lastexam" required></div>
-              <div class="form-group"><label>Full Marks *</label><input type="number" id="f_fullmarks" oninput="calculatePercentage()" required></div>
-              <div class="form-group"><label>Marks Obtained *</label><input type="number" id="f_marksobtained" oninput="calculatePercentage()" required></div>
+              <div class="form-group"><label>Last Qualifying Examination</label><input type="text" id="f_lastexam"></div>
+              <div class="form-group"><label>Full Marks</label><input type="number" id="f_fullmarks" oninput="calculatePercentage()"></div>
+              <div class="form-group"><label>Marks Obtained</label><input type="number" id="f_marksobtained" oninput="calculatePercentage()"></div>
               <div class="form-group"><label>Percentage (%)</label><input type="text" id="f_percentage" readonly style="background:#f5f5f4; font-weight:bold; color:#15803d;"></div>
             </div>
             <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">C. Income &amp; Certification</h5>
@@ -1359,49 +1359,49 @@
               <div class="form-group">
                 <label>a. Identity Proof Document (Aadhaar / School ID) *</label>
                 <input type="file" id="f_doc_aadhaar" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errAadhaar', 'docAadhaar')">
-                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Any size — automatically reduced to 500 KB</span>
                 <span class="file-error-msg" id="errAadhaar">Exceeded 500 KB or invalid file type!</span>
                 <span class="file-ok-msg" id="okAadhaar"></span>
               </div>
               <div class="form-group">
                 <label>b. Admission Receipt *</label>
                 <input type="file" id="f_doc_adm" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errAdm', 'docAdm')">
-                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Any size — automatically reduced to 500 KB</span>
                 <span class="file-error-msg" id="errAdm">Exceeded 500 KB or invalid file type!</span>
                 <span class="file-ok-msg" id="okAdm"></span>
               </div>
               <div class="form-group">
                 <label>c. Qualifying Exam Marksheet *</label>
                 <input type="file" id="f_doc_mark" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errMark', 'docMark')">
-                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Any size — automatically reduced to 500 KB</span>
                 <span class="file-error-msg" id="errMark">Exceeded 500 KB or invalid file type!</span>
                 <span class="file-ok-msg" id="okMark"></span>
               </div>
               <div class="form-group">
                 <label>d. Bank Passbook / Cancelled Cheque *</label>
                 <input type="file" id="f_doc_passbook" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errPassbook', 'docPassbook')">
-                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Any size — automatically reduced to 500 KB</span>
                 <span class="file-error-msg" id="errPassbook">Exceeded 500 KB or invalid file type!</span>
                 <span class="file-ok-msg" id="okPassbook"></span>
               </div>
               <div class="form-group">
                 <label>e. Income Proof Certificate *</label>
                 <input type="file" id="f_doc_income" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errIncome', 'docIncome')">
-                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Any size — automatically reduced to 500 KB</span>
                 <span class="file-error-msg" id="errIncome">Exceeded 500 KB or invalid file type!</span>
                 <span class="file-ok-msg" id="okIncome"></span>
               </div>
               <div class="form-group">
                 <label>f. Application Prayer / Application Letter *</label>
                 <input type="file" id="f_doc_prayer" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errPrayer', 'docPrayer')">
-                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Any size — automatically reduced to 500 KB</span>
                 <span class="file-error-msg" id="errPrayer">Exceeded 500 KB or invalid file type!</span>
                 <span class="file-ok-msg" id="okPrayer"></span>
               </div>
               <div class="form-group">
                 <label>g. Bonafide Certificate from Head of Institution *</label>
                 <input type="file" id="f_doc_bonafide" class="input-file-field" accept=".pdf,.jpg,.jpeg,.png" onchange="storeAndValidateDoc(this, 500, 'errBonafide', 'docBonafide')">
-                <span class="file-rule-hint">Format: PDF, JPG, PNG | Max Size: 500 KB</span>
+                <span class="file-rule-hint">Format: PDF, JPG, PNG | Any size — automatically reduced to 500 KB</span>
                 <span class="file-error-msg" id="errBonafide">Exceeded 500 KB or invalid file type!</span>
                 <span class="file-ok-msg" id="okBonafide"></span>
               </div>
@@ -4437,15 +4437,14 @@
         if (!/^\d{6}$/.test(app.pin)) return fail(3, 'PIN Code must be exactly 6 digits.', 'f_pin');
       }
 
-      // ---- Step 4 (Income Certificate No. is the only optional field) ----
+      // ---- Step 4 (Income Certificate No. and section B are optional) ----
       if (run(4)) {
         if (!reqFields(4, [['f_currclass', 'Present Class of Study'], ['f_admdate', 'Admission Date'],
                            ['f_stream', 'Department / Stream'], ['f_instname', 'Institution Name'],
-                           ['f_rollno', 'Roll / Registration No.'], ['f_lastexam', 'Last Qualifying Examination'],
-                           ['f_fullmarks', 'Full Marks'], ['f_marksobtained', 'Marks Obtained'],
+                           ['f_rollno', 'Roll / Registration No.'],
                            ['f_income', 'Monthly Income'], ['f_incomeauth', 'Income Certificate Issuing Authority']])) return false;
-        if (Number(app.fullMarks) <= 0) return fail(4, 'Full Marks must be greater than zero.', 'f_fullmarks');
-        if (Number(app.marksObtained) > Number(app.fullMarks)) return fail(4, 'Marks Obtained cannot be greater than Full Marks.', 'f_marksobtained');
+        if (app.fullMarks !== '' && Number(app.fullMarks) <= 0) return fail(4, 'Full Marks must be greater than zero.', 'f_fullmarks');
+        if (app.fullMarks !== '' && app.marksObtained !== '' && Number(app.marksObtained) > Number(app.fullMarks)) return fail(4, 'Marks Obtained cannot be greater than Full Marks.', 'f_marksobtained');
       }
 
       // ---- Step 5 ----
@@ -7438,7 +7437,7 @@
       'Yes': 'হ্যাঁ', 'No': 'না', 'Male': 'পুরুষ', 'Female': 'মহিলা', 'Other': 'অন্যান্য',
       'Format: JPG, JPEG, PNG | Max Size: 100 KB': 'ফরম্যাট: JPG, JPEG, PNG | সর্বোচ্চ: ১০০ KB (বড় হলে নিজে ছোট হবে)',
       'Format: JPG, JPEG, PNG | Max Size: 50 KB': 'ফরম্যাট: JPG, JPEG, PNG | সর্বোচ্চ: ৫০ KB (বড় হলে নিজে ছোট হবে)',
-      'Format: PDF, JPG, PNG | Max Size: 500 KB': 'ফরম্যাট: PDF, JPG, PNG | সর্বোচ্চ: ৫০০ KB',
+      'Format: PDF, JPG, PNG | Any size — automatically reduced to 500 KB': 'ফরম্যাট: PDF, JPG, PNG | সর্বোচ্চ: ৫০০ KB',
       'Photo Preview': 'ছবির প্রিভিউ', 'Signature Preview': 'স্বাক্ষরের প্রিভিউ',
       'Next Step →': 'পরবর্তী ধাপ →', '← Back': '← পিছনে', 'Preview Application →': 'আবেদন প্রিভিউ →',
       'Application Nature': 'আবেদনের ধরন', 'FRESH': 'নতুন (FRESH)', 'RENEWAL': 'নবীকরণ (RENEWAL)',
@@ -7762,7 +7761,7 @@
             ? `<button type="button" class="action-btn btn-manage" onclick="reupPick('${i.key}')">⬆ Re-upload</button>`
             : '<span style="font-size:11px; color:#9a3412;">Photo / signature: ask the office to return your application to change it.</span>');
           return `<div class="doc-row"><div><strong>${esc(i.label)}</strong><br>${i.up ? dvBadge(v.status) : '<span class="status-badge dv-rej">Not Uploaded</span>'}${v.remark ? `<div style="font-size:12px; color:#b45309; margin-top:2px;">Office remark: ${esc(v.remark)}</div>` : ''}</div>${act}</div>`;
-        }).join('') + '<div style="font-size:11px; color:#78716c;">Re-upload: PDF / JPG / PNG, max 500 KB. A re-uploaded document goes back to “Pending” for the office to verify again.</div>';
+        }).join('') + '<div style="font-size:11px; color:#78716c;">Re-upload: PDF / JPG / PNG of any size (automatically reduced to 500 KB). A re-uploaded document goes back to “Pending” for the office to verify again.</div>';
     }
     let reupKey = null;
     function reupPick(k) { reupKey = k; byId('reupFile').value = ''; byId('reupFile').click(); }
@@ -7770,10 +7769,9 @@
       const f = inp.files[0], app = getCandidateApplication(), key = reupKey;
       if (!f || !app || !key) return;
       if (!/\.(pdf|jpe?g|png)$/i.test(f.name)) { alert('Only PDF, JPG or PNG files are allowed.'); return; }
-      if (f.size > 500 * 1024) { alert('File must be 500 KB or smaller.'); return; }
       try {
-        const base64 = await readAsDataUrl(f);
-        const up = await uploadDocsToStorage({ [key]: { name: f.name, type: f.type, base64: base64 } }, activeCandidateId);
+        const pr = await prepareUpload(f, 500);
+        const up = await uploadDocsToStorage({ [key]: { name: pr.name, type: pr.type, base64: pr.dataUrl } }, activeCandidateId);
         const docs = {};
         Object.keys(app.uploadedDocuments || {}).forEach(k => { const d = app.uploadedDocuments[k]; if (d && d.path) docs[k] = { name: d.name, type: d.type, path: d.path }; });
         docs[key] = up[key];
@@ -8184,6 +8182,7 @@
       const e = schemeCfg(app.schemeId || selectedScholarshipSchemeId).elig || {};
       const list = s => String(s || '').toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
       const pct = parseFloat(app.marksPct);
+      if (e.minMarks && isNaN(pct)) return `This scholarship needs a minimum of ${e.minMarks}% marks. Please fill the Qualifying Course Details (Step 4, section B).`;
       if (e.minMarks && pct < Number(e.minMarks)) return `Minimum ${e.minMarks}% marks are required for this scholarship (yours: ${isNaN(pct) ? '-' : pct}%).`;
       if (e.maxIncome && Number(app.income) > Number(e.maxIncome)) return `Monthly income must not exceed ₹${e.maxIncome} for this scholarship.`;
       if (list(e.classes).length && !list(e.classes).includes(String(app.currClass).toLowerCase())) return `This scholarship is only for: ${e.classes}.`;
@@ -8606,6 +8605,46 @@
       byId('colBox').innerHTML = COLS.map(([i, label]) => `<label style="display:block; font-size:12px;"><input type="checkbox" ${hid.includes(i) ? '' : 'checked'} onchange="colToggle(${i}, this.checked)"> ${label}</label>`).join('');
       colApply(); svRender();
     })();
+
+
+    // =============================================================
+    // PART 8: any document (PDF / JPG / PNG) is automatically reduced to 500 KB
+    // =============================================================
+    const PDFJS_VER = '3.11.174';
+    function loadScriptOnce(src) { return new Promise((ok, no) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => no(new Error('Could not load a helper library. Check your internet connection and try again.')); document.head.appendChild(s); }); }
+    async function compressPdfToLimit(file, maxKb) {
+      const base = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VER + '/build/';
+      await loadScriptOnce(base + 'pdf.min.js');
+      if (!window.pdfjsLib.GlobalWorkerOptions._rk) {
+        const txt = await (await fetch(base + 'pdf.worker.min.js')).text();
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([txt], { type: 'text/javascript' })); window.pdfjsLib.GlobalWorkerOptions._rk = 1;
+      }
+      const pdf = await window.pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      if (pdf.numPages > 30) throw new Error('This PDF has ' + pdf.numPages + ' pages. Please upload a PDF with at most 30 pages.');
+      const { jsPDF } = window.jspdf;
+      for (const [sc, q] of [[1.5, 0.7], [1.3, 0.6], [1.1, 0.5], [0.95, 0.45], [0.8, 0.4], [0.65, 0.35], [0.5, 0.3]]) {
+        let doc = null;
+        for (let p = 1; p <= pdf.numPages; p++) {
+          const page = await pdf.getPage(p), vp = page.getViewport({ scale: sc }), cv = document.createElement('canvas'); cv.width = vp.width; cv.height = vp.height;
+          const cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cv.width, cv.height);
+          await page.render({ canvasContext: cx, viewport: vp }).promise;
+          const w = vp.width * 0.75, h = vp.height * 0.75, o = w > h ? 'l' : 'p';
+          if (!doc) doc = new jsPDF({ unit: 'pt', format: [w, h], orientation: o }); else doc.addPage([w, h], o);
+          doc.addImage(cv.toDataURL('image/jpeg', q), 'JPEG', 0, 0, w, h, undefined, 'FAST');
+        }
+        const blob = doc.output('blob'); if (blob.size <= maxKb * 1024) return blob;
+      }
+      throw new Error('This PDF could not be reduced below ' + maxKb + ' KB. Please upload fewer pages.');
+    }
+    const _pu = prepareUpload;
+    prepareUpload = async function (file, maxKb) {
+      if (file.type === 'application/pdf' && file.size / 1024 > maxKb) {
+        if (file.size > 40 * 1024 * 1024) throw new Error('File is too large (over 40 MB).');
+        const blob = await compressPdfToLimit(file, maxKb);
+        return { dataUrl: await readAsDataUrl(blob), name: file.name, type: 'application/pdf', note: ` (auto-compressed ${Math.round(file.size / 1024)} KB -> ${Math.round(blob.size / 1024)} KB)` };
+      }
+      return _pu(file, maxKb);
+    };
 
     let sliderTimerStarted = false;
 
