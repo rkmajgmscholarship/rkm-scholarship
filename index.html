@@ -1314,7 +1314,7 @@
             </div>
             <h5 style="font-size:13px; color:#44403c; margin: 12px 0 8px;">B. Qualifying Course Details</h5>
             <div class="form-grid">
-              <div class="form-group"><label>Last Qualifying Examination</label><input type="text" id="f_lastexam"></div>
+              <div class="form-group"><label>Last Qualifying Examination *</label><input type="text" id="f_lastexam" required></div>
               <div class="form-group"><label>Full Marks</label><input type="number" id="f_fullmarks" oninput="calculatePercentage()"></div>
               <div class="form-group"><label>Marks Obtained</label><input type="number" id="f_marksobtained" oninput="calculatePercentage()"></div>
               <div class="form-group"><label>Percentage (%)</label><input type="text" id="f_percentage" readonly style="background:#f5f5f4; font-weight:bold; color:#15803d;"></div>
@@ -4362,7 +4362,7 @@
         last_exam: a.lastExam,
         full_marks: num(a.fullMarks),
         marks_obtained: num(a.marksObtained),
-        marks_pct: num(a.marksPct),
+        marks_pct: a.marksPct || null,
         income: a.income,
         income_cert_no: a.incomeCertNo,
         income_cert_authority: a.incomeAuth,
@@ -4437,11 +4437,11 @@
         if (!/^\d{6}$/.test(app.pin)) return fail(3, 'PIN Code must be exactly 6 digits.', 'f_pin');
       }
 
-      // ---- Step 4 (Income Certificate No. and section B are optional) ----
+      // ---- Step 4 (optional: Income Certificate No., Full Marks, Marks Obtained, Percentage) ----
       if (run(4)) {
         if (!reqFields(4, [['f_currclass', 'Present Class of Study'], ['f_admdate', 'Admission Date'],
                            ['f_stream', 'Department / Stream'], ['f_instname', 'Institution Name'],
-                           ['f_rollno', 'Roll / Registration No.'],
+                           ['f_rollno', 'Roll / Registration No.'], ['f_lastexam', 'Last Qualifying Examination'],
                            ['f_income', 'Monthly Income'], ['f_incomeauth', 'Income Certificate Issuing Authority']])) return false;
         if (app.fullMarks !== '' && Number(app.fullMarks) <= 0) return fail(4, 'Full Marks must be greater than zero.', 'f_fullmarks');
         if (app.fullMarks !== '' && app.marksObtained !== '' && Number(app.marksObtained) > Number(app.fullMarks)) return fail(4, 'Marks Obtained cannot be greater than Full Marks.', 'f_marksobtained');
@@ -8645,6 +8645,15 @@
       }
       return _pu(file, maxKb);
     };
+
+
+    // Percentage is always recalculated from Full Marks and Marks Obtained (also for drafts, edits, preview and submit)
+    const _caf2 = collectApplicationFromForm;
+    collectApplicationFromForm = function () { calculatePercentage(); return _caf2(); };
+    const _sfm3 = setFormMode;
+    setFormMode = function (mode, app) { _sfm3(mode, app); calculatePercentage(); };
+    const _gts = goToStep;
+    goToStep = function (n) { _gts(n); calculatePercentage(); };
 
     let sliderTimerStarted = false;
 
