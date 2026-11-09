@@ -4656,6 +4656,7 @@
       }
 
       notifyStatusEmail(appNo);
+      notifyAdminSubmission(appNo, !!existing);
       candHistAdd({ appNo: appNo, schemeName: app.schemeName }, existing ? 'Corrected application resubmitted' : 'Application submitted', existing ? existing.status : '', 'Submitted', '');
       if (existing) {
         // Replaced documents: remove the old files from Storage (silent if the delete-docs function is not deployed)
@@ -8654,6 +8655,13 @@
     setFormMode = function (mode, app) { _sfm3(mode, app); calculatePercentage(); };
     const _gts = goToStep;
     goToStep = function (n) { _gts(n); calculatePercentage(); };
+
+
+    // E-mail to the Data Entry Operator (rkma.jgm.scholarship@gmail.com) whenever an application is submitted / resubmitted.
+    // Uses the Supabase Edge Function "Notify-Admin-Submission" (see Notify-Admin-Submission.ts). Failure never blocks the candidate.
+    async function notifyAdminSubmission(appNo, isResubmission) {
+      try { await db.functions.invoke('Notify-Admin-Submission', { body: { app_no: appNo, resubmission: !!isResubmission } }); } catch (e) { /* ignore */ }
+    }
 
     let sliderTimerStarted = false;
 
