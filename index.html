@@ -1307,7 +1307,7 @@
             <h5 style="font-size:13px; color:#44403c; margin-bottom:8px;">A. Present Course Details</h5>
             <div class="form-grid">
               <div class="form-group"><label>Present Class of Study *</label><input type="text" id="f_currclass" required></div>
-              <div class="form-group"><label>Admission Date *</label><input type="date" id="f_admdate" required></div>
+              <div class="form-group"><label>Admission Date</label><input type="date" id="f_admdate"></div>
               <div class="form-group"><label>Department / Stream Name *</label><input type="text" id="f_stream" required></div>
               <div class="form-group"><label>Institution Name *</label><input type="text" id="f_instname" required></div>
               <div class="form-group"><label>Roll / Registration No. *</label><input type="text" id="f_rollno"></div>
@@ -2157,8 +2157,8 @@
             <input type="text" id="prof_stream" placeholder="e.g. Science / Arts / Law" required>
           </div>
           <div class="form-group">
-            <label>Date of Admission *</label>
-            <input type="date" id="prof_admdate" required>
+            <label>Date of Admission</label>
+            <input type="date" id="prof_admdate">
           </div>
           <div class="form-group" style="grid-column: 1 / -1;">
             <label>Institution Name *</label>
@@ -3468,7 +3468,7 @@
       const newPass = document.getElementById('prof_newpass').value.trim();
       const confPass = document.getElementById('prof_confpass').value.trim();
 
-      if (!dob || !email || !vill || !po || !ps || !dist || !pin || !currClass || !stream || !admDate || !instName) {
+      if (!dob || !email || !vill || !po || !ps || !dist || !pin || !currClass || !stream || !instName) {
         alert('Please fill all mandatory profile fields marked with (*)!');
         return;
       }
@@ -3488,7 +3488,7 @@
         state: state,
         curr_class: currClass,
         stream: stream,
-        adm_date: admDate,
+        adm_date: admDate || null,
         institution: instName
       };
 
@@ -4355,7 +4355,7 @@
         state: a.state,
         pin: a.pin,
         curr_class: a.currClass,
-        adm_date: a.admDate,
+        adm_date: a.admDate || null,
         stream: a.stream,
         institution: a.institution,
         roll_no: a.rollNo,
@@ -4439,7 +4439,7 @@
 
       // ---- Step 4 (optional: Income Certificate No., Full Marks, Marks Obtained, Percentage) ----
       if (run(4)) {
-        if (!reqFields(4, [['f_currclass', 'Present Class of Study'], ['f_admdate', 'Admission Date'],
+        if (!reqFields(4, [['f_currclass', 'Present Class of Study'],
                            ['f_stream', 'Department / Stream'], ['f_instname', 'Institution Name'],
                            ['f_rollno', 'Roll / Registration No.'], ['f_lastexam', 'Last Qualifying Examination'],
                            ['f_income', 'Monthly Income'], ['f_incomeauth', 'Income Certificate Issuing Authority']])) return false;
@@ -7955,7 +7955,7 @@
     renderAdminTable = function () { renderKpi(); _rat(); };
 
     // ---- Candidate dashboard: hero, big status card, checklist, login activity, print ----
-    function candCompletion(c) { const f = ['name', 'mobile', 'dob', 'email', 'vill', 'po', 'ps', 'dist', 'pin', 'currClass', 'stream', 'admDate', 'institution']; return Math.round(f.filter(k => c[k]).length * 100 / f.length); }
+    function candCompletion(c) { const f = ['name', 'mobile', 'dob', 'email', 'vill', 'po', 'ps', 'dist', 'pin', 'currClass', 'stream', 'institution']; return Math.round(f.filter(k => c[k]).length * 100 / f.length); }
     function loginHistory() { try { return JSON.parse(localStorage.getItem('rkm_logins_' + activeCandidateId) || '[]'); } catch (e) { return []; } }
     function recordLogin() {
       if (!activeCandidateId || sessionStorage.getItem('rkm_lr_' + activeCandidateId)) return;
