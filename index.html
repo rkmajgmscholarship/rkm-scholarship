@@ -1072,11 +1072,11 @@
     <section id="sec-candidateLogin" class="page-section">
       <div class="card" style="max-width:400px; margin:40px auto; border-top:5px solid #ea580c;">
         <h2 style="text-align:center; font-size:18px;">Candidate Portal Login</h2>
-        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Sign in with your Candidate ID and Password</p>
+        <p style="text-align:center; font-size:12px; margin-bottom:14px; color:#78716c;">Sign in with your Candidate ID or Mobile Number and Password</p>
 
         <div class="form-group">
-          <label>Candidate ID</label>
-          <input type="text" id="candIdField" placeholder="e.g. RKM-2026-001">
+          <label>Candidate ID or Mobile Number</label>
+          <input type="text" id="candIdField" placeholder="Candidate ID (e.g. RKM-2026-001) or 10-digit mobile">
         </div>
         <div class="form-group">
           <label>Password</label>
@@ -3108,7 +3108,7 @@
 
       // Look in the loaded list first
       for (let cid in candidates) {
-        if (cid.toLowerCase() === query.toLowerCase() || (candidates[cid].email && candidates[cid].email.toLowerCase() === query.toLowerCase())) {
+        if (cid.toLowerCase() === query.toLowerCase() || (query.replace(/\D/g, '').length >= 10 && String(candidates[cid].mobile || '').replace(/\D/g, '').slice(-10) === query.replace(/\D/g, '').slice(-10)) || (candidates[cid].email && candidates[cid].email.toLowerCase() === query.toLowerCase())) {
           matchedCandidate = { id: cid, ...candidates[cid] };
           break;
         }
@@ -3120,13 +3120,16 @@
         if (!res.data || res.data.length === 0) {
           res = await db.from('candidates').select('*').eq('email', query);
         }
+        if ((!res.data || res.data.length === 0) && query.replace(/\D/g, '').length >= 10) {
+          res = await db.from('candidates').select('*').ilike('mobile', '%' + query.replace(/\D/g, '').slice(-10));
+        }
         if (res.data && res.data.length > 0) {
           matchedCandidate = { id: res.data[0].candidate_id, ...res.data[0] };
         }
       }
 
       if (!matchedCandidate) {
-        alert('No registered candidate found with this ID or Email.');
+        alert('No registered candidate found with this ID, Mobile Number or Email.');
         return;
       }
 
@@ -3294,23 +3297,36 @@
     // CANDIDATE LOGIN & PROFILE STATUS CHECK
     // -------------------------------------------------------------
     async function executeCandidateDirectLogin() {
-      const id = document.getElementById('candIdField').value.trim();
+      let id = document.getElementById('candIdField').value.trim();
       const pass = document.getElementById('candPassField').value.trim();
 
       if (!id || !pass) {
-        alert('Please enter both Candidate ID and Password!');
+        alert('Please enter your Candidate ID (or Mobile Number) and Password!');
         return;
       }
 
-      const { data: candData, error } = await db.from('candidates').select('*').eq('candidate_id', id).eq('pass', pass);
-
+      // 1) try as Candidate ID
+      let { data: candData, error } = await db.from('candidates').select('*').eq('candidate_id', id).eq('pass', pass);
       if (error) {
         alert('Login failed: ' + error.message);
         return;
       }
+      // 2) otherwise try as Mobile Number (spaces, +91 or 0 in front are ignored)
+      if (!candData || candData.length === 0) {
+        const digits = id.replace(/\D/g, '').slice(-10);
+        if (digits.length === 10) {
+          const r = await db.from('candidates').select('*').ilike('mobile', '%' + digits).eq('pass', pass);
+          candData = (r.data || []).filter(c => String(c.mobile || '').replace(/\D/g, '').slice(-10) === digits);
+          if (candData.length > 1) {
+            alert('More than one account uses this mobile number. Please login with your Candidate ID.');
+            return;
+          }
+        }
+      }
 
       if (candData && candData.length > 0) {
         const cand = candData[0];
+        id = cand.candidate_id;
         activeCandidateId = id;
         document.getElementById('candWelcomeName').innerText = 'Welcome, ' + cand.name;
         document.getElementById('candWelcomeId').innerText = 'Candidate ID: ' + id + ' | Mobile: ' + cand.mobile;
@@ -3327,7 +3343,7 @@
         checkCandidateProfileStatus();
         updateCandidateDashboardState();
       } else {
-        alert('Invalid Candidate ID or Password!');
+        alert('Invalid Candidate ID / Mobile Number or Password!');
       }
     }
 
@@ -7475,7 +7491,7 @@
       'Candidate Portal': 'ক্যান্ডিডেট পোর্টাল', 'Application Procedure': 'আবেদনের নিয়ম', 'Required Documents': 'প্রয়োজনীয় ডকুমেন্ট',
       '📢 Latest Institutional Notices': '📢 সাম্প্রতিক নোটিশ', 'View All Notices →': 'সব নোটিশ দেখুন →',
       'Candidate Portal Login': 'ক্যান্ডিডেট পোর্টাল লগইন', 'Sign in with your Candidate ID and Password': 'আপনার ক্যান্ডিডেট আইডি ও পাসওয়ার্ড দিয়ে লগইন করুন',
-      'Candidate ID': 'ক্যান্ডিডেট আইডি', 'Password': 'পাসওয়ার্ড', 'Login': 'লগইন', 'Forgot Password?': 'পাসওয়ার্ড ভুলে গেছেন?',
+      'Candidate ID': 'ক্যান্ডিডেট আইডি', 'Candidate ID or Mobile Number': 'ক্যান্ডিডেট আইডি বা মোবাইল নম্বর', 'Sign in with your Candidate ID or Mobile Number and Password': 'আপনার ক্যান্ডিডেট আইডি বা মোবাইল নম্বর ও পাসওয়ার্ড দিয়ে লগইন করুন', 'Password': 'পাসওয়ার্ড', 'Login': 'লগইন', 'Forgot Password?': 'পাসওয়ার্ড ভুলে গেছেন?',
       'Administrator Login': 'অ্যাডমিনিস্ট্রেটর লগইন', 'Admin ID or Email': 'অ্যাডমিন আইডি বা ইমেইল', 'Verify Credentials & Send OTP': 'যাচাই করে OTP পাঠান',
       '🆘 Help & Support': '🆘 সাহায্য ও সহায়তা', 'Subject': 'বিষয়', 'Describe your problem': 'আপনার সমস্যা লিখুন', 'Submit & get Ticket ID': 'জমা দিন ও টিকিট আইডি নিন',
       '📍 Progress': '📍 অগ্রগতি', '🆘 Support': '🆘 সহায়তা', 'Status': 'স্ট্যাটাস', 'Alerts': 'নোটিফিকেশন',
