@@ -1619,9 +1619,7 @@
             <span id="appFilterCount" style="font-size:12px; color:#78716c; align-self:center;"></span>
           </div>
           <div id="tblTools" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px; font-size:12px;">
-            <select id="svSel" onchange="svApply()" style="width:auto; padding:5px;"><option value="">💾 Saved filters…</option></select>
-            <button type="button" class="btn-neutral" style="padding:4px 10px;" onclick="svSave()">Save current filter</button>
-            <button type="button" class="btn-neutral" style="padding:4px 10px; color:#b91c1c;" onclick="svDel()">Delete</button>
+            <span>Sort:</span><select id="appSortSel" onchange="nameSortChange(this.value)" style="width:auto; padding:5px;"><option value="">Default order</option><option value="asc">Name (A → Z)</option><option value="desc">Name (Z → A)</option></select>
             <details style="position:relative;"><summary style="cursor:pointer; padding:4px 10px; border:1px solid #d6d3d1; border-radius:6px;">⚙ Columns</summary><div id="colBox" style="position:absolute; z-index:20; background:#fff; border:1px solid #d6d3d1; border-radius:6px; padding:8px; min-width:150px; box-shadow:0 4px 10px rgba(0,0,0,.15);"></div></details>
             <span>Rows:</span><select id="pgSize" onchange="tblPage=1; renderAdminTable()" style="width:auto; padding:5px;"><option>25</option><option>50</option><option>100</option><option>500</option></select>
             <span style="color:#78716c;">Tip: click a column heading to sort.</span>
@@ -1717,6 +1715,7 @@
                   <th>Applied?</th>
                   <th>Profile Card</th>
                   <th>Delete Candidate</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody id="registeredCandidatesTableBody"></tbody>
@@ -5572,18 +5571,6 @@
             try { image = await merged.embedJpg(bytes); } catch (e) { image = await merged.embedPng(bytes); }
           }
 
-          // Divider page
-          const divider = merged.addPage([595.28, 841.89]);
-          divider.drawRectangle({ x: 0, y: 741.89, width: 595.28, height: 100, color: maroon });
-          divider.drawRectangle({ x: 0, y: 735.89, width: 595.28, height: 6, color: gold });
-          divider.drawText('RAMAKRISHNA MISSION ASHRAMA, JHARGRAM', { x: 40, y: 800, size: 15, font: fontBold, color: rgb(1, 1, 1) });
-          divider.drawText('Attached Supporting Document', { x: 40, y: 774, size: 11, font: fontReg, color: rgb(1, 0.93, 0.8) });
-          divider.drawText(`Document ${d.sl} of 9`, { x: 40, y: 560, size: 13, font: fontReg, color: rgb(0.35, 0.35, 0.35) });
-          divider.drawText(pdfSafeText(d.label), { x: 40, y: 530, size: 19, font: fontBold, color: maroon, maxWidth: 515, lineHeight: 24 });
-          divider.drawText('File: ' + pdfSafeText(d.fileName), { x: 40, y: 480, size: 11, font: fontReg, color: rgb(0.25, 0.25, 0.25), maxWidth: 515 });
-          divider.drawText('Application No: ' + pdfSafeText(app.appNo) + '   |   Candidate ID: ' + pdfSafeText(app.candidateId), { x: 40, y: 460, size: 10, font: fontReg, color: rgb(0.35, 0.35, 0.35) });
-          divider.drawText('Requirement: ' + d.requirement, { x: 40, y: 444, size: 10, font: fontReg, color: rgb(0.35, 0.35, 0.35) });
-
           if (isPdf) {
             const copied = await merged.copyPages(pdfSource, pdfSource.getPageIndices());
             copied.forEach(p => merged.addPage(p));
@@ -6571,13 +6558,70 @@
           <td><span style="font-weight:bold; color:${isSubmitted ? '#15803d' : '#dc2626'};">${isSubmitted ? '✅ Yes' : '⏳ Pending'}</span></td>
           <td><button class="action-btn btn-pdf" onclick="downloadCandidateProfileCard('${esc(cid)}')">🪪 Profile Card</button></td>
           <td><button class="action-btn btn-delete" onclick="deleteEntireCandidateAccount('${esc(cid)}')">❌ Delete</button></td>
+          <td><button class="action-btn" style="background:#2563eb; color:#fff;" onclick="openAdminEditCandidate('${esc(cid)}')">✏️ Edit</button></td>
         `;
         tbody.appendChild(tr);
       }
 
       if (sl === 1) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:16px; color:#888;">No candidates registered yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:16px; color:#888;">No candidates registered yet.</td></tr>';
       }
+    }
+
+
+    // =============================================================
+    // ADMIN: EDIT REGISTERED CANDIDATE (saves straight to the database)
+    // =============================================================
+    const ADMIN_EDIT_FIELDS = [
+      ['name', 'Full Name', 'name', 'text'], ['mobile', 'Mobile (10 digits)', 'mobile', 'text'], ['pass', 'Password', 'pass', 'text'],
+      ['dob', 'Date of Birth', 'dob', 'date'], ['email', 'Email', 'email', 'email'],
+      ['vill', 'Village', 'vill', 'text'], ['po', 'Post Office', 'po', 'text'], ['ps', 'Police Station', 'ps', 'text'],
+      ['dist', 'District', 'dist', 'text'], ['pin', 'PIN Code', 'pin', 'text'], ['state', 'State', 'state', 'text'],
+      ['curr_class', 'Present Class', 'currClass', 'text'], ['stream', 'Stream / Department', 'stream', 'text'],
+      ['adm_date', 'Admission Date', 'admDate', 'date'], ['institution', 'Institution Name', 'institution', 'text']
+    ];
+    let adminEditCid = null;
+    function openAdminEditCandidate(cid) {
+      const c = candidates[cid]; if (!c) return;
+      adminEditCid = cid;
+      let m = document.getElementById('adminEditCandModal');
+      if (!m) {
+        m = document.createElement('div'); m.id = 'adminEditCandModal';
+        m.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999; display:flex; align-items:center; justify-content:center; padding:12px;';
+        document.body.appendChild(m);
+      }
+      m.innerHTML = `<div style="background:#fff; border-radius:12px; max-width:640px; width:100%; max-height:92vh; overflow-y:auto; padding:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #ea580c; padding-bottom:8px; margin-bottom:12px;">
+          <h3 style="color:#7f1d1d; margin:0;">Edit Candidate — ${esc(cid)}</h3>
+          <button type="button" class="action-btn btn-delete" onclick="closeAdminEditCandidate()">✖ Close</button>
+        </div>
+        <div class="form-grid">${ADMIN_EDIT_FIELDS.map(([col, label, key, type]) => `<div class="form-group"><label>${label}</label><input type="${type}" id="aec_${col}" value="${esc(c[key] || (col === 'state' ? 'West Bengal' : ''))}"></div>`).join('')}</div>
+        <div style="margin-top:14px; display:flex; gap:8px;">
+          <button type="button" class="btn-primary" id="aecSaveBtn" onclick="saveAdminEditCandidate()">💾 Save Changes</button>
+          <button type="button" class="btn-neutral" onclick="closeAdminEditCandidate()">Cancel</button>
+        </div>
+        <p style="font-size:11px; color:#78716c; margin-top:8px;">Changes are saved directly to the database. Already submitted applications keep their own submitted copy of the details.</p>
+      </div>`;
+      m.style.display = 'flex';
+    }
+    function closeAdminEditCandidate() { const m = document.getElementById('adminEditCandModal'); if (m) m.style.display = 'none'; adminEditCid = null; }
+    async function saveAdminEditCandidate() {
+      const cid = adminEditCid; if (!cid || !candidates[cid]) return;
+      const v = {}; ADMIN_EDIT_FIELDS.forEach(([col]) => { v[col] = document.getElementById('aec_' + col).value.trim(); });
+      v.mobile = v.mobile.replace(/\D/g, '').slice(-10);
+      if (!v.name) { alert('Name is required.'); return; }
+      if (!/^\d{10}$/.test(v.mobile)) { alert('Enter a valid 10-digit mobile number.'); return; }
+      if (!v.pass || v.pass.length < 6) { alert('Password must be at least 6 characters.'); return; }
+      if (v.email && !isValidEmail(v.email)) { alert('Please enter a valid email address.'); return; }
+      const payload = { ...v, dob: v.dob || null, adm_date: v.adm_date || null, state: v.state || 'West Bengal' };
+      const btn = document.getElementById('aecSaveBtn'); btn.disabled = true; btn.innerText = 'Saving…';
+      const { error } = await db.from('candidates').update(payload).eq('candidate_id', cid);
+      btn.disabled = false; btn.innerText = '💾 Save Changes';
+      if (error) { alert('Database save failed: ' + error.message); return; }
+      logAudit('EDIT_CANDIDATE', cid, { fields: Object.keys(payload) });
+      closeAdminEditCandidate();
+      await loadDataFromSupabase();
+      alert('Candidate ' + cid + ' updated successfully.');
     }
 
     async function deleteEntireCandidateAccount(cid) {
@@ -8589,7 +8633,7 @@
     const _km = kpiMatch; kpiMatch = function (a) { return _km(a) && (!extraF || extraF(a)); };
     const FILTER_IDS = ['appSearch', 'appFStatus', 'appFCaste', 'appFPhc', 'appFDist'];
     function tblSortPage(list) {
-      const sig = FILTER_IDS.map(i => (byId(i) || {}).value).join('|') + JSON.stringify(kpiF) + extraKey + activeAdminAppFilterSchemeId;
+      const sig = FILTER_IDS.map(i => (byId(i) || {}).value).join('|') + JSON.stringify(kpiF) + extraKey + activeAdminAppFilterSchemeId + '|' + tblSortK + tblDir;
       if (sig !== tblSig) { tblSig = sig; tblPage = 1; }
       if (tblSortK) { const f = SORTS[tblSortK]; list = [...list].sort((x, y) => { const a = f(x), b = f(y); return (a > b ? 1 : a < b ? -1 : 0) * tblDir; }); }
       const size = Number(byId('pgSize').value) || 25, pages = Math.max(1, Math.ceil(list.length / size)); if (tblPage > pages) tblPage = pages;
@@ -8602,25 +8646,18 @@
       s.textContent = hid.map(i => `#adminAppTbl th:nth-child(${i}), #adminAppTbl td:nth-child(${i}) { display:none; }`).join('\n');
     }
     function colToggle(i, on) { let hid = JSON.parse(localStorage.getItem('rkm_hidecols') || '[]').filter(x => x !== i); if (!on) hid.push(i); localStorage.setItem('rkm_hidecols', JSON.stringify(hid)); colApply(); }
-    function svList() { const P = [{ name: '📌 My Pending (new + under verification)', kpi: { t: 'status', v: 'Pending' }, preset: 1 }, { name: '📌 SC with incomplete / rejected documents', caste: 'SC', extra: 'docs', preset: 1 }, { name: '📌 Returned — waiting for candidate', kpi: { t: 'status', v: 'Returned for Correction' }, preset: 1 }]; let c = []; try { c = JSON.parse(localStorage.getItem('rkm_sf') || '[]'); } catch (e) {} return P.concat(c); }
-    function svRender() { byId('svSel').innerHTML = '<option value="">💾 Saved filters…</option>' + svList().map((f, i) => `<option value="${i}">${esc(f.name)}</option>`).join(''); }
-    function svApply() {
-      const f = svList()[byId('svSel').value]; if (!f) return;
-      byId('appSearch').value = f.q || ''; byId('appFStatus').value = f.st || ''; byId('appFCaste').value = f.caste || ''; byId('appFPhc').value = f.phc || ''; byId('appFDist').value = f.dist || '';
-      kpiF = f.kpi || null; extraKey = f.extra || ''; extraF = extraKey === 'docs' ? (a => dvItems(a).some(i => !i.up || DV_BAD.includes(dvGet(a, i.key).status))) : null; renderAdminTable();
+    function nameSortChange(v) {
+      const ths = byId('adminAppTbl').querySelectorAll('thead th');
+      ths.forEach(h => { h.innerText = h.innerText.replace(/ [▲▼]$/, ''); });
+      if (!v) { tblSortK = null; tblDir = 1; } else { tblSortK = 'name'; tblDir = v === 'asc' ? 1 : -1; ths[4].innerText += tblDir > 0 ? ' ▲' : ' ▼'; }
+      tblPage = 1; renderAdminTable();
     }
-    function svSave() {
-      const name = prompt('Name for this filter:'); if (!name) return;
-      const c = JSON.parse(localStorage.getItem('rkm_sf') || '[]'); c.push({ name: name, q: byId('appSearch').value, st: byId('appFStatus').value, caste: byId('appFCaste').value, phc: byId('appFPhc').value, dist: byId('appFDist').value, kpi: kpiF, extra: extraKey });
-      localStorage.setItem('rkm_sf', JSON.stringify(c)); svRender();
-    }
-    function svDel() { const i = Number(byId('svSel').value); if (byId('svSel').value === '' || i < 3) { alert('Choose one of your own saved filters to delete.'); return; } const c = JSON.parse(localStorage.getItem('rkm_sf') || '[]'); c.splice(i - 3, 1); localStorage.setItem('rkm_sf', JSON.stringify(c)); svRender(); }
     (function () {
       const tb = byId('adminAppTableBody'), tbl = tb.closest('table'); tbl.id = 'adminAppTbl'; tbl.insertAdjacentHTML('afterend', '<div id="adminPager" style="margin-top:8px; text-align:center;"></div>');
       const ths = tbl.querySelectorAll('thead th'), hid = JSON.parse(localStorage.getItem('rkm_hidecols') || '[]');
-      COLS.forEach(([i, label, key]) => { if (key) { ths[i - 1].style.cursor = 'pointer'; ths[i - 1].title = 'Click to sort'; ths[i - 1].onclick = () => { tblDir = (tblSortK === key) ? -tblDir : 1; tblSortK = key; ths.forEach((h, k) => { h.innerText = h.innerText.replace(/ [▲▼]$/, ''); }); ths[i - 1].innerText += tblDir > 0 ? ' ▲' : ' ▼'; renderAdminTable(); }; } });
+      COLS.forEach(([i, label, key]) => { if (key) { ths[i - 1].style.cursor = 'pointer'; ths[i - 1].title = 'Click to sort'; ths[i - 1].onclick = () => { tblDir = (tblSortK === key) ? -tblDir : 1; tblSortK = key; ths.forEach((h, k) => { h.innerText = h.innerText.replace(/ [▲▼]$/, ''); }); ths[i - 1].innerText += tblDir > 0 ? ' ▲' : ' ▼'; const ss = byId('appSortSel'); if (ss) ss.value = key === 'name' ? (tblDir > 0 ? 'asc' : 'desc') : ''; renderAdminTable(); }; } });
       byId('colBox').innerHTML = COLS.map(([i, label]) => `<label style="display:block; font-size:12px;"><input type="checkbox" ${hid.includes(i) ? '' : 'checked'} onchange="colToggle(${i}, this.checked)"> ${label}</label>`).join('');
-      colApply(); svRender();
+      colApply();
     })();
 
 
