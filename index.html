@@ -5581,7 +5581,7 @@
       // ---- Section 01: IDs, name, details (left) + photo & signature (right) ----
       const sections = getApplicationSections(app);
       const s1 = {}; sections[0].rows.forEach(r => { s1[r[0]] = r[1]; });
-      const photo = app.photoBase64 ? `<img src="${app.photoBase64}" style="width:118px; height:148px; object-fit:cover; display:block; border-radius:3px;">` : `<div style="width:118px; height:148px; background:#f5f5f4; font-size:10px; color:${MUT}; display:flex; align-items:center; justify-content:center;">No Photo</div>`;
+      const photo = app.photoBase64 ? `<img src="${app.photoBase64}" width="118" height="148" style="width:118px; height:148px; object-fit:cover; display:block;">` : `<div style="width:118px; height:148px; background:#f5f5f4; font-size:10px; color:${MUT}; display:flex; align-items:center; justify-content:center;">No Photo</div>`;
       const sign = app.signBase64 ? `<img src="${app.signBase64}" style="max-width:112px; max-height:36px; object-fit:contain; display:block; margin:0 auto;">` : '';
       const det = (l, v) => `<div style="width:50%; box-sizing:border-box; padding:0 12px 9px 0;"><div style="font-size:8.5px; font-weight:bold; color:${MUT}; letter-spacing:0.5px;">${l}</div><div style="font-size:12.5px; font-weight:bold; color:${INK}; padding-bottom:3px; border-bottom:1px solid ${ORB}; overflow-wrap:anywhere;">${val(v)}</div></div>`;
       push(secHead('SECTION 01 \u2013 PERSONAL DETAILS') + `
@@ -5658,10 +5658,32 @@
       return units.map(u => `<div class="pdf-unit">${u.html}</div>`).join('');
     }
 
+    // Crops/scales an image (data URL) to w x h like object-fit:cover and returns a JPEG data URL
+    function coverCropDataUrl(src, w, h) {
+      return new Promise(resolve => {
+        if (!src) return resolve(src);
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const x = c.getContext('2d'); x.fillStyle = '#ffffff'; x.fillRect(0, 0, w, h);
+            const r = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+            const dw = img.naturalWidth * r, dh = img.naturalHeight * r;
+            x.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+            resolve(c.toDataURL('image/jpeg', 0.92));
+          } catch (e) { resolve(src); }
+        };
+        img.onerror = () => resolve(src);
+        img.src = src;
+      });
+    }
+
     async function generateApplicationDetailsPdf(app) {
       const { jsPDF } = window.jspdf;
       const logo = await getLogoDataUrl();
-      const rendered = await renderUnitsToCanvas(buildDetailsUnits(app, logo));
+      // The photo is cropped to the exact frame size first, so it always draws in the PDF
+      const appForPdf = { ...app, photoBase64: await coverCropDataUrl(app.photoBase64, 354, 444) };
+      const rendered = await renderUnitsToCanvas(buildDetailsUnits(appForPdf, logo));
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
       placeUnitsOnPages(doc, rendered);
       decoratePages(doc, logo, app.appNo);
