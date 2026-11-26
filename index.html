@@ -5421,11 +5421,13 @@
     }
 
     // Places the rendered blocks onto A4 pages of a jsPDF document
-    function placeUnitsOnPages(doc, rendered) {
+    function placeUnitsOnPages(doc, rendered, k) {
+      k = k || 1;
+      const MMPX = MM_PER_PX * k, IMG_W = 178 * k, IMG_X = 16 + (178 - IMG_W) / 2;
       const { canvas, units, scale } = rendered;
       const FIRST_TOP = 16, OTHER_TOP = 30, BOTTOM = 279;
       let pageNo = 0;
-      let capacity = (BOTTOM - FIRST_TOP) / MM_PER_PX;
+      let capacity = (BOTTOM - FIRST_TOP) / MMPX;
       let pageStart = units.length ? units[0].top : 0;
       let pageEnd = pageStart;
 
@@ -5443,7 +5445,7 @@
         ctx.drawImage(canvas, 0, sy, canvas.width, sh, 0, 0, canvas.width, sh);
         if (pageNo > 0) doc.addPage();
         const y = pageNo === 0 ? FIRST_TOP : OTHER_TOP;
-        doc.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', 16, y, 178, (pageEnd - pageStart) * MM_PER_PX, undefined, 'FAST');
+        doc.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', IMG_X, y, IMG_W, (pageEnd - pageStart) * MMPX, undefined, 'FAST');
         pageNo++;
       };
 
@@ -5451,7 +5453,7 @@
         if ((u.brk || u.bottom - pageStart > capacity) && pageEnd > pageStart) {
           flush();
           pageStart = u.top;
-          capacity = (BOTTOM - OTHER_TOP) / MM_PER_PX;
+          capacity = (BOTTOM - OTHER_TOP) / MMPX;
         }
         pageEnd = u.bottom;
       });
@@ -5709,22 +5711,17 @@
       // Candidate PDF: a larger "original documents verification" block with a checklist (ticked by the Ashrama official, not the applicant).
       const fld = (label, h) => `<div style="margin-top:7px;"><div style="font-size:8px; font-weight:bold; color:${MUT}; letter-spacing:0.3px;">${esc(label)}</div><div style="height:${h}px; border-bottom:1.2px solid ${MAR};"></div></div>`;
       if (opts.signatures) {
-        const col = (letter, byLbl, onLbl, sigLbl, last) => `
-          <td style="width:33.33%; vertical-align:top; padding:0 ${last ? 0 : 14}px 0 0;">
-            <div style="font-size:10px; font-weight:bold; color:${ORA}; letter-spacing:0.6px;">${letter}</div>
-            ${fld(byLbl, 17)}${fld(onLbl, 17)}${fld(sigLbl, 40)}
-          </td>`;
+        const rowsA = ['Application verified by', 'Application rechecked by', 'Application approved by', 'Original documents checked by'];
+        const hd = (t, w) => `<td style="width:${w}; padding:0 0 3px; font-size:8px; font-weight:bold; color:${MUT}; letter-spacing:0.5px;">${t}</td>`;
+        const rw = lbl => `<tr>
+            <td style="width:34%; vertical-align:bottom; padding:0 8px 3px 0; font-size:10.5px; font-weight:bold; color:${MAR};">${esc(lbl)}</td>
+            <td style="width:42%; vertical-align:bottom; padding:0 14px 0 0;"><div style="height:25px; border-bottom:1.2px solid ${MAR};"></div></td>
+            <td style="width:24%; vertical-align:bottom;"><div style="height:25px; border-bottom:1.2px solid ${MAR};"></div></td></tr>`;
         push(`<div style="font-family:${F}; padding-top:12px;">`
           + `<div style="display:flex; align-items:center; gap:10px; border-bottom:2px solid ${MAR};"><div style="font-weight:bold; font-size:11px; letter-spacing:1px; color:${MAR}; padding-bottom:4px;">FOR OFFICE USE ONLY</div><div style="flex:1; height:2px; background:${ORA}; margin-bottom:5px;"></div></div>`
-          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:6px;"><tr>`
-          + col('A', 'Application verified by', 'Application verification on', 'Verifier signature')
-          + col('B', 'Documents photocopy checked by', 'Documents photocopy checked on', 'Documents photocopy checker signature')
-          + col('C', 'Application approved by', 'Application approved on', 'Approver signature', true)
-          + `</tr></table>`
-          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:12px; border-top:1px solid ${ORB};"><tr>`
-          + `<td style="width:50%; vertical-align:top; padding:0 14px 0 0;"><div style="font-size:10px; font-weight:bold; color:${ORA}; letter-spacing:0.6px; padding-top:6px;">D</div>${fld('Original documents checked by', 26)}</td>`
-          + `<td style="width:50%; vertical-align:top;"><div style="font-size:10px; font-weight:bold; color:${ORA}; letter-spacing:0.6px; padding-top:6px;">&nbsp;</div>${fld('Original documents checked on', 26)}</td>`
-          + `</tr></table></div>`);
+          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:4px;"><tr>${hd('', '34%')}${hd('SIGNATURE', '42%')}${hd('DATE', '24%')}</tr>`
+          + rowsA.map(rw).join('')
+          + `</table></div>`);
       } else if (opts.originalCheck) {
         const box = `<span style="display:inline-block; width:13px; height:13px; border:1.6px solid ${MAR}; background:#fff; border-radius:2px; flex:none;"></span>`;
         const item = d => `<div style="display:flex; align-items:center; gap:9px; padding:4px 0; border-bottom:1px dotted ${ORB};">${box}<div style="font-size:10.5px; color:${INK}; line-height:1.25;"><b style="color:${ORA};">${d.sl}.</b> ${esc(d.label)} <span style="font-size:8.5px; color:${d.requirement === 'Mandatory' ? MAR : MUT};">(${d.requirement === 'Mandatory' ? 'Mandatory' : 'Optional'})</span></div></div>`;
@@ -5773,8 +5770,14 @@
       const appForPdf = { ...app, photoBase64: await coverCropDataUrl(app.photoBase64, 300, 375) };
       // Signature / office-use block is added only when an admin downloads (single or bulk); candidates get the normal format
       const rendered = await renderUnitsToCanvas(buildDetailsUnits(appForPdf, logo, { signatures: activeUserRole === 'admin', originalCheck: true }));
-      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
-      placeUnitsOnPages(doc, rendered);
+      let doc;
+      // Candidate copy must fit in 2 pages: if it runs over, the content is scaled down slightly (admin copy may use 3 pages)
+      const fitSteps = (activeUserRole === 'admin') ? [1] : [1, 0.96, 0.93, 0.9, 0.87, 0.84, 0.81, 0.78];
+      for (const k of fitSteps) {
+        doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+        placeUnitsOnPages(doc, rendered, k);
+        if (doc.getNumberOfPages() <= 2) break;
+      }
       decoratePages(doc, logo, app.appNo);
       return { bytes: new Uint8Array(doc.output('arraybuffer')), pages: doc.getNumberOfPages() };
     }
