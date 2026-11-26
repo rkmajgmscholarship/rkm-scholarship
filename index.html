@@ -5704,35 +5704,43 @@
       dRows.slice(2).forEach(r => push(r));
       push(`<div style="font-family:${F}; padding-top:10px;"><div style="border-top:2px solid ${MAR}; border-bottom:1px solid ${ORA}; background:${ORL}; padding:8px 14px; text-align:center; font-size:10px; color:#57534e; font-style:italic; line-height:1.5;">"This document is a digitally generated record of the information submitted by the applicant through the RKMA Jhargram Scholarship Portal. The uploaded documents are attached after these pages, in the order listed above."</div></div>`);
 
-      // ---- Office-use block (ONLY in PDFs downloaded by an admin): verification / photocopy check / approval ----
+      // ---- Office-use blocks in the downloaded PDF ----
+      // Admin PDF: three signatures + a compact "original documents checked" row underneath.
+      // Candidate PDF: a larger "original documents verification" block with a checklist (ticked by the Ashrama official, not the applicant).
+      const fld = (label, h) => `<div style="margin-top:7px;"><div style="font-size:8px; font-weight:bold; color:${MUT}; letter-spacing:0.3px;">${esc(label)}</div><div style="height:${h}px; border-bottom:1.2px solid ${MAR};"></div></div>`;
       if (opts.signatures) {
-        const line = (label) => `<td style="width:50%; padding:0 10px 0 0; vertical-align:bottom;">
-            <div style="font-size:8.5px; font-weight:bold; color:${MUT}; letter-spacing:0.5px; text-transform:uppercase;">${esc(label)}</div>
-            <div style="height:24px; border-bottom:1.5px solid ${MAR};"></div></td>`;
-        const card = (letter, byLbl, onLbl, sigLbl) => `
-          <div style="display:flex; border:1.5px solid ${ORB}; border-radius:8px; overflow:hidden; margin-top:10px; background:#fff;">
-            <div style="width:46px; background:${MAR}; border-right:4px solid ${ORA}; color:#fff; display:flex; align-items:center; justify-content:center; font-family:Georgia,'Times New Roman',serif; font-size:26px; font-weight:bold;">${letter}</div>
-            <div style="flex:1; padding:8px 14px 10px;">
-              <table style="width:100%; border-collapse:collapse;"><tr>${line(byLbl)}${line(onLbl)}</tr></table>
-              <div style="margin-top:8px; display:flex; align-items:flex-end; gap:12px;">
-                <div style="flex:1;">
-                  <div style="font-size:8.5px; font-weight:bold; color:${MUT}; letter-spacing:0.5px; text-transform:uppercase;">${esc(sigLbl)}</div>
-                  <div style="height:50px; border:1.5px dashed ${ORA}; border-radius:6px; background:${ORL}; margin-top:3px;"></div>
-                </div>
-                <div style="width:110px;">
-                  <div style="font-size:8.5px; font-weight:bold; color:${MUT}; letter-spacing:0.5px; text-transform:uppercase;">Office Seal</div>
-                  <div style="height:50px; border:1.5px dashed ${ORB}; border-radius:50px; margin-top:3px;"></div>
-                </div>
-              </div>
-            </div>
-          </div>`;
-        push(`<div style="font-family:${F}; padding-top:6px;">`
-          + secHead('OFFICE USE ONLY \u2013 VERIFICATION & APPROVAL')
-          + `<div style="font-size:9.5px; color:${MUT}; font-style:italic; padding:5px 2px 0;">To be filled in and signed by the authorised officials of the Ashrama. Applicant: ${esc(app.name || '')} \u2022 Application ID: ${esc(noAppNo)}</div>`
-          + card('A', 'Application verified by', 'Application verification on', 'Verifier Signature')
-          + card('B', 'Documents photocopy checked by', 'Documents photocopy checked on', 'Documents Photocopy Checker Signature')
-          + card('C', 'Application approved by', 'Application approved on', 'Approver Signature')
-          + `</div>`);
+        const col = (letter, byLbl, onLbl, sigLbl, last) => `
+          <td style="width:33.33%; vertical-align:top; padding:0 ${last ? 0 : 14}px 0 0;">
+            <div style="font-size:10px; font-weight:bold; color:${ORA}; letter-spacing:0.6px;">${letter}</div>
+            ${fld(byLbl, 17)}${fld(onLbl, 17)}${fld(sigLbl, 40)}
+          </td>`;
+        push(`<div style="font-family:${F}; padding-top:12px;">`
+          + `<div style="display:flex; align-items:center; gap:10px; border-bottom:2px solid ${MAR};"><div style="font-weight:bold; font-size:11px; letter-spacing:1px; color:${MAR}; padding-bottom:4px;">FOR OFFICE USE ONLY</div><div style="flex:1; height:2px; background:${ORA}; margin-bottom:5px;"></div></div>`
+          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:6px;"><tr>`
+          + col('A', 'Application verified by', 'Application verification on', 'Verifier signature')
+          + col('B', 'Documents photocopy checked by', 'Documents photocopy checked on', 'Documents photocopy checker signature')
+          + col('C', 'Application approved by', 'Application approved on', 'Approver signature', true)
+          + `</tr></table>`
+          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:12px; border-top:1px solid ${ORB};"><tr>`
+          + `<td style="width:50%; vertical-align:top; padding:0 14px 0 0;"><div style="font-size:10px; font-weight:bold; color:${ORA}; letter-spacing:0.6px; padding-top:6px;">D</div>${fld('Original documents checked by', 26)}</td>`
+          + `<td style="width:50%; vertical-align:top;"><div style="font-size:10px; font-weight:bold; color:${ORA}; letter-spacing:0.6px; padding-top:6px;">&nbsp;</div>${fld('Original documents checked on', 26)}</td>`
+          + `</tr></table></div>`);
+      } else if (opts.originalCheck) {
+        const box = `<span style="display:inline-block; width:13px; height:13px; border:1.6px solid ${MAR}; background:#fff; border-radius:2px; flex:none;"></span>`;
+        const item = d => `<div style="display:flex; align-items:center; gap:9px; padding:4px 0; border-bottom:1px dotted ${ORB};">${box}<div style="font-size:10.5px; color:${INK}; line-height:1.25;"><b style="color:${ORA};">${d.sl}.</b> ${esc(d.label)} <span style="font-size:8.5px; color:${d.requirement === 'Mandatory' ? MAR : MUT};">(${d.requirement === 'Mandatory' ? 'Mandatory' : 'Optional'})</span></div></div>`;
+        const half = Math.ceil(checklist.length / 2);
+        const left = checklist.slice(0, half).map(item).join('');
+        const right = checklist.slice(half).map(item).join('');
+        push(`<div style="font-family:${F}; padding-top:14px;">`
+          + `<div style="display:flex; align-items:stretch; background:${MAR}; border-radius:5px; overflow:hidden;"><div style="width:9px; background:${ORA};"></div><div style="padding:7px 14px;"><div style="color:#fff; font-weight:bold; font-size:12px; letter-spacing:0.9px;">ORIGINAL DOCUMENTS VERIFICATION</div><div style="color:#fcd9b6; font-size:9px; letter-spacing:0.8px; margin-top:1px;">FOR OFFICE USE ONLY \u2013 TO BE COMPLETED BY AN OFFICIAL OF THE ASHRAMA</div></div></div>`
+          + `<div style="margin-top:8px; background:${ORL}; border:1px solid ${ORB}; border-left:4px solid ${ORA}; border-radius:4px; padding:7px 12px; font-size:10px; color:#57534e; line-height:1.5;">`
+          + `<b style="color:${MAR};">Instruction to the applicant:</b> Please <b>do not tick</b> any of the boxes below. They will be ticked by an authorised official of the Ashrama when your <b>original documents</b> are checked at the Ashrama, who will then sign and write the date.`
+          + `<div style="margin-top:3px;">\u0986\u09AC\u09C7\u09A6\u09A8\u0995\u09BE\u09B0\u09C0 \u0995\u09CB\u09A8\u09CB \u099A\u09C7\u0995\u09AC\u0995\u09CD\u09B8\u09C7 \u099F\u09BF\u0995 \u09A6\u09C7\u09AC\u09C7\u09A8 \u09A8\u09BE\u0964 \u0986\u09B6\u09CD\u09B0\u09AE\u09C7\u09B0 \u09AA\u0995\u09CD\u09B7 \u09A5\u09C7\u0995\u09C7 \u09AE\u09C2\u09B2 (original) \u09A8\u09A5\u09BF \u09AF\u09BE\u099A\u09BE\u0987\u09DF\u09C7\u09B0 \u09B8\u09AE\u09DF \u09A6\u09BE\u09DF\u09BF\u09A4\u09CD\u09AC\u09AA\u09CD\u09B0\u09BE\u09AA\u09CD\u09A4 \u0986\u09A7\u09BF\u0995\u09BE\u09B0\u09BF\u0995 \u099F\u09BF\u0995 \u09A6\u09C7\u09AC\u09C7\u09A8, \u09B8\u09CD\u09AC\u09BE\u0995\u09CD\u09B7\u09B0 \u0995\u09B0\u09C7\u09A8 \u0993 \u09A4\u09BE\u09B0\u09BF\u0996 \u09B2\u09BF\u0996\u09AC\u09C7\u09A8\u0964</div></div>`
+          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:6px;"><tr><td style="width:50%; vertical-align:top; padding-right:14px;">${left}</td><td style="width:50%; vertical-align:top;">${right}</td></tr></table>`
+          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:8px;"><tr>`
+          + `<td style="width:55%; vertical-align:bottom; padding-right:18px;">${fld('Original documents checked by (name & signature of the official)', 40)}</td>`
+          + `<td style="width:45%; vertical-align:bottom;">${fld('Original documents checked on (date)', 40)}</td>`
+          + `</tr></table></div>`);
       }
 
       return units.map(u => `<div class="pdf-unit">${u.html}</div>`).join('');
@@ -5764,7 +5772,7 @@
       // The photo is cropped to the exact frame size first, so it always draws in the PDF
       const appForPdf = { ...app, photoBase64: await coverCropDataUrl(app.photoBase64, 300, 375) };
       // Signature / office-use block is added only when an admin downloads (single or bulk); candidates get the normal format
-      const rendered = await renderUnitsToCanvas(buildDetailsUnits(appForPdf, logo, { signatures: activeUserRole === 'admin' }));
+      const rendered = await renderUnitsToCanvas(buildDetailsUnits(appForPdf, logo, { signatures: activeUserRole === 'admin', originalCheck: true }));
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
       placeUnitsOnPages(doc, rendered);
       decoratePages(doc, logo, app.appNo);
