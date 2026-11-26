@@ -1703,6 +1703,54 @@
               <button class="btn-primary" style="background:#7f1d1d;" onclick="downloadAllCandidateProfileCardsZIP()">📦 Download All Profile Cards (ZIP)</button>
             </div>
           </div>
+          <!-- Advanced search & sort -->
+          <div style="background:#fafaf9; border:1px solid #e7e5e4; border-radius:10px; padding:10px 12px; margin-bottom:12px;">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px; align-items:end;">
+              <div style="grid-column: span 2; min-width:200px;">
+                <label style="font-size:11px; font-weight:bold; color:#57534e;">🔍 Search</label>
+                <input type="text" id="candSearchText" placeholder="Type name, candidate ID or mobile no…" oninput="renderRegisteredCandidatesTable()">
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:bold; color:#57534e;">Search by</label>
+                <select id="candSearchField" onchange="renderRegisteredCandidatesTable()">
+                  <option value="all">All fields</option>
+                  <option value="name">Name</option>
+                  <option value="id">Candidate ID</option>
+                  <option value="mobile">Mobile No.</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:bold; color:#57534e;">↕ Sort by</label>
+                <select id="candSortBy" onchange="renderRegisteredCandidatesTable()">
+                  <option value="default">Default (registration order)</option>
+                  <option value="name_asc">Name (A → Z)</option>
+                  <option value="name_desc">Name (Z → A)</option>
+                  <option value="id_asc">Candidate ID (A → Z)</option>
+                  <option value="id_desc">Candidate ID (Z → A)</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:bold; color:#57534e;">Profile</label>
+                <select id="candFilterProfile" onchange="renderRegisteredCandidatesTable()">
+                  <option value="">All</option>
+                  <option value="complete">Complete</option>
+                  <option value="incomplete">Incomplete</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:bold; color:#57534e;">Applied?</label>
+                <select id="candFilterApplied" onchange="renderRegisteredCandidatesTable()">
+                  <option value="">All</option>
+                  <option value="yes">Applied</option>
+                  <option value="no">Pending</option>
+                </select>
+              </div>
+              <div>
+                <button type="button" class="btn-neutral" style="width:100%;" onclick="resetCandidateSearch()">✖ Reset</button>
+              </div>
+            </div>
+            <div id="candResultCount" style="font-size:11.5px; color:#78716c; margin-top:8px;"></div>
+          </div>
           <div style="overflow-x:auto;">
             <table>
               <thead>
@@ -5520,7 +5568,8 @@
     }
 
     // Builds all blocks of the Application Details pages (maroon / orange format)
-    function buildDetailsUnits(app, logoDataUrl) {
+    function buildDetailsUnits(app, logoDataUrl, opts) {
+      opts = opts || {};
       const units = [];
       const push = html => units.push({ html: html, brk: false });
       const qrImg = makeQrDataUrl(applicationQrUrl(app));
@@ -5655,6 +5704,37 @@
       dRows.slice(2).forEach(r => push(r));
       push(`<div style="font-family:${F}; padding-top:10px;"><div style="border-top:2px solid ${MAR}; border-bottom:1px solid ${ORA}; background:${ORL}; padding:8px 14px; text-align:center; font-size:10px; color:#57534e; font-style:italic; line-height:1.5;">"This document is a digitally generated record of the information submitted by the applicant through the RKMA Jhargram Scholarship Portal. The uploaded documents are attached after these pages, in the order listed above."</div></div>`);
 
+      // ---- Office-use block (ONLY in PDFs downloaded by an admin): verification / photocopy check / approval ----
+      if (opts.signatures) {
+        const line = (label) => `<td style="width:50%; padding:0 10px 0 0; vertical-align:bottom;">
+            <div style="font-size:8.5px; font-weight:bold; color:${MUT}; letter-spacing:0.5px; text-transform:uppercase;">${esc(label)}</div>
+            <div style="height:24px; border-bottom:1.5px solid ${MAR};"></div></td>`;
+        const card = (letter, byLbl, onLbl, sigLbl) => `
+          <div style="display:flex; border:1.5px solid ${ORB}; border-radius:8px; overflow:hidden; margin-top:10px; background:#fff;">
+            <div style="width:46px; background:${MAR}; border-right:4px solid ${ORA}; color:#fff; display:flex; align-items:center; justify-content:center; font-family:Georgia,'Times New Roman',serif; font-size:26px; font-weight:bold;">${letter}</div>
+            <div style="flex:1; padding:8px 14px 10px;">
+              <table style="width:100%; border-collapse:collapse;"><tr>${line(byLbl)}${line(onLbl)}</tr></table>
+              <div style="margin-top:8px; display:flex; align-items:flex-end; gap:12px;">
+                <div style="flex:1;">
+                  <div style="font-size:8.5px; font-weight:bold; color:${MUT}; letter-spacing:0.5px; text-transform:uppercase;">${esc(sigLbl)}</div>
+                  <div style="height:50px; border:1.5px dashed ${ORA}; border-radius:6px; background:${ORL}; margin-top:3px;"></div>
+                </div>
+                <div style="width:110px;">
+                  <div style="font-size:8.5px; font-weight:bold; color:${MUT}; letter-spacing:0.5px; text-transform:uppercase;">Office Seal</div>
+                  <div style="height:50px; border:1.5px dashed ${ORB}; border-radius:50px; margin-top:3px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        push(`<div style="font-family:${F}; padding-top:6px;">`
+          + secHead('OFFICE USE ONLY \u2013 VERIFICATION & APPROVAL')
+          + `<div style="font-size:9.5px; color:${MUT}; font-style:italic; padding:5px 2px 0;">To be filled in and signed by the authorised officials of the Ashrama. Applicant: ${esc(app.name || '')} \u2022 Application ID: ${esc(noAppNo)}</div>`
+          + card('A', 'Application verified by', 'Application verification on', 'Verifier Signature')
+          + card('B', 'Documents photocopy checked by', 'Documents photocopy checked on', 'Documents Photocopy Checker Signature')
+          + card('C', 'Application approved by', 'Application approved on', 'Approver Signature')
+          + `</div>`);
+      }
+
       return units.map(u => `<div class="pdf-unit">${u.html}</div>`).join('');
     }
 
@@ -5683,7 +5763,8 @@
       const logo = await getLogoDataUrl();
       // The photo is cropped to the exact frame size first, so it always draws in the PDF
       const appForPdf = { ...app, photoBase64: await coverCropDataUrl(app.photoBase64, 300, 375) };
-      const rendered = await renderUnitsToCanvas(buildDetailsUnits(appForPdf, logo));
+      // Signature / office-use block is added only when an admin downloads (single or bulk); candidates get the normal format
+      const rendered = await renderUnitsToCanvas(buildDetailsUnits(appForPdf, logo, { signatures: activeUserRole === 'admin' }));
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
       placeUnitsOnPages(doc, rendered);
       decoratePages(doc, logo, app.appNo);
@@ -6693,18 +6774,62 @@
     // =============================================================
     // ADMIN: CANDIDATE REGISTRATION
     // =============================================================
+    function resetCandidateSearch() {
+      ['candSearchText', 'candFilterProfile', 'candFilterApplied'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+      const f = document.getElementById('candSearchField'); if (f) f.value = 'all';
+      const so = document.getElementById('candSortBy'); if (so) so.value = 'default';
+      renderRegisteredCandidatesTable();
+    }
+
     function renderRegisteredCandidatesTable() {
       const tbody = document.getElementById('registeredCandidatesTableBody');
+      if (!tbody) return;
+      const val = id => { const e = document.getElementById(id); return e ? e.value : ''; };
+      const q = val('candSearchText').trim().toLowerCase();
+      const qDigits = q.replace(/\D/g, '');
+      const field = val('candSearchField') || 'all';
+      const sortBy = val('candSortBy') || 'default';
+      const fProfile = val('candFilterProfile');
+      const fApplied = val('candFilterApplied');
+      const appliedSet = new Set(applications.map(a => a.candidateId));
+
+      let list = Object.keys(candidates).map(cid => ({ cid: cid, cand: candidates[cid], applied: appliedSet.has(cid) }));
+      const totalCount = list.length;
+
+      list = list.filter(r => {
+        const name = String(r.cand.name || '').toLowerCase();
+        const id = String(r.cid || '').toLowerCase();
+        const mob = String(r.cand.mobile || '');
+        if (q) {
+          const hitName = name.includes(q);
+          const hitId = id.includes(q);
+          const hitMob = qDigits ? mob.includes(qDigits) : mob.toLowerCase().includes(q);
+          const ok = field === 'name' ? hitName : field === 'id' ? hitId : field === 'mobile' ? hitMob : (hitName || hitId || hitMob);
+          if (!ok) return false;
+        }
+        if (fProfile === 'complete' && !r.cand.isProfileComplete) return false;
+        if (fProfile === 'incomplete' && r.cand.isProfileComplete) return false;
+        if (fApplied === 'yes' && !r.applied) return false;
+        if (fApplied === 'no' && r.applied) return false;
+        return true;
+      });
+
+      if (sortBy !== 'default') {
+        const dir = sortBy.endsWith('_desc') ? -1 : 1;
+        const byName = sortBy.startsWith('name');
+        const key = r => byName ? String(r.cand.name || '') : String(r.cid || '');
+        list.sort((a, b) => dir * key(a).localeCompare(key(b), undefined, { sensitivity: 'base', numeric: true }));
+      }
+
+      const cnt = document.getElementById('candResultCount');
+      if (cnt) cnt.innerText = (list.length === totalCount) ? `Showing all ${totalCount} candidate(s)` : `Showing ${list.length} of ${totalCount} candidate(s)`;
+
       tbody.innerHTML = '';
-      let sl = 1;
-
-      for (let cid in candidates) {
-        const cand = candidates[cid];
-        const isSubmitted = applications.some(a => a.candidateId === cid);
-
+      list.forEach((r, i) => {
+        const cid = r.cid, cand = r.cand, isSubmitted = r.applied;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${sl++}</td>
+          <td>${i + 1}</td>
           <td><strong>${esc(cid)}</strong></td>
           <td>${esc(cand.name)}</td>
           <td>${esc(cand.mobile)}</td>
@@ -6716,10 +6841,10 @@
           <td><button class="action-btn" style="background:#2563eb; color:#fff;" onclick="openAdminEditCandidate('${esc(cid)}')">✏️ Edit</button></td>
         `;
         tbody.appendChild(tr);
-      }
+      });
 
-      if (sl === 1) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:16px; color:#888;">No candidates registered yet.</td></tr>';
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:16px; color:#888;">${totalCount ? 'No candidate matches your search.' : 'No candidates registered yet.'}</td></tr>`;
       }
     }
 
