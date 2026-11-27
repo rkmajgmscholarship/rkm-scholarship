@@ -5819,6 +5819,8 @@
       // ---- Section 02: document verification (auto-filled from the Admin Panel) ----
       const checklist = getDocChecklist(app);
       const DOCROWS = [['Photograph', 'photo'], ['Signature', 'sign'], ['Aadhaar / Government ID', 'docAadhaar'], ['Admission Receipt / Admission Certificate', 'docAdm'], ['Previous Examination Marksheet', 'docMark'], ['Income Certificate', 'docIncome'], ['Bank Passbook', 'docPassbook'], ['Application Prayer', 'docPrayer'], ['Bonafide Certificate', 'docBonafide'], ['Caste Certificate', 'docCaste'], ['PH Certificate', 'docDisability']];
+      const chk8 = on => `<span style="display:inline-block; width:10px; height:10px; border:1.4px solid ${MAR}; border-radius:2px; vertical-align:-2px; margin-right:3px; background:#fff; text-align:center; line-height:8px; font-size:9px; font-weight:bold; color:${MAR};">${on ? '\u2713' : ''}</span>`;
+      const pair = (v, nv) => `${chk8(v)}Verified &nbsp;${chk8(nv)}Not Verified`;
       const rowsHtml = DOCROWS.map((r, i) => {
         const key = r[1];
         let present, req = 'Mandatory';
@@ -5826,16 +5828,21 @@
         else if (key === 'sign') present = !!app.signBase64;
         else { const c = checklist.find(x => x.key === key) || {}; present = !!c.uploaded; req = c.requirement || 'Mandatory'; }
         const dv = dvGet(app, key);
-        let status, remark = (dv.remark || '').trim();
-        if (!present && req === 'Not Applicable') { status = '<span style="font-size:9.5px; color:' + MUT + ';">Not applicable</span>'; remark = remark || ''; }
-        else if (!present) { status = chk(false) + 'Verified &nbsp; ' + chk(true) + 'Not Verified'; remark = remark || 'Not submitted'; }
-        else if (dv.status === 'Verified') status = chk(true) + 'Verified &nbsp; ' + chk(false) + 'Not Verified';
-        else if (dv.status === 'Rejected' || dv.status === 'Re-upload Required') { status = chk(false) + 'Verified &nbsp; ' + chk(true) + 'Not Verified'; remark = (dv.status + (remark ? ' \u2013 ' + remark : '')); }
-        else status = chk(false) + 'Verified &nbsp; ' + chk(false) + 'Not Verified';
-        return `<tr style="background:${i % 2 ? '#fff' : '#f8f1e1'};"><td style="padding:4px 8px; border-bottom:1px solid ${GOLDL}; font-size:10px; font-weight:bold; color:${INK};">${esc(r[0])}</td><td style="padding:4px 8px; border-bottom:1px solid ${GOLDL}; font-size:9.5px; color:${INK}; white-space:nowrap;">${status}</td><td style="padding:4px 8px; border-bottom:1px solid ${GOLDL}; font-size:9.5px; color:${INK}; overflow-wrap:anywhere;">${remark ? esc(remark) : '&nbsp;'}</td></tr>`;
+        const na = !present && req === 'Not Applicable';
+        let online, orig, remark = (dv.remark || '').trim();
+        if (na) { online = orig = '<span style="color:' + MUT + ';">Not applicable</span>'; }
+        else {
+          orig = pair(false, false);   // filled by hand when the original document is checked
+          if (!present) { online = pair(false, true); remark = remark || 'Not submitted'; }
+          else if (dv.status === 'Verified') online = pair(true, false);
+          else if (dv.status === 'Rejected' || dv.status === 'Re-upload Required') { online = pair(false, true); remark = dv.status + (remark ? ' \u2013 ' + remark : ''); }
+          else online = pair(false, false);
+        }
+        const td = (inner, extra) => `<td style="padding:4px 6px; border-bottom:1px solid ${GOLDL}; font-size:8.5px; color:${INK}; vertical-align:middle; ${extra || ''}">${inner}</td>`;
+        return `<tr style="background:${i % 2 ? '#fff' : '#f8f1e1'};">${td(esc(r[0]), 'font-size:9.5px; font-weight:bold;')}${td(online, 'white-space:nowrap;')}${td(orig, 'white-space:nowrap;')}${td('&nbsp;')}${td('&nbsp;')}</tr>`;
       }).join('');
-      const th = (t, w) => `<th style="width:${w}; text-align:left; padding:5px 8px; font-size:8.5px; letter-spacing:0.9px; color:#fff; background:${MAR};">${t}</th>`;
-      const sec2 = `<div>${secHd('02', 'Document Verification')}<table style="width:100%; border-collapse:collapse; table-layout:fixed; border:1px solid ${GOLD};"><thead><tr>${th('DOCUMENT NAME', '36%')}${th('VERIFICATION STATUS', '29%')}${th('REMARKS', '35%')}</tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
+      const th = (t, w) => `<th style="width:${w}; text-align:left; padding:4px 6px; font-size:7.5px; line-height:1.25; letter-spacing:0.6px; color:#fff; background:${MAR};">${t}</th>`;
+      const sec2 = `<div>${secHd('02', 'Document Verification')}<table style="width:100%; border-collapse:collapse; table-layout:fixed; border:1px solid ${GOLD};"><thead><tr>${th('DOCUMENT NAME', '25%')}${th('ONLINE VERIFICATION STATUS', '20%')}${th('ORIGINAL DOCUMENTS VERIFICATION STATUS', '20%')}${th('ORIGINAL DOCUMENTS VERIFICATION DATE', '12%')}${th('REMARKS', '23%')}</tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
 
       // ---- Section 03: scrutiny and final decision (kept separate) ----
       const dateApproved = (app.status === 'Approved') ? officeFmtDate(app.statusUpdatedAt) : '';
