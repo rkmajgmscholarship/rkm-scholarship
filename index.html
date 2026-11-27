@@ -5420,44 +5420,92 @@
       }
     }
 
-    // Places the rendered blocks onto A4 pages of a jsPDF document
-    function placeUnitsOnPages(doc, rendered, k) {
+    // Measures the blocks (no image is drawn) so the layout can be fitted before the real render
+    async function measureUnitsHtml(html) {
+      const area = document.getElementById('pdfRenderArea');
+      const wrap = document.createElement('div');
+      wrap.style.cssText = `width:${PDF_CONTENT_PX}px; background:#ffffff; position:relative; font-family:'Segoe UI','Noto Sans Bengali','Nirmala UI',Arial,sans-serif; color:#222;`;
+      wrap.innerHTML = html;
+      area.appendChild(wrap);
+      try {
+        await waitForImages(wrap);
+        const wrapTop = wrap.getBoundingClientRect().top;
+        return Array.from(wrap.querySelectorAll('.pdf-unit')).map(el => {
+          const r = el.getBoundingClientRect();
+          return { top: r.top - wrapTop, bottom: r.bottom - wrapTop, brk: el.dataset.brk === '1' };
+        });
+      } finally { area.removeChild(wrap); }
+    }
+
+    const PG_FIRST_TOP = 16, PG_OTHER_TOP = 30, PG_BOTTOM = 279;
+
+    // Greedy page split (a block is never cut). mmpx = millimetres per CSS pixel
+    function paginateUnits(units, mmpx) {
+      const pages = [];
+      let cur = null;
+      units.forEach((u, i) => {
+        if (!cur) {
+          cur = { first: i, last: i, start: u.top, end: u.bottom, top: PG_FIRST_TOP, capacity: (PG_BOTTOM - PG_FIRST_TOP) / mmpx };
+        } else if (u.brk || u.bottom - cur.start > cur.capacity) {
+          pages.push(cur);
+          cur = { first: i, last: i, start: u.top, end: u.bottom, top: PG_OTHER_TOP, capacity: (PG_BOTTOM - PG_OTHER_TOP) / mmpx };
+        } else { cur.last = i; cur.end = u.bottom; }
+      });
+      if (cur) pages.push(cur);
+      return pages;
+    }
+
+    // Finds the row padding (or, if the content is too long, a slight shrink) so the application details fill exactly 2 pages
+    async function fitDetailsToTwoPages(app, logo) {
+      const base = await measureUnitsHtml(buildDetailsUnits(app, logo, { pad: 4 }));
+      if (paginateUnits(base, MM_PER_PX).length <= 2) {
+        let lo = 4, hi = 20;
+        while (hi - lo > 0.25) {
+          const mid = (lo + hi) / 2;
+          const u = await measureUnitsHtml(buildDetailsUnits(app, logo, { pad: mid }));
+          if (paginateUnits(u, MM_PER_PX).length <= 2) lo = mid; else hi = mid;
+        }
+        return { pad: lo, k: 1 };
+      }
+      for (let k = 0.98; k >= 0.7; k -= 0.02) {
+        if (paginateUnits(base, MM_PER_PX * k).length <= 2) return { pad: 4, k: k };
+      }
+      return { pad: 4, k: 0.7 };
+    }
+
+    // Places the rendered blocks onto A4 pages. With fill = true, any leftover space on a page is
+    // shared out between the blocks so every page ends exactly at the bottom margin (no empty area).
+    function placeUnitsOnPages(doc, rendered, k, fill) {
       k = k || 1;
       const MMPX = MM_PER_PX * k, IMG_W = 178 * k, IMG_X = 16 + (178 - IMG_W) / 2;
       const { canvas, units, scale } = rendered;
-      const FIRST_TOP = 16, OTHER_TOP = 30, BOTTOM = 279;
-      let pageNo = 0;
-      let capacity = (BOTTOM - FIRST_TOP) / MMPX;
-      let pageStart = units.length ? units[0].top : 0;
-      let pageEnd = pageStart;
-
-      const flush = () => {
-        if (pageEnd <= pageStart) return;
-        const sy = Math.max(0, Math.round(pageStart * scale));
-        const sh = Math.min(canvas.height - sy, Math.round((pageEnd - pageStart) * scale));
-        if (sh <= 0) return;
-        const slice = document.createElement('canvas');
-        slice.width = canvas.width;
-        slice.height = sh;
-        const ctx = slice.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, slice.width, slice.height);
-        ctx.drawImage(canvas, 0, sy, canvas.width, sh, 0, 0, canvas.width, sh);
-        if (pageNo > 0) doc.addPage();
-        const y = pageNo === 0 ? FIRST_TOP : OTHER_TOP;
-        doc.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', IMG_X, y, IMG_W, (pageEnd - pageStart) * MMPX, undefined, 'FAST');
-        pageNo++;
-      };
-
-      units.forEach(u => {
-        if ((u.brk || u.bottom - pageStart > capacity) && pageEnd > pageStart) {
-          flush();
-          pageStart = u.top;
-          capacity = (BOTTOM - OTHER_TOP) / MMPX;
+      const pages = paginateUnits(units, MMPX);
+      pages.forEach((pg, pi) => {
+        const isLast = pi === pages.length - 1;
+        const n = pg.last - pg.first + 1;
+        let gap = 0;
+        if (fill && (pages.length <= 2 || !isLast) && n > 1) {
+          gap = Math.min(14, Math.max(0, (pg.capacity - (pg.end - pg.start)) / (n - 1)));
         }
-        pageEnd = u.bottom;
+        const contentPx = (pg.end - pg.start) + gap * (n - 1);
+        const H = Math.max(1, Math.round(contentPx * scale));
+        const slice = document.createElement('canvas');
+        slice.width = canvas.width; slice.height = H;
+        const ctx = slice.getContext('2d');
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, slice.width, slice.height);
+        let dy = 0;
+        for (let i = pg.first; i <= pg.last; i++) {
+          const srcTop = units[i].top;
+          const srcBot = (i < pg.last) ? units[i + 1].top : units[i].bottom;
+          const sy = Math.max(0, Math.round(srcTop * scale));
+          const sh = Math.min(canvas.height - sy, Math.max(1, Math.round((srcBot - srcTop) * scale)));
+          const dyy = Math.round(dy * scale);
+          if (sh > 0) ctx.drawImage(canvas, 0, sy, canvas.width, sh, 0, dyy, canvas.width, sh);
+          dy += (srcBot - srcTop) + gap;
+        }
+        if (pi > 0) doc.addPage();
+        doc.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', IMG_X, pg.top, IMG_W, contentPx * MMPX, undefined, 'FAST');
       });
-      flush();
     }
 
     function imageFormatOf(dataUrl) {
@@ -5465,9 +5513,10 @@
     }
 
     // Small header (pages 2+) and footer (Application ID + page numbers) on all pages
-    function decoratePages(doc, logoDataUrl, appNo) {
+    function decoratePages(doc, logoDataUrl, appNo, skipPage) {
       const total = doc.getNumberOfPages();
       for (let i = 1; i <= total; i++) {
+        if (skipPage && i === skipPage) continue;   // the Office Use page carries its own border and footer
         doc.setPage(i);
 
         if (i > 1) {
@@ -5572,6 +5621,7 @@
     // Builds all blocks of the Application Details pages (maroon / orange format)
     function buildDetailsUnits(app, logoDataUrl, opts) {
       opts = opts || {};
+      const PY = (opts.pad !== undefined ? opts.pad : 4);
       const units = [];
       const push = html => units.push({ html: html, brk: false });
       const qrImg = makeQrDataUrl(applicationQrUrl(app));
@@ -5621,10 +5671,10 @@
       const secHead = t => `<div style="font-family:${F}; display:flex; align-items:stretch; background:${MAR}; border-radius:5px; margin-top:9px; overflow:hidden;"><div style="width:9px; background:${ORA};"></div><div style="color:#fff; font-weight:bold; font-size:11.5px; letter-spacing:0.8px; padding:6px 14px;">${esc(t)}</div></div>`;
       const subHead = t => `<div style="font-family:${F}; background:${ORB}; border-left:4px solid ${MAR}; padding:3px 12px; font-weight:bold; font-size:10.5px; color:${MAR}; margin-top:4px;">${esc(t)}</div>`;
       let rowNo = 0;
-      const cellL = (l, v) => `<div style="width:50%; display:flex; min-width:0;"><div style="width:42%; padding:4px 8px; font-weight:bold; font-size:10px; color:${MAR};">${esc(l)}</div><div style="width:58%; padding:4px 8px 4px 2px; font-size:11px; color:${INK}; overflow-wrap:anywhere;">${val(v)}</div></div>`;
+      const cellL = (l, v) => `<div style="width:50%; display:flex; min-width:0;"><div style="width:42%; padding:${PY}px 8px; font-weight:bold; font-size:10px; color:${MAR};">${esc(l)}</div><div style="width:58%; padding:${PY}px 8px ${PY}px 2px; font-size:11px; color:${INK}; overflow-wrap:anywhere;">${val(v)}</div></div>`;
       const rowHtml = (a, b) => {
         const bg = (rowNo++ % 2) ? '#fff' : ORL;
-        if (!b) return `<div style="font-family:${F}; display:flex; background:${bg}; border-bottom:1px solid ${ORB};"><div style="width:21%; padding:4px 8px; font-weight:bold; font-size:10px; color:${MAR};">${esc(a[0])}</div><div style="width:79%; padding:4px 8px 4px 2px; font-size:11px; color:${INK}; overflow-wrap:anywhere;">${val(a[1])}</div></div>`;
+        if (!b) return `<div style="font-family:${F}; display:flex; background:${bg}; border-bottom:1px solid ${ORB};"><div style="width:21%; padding:${PY}px 8px; font-weight:bold; font-size:10px; color:${MAR};">${esc(a[0])}</div><div style="width:79%; padding:${PY}px 8px ${PY}px 2px; font-size:11px; color:${INK}; overflow-wrap:anywhere;">${val(a[1])}</div></div>`;
         return `<div style="font-family:${F}; display:flex; background:${bg}; border-bottom:1px solid ${ORB};">${cellL(a[0], a[1])}<div style="width:1px; background:${ORB};"></div>${cellL(b[0], b[1])}</div>`;
       };
       const isLong = r => String(r[0]).length > 30 || (typeof r[1] === 'string' && r[1].length > 26);
@@ -5690,7 +5740,7 @@
 
       // ---- Section 06: documents (file name + Mandatory / Optional) ----
       const checklist = sections[5].checklist;
-      const thc = (w, t, al) => `<div style="width:${w}; padding:4px 8px; text-align:${al || 'left'};">${t}</div>`;
+      const thc = (w, t, al) => `<div style="width:${w}; padding:${PY}px 8px; text-align:${al || 'left'};">${t}</div>`;
       const dHead = `<div style="font-family:${F}; display:flex; background:${MAR}; color:#fff; font-weight:bold; font-size:9.5px; letter-spacing:0.5px; margin-top:6px;">${thc('7%', 'SL')}${thc('33%', 'DOCUMENT')}${thc('42%', 'UPLOADED FILE NAME')}${thc('18%', 'REQUIREMENT', 'right')}</div>`;
       const dRows = checklist.map((d, i) => {
         const bg = (i % 2) ? '#fff' : ORL;
@@ -5700,45 +5750,11 @@
         if (d.uploaded) fn = `<span style="color:#15803d;">${esc(d.fileName)}</span>`;
         else if (d.requirement === 'Mandatory') fn = `<span style="color:#b91c1c; font-weight:bold;">Not uploaded</span>`;
         else fn = `<span style="color:${MUT};">Not uploaded${d.requirement === 'Not Applicable' ? ' (not applicable)' : ''}</span>`;
-        return `<div style="font-family:${F}; display:flex; align-items:center; background:${bg}; border-bottom:1px solid ${ORB}; font-size:10.5px;">${thc('7%', `<b style="color:${ORA};">${d.sl}</b>`)}${thc('33%', esc(d.label))}<div style="width:42%; padding:4px 8px; font-size:10px; overflow-wrap:anywhere;">${fn}</div>${thc('18%', `<b style="color:${reqCol};">${req}</b>`, 'right')}</div>`;
+        return `<div style="font-family:${F}; display:flex; align-items:center; background:${bg}; border-bottom:1px solid ${ORB}; font-size:10.5px;">${thc('7%', `<b style="color:${ORA};">${d.sl}</b>`)}${thc('33%', esc(d.label))}<div style="width:42%; padding:${PY}px 8px; font-size:10px; overflow-wrap:anywhere;">${fn}</div>${thc('18%', `<b style="color:${reqCol};">${req}</b>`, 'right')}</div>`;
       });
       push(secHead('SECTION 06 \u2013 DOCUMENTS SUBMITTED') + dHead + dRows.slice(0, 2).join(''));
       dRows.slice(2).forEach(r => push(r));
       push(`<div style="font-family:${F}; padding-top:10px;"><div style="border-top:2px solid ${MAR}; border-bottom:1px solid ${ORA}; background:${ORL}; padding:8px 14px; text-align:center; font-size:10px; color:#57534e; font-style:italic; line-height:1.5;">"This document is a digitally generated record of the information submitted by the applicant through the RKMA Jhargram Scholarship Portal. The uploaded documents are attached after these pages, in the order listed above."</div></div>`);
-
-      // ---- Office-use blocks in the downloaded PDF ----
-      // Admin PDF: three signatures + a compact "original documents checked" row underneath.
-      // Candidate PDF: a larger "original documents verification" block with a checklist (ticked by the Ashrama official, not the applicant).
-      const fld = (label, h) => `<div style="margin-top:7px;"><div style="font-size:8px; font-weight:bold; color:${MUT}; letter-spacing:0.3px;">${esc(label)}</div><div style="height:${h}px; border-bottom:1.2px solid ${MAR};"></div></div>`;
-      if (opts.signatures) {
-        const rowsA = ['Application verified by', 'Application rechecked by', 'Application approved by', 'Original documents checked by'];
-        const hd = (t, w) => `<td style="width:${w}; padding:0 0 3px; font-size:8px; font-weight:bold; color:${MUT}; letter-spacing:0.5px;">${t}</td>`;
-        const rw = lbl => `<tr>
-            <td style="width:34%; vertical-align:bottom; padding:0 8px 3px 0; font-size:10.5px; font-weight:bold; color:${MAR};">${esc(lbl)}</td>
-            <td style="width:42%; vertical-align:bottom; padding:0 14px 0 0;"><div style="height:25px; border-bottom:1.2px solid ${MAR};"></div></td>
-            <td style="width:24%; vertical-align:bottom;"><div style="height:25px; border-bottom:1.2px solid ${MAR};"></div></td></tr>`;
-        push(`<div style="font-family:${F}; padding-top:12px;">`
-          + `<div style="display:flex; align-items:center; gap:10px; border-bottom:2px solid ${MAR};"><div style="font-weight:bold; font-size:11px; letter-spacing:1px; color:${MAR}; padding-bottom:4px;">FOR OFFICE USE ONLY</div><div style="flex:1; height:2px; background:${ORA}; margin-bottom:5px;"></div></div>`
-          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:4px;"><tr>${hd('', '34%')}${hd('SIGNATURE', '42%')}${hd('DATE', '24%')}</tr>`
-          + rowsA.map(rw).join('')
-          + `</table></div>`);
-      } else if (opts.originalCheck) {
-        const box = `<span style="display:inline-block; width:13px; height:13px; border:1.6px solid ${MAR}; background:#fff; border-radius:2px; flex:none;"></span>`;
-        const item = d => `<div style="display:flex; align-items:center; gap:9px; padding:4px 0; border-bottom:1px dotted ${ORB};">${box}<div style="font-size:10.5px; color:${INK}; line-height:1.25;"><b style="color:${ORA};">${d.sl}.</b> ${esc(d.label)} <span style="font-size:8.5px; color:${d.requirement === 'Mandatory' ? MAR : MUT};">(${d.requirement === 'Mandatory' ? 'Mandatory' : 'Optional'})</span></div></div>`;
-        const half = Math.ceil(checklist.length / 2);
-        const left = checklist.slice(0, half).map(item).join('');
-        const right = checklist.slice(half).map(item).join('');
-        push(`<div style="font-family:${F}; padding-top:14px;">`
-          + `<div style="display:flex; align-items:stretch; background:${MAR}; border-radius:5px; overflow:hidden;"><div style="width:9px; background:${ORA};"></div><div style="padding:7px 14px;"><div style="color:#fff; font-weight:bold; font-size:12px; letter-spacing:0.9px;">ORIGINAL DOCUMENTS VERIFICATION</div><div style="color:#fcd9b6; font-size:9px; letter-spacing:0.8px; margin-top:1px;">FOR OFFICE USE ONLY \u2013 TO BE COMPLETED BY AN OFFICIAL OF THE ASHRAMA</div></div></div>`
-          + `<div style="margin-top:8px; background:${ORL}; border:1px solid ${ORB}; border-left:4px solid ${ORA}; border-radius:4px; padding:7px 12px; font-size:10px; color:#57534e; line-height:1.5;">`
-          + `<b style="color:${MAR};">Instruction to the applicant:</b> Please <b>do not tick</b> any of the boxes below. They will be ticked by an authorised official of the Ashrama when your <b>original documents</b> are checked at the Ashrama, who will then sign and write the date.`
-          + `<div style="margin-top:3px;">\u0986\u09AC\u09C7\u09A6\u09A8\u0995\u09BE\u09B0\u09C0 \u0995\u09CB\u09A8\u09CB \u099A\u09C7\u0995\u09AC\u0995\u09CD\u09B8\u09C7 \u099F\u09BF\u0995 \u09A6\u09C7\u09AC\u09C7\u09A8 \u09A8\u09BE\u0964 \u0986\u09B6\u09CD\u09B0\u09AE\u09C7\u09B0 \u09AA\u0995\u09CD\u09B7 \u09A5\u09C7\u0995\u09C7 \u09AE\u09C2\u09B2 (original) \u09A8\u09A5\u09BF \u09AF\u09BE\u099A\u09BE\u0987\u09DF\u09C7\u09B0 \u09B8\u09AE\u09DF \u09A6\u09BE\u09DF\u09BF\u09A4\u09CD\u09AC\u09AA\u09CD\u09B0\u09BE\u09AA\u09CD\u09A4 \u0986\u09A7\u09BF\u0995\u09BE\u09B0\u09BF\u0995 \u099F\u09BF\u0995 \u09A6\u09C7\u09AC\u09C7\u09A8, \u09B8\u09CD\u09AC\u09BE\u0995\u09CD\u09B7\u09B0 \u0995\u09B0\u09C7\u09A8 \u0993 \u09A4\u09BE\u09B0\u09BF\u0996 \u09B2\u09BF\u0996\u09AC\u09C7\u09A8\u0964</div></div>`
-          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:6px;"><tr><td style="width:50%; vertical-align:top; padding-right:14px;">${left}</td><td style="width:50%; vertical-align:top;">${right}</td></tr></table>`
-          + `<table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:8px;"><tr>`
-          + `<td style="width:55%; vertical-align:bottom; padding-right:18px;">${fld('Original documents checked by (name & signature of the official)', 40)}</td>`
-          + `<td style="width:45%; vertical-align:bottom;">${fld('Original documents checked on (date)', 40)}</td>`
-          + `</tr></table></div>`);
-      }
 
       return units.map(u => `<div class="pdf-unit">${u.html}</div>`).join('');
     }
@@ -5763,22 +5779,142 @@
       });
     }
 
+    // ---------- "FOR OFFICE USE ONLY" page (Office Copy only) ----------
+    function officeFmtDate(v) {
+      if (!v) return '';
+      const d = new Date(v);
+      if (isNaN(d.getTime())) return '';
+      const p = n => String(n).padStart(2, '0');
+      return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+    }
+
+    function buildOfficeUsePageHtml(app, logoDataUrl) {
+      const F = DOSSIER_FONT, SERIF = "Georgia,'Times New Roman',serif";
+      const MAR = '#7f1d1d', GOLD = '#b08d3c', GOLDL = '#e8dcc0', INK = '#2b2b2b', MUT = '#6b6358', IVO = '#fbf7ee';
+      const qrImg = makeQrDataUrl(applicationQrUrl(app));
+      const status = (app.status && app.status !== 'Submitted') ? app.status : 'Submitted';
+      const isSanc = app.status === 'Sanctioned', isRej = app.status === 'Rejected';
+      const nature = app.nature ? String(app.nature).charAt(0).toUpperCase() + String(app.nature).slice(1).toLowerCase() : '';
+      const chk = on => `<span style="display:inline-block; width:11px; height:11px; border:1.4px solid ${MAR}; border-radius:2px; vertical-align:-2px; margin-right:5px; background:#fff; text-align:center; line-height:9px; font-size:10px; font-weight:bold; color:${MAR};">${on ? '\u2713' : ''}</span>`;
+
+      // label + value (or an empty ruled line for handwriting; blank data is never shown as filled)
+      const fld = (label, value, minH) => `<div style="min-width:0;"><div style="font-size:7.5px; font-weight:bold; letter-spacing:0.8px; color:${MUT}; text-transform:uppercase;">${esc(label)}</div><div style="min-height:${minH || 19}px; border-bottom:1px solid ${GOLD}; font-size:11px; font-weight:bold; color:${INK}; padding:2px 0 2px; overflow-wrap:anywhere; line-height:1.25;">${value ? esc(value) : '&nbsp;'}</div></div>`;
+      const secHd = (no, t) => `<div style="display:flex; align-items:center; gap:9px; margin-bottom:6px;"><div style="background:${MAR}; color:#fff; font-family:${SERIF}; font-size:10px; font-weight:bold; letter-spacing:0.5px; padding:3px 9px; border-radius:2px;">${no}</div><div style="font-family:${SERIF}; font-size:12px; font-weight:bold; letter-spacing:1px; color:${MAR}; text-transform:uppercase;">${esc(t)}</div><div style="flex:1; height:1px; background:${GOLD};"></div></div>`;
+
+      // ---- Section 01 ----
+      const sec1 = `<div>${secHd('01', 'Application Identification')}
+        <div style="display:flex; gap:16px; align-items:stretch;">
+          <div style="flex:1; display:grid; grid-template-columns:1fr 1fr; column-gap:18px; row-gap:6px;">
+            ${fld('Application Number', app.appNo || '')}${fld('Candidate ID', app.candidateId || '')}
+            ${fld('Candidate Name', app.name || '')}${fld('Application Nature', nature)}
+            ${fld('Scholarship Scheme', app.schemeName || '')}${fld('Academic Session', dossierSession(app))}
+            ${fld('Date of Submission', getSubmissionDateText(app))}${fld('Current Portal Status', status)}
+          </div>
+          <div style="width:92px; text-align:center; border:1px solid ${GOLD}; background:#fff; padding:5px 4px; border-radius:3px;">
+            <img src="${qrImg}" style="width:78px; height:78px; display:block; margin:0 auto;">
+            <div style="font-size:6.5px; letter-spacing:0.5px; color:${MUT}; margin-top:2px;">SCAN FOR APPLICATION</div>
+          </div>
+        </div></div>`;
+
+      // ---- Section 02: document verification (auto-filled from the Admin Panel) ----
+      const checklist = getDocChecklist(app);
+      const DOCROWS = [['Photograph', 'photo'], ['Signature', 'sign'], ['Aadhaar / Government ID', 'docAadhaar'], ['Admission Receipt / Admission Certificate', 'docAdm'], ['Previous Examination Marksheet', 'docMark'], ['Income Certificate', 'docIncome'], ['Bank Passbook', 'docPassbook'], ['Application Prayer', 'docPrayer'], ['Bonafide Certificate', 'docBonafide'], ['Caste Certificate', 'docCaste'], ['PH Certificate', 'docDisability']];
+      const rowsHtml = DOCROWS.map((r, i) => {
+        const key = r[1];
+        let present, req = 'Mandatory';
+        if (key === 'photo') present = !!app.photoBase64;
+        else if (key === 'sign') present = !!app.signBase64;
+        else { const c = checklist.find(x => x.key === key) || {}; present = !!c.uploaded; req = c.requirement || 'Mandatory'; }
+        const dv = dvGet(app, key);
+        let status, remark = (dv.remark || '').trim();
+        if (!present && req === 'Not Applicable') { status = '<span style="font-size:9.5px; color:' + MUT + ';">Not applicable</span>'; remark = remark || ''; }
+        else if (!present) { status = chk(false) + 'Verified &nbsp; ' + chk(true) + 'Not Verified'; remark = remark || 'Not submitted'; }
+        else if (dv.status === 'Verified') status = chk(true) + 'Verified &nbsp; ' + chk(false) + 'Not Verified';
+        else if (dv.status === 'Rejected' || dv.status === 'Re-upload Required') { status = chk(false) + 'Verified &nbsp; ' + chk(true) + 'Not Verified'; remark = (dv.status + (remark ? ' \u2013 ' + remark : '')); }
+        else status = chk(false) + 'Verified &nbsp; ' + chk(false) + 'Not Verified';
+        return `<tr style="background:${i % 2 ? '#fff' : '#f8f1e1'};"><td style="padding:4px 8px; border-bottom:1px solid ${GOLDL}; font-size:10px; font-weight:bold; color:${INK};">${esc(r[0])}</td><td style="padding:4px 8px; border-bottom:1px solid ${GOLDL}; font-size:9.5px; color:${INK}; white-space:nowrap;">${status}</td><td style="padding:4px 8px; border-bottom:1px solid ${GOLDL}; font-size:9.5px; color:${INK}; overflow-wrap:anywhere;">${remark ? esc(remark) : '&nbsp;'}</td></tr>`;
+      }).join('');
+      const th = (t, w) => `<th style="width:${w}; text-align:left; padding:5px 8px; font-size:8.5px; letter-spacing:0.9px; color:#fff; background:${MAR};">${t}</th>`;
+      const sec2 = `<div>${secHd('02', 'Document Verification')}<table style="width:100%; border-collapse:collapse; table-layout:fixed; border:1px solid ${GOLD};"><thead><tr>${th('DOCUMENT NAME', '36%')}${th('VERIFICATION STATUS', '29%')}${th('REMARKS', '35%')}</tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
+
+      // ---- Section 03: scrutiny and final decision (kept separate) ----
+      const dateApproved = (app.status === 'Approved') ? officeFmtDate(app.statusUpdatedAt) : '';
+      const scrutinyDate = officeFmtDate((app.vChecklist || {}).at);
+      const box = (title, inner) => `<div style="flex:1; border:1px solid ${GOLD}; background:#fff; border-radius:3px; padding:7px 12px 9px;"><div style="font-size:8.5px; font-weight:bold; letter-spacing:1px; color:${MAR}; margin-bottom:4px;">${title}</div>${inner}</div>`;
+      const sec3 = `<div>${secHd('03', 'Scrutiny & Final Decision')}
+        <div style="display:flex; gap:14px;">
+          ${box('SCRUTINY', `<div style="display:grid; row-gap:6px;">${fld('Date of Scrutiny', scrutinyDate)}${fld('Date of Physical Meet', '')}${fld('Date of Approval', dateApproved)}</div>`)}
+          ${box('FINAL DECISION', `<div style="display:grid; row-gap:6px;">
+              <div><div style="font-size:7.5px; font-weight:bold; letter-spacing:0.8px; color:${MUT};">FINAL DECISION</div><div style="min-height:19px; border-bottom:1px solid ${GOLD}; font-size:11px; font-weight:bold; color:${INK}; padding:2px 0;">${chk(isSanc)}Sanctioned &nbsp;&nbsp; ${chk(isRej)}Rejected</div></div>
+              ${fld('Sanctioned Amount', isSanc ? rupees(app.sanctionedAmount) : '')}${fld('Sanction Date', isSanc ? dateOnlyDMY(app.sanctionedDate) : '')}</div>`)}
+        </div>
+        <div style="margin-top:8px; border:1px solid ${GOLD}; background:#fff; border-radius:3px; padding:6px 12px 4px;">
+          <div style="font-size:8.5px; font-weight:bold; letter-spacing:1px; color:${MAR};">SCRUTINY RECOMMENDATION / OFFICE REMARKS <span style="font-weight:normal; color:${MUT};">(internal)</span></div>
+          ${(app.internalRemarks || app.adminRemarks) ? `<div style="font-size:9.5px; color:${INK}; margin-top:3px; line-height:1.4; max-height:40px; overflow:hidden;">${app.internalRemarks ? '<b>Internal note:</b> ' + esc(app.internalRemarks) + ' ' : ''}${app.adminRemarks ? '<b>Remark to candidate:</b> ' + esc(app.adminRemarks) : ''}</div>` : ''}
+          <div style="height:19px; border-bottom:1px solid ${GOLDL};"></div><div style="height:19px; border-bottom:1px solid ${GOLDL};"></div><div style="height:15px;"></div>
+        </div></div>`;
+
+      // ---- Section 04: authentication ----
+      const sigCol = (letter, title) => `<div style="flex:1; border:1px solid ${GOLD}; background:#fff; border-radius:3px; padding:7px 11px 9px;">
+          <div style="font-family:${SERIF}; font-size:10.5px; font-weight:bold; color:${MAR}; letter-spacing:0.4px;">${letter}. ${esc(title)}</div>
+          <div style="margin-top:6px;">${fld('Name', '', 17)}</div>
+          <div style="margin-top:6px;"><div style="font-size:7.5px; font-weight:bold; letter-spacing:0.8px; color:${MUT};">SIGNATURE</div><div style="height:42px; border-bottom:1px solid ${GOLD};"></div></div>
+          <div style="margin-top:6px;">${fld('Date', '', 17)}</div></div>`;
+      const sec4 = `<div>${secHd('04', 'Authentication & Approval')}
+        <div style="display:flex; gap:10px;">${sigCol('A', 'Scrutiny Officer')}${sigCol('B', 'Verification Officer')}${sigCol('C', 'Approving Authority')}
+          <div style="width:96px; border:1px solid ${GOLD}; background:#fff; border-radius:3px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:6px 4px;"><div style="width:74px; height:74px; border:1px dashed ${GOLD}; border-radius:50%;"></div><div style="font-size:7.5px; font-weight:bold; letter-spacing:0.9px; color:${MUT}; margin-top:6px; text-align:center;">OFFICIAL SEAL</div></div>
+        </div>
+        <div style="display:flex; gap:14px; margin-top:8px; border:1px solid ${GOLD}; background:#fff; border-radius:3px; padding:6px 12px 8px;">
+          <div style="flex:1.4;">${fld('Original documents checked by', '', 22)}</div><div style="flex:1;">${fld('Signature', '', 22)}</div><div style="flex:0.8;">${fld('Date', '', 22)}</div>
+        </div></div>`;
+
+      return `<div style="position:relative; width:794px; height:1123px; background:${IVO}; font-family:${F}; color:${INK}; box-sizing:border-box;">
+        <div style="position:absolute; left:16px; top:16px; right:16px; bottom:16px; border:1.5px solid ${MAR};"></div>
+        <div style="position:absolute; left:21px; top:21px; right:21px; bottom:21px; border:0.6px solid ${GOLD};"></div>
+        <div style="position:absolute; left:38px; right:38px; top:34px; bottom:34px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="text-align:center;">
+            ${logoDataUrl ? `<img src="${logoDataUrl}" style="width:58px; height:58px; object-fit:contain; display:block; margin:0 auto;">` : ''}
+            <div style="font-family:${SERIF}; font-size:18px; font-weight:bold; color:${MAR}; letter-spacing:0.6px; margin-top:4px;">RAMAKRISHNA MISSION ASHRAMA, JHARGRAM</div>
+            <div style="font-size:10px; color:${MUT}; margin-top:2px;">Satyabanpally, Jhargram \u2013 721507, West Bengal</div>
+            <div style="display:flex; align-items:center; gap:8px; margin:7px 60px 6px;"><div style="flex:1; height:1px; background:${GOLD};"></div><div style="width:6px; height:6px; background:${GOLD}; transform:rotate(45deg);"></div><div style="flex:1; height:1px; background:${GOLD};"></div></div>
+            <div style="font-family:${SERIF}; font-size:21px; font-weight:bold; letter-spacing:3px; color:${MAR};">FOR OFFICE USE ONLY</div>
+            <div style="font-size:8.5px; letter-spacing:2.2px; color:${GOLD}; font-weight:bold; margin-top:3px;">CONFIDENTIAL ADMINISTRATIVE RECORD</div>
+          </div>
+          ${sec1}${sec2}${sec3}${sec4}
+          <div style="text-align:center; font-size:7.5px; letter-spacing:1.6px; color:${MUT}; border-top:1px solid ${GOLD}; padding-top:6px;">OFFICIAL RECORD \u2022 NOT TO BE FILLED IN BY THE APPLICANT</div>
+        </div></div>`;
+    }
+
+    async function addOfficeUsePage(doc, app, logo) {
+      const h2c = await ensureHtml2Canvas();
+      const area = document.getElementById('pdfRenderArea');
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'width:794px; height:1123px; position:relative; background:#fbf7ee;';
+      wrap.innerHTML = buildOfficeUsePageHtml(app, logo);
+      area.appendChild(wrap);
+      try {
+        await waitForImages(wrap);
+        const canvas = await h2c(wrap, { scale: 2, backgroundColor: '#fbf7ee', useCORS: true, logging: false });
+        doc.addPage();
+        doc.addImage(canvas.toDataURL('image/jpeg', 0.93), 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+      } finally { area.removeChild(wrap); }
+    }
+
     async function generateApplicationDetailsPdf(app) {
       const { jsPDF } = window.jspdf;
       const logo = await getLogoDataUrl();
+      const isAdmin = activeUserRole === 'admin';
       // The photo is cropped to the exact frame size first, so it always draws in the PDF
       const appForPdf = { ...app, photoBase64: await coverCropDataUrl(app.photoBase64, 300, 375) };
-      // Signature / office-use block is added only when an admin downloads (single or bulk); candidates get the normal format
-      const rendered = await renderUnitsToCanvas(buildDetailsUnits(appForPdf, logo, { signatures: activeUserRole === 'admin', originalCheck: true }));
-      let doc;
-      // Candidate copy must fit in 2 pages: if it runs over, the content is scaled down slightly (admin copy may use 3 pages)
-      const fitSteps = (activeUserRole === 'admin') ? [1] : [1, 0.96, 0.93, 0.9, 0.87, 0.84, 0.81, 0.78];
-      for (const k of fitSteps) {
-        doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
-        placeUnitsOnPages(doc, rendered, k);
-        if (doc.getNumberOfPages() <= 2) break;
-      }
-      decoratePages(doc, logo, app.appNo);
+      // Application details always fill exactly 2 pages (row spacing is adjusted so there is no empty space)
+      const fit = await fitDetailsToTwoPages(appForPdf, logo);
+      const rendered = await renderUnitsToCanvas(buildDetailsUnits(appForPdf, logo, { pad: fit.pad }));
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+      placeUnitsOnPages(doc, rendered, fit.k, true);
+      // Office Copy (admin download, single or bulk): page 3 = "FOR OFFICE USE ONLY". The Candidate Copy never gets it.
+      let officePage = 0;
+      if (isAdmin) { await addOfficeUsePage(doc, appForPdf, logo); officePage = doc.getNumberOfPages(); }
+      decoratePages(doc, logo, app.appNo, officePage);
       return { bytes: new Uint8Array(doc.output('arraybuffer')), pages: doc.getNumberOfPages() };
     }
 
